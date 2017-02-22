@@ -12,7 +12,7 @@
     <!-- Custom Scripts -->
     <script type="text/javascript">
         $.ajax({
-            url : "http://localhost/TripperBus_Backend/api/auth/login",
+            url : "http://54.214.196.171/TripperBus/public/api/auth/login",
             type: "POST",
             data : {
                 email: "test@test.com",
