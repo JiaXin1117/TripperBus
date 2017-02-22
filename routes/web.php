@@ -16,6 +16,10 @@ Route::group(['namespace' => 'Test', 'prefix' => 'test'], function() {
         'as' => 'test',
         'uses' => 'TestController@getIndex',
     ]);
+    
+    Route::get('/welcome', function() {
+        echo "Welcome";
+    });
 });
 
 
