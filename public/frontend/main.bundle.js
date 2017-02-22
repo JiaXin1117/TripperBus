@@ -514,7 +514,7 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.onPostLogin = function () {
         var _this = this;
-        var url = __WEBPACK_IMPORTED_MODULE_3__config_config__["a" /* BACKEND_SERVER_URL */] + "api/auth/login";
+        var url = __WEBPACK_IMPORTED_MODULE_3__config_config__["a" /* BACKEND_SERVER_URL */] + "auth/login";
         var formParams = new __WEBPACK_IMPORTED_MODULE_4__angular_http__["d" /* URLSearchParams */]();
         formParams.set('email', this.email);
         formParams.set('password', this.password);
