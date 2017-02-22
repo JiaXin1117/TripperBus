@@ -27,3 +27,7 @@ Route::group(['namespace' => 'Test', 'prefix' => 'test'], function() {
     ]);
 });
 
+Route::get('/welcome', function () {
+    echo "Welcome";
+});
+
