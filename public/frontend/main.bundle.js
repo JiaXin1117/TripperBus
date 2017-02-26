@@ -3,7 +3,7 @@ webpackJsonp([1,5],{
 /***/ 1107:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(454);
+module.exports = __webpack_require__(455);
 
 
 /***/ }),
@@ -59,7 +59,54 @@ var AuthService = (function () {
 
 /***/ }),
 
-/***/ 365:
+/***/ 248:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(234);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__ = __webpack_require__(821);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HttpService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var HttpService = (function () {
+    function HttpService(_http) {
+        this._http = _http;
+    }
+    HttpService.prototype.sendPostRequestWithParams = function (url, params) {
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Headers */]();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        return this._http.post(url, params, {
+            headers: headers
+        }).map(function (res) { return res.json(); });
+    };
+    HttpService.prototype.sendGetRequestWithParams = function (url) {
+        return this._http.get(url)
+            .map(function (res) { return res.json(); });
+    };
+    HttpService = __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
+    ], HttpService);
+    return HttpService;
+    var _a;
+}());
+//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/http.service.js.map
+
+/***/ }),
+
+/***/ 366:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -94,7 +141,7 @@ var AdminAreasComponent = (function () {
 
 /***/ }),
 
-/***/ 366:
+/***/ 367:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -129,7 +176,7 @@ var AdminCouponsCampaignsComponent = (function () {
 
 /***/ }),
 
-/***/ 367:
+/***/ 368:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -164,7 +211,7 @@ var AdminCouponsCompaniesComponent = (function () {
 
 /***/ }),
 
-/***/ 368:
+/***/ 369:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -199,7 +246,7 @@ var AdminCouponsTypesComponent = (function () {
 
 /***/ }),
 
-/***/ 369:
+/***/ 370:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -234,7 +281,7 @@ var AdminCouponsComponent = (function () {
 
 /***/ }),
 
-/***/ 370:
+/***/ 371:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -269,7 +316,7 @@ var AdminCustomersComponent = (function () {
 
 /***/ }),
 
-/***/ 371:
+/***/ 372:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -304,7 +351,7 @@ var AdminMainComponent = (function () {
 
 /***/ }),
 
-/***/ 372:
+/***/ 373:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -339,7 +386,7 @@ var AdminPagesComponent = (function () {
 
 /***/ }),
 
-/***/ 373:
+/***/ 374:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -374,7 +421,7 @@ var AdminRatesComponent = (function () {
 
 /***/ }),
 
-/***/ 374:
+/***/ 375:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -409,7 +456,7 @@ var AdminSchedulesEditexistingComponent = (function () {
 
 /***/ }),
 
-/***/ 375:
+/***/ 376:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -448,7 +495,7 @@ var AdminSchedulesGennewComponent = (function () {
 
 /***/ }),
 
-/***/ 376:
+/***/ 377:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -483,11 +530,13 @@ var AdminSchedulesGenspecialComponent = (function () {
 
 /***/ }),
 
-/***/ 377:
+/***/ 378:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(248);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(383);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -499,40 +548,129 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
+
 var AdminSchedulesComponent = (function () {
-    function AdminSchedulesComponent() {
+    function AdminSchedulesComponent(_httpService) {
+        this._httpService = _httpService;
+        this.urls = {
+            retrieve_weekly_schedule_url: __WEBPACK_IMPORTED_MODULE_2__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_weekly"
+        };
     }
     AdminSchedulesComponent.prototype.ngOnInit = function () {
         this.showFullCalendar();
     };
     AdminSchedulesComponent.prototype.showFullCalendar = function () {
-        $('#newyork-full-calendar').fullCalendar({
-            header: {
-                left: 'prev',
-                center: 'title',
-                right: 'next'
-            },
-            editable: false,
-            theme: true,
-            dayClick: function (date, jsEvent, view) {
-                jQuery("#schedule_per_day_modal").modal('show');
-            }
-        });
-        $('#bethesda-full-calendar').fullCalendar({
-            header: {
-                left: 'prev',
-                center: 'title',
-                right: 'next'
-            },
-            editable: false,
-            theme: true,
-            dayClick: function (date, jsEvent, view) {
-                jQuery("#schedule_per_day_modal").modal('show');
-            }
-        });
+        this.addEventToCalendar();
     };
     AdminSchedulesComponent.prototype.hideModal = function () {
         jQuery("#schedule_per_day_modal").modal('hide');
+    };
+    AdminSchedulesComponent.prototype.addEventToCalendar = function () {
+        this._httpService.sendGetRequestWithParams(this.urls.retrieve_weekly_schedule_url)
+            .subscribe(function (data) {
+            var loginResult = data;
+            if (loginResult['state'] == 'success') {
+                var date = new Date();
+                var d = date.getDate();
+                var m = date.getMonth();
+                var y = date.getFullYear();
+                $('#newyork-full-calendar').fullCalendar({
+                    header: {
+                        left: 'prev',
+                        center: 'title',
+                        right: 'next'
+                    },
+                    editable: true,
+                    theme: true,
+                    dayClick: function (date, jsEvent, view) {
+                        jQuery("#schedule_per_day_modal").modal('show');
+                    }
+                });
+                // adding a every monday and wednesday events:
+                $('#newyork-full-calendar').fullCalendar('addEventSource', function (start, end, callback) {
+                    // When requested, dynamically generate virtual
+                    // events for every monday and wednesday.
+                    var events = [];
+                    for (var loop = start.getTime(); loop <= end.getTime(); loop = loop + (24 * 60 * 60 * 1000)) {
+                        var test_date = new Date(loop);
+                        console.log(test_date.getDay());
+                        if (test_date.getDay() == 1) {
+                            jQuery.each(loginResult['data'], function (index, value) {
+                                if (value['day_of_week'] == 1) {
+                                    events.push({
+                                        title: value['bus_cnt'] + " buses",
+                                        start: test_date
+                                    });
+                                }
+                            });
+                        }
+                        if (test_date.getDay() == 0) {
+                            jQuery.each(loginResult['data'], function (index, value) {
+                                if (value['day_of_week'] == 0) {
+                                    events.push({
+                                        title: value['bus_cnt'] + " buses",
+                                        start: test_date
+                                    });
+                                }
+                            });
+                        }
+                        if (test_date.getDay() == 2) {
+                            jQuery.each(loginResult['data'], function (index, value) {
+                                if (value['day_of_week'] == 2) {
+                                    events.push({
+                                        title: value['bus_cnt'] + " buses",
+                                        start: test_date
+                                    });
+                                }
+                            });
+                        }
+                        if (test_date.getDay() == 3) {
+                            jQuery.each(loginResult['data'], function (index, value) {
+                                if (value['day_of_week'] == 3) {
+                                    events.push({
+                                        title: value['bus_cnt'] + " buses",
+                                        start: test_date
+                                    });
+                                }
+                            });
+                        }
+                        if (test_date.getDay() == 4) {
+                            jQuery.each(loginResult['data'], function (index, value) {
+                                if (value['day_of_week'] == 4) {
+                                    events.push({
+                                        title: value['bus_cnt'] + " buses",
+                                        start: test_date
+                                    });
+                                }
+                            });
+                        }
+                        if (test_date.getDay() == 5) {
+                            jQuery.each(loginResult['data'], function (index, value) {
+                                if (value['day_of_week'] == 5) {
+                                    events.push({
+                                        title: value['bus_cnt'] + " buses",
+                                        start: test_date
+                                    });
+                                }
+                            });
+                        }
+                        if (test_date.getDay() == 6) {
+                            jQuery.each(loginResult['data'], function (index, value) {
+                                if (value['day_of_week'] == 6) {
+                                    events.push({
+                                        title: value['bus_cnt'] + " buses",
+                                        start: test_date
+                                    });
+                                }
+                            });
+                        }
+                    }
+                    // return events generated
+                    callback(events);
+                });
+            }
+        }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
     };
     AdminSchedulesComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Component */])({
@@ -540,15 +678,16 @@ var AdminSchedulesComponent = (function () {
             template: __webpack_require__(807),
             styles: [__webpack_require__(775)]
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _a) || Object])
     ], AdminSchedulesComponent);
     return AdminSchedulesComponent;
+    var _a;
 }());
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-schedules.component.js.map
 
 /***/ }),
 
-/***/ 378:
+/***/ 379:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -583,7 +722,7 @@ var AdminSettingsComponent = (function () {
 
 /***/ }),
 
-/***/ 379:
+/***/ 380:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -618,7 +757,7 @@ var AdminStopsComponent = (function () {
 
 /***/ }),
 
-/***/ 380:
+/***/ 381:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -653,26 +792,37 @@ var AdminUsersComponent = (function () {
 
 /***/ }),
 
-/***/ 381:
+/***/ 382:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__admin_component__ = __webpack_require__(587);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__admin_component__ = __webpack_require__(588);
 /* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__admin_component__["a"]; });
 
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/index.js.map
 
 /***/ }),
 
-/***/ 382:
+/***/ 383:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BACKEND_SERVER_URL; });
+//export const BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
+var BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
+//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/config.js.map
+
+/***/ }),
+
+/***/ 384:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(385);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(248);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(174);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(172);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(591);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(383);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_http__ = __webpack_require__(234);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -738,7 +888,7 @@ var LoginComponent = (function () {
 
 /***/ }),
 
-/***/ 383:
+/***/ 385:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -788,7 +938,7 @@ var LogoutComponent = (function () {
 
 /***/ }),
 
-/***/ 384:
+/***/ 386:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -823,54 +973,7 @@ var MainIndexComponent = (function () {
 
 /***/ }),
 
-/***/ 385:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(234);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__ = __webpack_require__(821);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HttpService; });
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-var HttpService = (function () {
-    function HttpService(_http) {
-        this._http = _http;
-    }
-    HttpService.prototype.sendPostRequestWithParams = function (url, params) {
-        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Headers */]();
-        headers.append('Content-Type', 'application/x-www-form-urlencoded');
-        return this._http.post(url, params, {
-            headers: headers
-        }).map(function (res) { return res.json(); });
-    };
-    HttpService.prototype.sendGetRequestWithParams = function (url) {
-        return this._http.get(url)
-            .map(function (res) { return res.json(); });
-    };
-    HttpService = __decorate([
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
-    ], HttpService);
-    return HttpService;
-    var _a;
-}());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/http.service.js.map
-
-/***/ }),
-
-/***/ 453:
+/***/ 454:
 /***/ (function(module, exports) {
 
 function webpackEmptyContext(req) {
@@ -879,20 +982,20 @@ function webpackEmptyContext(req) {
 webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 453;
+webpackEmptyContext.id = 454;
 
 
 /***/ }),
 
-/***/ 454:
+/***/ 455:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(554);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(555);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__(595);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_app_module__ = __webpack_require__(590);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_app_module__ = __webpack_require__(591);
 
 
 
@@ -905,7 +1008,7 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dyna
 
 /***/ }),
 
-/***/ 584:
+/***/ 585:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -949,7 +1052,7 @@ var AdminFooterComponent = (function () {
 
 /***/ }),
 
-/***/ 585:
+/***/ 586:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -984,7 +1087,7 @@ var AdminHeaderComponent = (function () {
 
 /***/ }),
 
-/***/ 586:
+/***/ 587:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1097,7 +1200,7 @@ var AdminSidebarComponent = (function () {
 
 /***/ }),
 
-/***/ 587:
+/***/ 588:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1146,32 +1249,32 @@ var AdminComponent = (function () {
 
 /***/ }),
 
-/***/ 588:
+/***/ 589:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(172);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__admin__ = __webpack_require__(381);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__admin_admin_main_admin_main_component__ = __webpack_require__(371);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__admin_admin_schedules_admin_schedules_component__ = __webpack_require__(377);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__admin_admin_stops_admin_stops_component__ = __webpack_require__(379);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__admin_admin_rates_admin_rates_component__ = __webpack_require__(373);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__admin_admin_areas_admin_areas_component__ = __webpack_require__(365);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__admin_admin_users_admin_users_component__ = __webpack_require__(380);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__admin_admin_customers_admin_customers_component__ = __webpack_require__(370);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__admin_admin_pages_admin_pages_component__ = __webpack_require__(372);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__admin_admin_settings_admin_settings_component__ = __webpack_require__(378);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__admin_admin_coupons_admin_coupons_component__ = __webpack_require__(369);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__admin_admin_coupons_campaigns_admin_coupons_campaigns_component__ = __webpack_require__(366);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__admin_admin_coupons_companies_admin_coupons_companies_component__ = __webpack_require__(367);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__admin_admin_coupons_types_admin_coupons_types_component__ = __webpack_require__(368);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__main_login_login_component__ = __webpack_require__(382);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__main_main_index_component__ = __webpack_require__(384);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__main_logout_logout_component__ = __webpack_require__(383);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__admin_admin_schedules_editexisting_admin_schedules_editexisting_component__ = __webpack_require__(374);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__admin_admin_schedules_gennew_admin_schedules_gennew_component__ = __webpack_require__(375);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__admin_admin_schedules_genspecial_admin_schedules_genspecial_component__ = __webpack_require__(376);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__admin__ = __webpack_require__(382);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__admin_admin_main_admin_main_component__ = __webpack_require__(372);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__admin_admin_schedules_admin_schedules_component__ = __webpack_require__(378);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__admin_admin_stops_admin_stops_component__ = __webpack_require__(380);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__admin_admin_rates_admin_rates_component__ = __webpack_require__(374);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__admin_admin_areas_admin_areas_component__ = __webpack_require__(366);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__admin_admin_users_admin_users_component__ = __webpack_require__(381);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__admin_admin_customers_admin_customers_component__ = __webpack_require__(371);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__admin_admin_pages_admin_pages_component__ = __webpack_require__(373);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__admin_admin_settings_admin_settings_component__ = __webpack_require__(379);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__admin_admin_coupons_admin_coupons_component__ = __webpack_require__(370);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__admin_admin_coupons_campaigns_admin_coupons_campaigns_component__ = __webpack_require__(367);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__admin_admin_coupons_companies_admin_coupons_companies_component__ = __webpack_require__(368);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__admin_admin_coupons_types_admin_coupons_types_component__ = __webpack_require__(369);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__main_login_login_component__ = __webpack_require__(384);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__main_main_index_component__ = __webpack_require__(386);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__main_logout_logout_component__ = __webpack_require__(385);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__admin_admin_schedules_editexisting_admin_schedules_editexisting_component__ = __webpack_require__(375);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__admin_admin_schedules_gennew_admin_schedules_gennew_component__ = __webpack_require__(376);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__admin_admin_schedules_genspecial_admin_schedules_genspecial_component__ = __webpack_require__(377);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__services_auth_service_auth_service__ = __webpack_require__(174);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppRoutingModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1259,7 +1362,7 @@ var AppRoutingModule = (function () {
 
 /***/ }),
 
-/***/ 589:
+/***/ 590:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1294,44 +1397,44 @@ var AppComponent = (function () {
 
 /***/ }),
 
-/***/ 590:
+/***/ 591:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(170);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(545);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(546);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(234);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_routing_app_routing_module__ = __webpack_require__(588);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(589);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_routing_app_routing_module__ = __webpack_require__(589);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(590);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__page_not_found_page_not_found_component__ = __webpack_require__(594);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__admin__ = __webpack_require__(381);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__admin_admin_header_admin_header_component__ = __webpack_require__(585);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__admin_admin_sidebar_admin_sidebar_component__ = __webpack_require__(586);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__admin_admin_main_admin_main_component__ = __webpack_require__(371);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__admin_admin_schedules_admin_schedules_component__ = __webpack_require__(377);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__admin_admin_stops_admin_stops_component__ = __webpack_require__(379);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__admin_admin_rates_admin_rates_component__ = __webpack_require__(373);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__admin_admin_areas_admin_areas_component__ = __webpack_require__(365);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__admin_admin_users_admin_users_component__ = __webpack_require__(380);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__admin_admin_customers_admin_customers_component__ = __webpack_require__(370);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__admin_admin_pages_admin_pages_component__ = __webpack_require__(372);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__admin_admin_settings_admin_settings_component__ = __webpack_require__(378);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__admin_admin_coupons_admin_coupons_component__ = __webpack_require__(369);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__admin_admin_coupons_campaigns_admin_coupons_campaigns_component__ = __webpack_require__(366);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__admin_admin_coupons_companies_admin_coupons_companies_component__ = __webpack_require__(367);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__admin_admin_coupons_types_admin_coupons_types_component__ = __webpack_require__(368);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__admin_admin_footer_admin_footer_component__ = __webpack_require__(584);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__main_login_login_component__ = __webpack_require__(382);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__services_http_service_http_service__ = __webpack_require__(385);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__admin__ = __webpack_require__(382);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__admin_admin_header_admin_header_component__ = __webpack_require__(586);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__admin_admin_sidebar_admin_sidebar_component__ = __webpack_require__(587);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__admin_admin_main_admin_main_component__ = __webpack_require__(372);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__admin_admin_schedules_admin_schedules_component__ = __webpack_require__(378);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__admin_admin_stops_admin_stops_component__ = __webpack_require__(380);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__admin_admin_rates_admin_rates_component__ = __webpack_require__(374);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__admin_admin_areas_admin_areas_component__ = __webpack_require__(366);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__admin_admin_users_admin_users_component__ = __webpack_require__(381);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__admin_admin_customers_admin_customers_component__ = __webpack_require__(371);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__admin_admin_pages_admin_pages_component__ = __webpack_require__(373);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__admin_admin_settings_admin_settings_component__ = __webpack_require__(379);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__admin_admin_coupons_admin_coupons_component__ = __webpack_require__(370);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__admin_admin_coupons_campaigns_admin_coupons_campaigns_component__ = __webpack_require__(367);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__admin_admin_coupons_companies_admin_coupons_companies_component__ = __webpack_require__(368);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__admin_admin_coupons_types_admin_coupons_types_component__ = __webpack_require__(369);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__admin_admin_footer_admin_footer_component__ = __webpack_require__(585);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__main_login_login_component__ = __webpack_require__(384);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__services_http_service_http_service__ = __webpack_require__(248);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(174);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__main_main_header_main_header_component__ = __webpack_require__(593);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__main_main_index_component__ = __webpack_require__(384);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__main_main_index_component__ = __webpack_require__(386);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__main_main_footer_main_footer_component__ = __webpack_require__(592);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__admin_admin_schedules_editexisting_admin_schedules_editexisting_component__ = __webpack_require__(374);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__admin_admin_schedules_gennew_admin_schedules_gennew_component__ = __webpack_require__(375);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__admin_admin_schedules_genspecial_admin_schedules_genspecial_component__ = __webpack_require__(376);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_33__main_logout_logout_component__ = __webpack_require__(383);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__admin_admin_schedules_editexisting_admin_schedules_editexisting_component__ = __webpack_require__(375);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__admin_admin_schedules_gennew_admin_schedules_gennew_component__ = __webpack_require__(376);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__admin_admin_schedules_genspecial_admin_schedules_genspecial_component__ = __webpack_require__(377);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_33__main_logout_logout_component__ = __webpack_require__(385);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1453,17 +1556,6 @@ var AppModule = (function () {
     return AppModule;
 }());
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/app.module.js.map
-
-/***/ }),
-
-/***/ 591:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BACKEND_SERVER_URL; });
-//export const BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
-var BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/config.js.map
 
 /***/ }),
 
