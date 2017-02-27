@@ -599,7 +599,6 @@ var AdminSchedulesComponent = (function () {
                     var events = [];
                     for (var loop = start.getTime(); loop <= end.getTime(); loop = loop + (24 * 60 * 60 * 1000)) {
                         var test_date = new Date(loop);
-                        console.log(test_date.getDay());
                         if (test_date.getDay() == 1) {
                             jQuery.each(loginResult['data'], function (index, value) {
                                 if (value['day_of_week'] == 1) {
@@ -813,8 +812,8 @@ var AdminUsersComponent = (function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BACKEND_SERVER_URL; });
-//export const BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
-var BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
+var BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
+//export const BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/config.js.map
 
 /***/ }),
@@ -1149,7 +1148,8 @@ var AdminSidebarComponent = (function () {
         this.setTreeView();
     };
     AdminSidebarComponent.prototype.onResize = function (event) {
-        jQuery('aside.admin-sidebar').css('min-height', window.innerHeight);
+        console.log('resize');
+        jQuery('aside.admin-sidebar').css('min-height', window.innerHeight + '!important');
     };
     AdminSidebarComponent.prototype.setAdminSidebarDimension = function () {
         var viewport_height = window.innerHeight;
@@ -1186,6 +1186,12 @@ var AdminSidebarComponent = (function () {
             }
         });
     };
+    __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Z" /* HostListener */])('window:resize', ['$event']), 
+        __metadata('design:type', Function), 
+        __metadata('design:paramtypes', [Object]), 
+        __metadata('design:returntype', void 0)
+    ], AdminSidebarComponent.prototype, "onResize", null);
     AdminSidebarComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Component */])({
             selector: 'app-admin-sidebar',
