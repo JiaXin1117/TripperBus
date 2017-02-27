@@ -8,3 +8,5 @@
 Homestead.json
 Homestead.yaml
 .env
+/config/database.php
+/public/.htaccess
