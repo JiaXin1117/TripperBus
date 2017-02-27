@@ -1402,6 +1402,16 @@ var AppComponent = (function () {
     }
     AppComponent.prototype.ngOnInit = function () {
     };
+    AppComponent.prototype.onResize = function (event) {
+        jQuery("html").css('min-height', '100vh');
+        jQuery("body").css('min-height', '100vh');
+    };
+    __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Z" /* HostListener */])('window:resize', ['$event']), 
+        __metadata('design:type', Function), 
+        __metadata('design:paramtypes', [Object]), 
+        __metadata('design:returntype', void 0)
+    ], AppComponent.prototype, "onResize", null);
     AppComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Component */])({
             selector: 'app-root',
@@ -1815,7 +1825,7 @@ module.exports = "\r\n.admin-settings-content-header-custom {\r\n    position: r
 /***/ 799:
 /***/ (function(module, exports) {
 
-module.exports = ".admin-sidebar {\r\n    min-height: 0px !important;\r\n    top: 0px !important;\r\n}\r\n\r\n.admin-sidebar-aside {\r\n    color: #b8c7ce;\r\n}\r\n\r\n.admin-sidebar-form-custom {\r\n    border-radius: 2px;\r\n    border: 0px solid #555;\r\n    margin: 10px 10px;\r\n    width: 180px;\r\n}\r\n\r\n.sidebar-menu span {\r\n    color: #b8c7ce;\r\n}\r\n.sidebar-menu i {\r\n    color: #b8c7ce;\r\n}\r\n\r\n.admin-sidebar-search-input {\r\n    background-color: #374850;\r\n    border: 1px solid transparent;\r\n}\r\n\r\n.admin-sidebar-search-btn {\r\n    color: #999;\r\n    border-top-left-radius: 0;\r\n    border-top-right-radius: 2px;\r\n    border-bottom-right-radius: 2px;\r\n    border-bottom-left-radius: 0;\r\n    background-color: #374850;\r\n}\r\n\r\n.sidebar-menu .sidebar-menu-li:hover {\r\n    background-color: #333;\r\n}\r\n.sidebar-menu .sidebar-menu-li:hover span, .sidebar-menu .sidebar-menu-li:hover i {\r\n    color: white !important;\r\n}\r\n\r\n.admin-sidebar-router-active {\r\n    background-color: #333;\r\n}\r\n.admin-sidebar-router-active span, .admin-sidebar-router-active i{\r\n    color: white !important;\r\n}\r\n\r\n#admin-sidebar-coupons-details > ul > li > a {\r\n    padding: 5px 5px 5px 0px;\r\n    display: block;\r\n}\r\n#admin-sidebar-coupons-details > ul {\r\n    list-style: none;\r\n}\r\n\r\n#admin-sidebar-coupons-details ul li:hover {\r\n    background-color: #333;\r\n}\r\n#admin-sidebar-coupons-details ul li:hover span, #admin-sidebar-coupons-details ul li:hover i {\r\n    color: white !important;\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"
+module.exports = ".admin-sidebar {\r\n    min-height: 0px !important;\r\n    top: 0px !important;\r\n    background-color: #222d32;\r\n}\r\n\r\n.admin-sidebar-aside {\r\n    color: #b8c7ce;\r\n}\r\n\r\n.admin-sidebar-form-custom {\r\n    border-radius: 2px;\r\n    border: 0px solid #555;\r\n    margin: 10px 10px;\r\n    width: 180px;\r\n}\r\n\r\n.sidebar-menu span {\r\n    color: #b8c7ce;\r\n}\r\n.sidebar-menu i {\r\n    color: #b8c7ce;\r\n}\r\n\r\n.admin-sidebar-search-input {\r\n    background-color: #374850;\r\n    border: 1px solid transparent;\r\n}\r\n\r\n.admin-sidebar-search-btn {\r\n    color: #999;\r\n    border-top-left-radius: 0;\r\n    border-top-right-radius: 2px;\r\n    border-bottom-right-radius: 2px;\r\n    border-bottom-left-radius: 0;\r\n    background-color: #374850;\r\n}\r\n\r\n.sidebar-menu .sidebar-menu-li:hover {\r\n    background-color: #333;\r\n}\r\n.sidebar-menu .sidebar-menu-li:hover span, .sidebar-menu .sidebar-menu-li:hover i {\r\n    color: white !important;\r\n}\r\n\r\n.admin-sidebar-router-active {\r\n    background-color: #333;\r\n}\r\n.admin-sidebar-router-active span, .admin-sidebar-router-active i{\r\n    color: white !important;\r\n}\r\n\r\n#admin-sidebar-coupons-details > ul > li > a {\r\n    padding: 5px 5px 5px 0px;\r\n    display: block;\r\n}\r\n#admin-sidebar-coupons-details > ul {\r\n    list-style: none;\r\n}\r\n\r\n#admin-sidebar-coupons-details ul li:hover {\r\n    background-color: #333;\r\n}\r\n#admin-sidebar-coupons-details ul li:hover span, #admin-sidebar-coupons-details ul li:hover i {\r\n    color: white !important;\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"
 
 /***/ }),
 
@@ -2025,7 +2035,7 @@ module.exports = "\n<section class=\"content-header admin-users-content-header-c
 /***/ 837:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"admin-root\" (window:resize)=\"onResize($event)\">\n    <app-admin-header></app-admin-header>\n    <div class=\"admin-left\">\n        <app-admin-sidebar></app-admin-sidebar>\n    </div>\n    <div class=\"admin-right\">\n        <div class=\"admin-right-content\">\n            <router-outlet></router-outlet>\n        </div>\n    </div>\n    <app-admin-footer></app-admin-footer>\n</div>\n\n"
+module.exports = "<div class=\"admin-root\">\n    <app-admin-header></app-admin-header>\n    <div class=\"admin-left\">\n        <app-admin-sidebar></app-admin-sidebar>\n    </div>\n    <div class=\"admin-right\">\n        <div class=\"admin-right-content\">\n            <router-outlet></router-outlet>\n        </div>\n    </div>\n    <app-admin-footer></app-admin-footer>\n</div>\n\n"
 
 /***/ }),
 
