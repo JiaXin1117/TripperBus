@@ -812,8 +812,8 @@ var AdminUsersComponent = (function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BACKEND_SERVER_URL; });
-var BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
-//export const BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
+//export const BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
+var BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/config.js.map
 
 /***/ }),
