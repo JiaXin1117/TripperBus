@@ -334,24 +334,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var AdminMainComponent = (function () {
     function AdminMainComponent() {
+        this.choose_date = undefined;
     }
     AdminMainComponent.prototype.ngOnInit = function () {
         this.setDatePickers();
     };
     AdminMainComponent.prototype.setDatePickers = function () {
+        var me = this;
         jQuery("#choose_date").datepicker({
             onSelect: function (dateStr) {
                 var selectedDate = new Date(dateStr);
-                var today = new Date();
-                if (selectedDate.getTime() < today.getTime()) {
-                    alert("Date chosen is on the past");
-                }
+                me.choose_date = selectedDate;
                 jQuery("#return_date").datepicker("option", { minDate: selectedDate });
             }
         });
         jQuery("#return_date").datepicker();
         /*jQuery( "#choose_date" ).datepicker();
         jQuery( "#return_date" ).datepicker();*/
+    };
+    AdminMainComponent.prototype.onPressGoButton = function () {
+        if (this.choose_date != undefined) {
+            var selectedDate = this.choose_date;
+            var today = new Date();
+            if (selectedDate.getTime() < today.getTime()) {
+                alert("Date chosen is on the past");
+            }
+        }
     };
     AdminMainComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Component */])({
@@ -1238,6 +1246,7 @@ var AdminComponent = (function () {
     };
     AdminComponent.prototype.onResize = function (event) {
         jQuery("div.admin-left").removeClass("admin-left").addClass("admin-left");
+        jQuery("div.admin-right").removeClass("admin-right").addClass("admin-right");
     };
     __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Z" /* HostListener */])('window:resize', ['$event']), 
@@ -1827,7 +1836,7 @@ module.exports = "\r\n.admin-users-content-header-custom {\r\n    position: rela
 /***/ 802:
 /***/ (function(module, exports) {
 
-module.exports = ".admin-root {\r\n    font-family: 'open_sansregular', sans-serif, Arial !important;\r\n    font-size: 13px;\r\n    line-height: 1.42857143;\r\n    color: #333;\r\n    display: block;\r\n    position: relative;\r\n    width: 100%;\r\n}\r\n\r\n.admin-left {\r\n    width: 220px; \r\n    min-height: calc(100vh - 50px);\r\n    background-color: #222d32;\r\n    float: left;\r\n    position: absolute;\r\n}\r\n\r\n.admin-right {\r\n    float: left;\r\n    position: absolute;\r\n    width: calc(100% - 220px);\r\n    margin-left: 220px;\r\n}\r\n\r\n.admin-right-content {\r\n    padding: 15px 15px;\r\n}\r\n\r\n"
+module.exports = ".admin-root {\r\n    font-family: 'open_sansregular', sans-serif, Arial !important;\r\n    font-size: 13px;\r\n    line-height: 1.42857143;\r\n    color: #333;\r\n    display: block;\r\n    position: relative;\r\n    width: 100%;\r\n}\r\n\r\n.admin-left {\r\n    width: 220px; \r\n    min-height: calc(100vh - 50px);\r\n    background-color: #222d32;\r\n    float: left;\r\n    position: absolute;\r\n}\r\n\r\n.admin-right {\r\n    float: left;\r\n    position: absolute;\r\n    width: calc(100% - 220px);\r\n    margin-left: 220px;\r\n    min-height: calc(100vh - 50px);\r\n}\r\n\r\n.admin-right-content {\r\n    padding: 15px 15px;\r\n}\r\n\r\n"
 
 /***/ }),
 
@@ -1939,7 +1948,7 @@ module.exports = "<header class=\"header admin-header\">\n    <a href=\"#\" clas
 /***/ 826:
 /***/ (function(module, exports) {
 
-module.exports = "\n<section class=\"admin-main-content-header\">\n    <h1>\n        <i class=\"fa fa-desktop\"></i> Control Panel Main Page\n    </h1>\n</section>\n\n<section class=\"panel admin-main-panel\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\"></span> To book a reservation or for any other date-specific process\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <form class=\"form-inline\" role=\"form\">\n            <div class=\"top30\">\n                <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                    <div class=\"form-group admin-main-form-control-custom\">\n                        <label>Outbound date:</label>\n                        <input type=\"text\" class=\"form-control\" value=\"\" name=\"choose_date\" id=\"choose_date\">\n                    </div>\n                </div>\n                <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                    <div class=\"form-group\">\n                        <label>Leaving from:</label>\n                        <select class=\"form-control admin-main-form-control-custom\" name=\"leaving_city\">\n                            <option value=\"newyork\">New York</option>\n                            <option value=\"bethesda_arlington\">Bethesda/Arlington</option>\n                        </select>\n                    </div>\n                </div>\n                <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                    <div class=\"form-group admin-main-form-control-custom\">\n                        <label>Return date:</label>\n                        <input type=\"text\" class=\"form-control\" value=\"\" name=\"return_date\" id=\"return_date\">  (optional)\n                    </div>\t\n                </div>\n                <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                    <div class=\"form-group\">\n                        <label>Open next page in:</label>\n                        <select class=\"form-control admin-main-form-control-custom\" name=\"page_mode\">\n                            <option value=\"1\" selected=\"\">Regular Mode</option>\n                            <option value=\"2\">Bus Edit Mode</option>\n                            <option value=\"3\">Move People Mode</option>\n                        </select>\n                    </div>\t            \n                </div>\n                <div class=\"clearfix\"></div>\n                <div class=\"col-xs-12 text-center\">\n                    <div class=\"form-group\">\n                        <input type=\"submit\" class=\"btn btn-green btn-lg promin_select sm-expandable\" name=\"submit\" value=\"Go\">\n                    </div>\n                </div>\n                <div class=\"clearfix\"></div>\n            </div>\n        </form>\n    </div>\n</section>"
+module.exports = "\n<section class=\"admin-main-content-header\">\n    <h1>\n        <i class=\"fa fa-desktop\"></i> Control Panel Main Page\n    </h1>\n</section>\n\n<section class=\"panel admin-main-panel\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\"></span> To book a reservation or for any other date-specific process\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <form class=\"form-inline\" role=\"form\">\n            <div class=\"top30\">\n                <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                    <div class=\"form-group admin-main-form-control-custom\">\n                        <label>Outbound date:</label>\n                        <input type=\"text\" class=\"form-control\" value=\"\" name=\"choose_date\" id=\"choose_date\">\n                    </div>\n                </div>\n                <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                    <div class=\"form-group\">\n                        <label>Leaving from:</label>\n                        <select class=\"form-control admin-main-form-control-custom\" name=\"leaving_city\">\n                            <option value=\"newyork\">New York</option>\n                            <option value=\"bethesda_arlington\">Bethesda/Arlington</option>\n                        </select>\n                    </div>\n                </div>\n                <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                    <div class=\"form-group admin-main-form-control-custom\">\n                        <label>Return date:</label>\n                        <input type=\"text\" class=\"form-control\" value=\"\" name=\"return_date\" id=\"return_date\">  (optional)\n                    </div>\t\n                </div>\n                <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                    <div class=\"form-group\">\n                        <label>Open next page in:</label>\n                        <select class=\"form-control admin-main-form-control-custom\" name=\"page_mode\">\n                            <option value=\"1\" selected=\"\">Regular Mode</option>\n                            <option value=\"2\">Bus Edit Mode</option>\n                            <option value=\"3\">Move People Mode</option>\n                        </select>\n                    </div>\t            \n                </div>\n                <div class=\"clearfix\"></div>\n                <div class=\"col-xs-12 text-center\">\n                    <div class=\"form-group\">\n                        <input type=\"button\" (click)=\"onPressGoButton()\" class=\"btn btn-green btn-lg promin_select sm-expandable\" name=\"submit\" value=\"Go\">\n                    </div>\n                </div>\n                <div class=\"clearfix\"></div>\n            </div>\n        </form>\n    </div>\n</section>"
 
 /***/ }),
 
