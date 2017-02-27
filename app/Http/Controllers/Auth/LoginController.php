@@ -17,7 +17,7 @@ class LoginController extends Controller
     public function postLogin(Request $request) { 
         $data = $request->all();
         $email = $data["email"]; 
-        $password = $data["password"];  
+        $password = $data["password"];  var_dump($password); exit(1);
         
         $count = Admin_Users::where('email', $email)
                 ->where('password', $password)
