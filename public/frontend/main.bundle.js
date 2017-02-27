@@ -343,7 +343,6 @@ var AdminMainComponent = (function () {
             defaultDate: new Date(),
             minDate: new Date(),
             onSelect: function (dateStr) {
-                jQuery("#return_date").val(dateStr);
                 jQuery("#return_date").datepicker("option", { minDate: new Date(dateStr) });
             }
         });
