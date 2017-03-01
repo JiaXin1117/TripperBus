@@ -8,7 +8,7 @@ module.exports = __webpack_require__(456);
 
 /***/ }),
 
-/***/ 174:
+/***/ 247:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -64,7 +64,7 @@ var AuthService = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(234);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(233);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__ = __webpack_require__(846);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HttpService; });
@@ -578,114 +578,72 @@ var AdminSchedulesComponent = (function () {
     function AdminSchedulesComponent(_httpService) {
         this._httpService = _httpService;
         this.urls = {
-            retrieve_weekly_schedule_url: __WEBPACK_IMPORTED_MODULE_2__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_weekly"
+            retrieve_schedule_url: __WEBPACK_IMPORTED_MODULE_2__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_schedule"
         };
     }
     AdminSchedulesComponent.prototype.ngOnInit = function () {
         this.showFullCalendar();
     };
+    AdminSchedulesComponent.prototype.getObjectLength = function (obj) {
+        var size = 0, key;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key))
+                size++;
+        }
+        return size;
+    };
     AdminSchedulesComponent.prototype.showFullCalendar = function () {
+        var me = this;
+        $('#newyork-full-calendar').fullCalendar({
+            header: {
+                left: 'prev',
+                center: 'title',
+                right: 'next'
+            },
+            editable: false,
+            theme: true,
+            dayClick: function (date, jsEvent, view) {
+                // Get day of week from date.
+                var temp = new Date(date);
+                var d = temp.getDay();
+                /*let temp1 = me.schedules[d]; console.log(me.schedules[d]);
+                me.day_reservations = temp1;*/
+                jQuery("#schedule_per_day_modal").modal('show');
+            }
+        });
         this.addEventToCalendar();
     };
     AdminSchedulesComponent.prototype.hideModal = function () {
         jQuery("#schedule_per_day_modal").modal('hide');
     };
     AdminSchedulesComponent.prototype.addEventToCalendar = function () {
-        this._httpService.sendGetRequestWithParams(this.urls.retrieve_weekly_schedule_url)
+        var me = this;
+        this._httpService.sendGetRequestWithParams(this.urls.retrieve_schedule_url)
             .subscribe(function (data) {
             var loginResult = data;
+            me.schedules = loginResult.data;
             if (loginResult['state'] == 'success') {
                 var date = new Date();
                 var d = date.getDate();
                 var m = date.getMonth();
-                var y = date.getFullYear();
-                $('#newyork-full-calendar').fullCalendar({
-                    header: {
-                        left: 'prev',
-                        center: 'title',
-                        right: 'next'
-                    },
-                    editable: true,
-                    theme: true,
-                    dayClick: function (date, jsEvent, view) {
-                        jQuery("#schedule_per_day_modal").modal('show');
-                    }
-                });
-                // adding a every monday and wednesday events:
                 $('#newyork-full-calendar').fullCalendar('addEventSource', function (start, end, callback) {
-                    // When requested, dynamically generate virtual
-                    // events for every monday and wednesday.
                     var events = [];
                     for (var loop = start.getTime(); loop <= end.getTime(); loop = loop + (24 * 60 * 60 * 1000)) {
                         var test_date = new Date(loop);
-                        if (test_date.getDay() == 1) {
-                            jQuery.each(loginResult['data'], function (index, value) {
-                                if (value['day_of_week'] == 1) {
-                                    events.push({
-                                        title: value['bus_cnt'] + " buses",
-                                        start: test_date
-                                    });
-                                }
+                        // Add weekly schedule to fullcalendar.
+                        var day = test_date.getDay();
+                        var temp = loginResult['data'][day];
+                        var cnt = Object.keys(temp).length;
+                        if (cnt > 1) {
+                            events.push({
+                                title: cnt + " buses",
+                                start: test_date
                             });
                         }
-                        if (test_date.getDay() == 0) {
-                            jQuery.each(loginResult['data'], function (index, value) {
-                                if (value['day_of_week'] == 0) {
-                                    events.push({
-                                        title: value['bus_cnt'] + " buses",
-                                        start: test_date
-                                    });
-                                }
-                            });
-                        }
-                        if (test_date.getDay() == 2) {
-                            jQuery.each(loginResult['data'], function (index, value) {
-                                if (value['day_of_week'] == 2) {
-                                    events.push({
-                                        title: value['bus_cnt'] + " buses",
-                                        start: test_date
-                                    });
-                                }
-                            });
-                        }
-                        if (test_date.getDay() == 3) {
-                            jQuery.each(loginResult['data'], function (index, value) {
-                                if (value['day_of_week'] == 3) {
-                                    events.push({
-                                        title: value['bus_cnt'] + " buses",
-                                        start: test_date
-                                    });
-                                }
-                            });
-                        }
-                        if (test_date.getDay() == 4) {
-                            jQuery.each(loginResult['data'], function (index, value) {
-                                if (value['day_of_week'] == 4) {
-                                    events.push({
-                                        title: value['bus_cnt'] + " buses",
-                                        start: test_date
-                                    });
-                                }
-                            });
-                        }
-                        if (test_date.getDay() == 5) {
-                            jQuery.each(loginResult['data'], function (index, value) {
-                                if (value['day_of_week'] == 5) {
-                                    events.push({
-                                        title: value['bus_cnt'] + " buses",
-                                        start: test_date
-                                    });
-                                }
-                            });
-                        }
-                        if (test_date.getDay() == 6) {
-                            jQuery.each(loginResult['data'], function (index, value) {
-                                if (value['day_of_week'] == 6) {
-                                    events.push({
-                                        title: value['bus_cnt'] + " buses",
-                                        start: test_date
-                                    });
-                                }
+                        else {
+                            events.push({
+                                title: cnt + " bus",
+                                start: test_date
                             });
                         }
                     }
@@ -843,10 +801,10 @@ var BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(248);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(174);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(247);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(172);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(384);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_http__ = __webpack_require__(234);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_http__ = __webpack_require__(233);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -916,7 +874,7 @@ var LoginComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service_auth_service__ = __webpack_require__(174);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service_auth_service__ = __webpack_require__(247);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(172);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LogoutComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1168,20 +1126,6 @@ var AdminSidebarComponent = (function () {
     };
     AdminSidebarComponent.prototype.onResize = function (event) {
     };
-    AdminSidebarComponent.prototype.setAdminSidebarDimension = function () {
-        var viewport_height = window.innerHeight;
-        var header_height = jQuery('.admin-header').outerHeight(true);
-        var height = viewport_height - header_height;
-        console.log(height);
-        var cur_height = jQuery("section.sidebar").height();
-        console.log(cur_height);
-        if (cur_height < height) {
-            jQuery("#admin_sidebar").height(height);
-        }
-        else {
-            jQuery("#admin_sidebar").height(cur_height);
-        }
-    };
     AdminSidebarComponent.prototype.setTreeView = function () {
         var me = this;
         jQuery("#treeview-coupons").click(function () {
@@ -1191,7 +1135,6 @@ var AdminSidebarComponent = (function () {
                 jQuery(".fa-angle-down").css('display', 'inherit');
                 // Update Sidebar Height.
                 var plus_height = jQuery("#admin-sidebar-coupons-details-ul").height();
-                console.log(plus_height);
                 jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() + plus_height);
             }
             else {
@@ -1245,8 +1188,7 @@ var AdminComponent = (function () {
     AdminComponent.prototype.ngOnInit = function () {
     };
     AdminComponent.prototype.onResize = function (event) {
-        jQuery("div.admin-left").removeClass("admin-left").addClass("admin-left");
-        jQuery("div.admin-right").removeClass("admin-right").addClass("admin-right");
+        jQuery(".admin-left").height(jQuery('.admin-right').height());
     };
     __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Z" /* HostListener */])('window:resize', ['$event']), 
@@ -1294,7 +1236,6 @@ var AdminComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__admin_admin_schedules_editexisting_admin_schedules_editexisting_component__ = __webpack_require__(376);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__admin_admin_schedules_gennew_admin_schedules_gennew_component__ = __webpack_require__(377);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__admin_admin_schedules_genspecial_admin_schedules_genspecial_component__ = __webpack_require__(378);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__services_auth_service_auth_service__ = __webpack_require__(174);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppRoutingModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1327,12 +1268,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 var routes = [
     {
         path: 'admin',
         component: __WEBPACK_IMPORTED_MODULE_2__admin__["a" /* AdminComponent */],
-        canActivate: [__WEBPACK_IMPORTED_MODULE_22__services_auth_service_auth_service__["a" /* AuthService */]],
+        //canActivate: [AuthService],
         children: [
             { path: '', component: __WEBPACK_IMPORTED_MODULE_3__admin_admin_main_admin_main_component__["a" /* AdminMainComponent */] },
             { path: 'schedules', component: __WEBPACK_IMPORTED_MODULE_4__admin_admin_schedules_admin_schedules_component__["a" /* AdminSchedulesComponent */] },
@@ -1433,7 +1373,7 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(170);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(551);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(234);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(233);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_routing_app_routing_module__ = __webpack_require__(594);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(595);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__page_not_found_page_not_found_component__ = __webpack_require__(599);
@@ -1456,7 +1396,7 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__admin_admin_footer_admin_footer_component__ = __webpack_require__(590);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__main_login_login_component__ = __webpack_require__(385);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__services_http_service_http_service__ = __webpack_require__(248);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(174);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(247);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__main_main_header_main_header_component__ = __webpack_require__(598);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__main_main_index_component__ = __webpack_require__(387);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__main_main_footer_main_footer_component__ = __webpack_require__(597);
@@ -1755,7 +1695,7 @@ module.exports = "\r\n.admin-customers-content-header-custom {\r\n    position: 
 /***/ 789:
 /***/ (function(module, exports) {
 
-module.exports = ".footer-main {\r\n    bottom: 0px;\r\n    width: calc(100vw - 220px);\r\n    padding: 15px;\r\n    color: #444;\r\n    border-top: 1px solid #d2d6de;\r\n    display: inline-block;\r\n    position: fixed;\r\n    margin-left: 220px;\r\n}"
+module.exports = ".footer-main {\r\n    bottom: 0px;\r\n    width: calc(100vw - 220px);\r\n    padding: 15px;\r\n    color: #444;\r\n    border-top: 1px solid #d2d6de;\r\n    display: inline-block;\r\n    position: fixed;\r\n    margin-left: 220px;\r\n    z-index: 999;\r\n}"
 
 /***/ }),
 
@@ -2000,7 +1940,7 @@ module.exports = "<p>\n  admin-schedules-genspecial works!\n</p>\n"
 /***/ 832:
 /***/ (function(module, exports) {
 
-module.exports = "\n<section class=\"content-header admin-schedules-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-calendar-o\"></i> Schedules\n    </h1>\n    <ol class=\"breadcrumb admin-schedules-breadcrumb-custom\">\n        <li><a href=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li class=\"active\">Schedules</li>\n    </ol>\n</section>\n\n<section class=\"panel general\">\n    <header class=\"panel-heading tab-bg-dark-navy-blue\">\n        <ul class=\"nav nav-tabs\">\n            <li class=\"active\">\n                <a data-toggle=\"tab\" href=\"#newyork\">From New York City</a>\n            </li>\n            <li class=\"\">\n                <a data-toggle=\"tab\" href=\"#bethesda\">From Bethesda/Arlington</a>\n            </li>\n        </ul>\n    </header>\n    <div class=\"panel-body\">\n        <div class=\"tab-content\">\n            <div id=\"newyork\" class=\"tab-pane active\">\n                <div id=\"newyork-full-calendar\"></div>\n            </div>\n            <div id=\"bethesda\" class=\"tab-pane\">\n                <div id=\"bethesda-full-calendar\"></div>\n            </div>\n        </div>\n    </div>\n</section>\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" routerLink='/admin/schedules_edit' (click)=\"hideModal();\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" routerLink='/admin/schedules_gennew' (click)=\"hideModal();\" > Generate New</a>\n                <a class=\"btn btn-info\" routerLink='/admin/schedules_edit' (click)=\"hideModal();\"> Generate Special</a>\n            </div>\n        </div>  \n      \n    </div>\n</div>"
+module.exports = "\n<section class=\"content-header admin-schedules-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-calendar-o\"></i> Schedules\n    </h1>\n    <ol class=\"breadcrumb admin-schedules-breadcrumb-custom\">\n        <li><a href=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li class=\"active\">Schedules</li>\n    </ol>\n</section>\n\n<section class=\"panel general\">\n    <header class=\"panel-heading tab-bg-dark-navy-blue\">\n        <ul class=\"nav nav-tabs\">\n            <li class=\"active\">\n                <a data-toggle=\"tab\" href=\"#newyork\">From New York City</a>\n            </li>\n            <li class=\"\">\n                <a data-toggle=\"tab\" href=\"#bethesda\">From Bethesda/Arlington</a>\n            </li>\n        </ul>\n    </header>\n    <div class=\"panel-body\">\n        <div class=\"tab-content\">\n            <div id=\"newyork\" class=\"tab-pane active\">\n                <div id=\"newyork-full-calendar\"></div>\n            </div>\n            <div id=\"bethesda\" class=\"tab-pane\">\n                <div id=\"bethesda-full-calendar\"></div>\n            </div>\n        </div>\n    </div>\n</section>\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" routerLink='/admin/schedules_edit' (click)=\"hideModal();\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" routerLink='/admin/schedules_gennew' (click)=\"hideModal();\" > Generate New</a>\n                <a class=\"btn btn-info\" routerLink='/admin/schedules_edit' (click)=\"hideModal();\"> Generate Special</a>\n                \n                <h3>Current Schedule:</h3>\n                <div *ngFor=\"let item of day_reservations; let i = index;\">\n                    <p>{{ item['time'] }} from {{ item['stop_area'] }}</p>\n                </div>\n                \n            </div>\n        </div>  \n      \n    </div>\n</div>"
 
 /***/ }),
 

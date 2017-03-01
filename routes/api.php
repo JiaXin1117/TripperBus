@@ -22,9 +22,9 @@ Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function() {
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
     Route::group(['prefix' => 'schedule'], function() {
-        Route::get('/retrieve_weekly', [
-            'as' => 'admin.schedule.retrieve_weekly',
-            'uses' => 'ScheduleController@getRetrieveWeeklySchedule',
+        Route::get('/retrieve_schedule', [
+            'as' => 'admin.schedule.retrieve',
+            'uses' => 'ScheduleController@getRetrieveSchedule',
         ]);
     });
 });
