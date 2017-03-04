@@ -3,7 +3,7 @@
 /public/hot
 /nbproject
 /storage/*.key
-/vendor
+
 /.idea
 Homestead.json
 Homestead.yaml
