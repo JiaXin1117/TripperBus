@@ -26,6 +26,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.schedule.retrieve_by_date',
             'uses' => 'ScheduleController@get_Retrive_Schedule_By_Date',
         ]);
+        Route::get('/retrieve_by_month', [
+            'as' => 'admin.schedule.retrieve_by_month',
+            'uses' => 'ScheduleController@get_Retrieve_Schedules_By_Month',
+        ]);
     });
 });
 

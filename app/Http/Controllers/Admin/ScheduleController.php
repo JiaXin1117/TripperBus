@@ -93,4 +93,49 @@ class ScheduleController extends Controller
             'data' => 'Cannot find reservation for this date.'
         ]);
     }
+    
+    
+    public function get_Retrieve_Schedules_By_Month() {
+            $year = Input::get('year');
+            $month = Input::get('month');
+            $date_timestamp = mktime(0, 0, 0, $month, 1, $year);
+            
+            $response = array();
+            
+            for ($i = mktime(0, 0, 0, $month, 1, $year); $i <= mktime(0, 0, 0, $month, cal_days_in_month(CAL_GREGORIAN,$month,$year)); $i += 24 * 60 *60) {
+                $cur_date = date("Y-m-d", $i);
+                
+                $cnt = \App\Models\Res_Times::where('w_h', $this->db_week_schedule)
+                    ->where('date', '<=',  $cur_date)
+                    ->where('day_of_week',  date('w', $i))
+                    ->count();
+                
+                if ($cnt > 0) {
+                    
+                    $result = \App\Models\Res_Times::where('w_h', $this->db_week_schedule)
+                            ->where('date', '<=',  $cur_date)
+                            ->where('day_of_week',  date('w', $i))
+                            ->get();
+                    
+                    foreach ($result as $reservation) {
+                        $temp = array();
+                        $temp['time'] = $reservation->time;
+                        $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
+                        $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
+                        $temp['group_id'] = $reservation->group_id;
+                        $temp['schedule_type'] = $reservation->w_h;
+                        $temp['schedule_date'] = $cur_date;
+
+                        $response[] = $temp;
+                    }
+                }
+            }
+            
+            return response()->json([
+                'state' => 'success',
+                'data' => $response
+            ]);
+            
+    }
+    
 }
