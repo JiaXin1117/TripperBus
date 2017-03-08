@@ -45,6 +45,8 @@ class ScheduleController extends Controller
                 $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
                 $temp['group_id'] = $reservation->group_id;
                 $temp['schedule_type'] = $reservation->w_h;
+                $temp['from_date'] = $reservation->date;
+                $temp['dow'] = $reservation->day_of_week;
 
                 $response[] = $temp;
             }
@@ -102,6 +104,20 @@ class ScheduleController extends Controller
                 'data' => $response
             ]);
             
+    }
+    
+    public function get_Retrieve_Stops() {
+        $stops = Res_Stops::all();
+        
+        $response = array();
+        foreach ($stops as $stop) {
+            $response[] = $stop->short;
+        }
+        
+        return response()->json([
+            'state' => 'success',
+            'data' => $response
+        ]);
     }
     
 }
