@@ -24,16 +24,27 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
     Route::group(['prefix' => 'schedule'], function() {
         Route::get('/retrieve_by_date', [
             'as' => 'admin.schedule.retrieve_by_date',
-            'uses' => 'ScheduleController@get_Retrive_Schedule_By_Date',
+            'uses' => 'ScheduleController@getRetriveScheduleByDate',
         ]);
         Route::get('/retrieve_by_month', [
             'as' => 'admin.schedule.retrieve_by_month',
-            'uses' => 'ScheduleController@get_Retrieve_Schedules_By_Month',
+            'uses' => 'ScheduleController@getRetrieveSchedulesByMonth',
         ]);
         Route::get('/retrieve_stops', [
             'as' => 'admin.schedule.retrieve_stops',
-            'uses' => 'ScheduleController@get_Retrieve_Stops',
+            'uses' => 'ScheduleController@getRetrieveStops',
         ]);
+        
+        // POST Requests
+        Route::post('/update_existing_schedule', [
+            'as' => 'admin.schedule.update_existing_schedule',
+            'uses' => 'ScheduleController@postUpdateForEditExistingSchedule',
+        ]);
+        Route::post('/remove_existing_schedule', [
+            'as' => 'admin.schedule.remove_existing_schedule',
+            'uses' => 'ScheduleController@postRemoveForEditExistingSchedule',
+        ]);
+        
     });
 });
 

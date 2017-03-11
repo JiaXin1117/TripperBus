@@ -13,6 +13,6 @@ class TestController extends Controller
     }
     
     public function getIndex(Request $request) {
-        echo date('Y-m-01');
+        return view('test.test_index');
     }
 }

@@ -20,7 +20,7 @@ class ScheduleController extends Controller
     }
 
     // Retrieve schedule by date.
-    public function get_Retrive_Schedule_By_Date() { 
+    public function getRetriveScheduleByDate() { 
         $date = Input::get('date');
         $cur_date = date_create($date); 
         
@@ -47,6 +47,7 @@ class ScheduleController extends Controller
                 $temp['schedule_type'] = $reservation->w_h;
                 $temp['from_date'] = $reservation->date;
                 $temp['dow'] = $reservation->day_of_week;
+                $temp['time_id'] = $reservation->id;
 
                 $response[] = $temp;
             }
@@ -62,8 +63,7 @@ class ScheduleController extends Controller
         ]);
     }
     
-    
-    public function get_Retrieve_Schedules_By_Month() {
+    public function getRetrieveSchedulesByMonth() {
             $year = Input::get('year');
             $month = Input::get('month');
             $date_timestamp = mktime(0, 0, 0, $month, 1, $year);
@@ -106,7 +106,7 @@ class ScheduleController extends Controller
             
     }
     
-    public function get_Retrieve_Stops() {
+    public function getRetrieveStops() {
         $stops = Res_Stops::all();
         
         $response = array();
@@ -118,6 +118,42 @@ class ScheduleController extends Controller
             'state' => 'success',
             'data' => $response
         ]);
+    }
+    
+    public function postUpdateForEditExistingSchedule(Request $request) {
+        $data = json_decode($request->getContent(), true); 
+        
+        for ($i=0; $i<count($data); $i++) {
+            $item = $data[$i]; 
+            $time_id = (int)$item['time_id']; 
+            $temp = Res_Times::find($time_id); 
+            
+            if (!is_null($temp)) {
+                $time = $item['hour'] . ":" . $item['min'] . ":00"; 
+                $stop_id = Res_Stops::where('short', $item['stop'])
+                            ->first()->id; 
+                
+                $temp->stop_id = $stop_id; 
+                $temp->time = $time; 
+                
+                $temp->save(); 
+            }
+            
+        }
+    }
+    
+    public function postRemoveForEditExistingSchedule(Request $request) {
+        $data = json_decode($request->getContent(), true); 
+        
+        for ($i=0; $i<count($data); $i++) {
+            $item = $data[$i]; 
+            $time_id = (int)$item['time_id']; 
+            $temp = Res_Times::find($time_id); 
+            
+            if (!is_null($temp)) {
+                $temp->delete(); 
+            }
+        }
     }
     
 }
