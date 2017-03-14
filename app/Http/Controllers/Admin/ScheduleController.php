@@ -13,6 +13,7 @@ class ScheduleController extends Controller
 {
     protected $db_week_schedule = 1;
     protected $db_hol_schedule = 2;
+    protected $valid_field_enabled = 1;
     
     public function __construct()
     {
@@ -26,6 +27,7 @@ class ScheduleController extends Controller
         
         $cnt = \App\Models\Res_Times::where('date', '<=',  $cur_date)
             ->where('day_of_week',  date('w', strtotime($date)))
+            ->where('valid',  $this->valid_field_enabled)
             ->count();
         if ($cnt == 0) {
             return response()->json([
@@ -34,8 +36,9 @@ class ScheduleController extends Controller
             ]);
         } else {
             $result = \App\Models\Res_Times::where('date', '<=',  $cur_date)
-            ->where('day_of_week',  date('w', strtotime($date)))
-            ->get();
+                    ->where('day_of_week',  date('w', strtotime($date)))
+                    ->where('valid',  $this->valid_field_enabled)
+                    ->get();
 
             $response = array();
             foreach ($result as $reservation) {
@@ -76,6 +79,7 @@ class ScheduleController extends Controller
                 $cnt = \App\Models\Res_Times::where('w_h', $this->db_week_schedule)
                     ->where('date', '<=',  $cur_date)
                     ->where('day_of_week',  date('w', $i))
+                    ->where('valid',  $this->valid_field_enabled)
                     ->count();
                 
                 if ($cnt > 0) {
@@ -83,6 +87,7 @@ class ScheduleController extends Controller
                     $result = \App\Models\Res_Times::where('w_h', $this->db_week_schedule)
                             ->where('date', '<=',  $cur_date)
                             ->where('day_of_week',  date('w', $i))
+                            ->where('valid',  $this->valid_field_enabled)
                             ->get();
                     
                     foreach ($result as $reservation) {
@@ -153,6 +158,50 @@ class ScheduleController extends Controller
             if (!is_null($temp)) {
                 $temp->delete(); 
             }
+        }
+    }
+    
+    public function postDisableForEditExistingSchedule(Request $request) {
+        $data = json_decode($request->getContent(), true); 
+        
+        for ($i=0; $i<count($data); $i++) {
+            $item = $data[$i]; 
+            $time_id = (int)$item['time_id']; 
+            $temp = Res_Times::find($time_id); 
+            
+            if (!is_null($temp)) {
+                $disabled_valid = 0;
+                
+                $temp->valid = $disabled_valid; 
+                
+                $temp->save(); 
+            }
+        }
+    }
+    
+    public function postSaveAllForEditExistingSchedule(Request $request) {
+        $data = json_decode($request->getContent(), true); 
+        
+        for ($i=0; $i<count($data); $i++) { 
+            $one_group = $data[$i]; 
+            for ($j=0; $j<count($one_group); $j++) { 
+                $item = $one_group[$j]; 
+                
+                $time_id = (int)$item['time_id']; 
+                $temp = Res_Times::find($time_id); 
+
+                if (!is_null($temp)) {
+                    $temp->time = $item['time']; 
+                    
+                    $stop_id = Res_Stops::where('short', $item['stop_area'])
+                            ->first()->id; //var_dump($stop_id); exit(1);
+                    $temp->stop_id = $stop_id;
+
+                    $temp->save(); 
+                }
+            }
+            
+            
         }
     }
     

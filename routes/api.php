@@ -44,6 +44,14 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.schedule.remove_existing_schedule',
             'uses' => 'ScheduleController@postRemoveForEditExistingSchedule',
         ]);
+        Route::post('/disable_existing_schedule', [
+            'as' => 'admin.schedule.disable_existing_schedule',
+            'uses' => 'ScheduleController@postDisableForEditExistingSchedule',
+        ]);
+        Route::post('/saveall_existing_schedule', [
+            'as' => 'admin.schedule.saveall_existing_schedule',
+            'uses' => 'ScheduleController@postSaveAllForEditExistingSchedule',
+        ]);
         
     });
 });
