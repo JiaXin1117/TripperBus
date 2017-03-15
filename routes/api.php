@@ -52,6 +52,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.schedule.saveall_existing_schedule',
             'uses' => 'ScheduleController@postSaveAllForEditExistingSchedule',
         ]);
+        Route::post('/add_existing_schedule', [
+            'as' => 'admin.schedule.add_existing_schedule',
+            'uses' => 'ScheduleController@postAddForEditExistingSchedule',
+        ]);
         
     });
 });

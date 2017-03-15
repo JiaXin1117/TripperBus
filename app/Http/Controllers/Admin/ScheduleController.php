@@ -194,13 +194,48 @@ class ScheduleController extends Controller
                     $temp->time = $item['time']; 
                     
                     $stop_id = Res_Stops::where('short', $item['stop_area'])
-                            ->first()->id; //var_dump($stop_id); exit(1);
+                            ->first()->id; 
                     $temp->stop_id = $stop_id;
 
                     $temp->save(); 
                 }
             }
             
+            
+        }
+    }
+    
+    public function postAddForEditExistingSchedule(Request $request) {
+        $data = json_decode($request->getContent(), true); 
+        
+        if (count($data) == 0) return;
+        
+        $new_group = new Res_Groups;
+        $new_group->max_cap = 57; 
+        $new_group->save();
+        
+        for ($i=0; $i<count($data); $i++) {
+            $item = $data[$i]; 
+            
+            $new_time = new Res_Times;
+            
+            // Get store id.
+            $stop_id = Res_Stops::where('short', $item['stop'])
+                        ->first()->id; 
+            
+            $new_time->stop_id = $stop_id;
+            $new_time->group_id = $new_group->id; 
+            
+            // Get time. 
+            $time = $item['hour'] . ":" . $item['min'] . ":00"; 
+            
+            $new_time->time = $time; 
+            $new_time->date = $item['date_from'];
+            $new_time->w_h = 1;
+            $new_time->valid = 1;
+            $new_time->day_of_week = $item['dow']; 
+            
+            $new_time->save(); 
             
         }
     }
