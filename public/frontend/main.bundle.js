@@ -8,7 +8,7 @@ module.exports = __webpack_require__(458);
 
 /***/ }),
 
-/***/ 124:
+/***/ 123:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16,6 +16,50 @@ module.exports = __webpack_require__(458);
 //export const BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
 var BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/config.js.map
+
+/***/ }),
+
+/***/ 176:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(78);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var AuthService = (function () {
+    function AuthService(_router) {
+        this._router = _router;
+        this._options = {
+            logInPath: "\login"
+        };
+    }
+    AuthService.prototype.canActivate = function () {
+        if (localStorage.getItem('currentUser'))
+            return true;
+        else {
+            this._router.navigate([this._options.logInPath]);
+            return false;
+        }
+    };
+    AuthService = __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */]) === 'function' && _a) || Object])
+    ], AuthService);
+    return AuthService;
+    var _a;
+}());
+//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/auth.service.js.map
 
 /***/ }),
 
@@ -432,9 +476,8 @@ var AdminRatesComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(78);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(95);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_auth_service_auth_service__ = __webpack_require__(94);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__config_config__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(123);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesEditexistingComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -450,23 +493,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 var AdminSchedulesEditexistingComponent = (function () {
-    function AdminSchedulesEditexistingComponent(_route, _commonService, _httpService, _authService) {
+    function AdminSchedulesEditexistingComponent(_route, _commonService, _httpService) {
         this._route = _route;
         this._commonService = _commonService;
         this._httpService = _httpService;
-        this._authService = _authService;
         this.sel_date = "";
         this.selected_dow = "";
         this.selected_schedule_type = "";
         this.selected_date_from = "";
         this.selected_stop = "";
         this.urls = {
-            retrieve_schedule_by_date_url: __WEBPACK_IMPORTED_MODULE_5__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_by_date",
-            retrieve_all_stops_url: __WEBPACK_IMPORTED_MODULE_5__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_stops",
-            save_all_url: __WEBPACK_IMPORTED_MODULE_5__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/saveall_existing_schedule",
-            add_schedule_url: __WEBPACK_IMPORTED_MODULE_5__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/add_existing_schedule",
+            retrieve_schedule_by_date_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_by_date",
+            retrieve_all_stops_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_stops",
+            save_all_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/saveall_existing_schedule",
+            add_schedule_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/add_existing_schedule",
         };
         this.groups = [];
         this.stops = [];
@@ -606,7 +647,6 @@ var AdminSchedulesEditexistingComponent = (function () {
         console.log(insert_request);
         this._httpService.sendPostJSON(me.urls.add_schedule_url, insert_request)
             .subscribe(function (data) {
-            me._authService.setAuthenticationState(true);
             window.location.reload();
         }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
         me.hideModal();
@@ -617,10 +657,10 @@ var AdminSchedulesEditexistingComponent = (function () {
             template: __webpack_require__(836),
             styles: [__webpack_require__(800)]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _c) || Object, (typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__services_auth_service_auth_service__["a" /* AuthService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_4__services_auth_service_auth_service__["a" /* AuthService */]) === 'function' && _d) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _c) || Object])
     ], AdminSchedulesEditexistingComponent);
     return AdminSchedulesEditexistingComponent;
-    var _a, _b, _c, _d;
+    var _a, _b, _c;
 }());
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-schedules-editexisting.component.js.map
 
@@ -633,9 +673,8 @@ var AdminSchedulesEditexistingComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(78);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(95);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_auth_service_auth_service__ = __webpack_require__(94);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__config_config__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(123);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesGennewComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -651,23 +690,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 var AdminSchedulesGennewComponent = (function () {
-    function AdminSchedulesGennewComponent(_route, _commonService, _httpService, _authService) {
+    function AdminSchedulesGennewComponent(_route, _commonService, _httpService) {
         this._route = _route;
         this._commonService = _commonService;
         this._httpService = _httpService;
-        this._authService = _authService;
         this.sel_date = "";
         this.selected_dow = "";
         this.selected_schedule_type = "";
         this.selected_date_from = "";
         this.selected_stop = "";
         this.urls = {
-            retrieve_schedule_by_date_url: __WEBPACK_IMPORTED_MODULE_5__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_by_date",
-            retrieve_all_stops_url: __WEBPACK_IMPORTED_MODULE_5__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_stops",
-            save_all_url: __WEBPACK_IMPORTED_MODULE_5__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/saveall_existing_schedule",
-            add_schedule_url: __WEBPACK_IMPORTED_MODULE_5__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/add_existing_schedule",
+            retrieve_schedule_by_date_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_by_date",
+            retrieve_all_stops_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_stops",
+            save_all_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/saveall_existing_schedule",
+            add_schedule_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/add_existing_schedule",
         };
         this.groups = [];
         this.stops = [];
@@ -781,7 +818,10 @@ var AdminSchedulesGennewComponent = (function () {
                         idx++;
                     }
                     me.groups = grouped_items;
-                    _this.showModal();
+                    if (!localStorage.getItem('isFirstForGenNew')) {
+                        localStorage.setItem('isFirstForGenNew', 'first');
+                        _this.showModal();
+                    }
                 }
             });
         });
@@ -800,11 +840,8 @@ var AdminSchedulesGennewComponent = (function () {
                 insert_request[i] = temp;
             }
         }
-        console.log(insert_request);
         this._httpService.sendPostJSON(me.urls.add_schedule_url, insert_request)
             .subscribe(function (data) {
-            me._authService.setAuthenticationState(true);
-            me.isFirstRefresh = false;
             window.location.reload();
         }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
         me.hideModal();
@@ -815,10 +852,10 @@ var AdminSchedulesGennewComponent = (function () {
             template: __webpack_require__(837),
             styles: [__webpack_require__(801)]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _c) || Object, (typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__services_auth_service_auth_service__["a" /* AuthService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_4__services_auth_service_auth_service__["a" /* AuthService */]) === 'function' && _d) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _c) || Object])
     ], AdminSchedulesGennewComponent);
     return AdminSchedulesGennewComponent;
-    var _a, _b, _c, _d;
+    var _a, _b, _c;
 }());
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-schedules-gennew.component.js.map
 
@@ -864,9 +901,9 @@ var AdminSchedulesGenspecialComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(95);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(94);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(123);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__(78);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1209,10 +1246,10 @@ var AdminUsersComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(95);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(176);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(123);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_http__ = __webpack_require__(237);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1248,17 +1285,20 @@ var LoginComponent = (function () {
         var formParams = new __WEBPACK_IMPORTED_MODULE_5__angular_http__["d" /* URLSearchParams */]();
         formParams.set('email', this.email);
         formParams.set('password', this.password);
+        var userInfo = {};
+        userInfo['email'] = this.email;
+        userInfo['password'] = this.password;
         this._httpService.sendPostRequestWithParams(url, formParams.toString())
             .subscribe(function (data) {
             var loginResult = data;
             if (loginResult['state'] == 'success') {
                 _this.alert_visible = "none";
-                _this._authService.setAuthenticationState(true);
+                localStorage.setItem("currentUser", JSON.stringify(userInfo));
                 _this.router.navigate(['/admin']);
             }
             else {
                 _this.alert_visible = "inherit";
-                _this._authService.setAuthenticationState(false);
+                localStorage.removeItem("currentUser");
                 _this.router.navigate(['/login']);
             }
         }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
@@ -1283,7 +1323,7 @@ var LoginComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service_auth_service__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service_auth_service__ = __webpack_require__(176);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(78);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LogoutComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1310,7 +1350,8 @@ var LogoutComponent = (function () {
     LogoutComponent.prototype.ngOnInit = function () {
     };
     LogoutComponent.prototype.logout = function () {
-        this._authService.setAuthenticationState(false);
+        localStorage.removeItem('isFirstForGenNew');
+        localStorage.removeItem('currentUser');
         this._router.navigate([this._options.logInPath]);
     };
     LogoutComponent = __decorate([
@@ -1482,8 +1523,8 @@ var AdminHeaderComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(95);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(123);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminScheduleEditBusComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1839,7 +1880,7 @@ var AdminComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__admin_admin_schedules_admin_schedules_editexisting_admin_schedules_editexisting_component__ = __webpack_require__(378);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__admin_admin_schedules_admin_schedules_gennew_admin_schedules_gennew_component__ = __webpack_require__(379);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__admin_admin_schedules_admin_schedules_genspecial_admin_schedules_genspecial_component__ = __webpack_require__(380);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__services_auth_service_auth_service__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__services_auth_service_auth_service__ = __webpack_require__(176);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppRoutingModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1975,7 +2016,7 @@ var AppComponent = (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(174);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(173);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(554);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(237);
@@ -2000,8 +2041,8 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__admin_admin_coupons_types_admin_coupons_types_component__ = __webpack_require__(372);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__admin_admin_footer_admin_footer_component__ = __webpack_require__(593);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__main_login_login_component__ = __webpack_require__(386);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__services_http_service_http_service__ = __webpack_require__(95);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__services_http_service_http_service__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(176);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__services_common_service_common_service__ = __webpack_require__(177);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__main_main_header_main_header_component__ = __webpack_require__(602);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__main_main_index_component__ = __webpack_require__(388);
@@ -2655,57 +2696,6 @@ module.exports = "<h2>Page not found</h2>"
 /***/ }),
 
 /***/ 94:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(78);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthService; });
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-var AuthService = (function () {
-    function AuthService(_router) {
-        this._router = _router;
-        this.isAuthenticated = false;
-        this._options = {
-            logInPath: "\login"
-        };
-    }
-    AuthService.prototype.getAuthenticationState = function () {
-        return this.isAuthenticated;
-    };
-    AuthService.prototype.setAuthenticationState = function (value) {
-        this.isAuthenticated = value;
-    };
-    AuthService.prototype.canActivate = function () {
-        if (this.isAuthenticated == true)
-            return true;
-        else {
-            this._router.navigate([this._options.logInPath]);
-            return false;
-        }
-    };
-    AuthService = __decorate([
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */]) === 'function' && _a) || Object])
-    ], AuthService);
-    return AuthService;
-    var _a;
-}());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/auth.service.js.map
-
-/***/ }),
-
-/***/ 95:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
