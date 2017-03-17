@@ -8,62 +8,7 @@ module.exports = __webpack_require__(458);
 
 /***/ }),
 
-/***/ 123:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BACKEND_SERVER_URL; });
-//export const BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
-var BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/config.js.map
-
-/***/ }),
-
-/***/ 176:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(78);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthService; });
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-var AuthService = (function () {
-    function AuthService(_router) {
-        this._router = _router;
-        this._options = {
-            logInPath: "\login"
-        };
-    }
-    AuthService.prototype.canActivate = function () {
-        if (localStorage.getItem('currentUser'))
-            return true;
-        else {
-            this._router.navigate([this._options.logInPath]);
-            return false;
-        }
-    };
-    AuthService = __decorate([
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */]) === 'function' && _a) || Object])
-    ], AuthService);
-    return AuthService;
-    var _a;
-}());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/auth.service.js.map
-
-/***/ }),
-
-/***/ 177:
+/***/ 124:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -127,6 +72,50 @@ var CommonService = (function () {
     return CommonService;
 }());
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/common.service.js.map
+
+/***/ }),
+
+/***/ 177:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(67);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var AuthService = (function () {
+    function AuthService(_router) {
+        this._router = _router;
+        this._options = {
+            logInPath: "\login"
+        };
+    }
+    AuthService.prototype.canActivate = function () {
+        if (localStorage.getItem('currentUser'))
+            return true;
+        else {
+            this._router.navigate([this._options.logInPath]);
+            return false;
+        }
+    };
+    AuthService = __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */]) === 'function' && _a) || Object])
+    ], AuthService);
+    return AuthService;
+    var _a;
+}());
+//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/auth.service.js.map
 
 /***/ }),
 
@@ -474,10 +463,10 @@ var AdminRatesComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(94);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(95);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesEditexistingComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -498,11 +487,19 @@ var AdminSchedulesEditexistingComponent = (function () {
         this._route = _route;
         this._commonService = _commonService;
         this._httpService = _httpService;
-        this.sel_date = "";
+        this.inputParams = {
+            date: "",
+            type: 0
+        };
         this.selected_dow = "";
         this.selected_schedule_type = "";
         this.selected_date_from = "";
         this.selected_stop = "";
+        this.scheduleType = {
+            TYPE_EDIT_EXISTING: 0,
+            TYPE_GENERATE_NEW: 1,
+            TYPE_GENERATE_SPECIAL: 2
+        };
         this.urls = {
             retrieve_schedule_by_date_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_by_date",
             retrieve_all_stops_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_stops",
@@ -521,13 +518,17 @@ var AdminSchedulesEditexistingComponent = (function () {
         this.adding_prices = [];
     }
     AdminSchedulesEditexistingComponent.prototype.ngOnInit = function () {
+        this.structTimeArray();
         this.receiveParamsFromRoute();
         this.showHeaderInfos();
         this.getAllStopsInfo();
-        this.structTimeArray();
     };
     AdminSchedulesEditexistingComponent.prototype.receiveParamsFromRoute = function () {
-        this.sel_date = this._route.snapshot.params['sel_date'];
+        this.inputParams.date = this._route.snapshot.params['sel_date'];
+        this.inputParams.type = this._route.snapshot.params['sel_type'];
+    };
+    AdminSchedulesEditexistingComponent.prototype.doActions = function () {
+        var me = this;
     };
     AdminSchedulesEditexistingComponent.prototype.showHeaderInfos = function () {
         var _this = this;
@@ -536,7 +537,7 @@ var AdminSchedulesEditexistingComponent = (function () {
         this._httpService.sendGetRequestWithParams(stops_url)
             .subscribe(function (data) {
             me.stops = data['data'];
-            var url = _this.urls.retrieve_schedule_by_date_url + "?date=" + me.sel_date;
+            var url = _this.urls.retrieve_schedule_by_date_url + "?date=" + me.inputParams.date;
             _this._httpService.sendGetRequestWithParams(url)
                 .subscribe(function (data) {
                 var response = data;
@@ -581,6 +582,7 @@ var AdminSchedulesEditexistingComponent = (function () {
         var me = this;
         this._httpService.sendPostJSON(me.urls.save_all_url, me.groups)
             .subscribe(function (data) {
+            jQuery("#confirm_saveall_modal").modal('hide');
         }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
     };
     AdminSchedulesEditexistingComponent.prototype.getAllStopsInfo = function () {
@@ -671,10 +673,10 @@ var AdminSchedulesEditexistingComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(94);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(95);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesGennewComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -818,10 +820,7 @@ var AdminSchedulesGennewComponent = (function () {
                         idx++;
                     }
                     me.groups = grouped_items;
-                    if (!localStorage.getItem('isFirstForGenNew')) {
-                        localStorage.setItem('isFirstForGenNew', 'first');
-                        _this.showModal();
-                    }
+                    _this.showModal();
                 }
             });
         });
@@ -846,6 +845,13 @@ var AdminSchedulesGennewComponent = (function () {
         }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
         me.hideModal();
     };
+    AdminSchedulesGennewComponent.prototype.onSaveAll = function () {
+        var me = this;
+        this._httpService.sendPostJSON(me.urls.save_all_url, me.groups)
+            .subscribe(function (data) {
+            jQuery("#confirm_saveall_modal").modal('hide');
+        }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
+    };
     AdminSchedulesGennewComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Component */])({
             selector: 'app-admin-schedules-gennew',
@@ -866,6 +872,10 @@ var AdminSchedulesGennewComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(95);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesGenspecialComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -877,10 +887,162 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
+
+
+
 var AdminSchedulesGenspecialComponent = (function () {
-    function AdminSchedulesGenspecialComponent() {
+    function AdminSchedulesGenspecialComponent(_route, _commonService, _httpService) {
+        this._route = _route;
+        this._commonService = _commonService;
+        this._httpService = _httpService;
+        this.sel_date = "";
+        this.selected_dow = "";
+        this.selected_schedule_type = "";
+        this.selected_date_from = "";
+        this.selected_stop = "";
+        this.urls = {
+            retrieve_schedule_by_date_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_by_date",
+            retrieve_all_stops_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_stops",
+            save_all_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/saveall_existing_schedule",
+            add_schedule_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/add_existing_schedule",
+        };
+        this.groups = [];
+        this.stops = [];
+        this.adding_stops = [];
+        this.adding_hours = [];
+        this.adding_mins = [];
+        this.adding_prices = [];
+        this.arr_stops = [];
+        this.arr_hours = [];
+        this.arr_mins = [];
+        this.arr_prices = [];
     }
     AdminSchedulesGenspecialComponent.prototype.ngOnInit = function () {
+        this.receiveParamsFromRoute();
+        this.structTimeArray();
+        this.getAllStopsInfo();
+        this.showHeaderInfos();
+    };
+    AdminSchedulesGenspecialComponent.prototype.showModal = function () {
+        jQuery("#gen_special_schedule_modal").modal('show');
+    };
+    AdminSchedulesGenspecialComponent.prototype.hideModal = function () {
+        jQuery("#gen_special_schedule_modal").modal('hide');
+    };
+    AdminSchedulesGenspecialComponent.prototype.receiveParamsFromRoute = function () {
+        this.sel_date = this._route.snapshot.params['sel_date'];
+    };
+    AdminSchedulesGenspecialComponent.prototype.structTimeArray = function () {
+        var me = this;
+        for (var i = 0; i < 24; i++) {
+            var temp = void 0;
+            if (i < 10) {
+                temp = "0" + i;
+            }
+            else {
+                temp = i;
+            }
+            me.arr_hours.push(temp);
+        }
+        for (var i = 0; i < 60; i += 5) {
+            var temp = void 0;
+            if (i < 10) {
+                temp = "0" + i;
+            }
+            else {
+                temp = i;
+            }
+            me.arr_mins.push(temp);
+        }
+        for (var i = 0; i <= 50; i += 0.5) {
+            var temp = i.toFixed(2);
+            me.arr_prices.push(temp);
+        }
+        for (var i = 0; i < 3; i++) {
+            me.adding_stops[i] = "";
+            me.adding_hours[i] = "";
+            me.adding_mins[i] = "";
+            me.adding_prices[i] = "";
+        }
+    };
+    AdminSchedulesGenspecialComponent.prototype.getAllStopsInfo = function () {
+        var me = this;
+        var stops_url = this.urls.retrieve_all_stops_url;
+        this._httpService.sendGetRequestWithParams(stops_url)
+            .subscribe(function (data) {
+            me.arr_stops = data['data'];
+        });
+    };
+    AdminSchedulesGenspecialComponent.prototype.showHeaderInfos = function () {
+        var _this = this;
+        var me = this;
+        var stops_url = this.urls.retrieve_all_stops_url;
+        this._httpService.sendGetRequestWithParams(stops_url)
+            .subscribe(function (data) {
+            me.stops = data['data'];
+            var url = _this.urls.retrieve_schedule_by_date_url + "?date=" + me.sel_date;
+            _this._httpService.sendGetRequestWithParams(url)
+                .subscribe(function (data) {
+                var response = data;
+                if (response['state'] == 'success') {
+                    //********  Show header infos ************
+                    var data_1 = response['data'][0];
+                    console.log(data_1);
+                    _this.selected_dow = _this._commonService.convertDayOfWeekFormat(data_1['dow']);
+                    if (data_1['schedule_type'] == 1) {
+                        _this.selected_schedule_type = 'after';
+                    }
+                    else {
+                        _this.selected_schedule_type = 'on';
+                    }
+                    _this.selected_date_from = data_1['from_date'];
+                    _this.selected_stop = data_1['stop_area'];
+                    //********  Show header infos ended ***********
+                    //*********  Edit informations ***********
+                    var group_ids = [];
+                    for (var i = 0; i < Object.keys(response['data']).length; i++) {
+                        var item = response['data'][i];
+                        if (group_ids.indexOf(item['group_id']) == -1) {
+                            group_ids.push(item['group_id']);
+                        }
+                    }
+                    var idx = 0, grouped_items = [];
+                    for (var i = 0; i < Object.keys(group_ids).length; i++) {
+                        grouped_items[idx] = [];
+                        for (var j = 0; j < Object.keys(response['data']).length; j++) {
+                            var item = response['data'][j];
+                            if (group_ids[i] == item['group_id']) {
+                                grouped_items[idx].push(item);
+                            }
+                        }
+                        idx++;
+                    }
+                    me.groups = grouped_items;
+                    _this.showModal();
+                }
+            });
+        });
+    };
+    AdminSchedulesGenspecialComponent.prototype.onAddSchedule = function () {
+        var me = this;
+        var insert_request = [];
+        for (var i = 0; i < Object.keys(me.adding_stops).length; i++) {
+            if (me.adding_stops[i] != "" && me.adding_hours[i] != "" && me.adding_mins[i] != "" && me.adding_prices[i] != "") {
+                var temp = {};
+                temp['stop'] = me.adding_stops[i];
+                temp['hour'] = me.adding_hours[i];
+                temp['min'] = me.adding_mins[i];
+                temp['date_from'] = me.sel_date;
+                temp['dow'] = me._commonService.convertWeekToNumber(me.selected_dow);
+                insert_request[i] = temp;
+            }
+        }
+        this._httpService.sendPostJSON(me.urls.add_schedule_url, insert_request)
+            .subscribe(function (data) {
+            window.location.reload();
+        }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
+        me.hideModal();
     };
     AdminSchedulesGenspecialComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Component */])({
@@ -888,9 +1050,10 @@ var AdminSchedulesGenspecialComponent = (function () {
             template: __webpack_require__(838),
             styles: [__webpack_require__(802)]
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _c) || Object])
     ], AdminSchedulesGenspecialComponent);
     return AdminSchedulesGenspecialComponent;
+    var _a, _b, _c;
 }());
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-schedules-genspecial.component.js.map
 
@@ -901,10 +1064,10 @@ var AdminSchedulesGenspecialComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(94);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(123);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(95);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__(67);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -934,29 +1097,36 @@ var AdminSchedulesComponent = (function () {
             cur_year: "",
             cur_month: ""
         };
+        this.scheduleType = {
+            TYPE_EDIT_EXISTING: 0,
+            TYPE_GENERATE_NEW: 1,
+            TYPE_GENERATE_SPECIAL: 2
+        };
         this.selected_date = "";
+        this.month_firstday_dow_newyork = [];
+        this.days_in_month_newyork = [];
+        this.sorted_groups = [];
+        this.month_firstday_dow_ba = [];
+        this.days_in_month_ba = [];
     }
     AdminSchedulesComponent.prototype.ngOnInit = function () {
         this.setCurentDateForCalendar();
         this.addDaysToCalendar();
-        this.connectEventsToElements();
     };
     AdminSchedulesComponent.prototype.onEditSchedule = function () {
         this.hideModal();
-        var link = ['/admin/schedules_edit', this.selected_date];
+        var link = ['/admin/schedules_edit', this.selected_date, this.scheduleType.TYPE_EDIT_EXISTING];
         this._router.navigate(link);
     };
     AdminSchedulesComponent.prototype.onGenNewSchedule = function () {
         this.hideModal();
-        var link = ['/admin/schedules_gennew', this.selected_date];
+        var link = ['/admin/schedules_edit', this.selected_date, this.scheduleType.TYPE_GENERATE_NEW];
         this._router.navigate(link);
     };
-    AdminSchedulesComponent.prototype.connectEventsToElements = function () {
-        var me = this;
-        jQuery("#calendar_main").on("click", "h3", function () {
-            var selected_date = jQuery(this).text();
-            me.onClickEachDate(selected_date);
-        });
+    AdminSchedulesComponent.prototype.onGenSpecialSchedule = function () {
+        this.hideModal();
+        var link = ['/admin/schedules_genspecial', this.selected_date, this.scheduleType.TYPE_GENERATE_SPECIAL];
+        this._router.navigate(link);
     };
     AdminSchedulesComponent.prototype.onClickEachDate = function (selected_date) {
         var me = this;
@@ -983,23 +1153,33 @@ var AdminSchedulesComponent = (function () {
                             grouped_items[idx].push(item);
                         }
                     }
+                    grouped_items[idx].sort(function (a, b) {
+                        if (a['time'] > b['time'])
+                            return 1;
+                        else {
+                            return -1;
+                        }
+                    });
                     idx++;
                 }
-                var html = void 0;
-                jQuery("#schedule_infos").empty();
-                for (var i = 0; i < Object.keys(grouped_items).length; i++) {
-                    var temp_i = i + 1;
-                    html = "<p><strong>Bus " + temp_i + ":</strong></p>";
-                    jQuery("#schedule_infos").append(html);
-                    for (var j = 0; j < Object.keys(grouped_items[i]).length; j++) {
-                        var item = grouped_items[i][j];
-                        html = "<p>" + item['time'] + " from " + "stop_area" + "</p>";
-                        jQuery("#schedule_infos").append(html);
+                grouped_items.sort(function (a, b) {
+                    if (a[0]['time'] > b[0]['time'])
+                        return 1;
+                    else {
+                        return -1;
                     }
-                }
+                });
+                me.sorted_groups = grouped_items;
                 me.showModal();
             }
         });
+    };
+    AdminSchedulesComponent.prototype.compareTime = function (a, b) {
+        if (a['time'] > b['time'])
+            return 1;
+        else {
+            return -1;
+        }
     };
     // Convert date to "2017-03-02" type.
     AdminSchedulesComponent.prototype.convertDate = function (d) {
@@ -1024,14 +1204,17 @@ var AdminSchedulesComponent = (function () {
     AdminSchedulesComponent.prototype.addDaysToCalendar = function () {
         var firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1);
         var lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0);
-        this.addDaysInDateRange(firstDay, lastDay);
+        this.addDaysInDateRange_NewYork(firstDay, lastDay);
+        this.addDaysInDateRange_BA(firstDay, lastDay);
     };
-    AdminSchedulesComponent.prototype.addDaysInDateRange = function (firstDay, lastDay) {
+    AdminSchedulesComponent.prototype.addDaysInDateRange_NewYork = function (firstDay, lastDay) {
         var _this = this;
+        var me = this;
         if (firstDay.getDate() == 1) {
             var dow = firstDay.getDay();
+            me.month_firstday_dow_newyork = [];
             for (var i = 0; i < dow; i++) {
-                jQuery("#calendar_main").append("<div class='col-md-1 fix-height' style='min-height: 0px;'></div>");
+                me.month_firstday_dow_newyork[i] = i;
             }
         }
         var url_month = this.calendarInfo.cur_month + 1;
@@ -1039,50 +1222,105 @@ var AdminSchedulesComponent = (function () {
         this._httpService.sendGetRequestWithParams(url)
             .subscribe(function (data) {
             var response = data;
+            me.days_in_month_newyork = [];
+            var idx = 0;
             if (response['state'] == 'success') {
                 while (firstDay <= lastDay) {
                     var firstDay_converted = _this.convertDate(firstDay);
-                    var record_cnt = 0;
+                    var items_for_this_date = [];
+                    var idx1 = 0;
                     for (var i = 0; i < Object.keys(response['data']).length; i++) {
                         var item = response['data'][i];
                         if (item['schedule_date'] == firstDay_converted) {
-                            record_cnt++;
+                            items_for_this_date[idx1] = item;
+                            idx1++;
                         }
                     }
-                    if (record_cnt > 0) {
-                        var html = void 0;
-                        if (firstDay.getDate() < 10) {
-                            html = "<div id='admin_schedule_each_date' class='col-md-1 fix-height'><h3>0" + firstDay.getDate() + "</h3><p>";
+                    var group_ids = [];
+                    for (var i = 0; i < Object.keys(items_for_this_date).length; i++) {
+                        var item = items_for_this_date[i];
+                        if (group_ids.indexOf(item['group_id']) == -1) {
+                            group_ids.push(item['group_id']);
                         }
-                        else {
-                            html = "<div id='admin_schedule_each_date' class='col-md-1 fix-height'><h3>" + firstDay.getDate() + "</h3><p>";
-                        }
-                        if (record_cnt > 1) {
-                            html += record_cnt + " buses</p></div>";
-                        }
-                        else {
-                            html += record_cnt + " bus</p></div>";
-                        }
-                        jQuery("#calendar_main").append(html);
                     }
-                    else {
-                        var html = void 0;
-                        if (firstDay.getDate() < 10) {
-                            html = "<div id='admin_schedule_each_date' class='col-md-1 fix-height'><h3>0" + firstDay.getDate() + "</h3><p>";
+                    var grouped_items = [];
+                    idx1 = 0;
+                    for (var i = 0; i < Object.keys(group_ids).length; i++) {
+                        grouped_items[idx1] = [];
+                        for (var j = 0; j < Object.keys(items_for_this_date).length; j++) {
+                            var item = items_for_this_date[j];
+                            if (group_ids[i] == item['group_id']) {
+                                grouped_items[idx1].push(item);
+                            }
                         }
-                        else {
-                            html = "<div id='admin_schedule_each_date' class='col-md-1 fix-height'><h3>" + firstDay.getDate() + "</h3><p>";
-                        }
-                        html += "0 bus</p></div>";
-                        jQuery("#calendar_main").append(html);
+                        idx1++;
                     }
+                    me.days_in_month_newyork[idx] = Object.keys(grouped_items).length;
                     var newDate = firstDay.setDate(firstDay.getDate() + 1);
                     firstDay = new Date(newDate);
+                    idx++;
+                }
+            }
+        });
+    };
+    AdminSchedulesComponent.prototype.addDaysInDateRange_BA = function (firstDay, lastDay) {
+        var _this = this;
+        var me = this;
+        if (firstDay.getDate() == 1) {
+            var dow = firstDay.getDay();
+            me.month_firstday_dow_ba = [];
+            for (var i = 0; i < dow; i++) {
+                me.month_firstday_dow_ba[i] = i;
+            }
+        }
+        var url_month = this.calendarInfo.cur_month + 1;
+        var url = this.urls.retrieve_schedule_by_month_url + "?year=" + this.calendarInfo.cur_year + "&month=" + url_month;
+        this._httpService.sendGetRequestWithParams(url)
+            .subscribe(function (data) {
+            var response = data;
+            me.days_in_month_ba = [];
+            var idx = 0;
+            if (response['state'] == 'success') {
+                while (firstDay <= lastDay) {
+                    var firstDay_converted = _this.convertDate(firstDay);
+                    var items_for_this_date = [];
+                    var idx1 = 0;
+                    for (var i = 0; i < Object.keys(response['data']).length; i++) {
+                        var item = response['data'][i];
+                        if (item['schedule_date'] == firstDay_converted) {
+                            items_for_this_date[idx1] = item;
+                            idx1++;
+                        }
+                    }
+                    var group_ids = [];
+                    for (var i = 0; i < Object.keys(items_for_this_date).length; i++) {
+                        var item = items_for_this_date[i];
+                        if (group_ids.indexOf(item['group_id']) == -1) {
+                            group_ids.push(item['group_id']);
+                        }
+                    }
+                    var grouped_items = [];
+                    idx1 = 0;
+                    for (var i = 0; i < Object.keys(group_ids).length; i++) {
+                        grouped_items[idx1] = [];
+                        for (var j = 0; j < Object.keys(items_for_this_date).length; j++) {
+                            var item = items_for_this_date[j];
+                            if (group_ids[i] == item['group_id']) {
+                                grouped_items[idx1].push(item);
+                            }
+                        }
+                        idx1++;
+                    }
+                    me.days_in_month_ba[idx] = Object.keys(grouped_items).length;
+                    var newDate = firstDay.setDate(firstDay.getDate() + 1);
+                    firstDay = new Date(newDate);
+                    idx++;
                 }
             }
         });
     };
     AdminSchedulesComponent.prototype.prevMonth = function () {
+        var me = this;
         if ((this.calendarInfo.cur_month - 1) == -1) {
             this.calendarInfo.cur_month = 11;
             this.calendarInfo.cur_year -= 1;
@@ -1091,10 +1329,10 @@ var AdminSchedulesComponent = (function () {
             this.calendarInfo.cur_month -= 1;
         }
         this.calendarInfo.cur_date_str = this._commonService.convertMonthFormat(this.calendarInfo.cur_month) + " " + this.calendarInfo.cur_year;
-        jQuery("#calendar_main").empty();
         var firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1);
         var lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0);
-        this.addDaysInDateRange(firstDay, lastDay);
+        this.addDaysInDateRange_NewYork(firstDay, lastDay);
+        this.addDaysInDateRange_BA(firstDay, lastDay);
     };
     AdminSchedulesComponent.prototype.nextMonth = function () {
         if ((this.calendarInfo.cur_month + 1) == 12) {
@@ -1105,10 +1343,10 @@ var AdminSchedulesComponent = (function () {
             this.calendarInfo.cur_month += 1;
         }
         this.calendarInfo.cur_date_str = this._commonService.convertMonthFormat(this.calendarInfo.cur_month) + " " + this.calendarInfo.cur_year;
-        jQuery("#calendar_main").empty();
         var firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1);
         var lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0);
-        this.addDaysInDateRange(firstDay, lastDay);
+        this.addDaysInDateRange_NewYork(firstDay, lastDay);
+        this.addDaysInDateRange_BA(firstDay, lastDay);
     };
     AdminSchedulesComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Component */])({
@@ -1246,10 +1484,10 @@ var AdminUsersComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(94);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(176);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(177);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(95);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_http__ = __webpack_require__(237);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1323,8 +1561,8 @@ var LoginComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service_auth_service__ = __webpack_require__(176);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service_auth_service__ = __webpack_require__(177);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(67);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LogoutComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1350,7 +1588,6 @@ var LogoutComponent = (function () {
     LogoutComponent.prototype.ngOnInit = function () {
     };
     LogoutComponent.prototype.logout = function () {
-        localStorage.removeItem('isFirstForGenNew');
         localStorage.removeItem('currentUser');
         this._router.navigate([this._options.logInPath]);
     };
@@ -1523,8 +1760,8 @@ var AdminHeaderComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(94);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(95);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminScheduleEditBusComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1641,7 +1878,7 @@ var AdminScheduleEditBusComponent = (function () {
         this._httpService.sendPostJSON(me.urls.remove_url, remove_request)
             .subscribe(function (data) {
             me.isHidden = true;
-            console.log(me.isHidden);
+            jQuery("#confirm_remove_modal").modal('hide');
         }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
     };
     AdminScheduleEditBusComponent.prototype.onDisable = function () {
@@ -1656,6 +1893,7 @@ var AdminScheduleEditBusComponent = (function () {
         this._httpService.sendPostJSON(me.urls.disable_url, disable_request)
             .subscribe(function (data) {
             me.isDisabled = true;
+            jQuery("#confirm_disable_modal").modal('hide');
         }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
     };
     AdminScheduleEditBusComponent.prototype.onChangeStopsSelect = function ($event, idx) {
@@ -1859,7 +2097,7 @@ var AdminComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(67);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__admin__ = __webpack_require__(385);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__admin_admin_main_admin_main_component__ = __webpack_require__(375);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__admin_admin_schedules_admin_schedules_component__ = __webpack_require__(381);
@@ -1880,7 +2118,7 @@ var AdminComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__admin_admin_schedules_admin_schedules_editexisting_admin_schedules_editexisting_component__ = __webpack_require__(378);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__admin_admin_schedules_admin_schedules_gennew_admin_schedules_gennew_component__ = __webpack_require__(379);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__admin_admin_schedules_admin_schedules_genspecial_admin_schedules_genspecial_component__ = __webpack_require__(380);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__services_auth_service_auth_service__ = __webpack_require__(176);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__services_auth_service_auth_service__ = __webpack_require__(177);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppRoutingModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1922,9 +2160,9 @@ var routes = [
         children: [
             { path: '', component: __WEBPACK_IMPORTED_MODULE_3__admin_admin_main_admin_main_component__["a" /* AdminMainComponent */] },
             { path: 'schedules', component: __WEBPACK_IMPORTED_MODULE_4__admin_admin_schedules_admin_schedules_component__["a" /* AdminSchedulesComponent */] },
-            { path: 'schedules_edit/:sel_date', component: __WEBPACK_IMPORTED_MODULE_19__admin_admin_schedules_admin_schedules_editexisting_admin_schedules_editexisting_component__["a" /* AdminSchedulesEditexistingComponent */] },
+            { path: 'schedules_edit/:sel_date/:sel_type', component: __WEBPACK_IMPORTED_MODULE_19__admin_admin_schedules_admin_schedules_editexisting_admin_schedules_editexisting_component__["a" /* AdminSchedulesEditexistingComponent */] },
             { path: 'schedules_gennew/:sel_date', component: __WEBPACK_IMPORTED_MODULE_20__admin_admin_schedules_admin_schedules_gennew_admin_schedules_gennew_component__["a" /* AdminSchedulesGennewComponent */] },
-            { path: 'schedules_genspecial', component: __WEBPACK_IMPORTED_MODULE_21__admin_admin_schedules_admin_schedules_genspecial_admin_schedules_genspecial_component__["a" /* AdminSchedulesGenspecialComponent */] },
+            { path: 'schedules_genspecial/:sel_date', component: __WEBPACK_IMPORTED_MODULE_21__admin_admin_schedules_admin_schedules_genspecial_admin_schedules_genspecial_component__["a" /* AdminSchedulesGenspecialComponent */] },
             { path: 'stops', component: __WEBPACK_IMPORTED_MODULE_5__admin_admin_stops_admin_stops_component__["a" /* AdminStopsComponent */] },
             { path: 'rates', component: __WEBPACK_IMPORTED_MODULE_6__admin_admin_rates_admin_rates_component__["a" /* AdminRatesComponent */] },
             { path: 'areas', component: __WEBPACK_IMPORTED_MODULE_7__admin_admin_areas_admin_areas_component__["a" /* AdminAreasComponent */] },
@@ -2016,7 +2254,7 @@ var AppComponent = (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(173);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(174);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(554);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(237);
@@ -2041,9 +2279,9 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__admin_admin_coupons_types_admin_coupons_types_component__ = __webpack_require__(372);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__admin_admin_footer_admin_footer_component__ = __webpack_require__(593);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__main_login_login_component__ = __webpack_require__(386);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__services_http_service_http_service__ = __webpack_require__(94);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(176);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__services_common_service_common_service__ = __webpack_require__(177);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__services_http_service_http_service__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(177);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__services_common_service_common_service__ = __webpack_require__(124);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__main_main_header_main_header_component__ = __webpack_require__(602);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__main_main_index_component__ = __webpack_require__(388);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__main_main_footer_main_footer_component__ = __webpack_require__(601);
@@ -2387,6 +2625,59 @@ module.exports = ".alert-success {\r\n    background-color: #00a65a !important;\
 
 /***/ }),
 
+/***/ 80:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__ = __webpack_require__(429);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HttpService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var HttpService = (function () {
+    function HttpService(_http) {
+        this._http = _http;
+    }
+    HttpService.prototype.sendPostRequestWithParams = function (url, params) {
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Headers */]();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        return this._http.post(url, params, {
+            headers: headers
+        }).map(function (res) { return res.json(); });
+    };
+    HttpService.prototype.sendGetRequestWithParams = function (url) {
+        return this._http.get(url)
+            .map(function (res) { return res.json(); });
+    };
+    HttpService.prototype.sendPostJSON = function (url, json_data) {
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Headers */]({
+            'Content-Type': 'application/json'
+        });
+        return this._http.post(url, JSON.stringify(json_data), { headers: headers });
+    };
+    HttpService = __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
+    ], HttpService);
+    return HttpService;
+    var _a;
+}());
+//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/http.service.js.map
+
+/***/ }),
+
 /***/ 800:
 /***/ (function(module, exports) {
 
@@ -2579,35 +2870,35 @@ module.exports = "\n<section class=\"content-header admin-rates-content-header-c
 /***/ 835:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"col-sm-6 col-md-4\" [hidden]=\"isHidden\">\n    <div class=\"alert alert-success\">\n            <h3 class=\"text-center\">BUS #{{selected_group_idx + 1}}</h3>\n\n            <div class=\"row\">\n                <div class=\"col-sm-5\">\n                    <h5 class=\"text-center\">Stop</h5>\n                </div>\n                <div class=\"col-sm-4\">\n                    <h5 class=\"text-center\">Hour</h5>\n                </div>\n                <div class=\"col-sm-3\">\n                    <h5 class=\"text-center\">Min</h5>\n                </div>\n            </div>\n            \n            <div id='detailed_info'>\n                <div class=\"row\" *ngFor = \"let group_item of selected_group; let i = index;\" >\n                    <div class=\"col-sm-5\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_stops[i]\" (ngModelChange)=\"onChangeStopsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let stop of arr_stops;\">{{stop}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-4\">\n                        <select class=\"form-control \" [(ngModel)]=\"selected_hours[i]\" (ngModelChange)=\"onChangeHoursSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let hour of arr_hours;\" value={{hour}}>{{hour}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-3\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_mins[i]\" (ngModelChange)=\"onChangeMinsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let min of arr_mins;\">{{min}}</option>\n                        </select>\n                    </div>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"col-xs-12 text-center\" style='padding-top: 15px;'>\n                    <button class=\"btn btn-sm btn-danger\" (click)=\"onRemove()\">Remove</button>\n                    <button class=\"btn btn-sm btn-warning\" (click)=\"onDisable()\">Disable</button>\n                </div>\n            </div>\n    </div>\n</div>"
+module.exports = "<div class=\"col-sm-6 col-md-4\" [hidden]=\"isHidden\">\n    <div class=\"alert alert-success\">\n            <h3 class=\"text-center\">BUS #{{selected_group_idx + 1}}</h3>\n\n            <div class=\"row\">\n                <div class=\"col-sm-5\">\n                    <h5 class=\"text-center\">Stop</h5>\n                </div>\n                <div class=\"col-sm-4\">\n                    <h5 class=\"text-center\">Hour</h5>\n                </div>\n                <div class=\"col-sm-3\">\n                    <h5 class=\"text-center\">Min</h5>\n                </div>\n            </div>\n            \n            <div id='detailed_info'>\n                <div class=\"row\" *ngFor = \"let group_item of selected_group; let i = index;\" >\n                    <div class=\"col-sm-5\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_stops[i]\" (ngModelChange)=\"onChangeStopsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let stop of arr_stops;\">{{stop}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-4\">\n                        <select class=\"form-control \" [(ngModel)]=\"selected_hours[i]\" (ngModelChange)=\"onChangeHoursSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let hour of arr_hours;\" value={{hour}}>{{hour}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-3\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_mins[i]\" (ngModelChange)=\"onChangeMinsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let min of arr_mins;\">{{min}}</option>\n                        </select>\n                    </div>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"col-xs-12 text-center\" style='padding-top: 15px;'>\n                    <button class=\"btn btn-sm btn-danger\" data-toggle=\"modal\" data-target=\"#confirm_remove_modal\">Remove</button>\n                    <button class=\"btn btn-sm btn-warning\" data-toggle=\"modal\" data-target=\"#confirm_disable_modal\">Disable</button>\n                </div>\n            </div>\n    </div>\n</div>\n\n<div id=\"confirm_remove_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Delete</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>Are you sure you want to delete this?</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button class=\"btn btn-danger\" (click)=\"onRemove()\">Delete</button> \n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n\n<div id=\"confirm_disable_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Disable</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>Are you sure you want to disable this?</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button class=\"btn btn-danger\" (click)=\"onDisable()\">Disable</button> \n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n"
 
 /***/ }),
 
 /***/ 836:
 /***/ (function(module, exports) {
 
-module.exports = "\n<section class=\"content-header admin-schedule-edit-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-clock-o\"></i> Schedule Times\n    </h1>\n    <ol class=\"breadcrumb admin-schedule-edit-breadcrumb-custom\">\n        <li><a routerLink=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li><a routerLink=\"/admin/schedules\"><i class=\"fa fa-clock-o\"></i> Schedule Times</a></li>\n        <li class=\"active\" id=\"li_header_detail\">{{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}</li>\n    </ol>\n</section>\n\n<section class=\"panel admin-main-panel admin-schedule-edit-main-panel-custom\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\"></span>\n            <span> Every </span>\n            <span>\n                {{ selected_dow }}\n            </span>\n            <span>\n                {{ selected_schedule_type }}\n            </span>\n            <span>\n                {{ selected_date_from }}\n            </span>\n            <span> from </span>\n            <span>\n                {{ selected_stop }}\n            </span>\n            \n            <a href=\"javascript:void(0)\" class=\"btn btn-xs btn-primary pull-right open-modal\" (click)=\"showModal()\"><span class=\"fa fa-plus\"></span> Schedule</a>\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <div *ngFor = \"let group of groups; let i = index;\">\n            <app-admin-schedule-edit-bus [group]=\"group\" [stops]=\"stops\" [group_idx]=\"i\"></app-admin-schedule-edit-bus>\n        </div>\n        \n        <div class=\"row\">\n            <div class=\"col-sm-12 text-center form-group\">\n                <button class=\"btn btn-success btn-lg\" (click)=\"onSaveAll()\"><span class=\"fa fa-check\"></span> Save All </button>\n            </div>\n        </div>\n    </div>\n</section>\n\n\n<div id=\"addschedule_modal\" class=\"modal fade\" role=\"dialog\">\n  <div class=\"modal-dialog\">\n\n    <!-- Modal content-->\n    <div class=\"modal-content\">\n        <div class=\"modal-header\">\n            <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n            <h4 class=\"modal-title\">\n                <span>\n                    Add Schedule {{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}\n                </span>\n            </h4>\n        </div>\n      <div class=\"modal-body\">\n            <table class=\"table table-borderless text-center\">\n                <tbody>\n                    <tr>\n                        <th>Stop</th>\n                        <th>Hour</th>\n                        <th>Min</th>\n                        <th>Price</th>\n                    </tr>\n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                </tbody>\n            </table>\n        </div>\n        <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n            <button class=\"btn btn-success\" (click)=\"onAddSchedule()\">Add Schedule</button>\n        </div>\n    </div>\n\n  </div>\n</div>"
+module.exports = "\n<section class=\"content-header admin-schedule-edit-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-clock-o\"></i> Schedule Times\n    </h1>\n    <ol class=\"breadcrumb admin-schedule-edit-breadcrumb-custom\">\n        <li><a routerLink=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li><a routerLink=\"/admin/schedules\"><i class=\"fa fa-clock-o\"></i> Schedule Times</a></li>\n        <li class=\"active\" id=\"li_header_detail\">{{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}</li>\n    </ol>\n</section>\n\n<section class=\"panel admin-main-panel admin-schedule-edit-main-panel-custom\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\"></span>\n            <span> Every </span>\n            <span>\n                {{ selected_dow }}\n            </span>\n            <span>\n                {{ selected_schedule_type }}\n            </span>\n            <span>\n                {{ selected_date_from }}\n            </span>\n            <span> from </span>\n            <span>\n                {{ selected_stop }}\n            </span>\n            \n            <a href=\"javascript:void(0)\" class=\"btn btn-xs btn-primary pull-right open-modal\" (click)=\"showModal()\"><span class=\"fa fa-plus\"></span> Schedule</a>\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <div *ngFor = \"let group of groups; let i = index;\">\n            <app-admin-schedule-edit-bus [group]=\"group\" [stops]=\"stops\" [group_idx]=\"i\"></app-admin-schedule-edit-bus>\n        </div>\n        \n        <div class=\"row\">\n            <div class=\"col-sm-12 text-center form-group\">\n                <button class=\"btn btn-success btn-lg\" data-toggle=\"modal\" data-target=\"#confirm_saveall_modal\"><span class=\"fa fa-check\"></span> Save All </button>\n            </div>\n        </div>\n    </div>\n</section>\n\n\n<div id=\"addschedule_modal\" class=\"modal fade\" role=\"dialog\">\n  <div class=\"modal-dialog\">\n\n    <!-- Modal content-->\n    <div class=\"modal-content\">\n        <div class=\"modal-header\">\n            <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n            <h4 class=\"modal-title\">\n                <span>\n                    Add Schedule {{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}\n                </span>\n            </h4>\n        </div>\n      <div class=\"modal-body\">\n            <table class=\"table table-borderless text-center\">\n                <tbody>\n                    <tr>\n                        <th>Stop</th>\n                        <th>Hour</th>\n                        <th>Min</th>\n                        <th>Price</th>\n                    </tr>\n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                </tbody>\n            </table>\n        </div>\n        <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n            <button class=\"btn btn-success\" (click)=\"onAddSchedule()\">Add Schedule</button>\n        </div>\n    </div>\n\n  </div>\n</div>\n\n\n<div id=\"confirm_saveall_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Save</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>Are you sure you want to save these?</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button class=\"btn btn-danger\" (click)=\"onSaveAll()\">Save All</button> \n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n\n\n\n"
 
 /***/ }),
 
 /***/ 837:
 /***/ (function(module, exports) {
 
-module.exports = "\n<section class=\"content-header admin-schedule-gennew-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-clock-o\"></i> Schedule Times\n    </h1>\n    <ol class=\"breadcrumb admin-schedule-gennew-breadcrumb-custom\">\n        <li><a routerLink=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li><a routerLink=\"/admin/schedules\"><i class=\"fa fa-clock-o\"></i> Schedule Times</a></li>\n        <li class=\"active\" id=\"li_header_detail\">{{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}</li>\n    </ol>\n</section>\n\n<section class=\"panel admin-main-panel admin-schedule-gennew-main-panel-custom\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\">\n                Every {{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}\n            </span>\n            <a href=\"javascript:void(0)\" class=\"btn btn-xs btn-primary pull-right open-modal\" (click)=\"showModal()\"><span class=\"fa fa-plus\"></span> Schedule</a>\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <div *ngFor = \"let group of groups; let i = index;\">\n            <app-admin-schedule-edit-bus [group]=\"group\" [stops]=\"stops\" [group_idx]=\"i\"></app-admin-schedule-edit-bus>\n        </div>\n        \n        <div class=\"row\">\n            <div class=\"col-sm-12 text-center form-group\">\n                <button class=\"btn btn-success btn-lg\" (click)=\"onSaveAll()\"><span class=\"fa fa-check\"></span> Save All </button>\n            </div>\n        </div>\n    </div>\n</section>\n\n<div id=\"gen_new_schedule_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">\n                    <span>\n                        Add Schedule {{ selected_dow }} {{ selected_schedule_type }} {{ sel_date }} from {{ selected_stop }}\n                    </span>\n                </h4>\n            </div>\n            <div class=\"modal-body\">\n                <table class=\"table table-borderless text-center\">\n                    <tbody>\n                        <tr>\n                            <th>Stop</th>\n                            <th>Hour</th>\n                            <th>Min</th>\n                            <th>Price</th>\n                        </tr>\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                    </tbody>\n                </table>\n            </div>\n            \n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n                <button class=\"btn btn-success\" (click)=\"onAddSchedule()\">Add Schedule</button>\n            </div>\n            \n        </div>\n\n    </div>\n</div>"
+module.exports = "\n<section class=\"content-header admin-schedule-gennew-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-clock-o\"></i> Schedule Times\n    </h1>\n    <ol class=\"breadcrumb admin-schedule-gennew-breadcrumb-custom\">\n        <li><a routerLink=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li><a routerLink=\"/admin/schedules\"><i class=\"fa fa-clock-o\"></i> Schedule Times</a></li>\n        <li class=\"active\" id=\"li_header_detail\">{{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}</li>\n    </ol>\n</section>\n\n<section class=\"panel admin-main-panel admin-schedule-gennew-main-panel-custom\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\">\n                Every {{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}\n            </span>\n            <a href=\"javascript:void(0)\" class=\"btn btn-xs btn-primary pull-right open-modal\" (click)=\"showModal()\"><span class=\"fa fa-plus\"></span> Schedule</a>\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <div *ngFor = \"let group of groups; let i = index;\">\n            <app-admin-schedule-edit-bus [group]=\"group\" [stops]=\"stops\" [group_idx]=\"i\"></app-admin-schedule-edit-bus>\n        </div>\n        \n        <div class=\"row\">\n            <div class=\"col-sm-12 text-center form-group\">\n                <button class=\"btn btn-success btn-lg\" (click)=\"onSaveAll()\"><span class=\"fa fa-check\"></span> Save All </button>\n            </div>\n        </div>\n    </div>\n</section>\n\n"
 
 /***/ }),
 
 /***/ 838:
 /***/ (function(module, exports) {
 
-module.exports = "<p>\n  admin-schedules-genspecial works!\n</p>\n"
+module.exports = "\n<section class=\"content-header admin-schedule-gennew-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-clock-o\"></i> Schedule Times\n    </h1>\n    <ol class=\"breadcrumb admin-schedule-gennew-breadcrumb-custom\">\n        <li><a routerLink=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li><a routerLink=\"/admin/schedules\"><i class=\"fa fa-clock-o\"></i> Schedule Times</a></li>\n        <li class=\"active\" id=\"li_header_detail\">{{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}</li>\n    </ol>\n</section>\n\n<section class=\"panel admin-main-panel admin-schedule-genspecial-main-panel-custom\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\">\n                Every {{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}\n            </span>\n            <a href=\"javascript:void(0)\" class=\"btn btn-xs btn-primary pull-right open-modal\" (click)=\"showModal()\"><span class=\"fa fa-plus\"></span> Schedule</a>\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <div *ngFor = \"let group of groups; let i = index;\">\n            <app-admin-schedule-edit-bus [group]=\"group\" [stops]=\"stops\" [group_idx]=\"i\"></app-admin-schedule-edit-bus>\n        </div>\n        \n        <div class=\"row\">\n            <div class=\"col-sm-12 text-center form-group\">\n                <button class=\"btn btn-success btn-lg\" (click)=\"onSaveAll()\"><span class=\"fa fa-check\"></span> Save All </button>\n            </div>\n        </div>\n    </div>\n</section>\n\n<div id=\"gen_special_schedule_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">\n                    <span>\n                        Add Holiday Schedule on {{ sel_date }}\n                    </span>\n                </h4>\n            </div>\n            <div class=\"modal-body\">\n                <table class=\"table table-borderless text-center\">\n                    <tbody>\n                        <tr>\n                            <th>Stop</th>\n                            <th>Hour</th>\n                            <th>Min</th>\n                            <th>Price</th>\n                        </tr>\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                    </tbody>\n                </table>\n            </div>\n            \n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n                <button class=\"btn btn-success\" (click)=\"onAddSchedule()\">Add Schedule</button>\n            </div>\n            \n        </div>\n\n    </div>\n</div>"
 
 /***/ }),
 
 /***/ 839:
 /***/ (function(module, exports) {
 
-module.exports = "\n<section class=\"content-header admin-schedules-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-calendar-o\"></i> Schedules\n    </h1>\n    <ol class=\"breadcrumb admin-schedules-breadcrumb-custom\">\n        <li><a href=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li class=\"active\">Schedules</li>\n    </ol>\n</section>\n\n<section class=\"panel general\">\n    <header class=\"panel-heading tab-bg-dark-navy-blue\">\n        <ul class=\"nav nav-tabs\">\n            <li class=\"active\">\n                <a data-toggle=\"tab\" href=\"#newyork\">From New York City</a>\n            </li>\n            <li class=\"\">\n                <a data-toggle=\"tab\" href=\"#bethesda\">From Bethesda/Arlington</a>\n            </li>\n        </ul>\n    </header>\n    <div class=\"panel-body\">\n        <div class=\"tab-content\">\n            <div id=\"newyork\" class=\"tab-pane active\">\n                <div class=\"h4 row\">\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-left\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"prevMonth()\">« Previous</a> \n                    </div>\n                    <div class=\"col-xs-6 col-md-6 text-center small\">\n                        <b>\n                            <font color=\"red\">Special schedule.</font>\n                            <br>\n                            <font color=\"orange\"> New weekly schedule takes effect</font>\n                        </b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-right\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"nextMonth()\">Next »</a> \n                    </div>\n                </div>\n                \n                <h2 class=\"text-center\" id=\"h2_year_month\">{{calendarInfo.cur_date_str}}</h2> \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols weekdays\">\n                        <div class=\"col-md-1\">Sun</div>\n                        <div class=\"col-md-1\">Mon</div>\n                        <div class=\"col-md-1\">Tue</div>\n                        <div class=\"col-md-1\">Wed</div>\n                        <div class=\"col-md-1\">Thu</div>\n                        <div class=\"col-md-1\">Fri</div>\n                        <div class=\"col-md-1\">Sat</div>\n                    </div>\n                </div>\n                \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols\" id=\"calendar_main\">\n                        \n                    </div>\n                </div>\n                \n            </div>\n            <div id=\"bethesda\" class=\"tab-pane\">\n                <div id=\"bethesda-full-calendar\"></div>\n            </div>\n        </div>\n    </div>\n</section>\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" (click)=\"onEditSchedule()\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" [routerLink]=\"['/admin/schedules_gennew']\" (click)=\"onGenNewSchedule();\" > Generate New</a>\n                <a class=\"btn btn-info\" [routerLink]=\"['/admin/schedules_edit']\" (click)=\"hideModal();\"> Generate Special</a>\n                \n                <h3>Current Schedule:</h3>\n                <div id='schedule_infos'></div>\n            </div>\n        </div>  \n      \n    </div>\n</div>"
+module.exports = "\n<section class=\"content-header admin-schedules-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-calendar-o\"></i> Schedules\n    </h1>\n    <ol class=\"breadcrumb admin-schedules-breadcrumb-custom\">\n        <li><a href=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li class=\"active\">Schedules</li>\n    </ol>\n</section>\n\n<section class=\"panel general\">\n    <header class=\"panel-heading tab-bg-dark-navy-blue\">\n        <ul class=\"nav nav-tabs\">\n            <li class=\"active\">\n                <a data-toggle=\"tab\" href=\"#newyork\">From New York City</a>\n            </li>\n            <li class=\"\">\n                <a data-toggle=\"tab\" href=\"#bethesda\">From Bethesda/Arlington</a>\n            </li>\n        </ul>\n    </header>\n    <div class=\"panel-body\">\n        <div class=\"tab-content\">\n            <div id=\"newyork\" class=\"tab-pane active\">\n                <div class=\"h4 row\">\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-left\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"prevMonth()\">« Previous</a> \n                    </div>\n                    <div class=\"col-xs-6 col-md-6 text-center small\">\n                        <b>\n                            <font color=\"red\">Special schedule.</font>\n                            <br>\n                            <font color=\"orange\"> New weekly schedule takes effect</font>\n                        </b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-right\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"nextMonth()\">Next »</a> \n                    </div>\n                </div>\n                \n                <h2 class=\"text-center\" id=\"h2_year_month\">{{calendarInfo.cur_date_str}}</h2> \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols weekdays\">\n                        <div class=\"col-md-1\">Sun</div>\n                        <div class=\"col-md-1\">Mon</div>\n                        <div class=\"col-md-1\">Tue</div>\n                        <div class=\"col-md-1\">Wed</div>\n                        <div class=\"col-md-1\">Thu</div>\n                        <div class=\"col-md-1\">Fri</div>\n                        <div class=\"col-md-1\">Sat</div>\n                    </div>\n                </div>\n                \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols\">\n                        <div *ngFor=\"let item of month_firstday_dow_newyork\" class='col-md-1 fix-height' style='min-height: 0px;'></div>\n                        \n                        <div *ngFor=\"let item of days_in_month_newyork; let i=index;\" class='col-md-1 fix-height'>\n                            <div *ngIf=\"item > 0\">\n                                <h3 (click)=\"onClickEachDate($event.target.innerText)\">{{i+1}}</h3><p>{{item}} buses</p>\n                            </div>\n                            <div *ngIf=\"item == 0\">\n                                <h3 (click)=\"onClickEachDate($event.target.innerText)\">{{i+1}}</h3><p>0 bus</p>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                \n            </div>\n            <div id=\"bethesda\" class=\"tab-pane\">\n                <div class=\"h4 row\">\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-left\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"prevMonth()\">« Previous</a> \n                    </div>\n                    <div class=\"col-xs-6 col-md-6 text-center small\">\n                        <b>\n                            <font color=\"red\">Special schedule.</font>\n                            <br>\n                            <font color=\"orange\"> New weekly schedule takes effect</font>\n                        </b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-right\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"nextMonth()\">Next »</a> \n                    </div>\n                </div>\n                \n                <h2 class=\"text-center\" id=\"h2_year_month\">{{calendarInfo.cur_date_str}}</h2> \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols weekdays\">\n                        <div class=\"col-md-1\">Sun</div>\n                        <div class=\"col-md-1\">Mon</div>\n                        <div class=\"col-md-1\">Tue</div>\n                        <div class=\"col-md-1\">Wed</div>\n                        <div class=\"col-md-1\">Thu</div>\n                        <div class=\"col-md-1\">Fri</div>\n                        <div class=\"col-md-1\">Sat</div>\n                    </div>\n                </div>\n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols\">\n                        <div *ngFor=\"let item of month_firstday_dow_ba\" class='col-md-1 fix-height' style='min-height: 0px;'></div>\n\n                        <div *ngFor=\"let item of days_in_month_ba; let i=index;\" class='col-md-1 fix-height'>\n                            <div *ngIf=\"item > 0\">\n                                <h3 (click)=\"onClickEachDate($event.target.innerText)\">{{i+1}}</h3><p>{{item}} buses</p>\n                            </div>\n                            <div *ngIf=\"item == 0\">\n                                <h3 (click)=\"onClickEachDate($event.target.innerText)\">{{i+1}}</h3><p>0 bus</p>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</section>\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" (click)=\"onEditSchedule()\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" (click)=\"onGenNewSchedule()\" > Generate New</a>\n                <a class=\"btn btn-info\" (click)=\"onGenSpecialSchedule()\"> Generate Special</a>\n                \n                <h3>Current Schedule:</h3>\n                <div id='schedule_infos'>\n                    <div *ngFor=\"let group of sorted_groups; let i=index;\">\n                        <p><strong>Bus #{{i+1}}:</strong></p>\n                        <div *ngFor=\"let item of group;\">\n                            <p>{{item['time']}} from {{item[\"stop_area\"]}}</p>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>  \n      \n    </div>\n</div>\n\n\n"
 
 /***/ }),
 
@@ -2695,56 +2986,14 @@ module.exports = "<h2>Page not found</h2>"
 
 /***/ }),
 
-/***/ 94:
+/***/ 95:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(237);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__ = __webpack_require__(429);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HttpService; });
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-var HttpService = (function () {
-    function HttpService(_http) {
-        this._http = _http;
-    }
-    HttpService.prototype.sendPostRequestWithParams = function (url, params) {
-        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Headers */]();
-        headers.append('Content-Type', 'application/x-www-form-urlencoded');
-        return this._http.post(url, params, {
-            headers: headers
-        }).map(function (res) { return res.json(); });
-    };
-    HttpService.prototype.sendGetRequestWithParams = function (url) {
-        return this._http.get(url)
-            .map(function (res) { return res.json(); });
-    };
-    HttpService.prototype.sendPostJSON = function (url, json_data) {
-        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Headers */]({
-            'Content-Type': 'application/json'
-        });
-        return this._http.post(url, JSON.stringify(json_data), { headers: headers });
-    };
-    HttpService = __decorate([
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
-    ], HttpService);
-    return HttpService;
-    var _a;
-}());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/http.service.js.map
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BACKEND_SERVER_URL; });
+//export const BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
+var BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
+//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/config.js.map
 
 /***/ })
 
