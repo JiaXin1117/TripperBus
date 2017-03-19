@@ -51,6 +51,8 @@ class ScheduleController extends Controller
                 $temp['from_date'] = $reservation->date;
                 $temp['dow'] = $reservation->day_of_week;
                 $temp['time_id'] = $reservation->id;
+                $temp['open'] = $reservation->open;
+                $temp['area_id'] = $reservation->area_id;
 
                 $response[] = $temp;
             }
@@ -98,6 +100,7 @@ class ScheduleController extends Controller
                         $temp['group_id'] = $reservation->group_id;
                         $temp['schedule_type'] = $reservation->w_h;
                         $temp['schedule_date'] = $cur_date;
+                        $temp['area_id'] = $reservation->area_id;
 
                         $response[] = $temp;
                     }
@@ -116,7 +119,7 @@ class ScheduleController extends Controller
         
         $response = array();
         foreach ($stops as $stop) {
-            $response[] = $stop->short;
+            $response[] = $stop;
         }
         
         return response()->json([
@@ -156,7 +159,8 @@ class ScheduleController extends Controller
             $temp = Res_Times::find($time_id); 
             
             if (!is_null($temp)) {
-                $temp->delete(); 
+                $temp->valid = config('config.TYPE_SCHEDULE_REMOVED');
+                $temp->save(); 
             }
         }
     }
@@ -170,9 +174,11 @@ class ScheduleController extends Controller
             $temp = Res_Times::find($time_id); 
             
             if (!is_null($temp)) {
-                $disabled_valid = 0;
-                
-                $temp->valid = $disabled_valid; 
+                if (isset($item['isEnabled'])) {
+                    $temp->open = config('config.TYPE_SCHEDULE_ENABLED');
+                } else {
+                    $temp->open = config('config.TYPE_SCHEDULE_DISABLED');
+                }
                 
                 $temp->save(); 
             }
@@ -192,11 +198,9 @@ class ScheduleController extends Controller
 
                 if (!is_null($temp)) {
                     $temp->time = $item['time']; 
-                    
                     $stop_id = Res_Stops::where('short', $item['stop_area'])
                             ->first()->id; 
                     $temp->stop_id = $stop_id;
-
                     $temp->save(); 
                 }
             }
@@ -205,13 +209,13 @@ class ScheduleController extends Controller
         }
     }
     
-    public function postAddForEditExistingSchedule(Request $request) {
+    public function postAddForEditExistingSchedule(Request $request) { 
         $data = json_decode($request->getContent(), true); 
         
         if (count($data) == 0) return;
         
-        $new_group = new Res_Groups;
-        $new_group->max_cap = 57; 
+        $new_group = new Res_Groups; 
+        $new_group->max_cap = config('config.MAX_CAP_BUS'); 
         $new_group->save();
         
         for ($i=0; $i<count($data); $i++) {
@@ -231,9 +235,11 @@ class ScheduleController extends Controller
             
             $new_time->time = $time; 
             $new_time->date = $item['date_from'];
-            $new_time->w_h = 1;
-            $new_time->valid = 1;
+            $new_time->w_h = isset($item['w_h']) ? $item['w_h'] : config('config.TYPE_SCHEDULE_WEEKLY');
+            $new_time->valid = isset($item['valid']) ? $item['valid'] : config('config.TYPE_SCHEDULE_UNREMOVED');
+            $new_time->open = isset($item['open']) ? $item['open'] : config('config.TYPE_SCHEDULE_ENABLED');
             $new_time->day_of_week = $item['dow']; 
+            $new_time->area_id = $item['area_id']; 
             
             $new_time->save(); 
             

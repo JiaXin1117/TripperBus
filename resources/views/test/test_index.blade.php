@@ -35,7 +35,7 @@
         var request_data = [];
         request_data[0] = temp;
         request_data[1] = temp1;
-        request_data[2] = temp2; console.log(request_data);
+        request_data[2] = temp2; 
         
         $.ajax({
             url : "http://localhost/TripperBus_Backend/api/admin/schedule/add_existing_schedule",
