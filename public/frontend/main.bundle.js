@@ -718,10 +718,9 @@ var AdminSchedulesComponent = (function () {
         };
         this.selected_date = "";
         this.sorted_groups = [];
-        this.month_firstday_dow_newyork = [];
-        this.days_in_month_newyork = [];
-        this.month_firstday_dow_ba = [];
-        this.days_in_month_ba = [];
+        this.month_firstday_dow = [];
+        this.dayinfos_in_month_newyork = [];
+        this.dayinfos_in_month_ba = [];
     }
     AdminSchedulesComponent.prototype.ngOnInit = function () {
         this.setCurentDateForCalendar();
@@ -741,6 +740,113 @@ var AdminSchedulesComponent = (function () {
         this.hideModal();
         var link = ['/admin/schedules_edit', this.selected_date, this._commonService.scheduleType.TYPE_GENERATE_SPECIAL, area_id];
         this._router.navigate(link);
+    };
+    AdminSchedulesComponent.prototype.addDaysInDateRange = function (firstDay, lastDay, areaType) {
+        var _this = this;
+        var me = this;
+        if (firstDay.getDate() == 1) {
+            var dow = firstDay.getDay();
+            me.month_firstday_dow = [];
+            for (var i = 0; i < dow; i++) {
+                me.month_firstday_dow[i] = i;
+            }
+        }
+        var url_month = this.calendarInfo.cur_month + 1;
+        var url = this.urls.retrieve_schedule_by_month_url + "?year=" + this.calendarInfo.cur_year + "&month=" + url_month;
+        this._httpService.sendGetRequestWithParams(url)
+            .subscribe(function (data) {
+            var response = data;
+            if (areaType == me._commonService.areaType.TYPE_NEWYORK) {
+                me.dayinfos_in_month_newyork = [];
+            }
+            else {
+                me.dayinfos_in_month_ba = [];
+            }
+            if (response['state'] == 'success') {
+                while (firstDay <= lastDay) {
+                    var firstDay_converted = _this.convertDate(firstDay);
+                    var items_for_this_date = [];
+                    for (var i = 0; i < Object.keys(response['data']).length; i++) {
+                        var item = response['data'][i];
+                        if (item['date'] == firstDay_converted && item['area_id'] == areaType) {
+                            items_for_this_date.push(item);
+                        }
+                    }
+                    if (Object.keys(items_for_this_date).length == 0) {
+                        me.setDayInfo(areaType, me._commonService.w_hType.TYPE_WEEKLY, 0);
+                        var newDate_1 = firstDay.setDate(firstDay.getDate() + 1);
+                        firstDay = new Date(newDate_1);
+                        continue;
+                    }
+                    var group_ids = [];
+                    for (var i = 0; i < Object.keys(items_for_this_date).length; i++) {
+                        var item = items_for_this_date[i];
+                        if (group_ids.indexOf(item['group_id']) == -1) {
+                            group_ids.push(item['group_id']);
+                        }
+                    }
+                    // Get grouped holiday items.
+                    var grouped_items = [];
+                    for (var i = 0; i < Object.keys(group_ids).length; i++) {
+                        var temp = [];
+                        for (var j = 0; j < Object.keys(items_for_this_date).length; j++) {
+                            var item = items_for_this_date[j];
+                            if (group_ids[i] == item['group_id'] && item['w_h'] == me._commonService.w_hType.TYPE_HOLIDAY
+                                && item['date'] == firstDay_converted) {
+                                console.log(item);
+                                console.log(firstDay_converted);
+                                temp.push(item);
+                            }
+                        }
+                        if (Object.keys(temp).length != 0) {
+                            grouped_items.push(temp);
+                        }
+                    }
+                    if (Object.keys(grouped_items).length != 0) {
+                        me.setDayInfo(areaType, me._commonService.w_hType.TYPE_HOLIDAY, Object.keys(grouped_items).length);
+                    }
+                    else {
+                        // Get grouped weekly items.
+                        grouped_items = [];
+                        for (var i = 0; i < Object.keys(group_ids).length; i++) {
+                            var temp = [];
+                            for (var j = 0; j < Object.keys(items_for_this_date).length; j++) {
+                                var item = items_for_this_date[j];
+                                if (group_ids[i] == item['group_id'] && item['w_h'] == me._commonService.w_hType.TYPE_WEEKLY) {
+                                    temp.push(item);
+                                }
+                            }
+                            if (Object.keys(temp).length != 0) {
+                                grouped_items.push(temp);
+                            }
+                        }
+                        if (Object.keys(grouped_items).length == 0) {
+                            me.setDayInfo(areaType, me._commonService.w_hType.TYPE_WEEKLY, 0);
+                            var newDate_2 = firstDay.setDate(firstDay.getDate() + 1);
+                            firstDay = new Date(newDate_2);
+                            continue;
+                        }
+                        else {
+                            me.setDayInfo(areaType, me._commonService.w_hType.TYPE_WEEKLY, Object.keys(grouped_items).length);
+                        }
+                    }
+                    var newDate = firstDay.setDate(firstDay.getDate() + 1);
+                    firstDay = new Date(newDate);
+                }
+            }
+        });
+    };
+    AdminSchedulesComponent.prototype.setDayInfo = function (areaType, isHoliday, busCnt) {
+        var me = this;
+        var temp_day = {};
+        temp_day['isHoliday'] = isHoliday;
+        temp_day['bus_cnt'] = busCnt;
+        if (areaType == me._commonService.areaType.TYPE_NEWYORK) {
+            me.dayinfos_in_month_newyork.push(temp_day);
+        }
+        else {
+            me.dayinfos_in_month_ba.push(temp_day);
+        }
     };
     AdminSchedulesComponent.prototype.onClickEachDate = function (selected_date, areaType) {
         var me = this;
@@ -841,102 +947,6 @@ var AdminSchedulesComponent = (function () {
         firstDay = new Date(me.calendarInfo.cur_year, me.calendarInfo.cur_month, 1);
         lastDay = new Date(me.calendarInfo.cur_year, me.calendarInfo.cur_month + 1, 0);
         this.addDaysInDateRange(firstDay, lastDay, me._commonService.areaType.TYPE_BA);
-    };
-    AdminSchedulesComponent.prototype.addDaysInDateRange = function (firstDay, lastDay, areaType) {
-        var _this = this;
-        var me = this;
-        if (firstDay.getDate() == 1) {
-            var dow = firstDay.getDay();
-            if (areaType == me._commonService.areaType.TYPE_NEWYORK) {
-                me.month_firstday_dow_newyork = [];
-                for (var i = 0; i < dow; i++) {
-                    me.month_firstday_dow_newyork[i] = i;
-                }
-            }
-            else {
-                me.month_firstday_dow_ba = [];
-                for (var i = 0; i < dow; i++) {
-                    me.month_firstday_dow_ba[i] = i;
-                }
-            }
-        }
-        var url_month = this.calendarInfo.cur_month + 1;
-        var url = this.urls.retrieve_schedule_by_month_url + "?year=" + this.calendarInfo.cur_year + "&month=" + url_month;
-        this._httpService.sendGetRequestWithParams(url)
-            .subscribe(function (data) {
-            var response = data;
-            if (areaType == me._commonService.areaType.TYPE_NEWYORK) {
-                me.days_in_month_newyork = [];
-            }
-            else {
-                me.days_in_month_ba = [];
-            }
-            if (response['state'] == 'success') {
-                while (firstDay <= lastDay) {
-                    var firstDay_converted = _this.convertDate(firstDay);
-                    var items_for_this_date = [];
-                    for (var i = 0; i < Object.keys(response['data']).length; i++) {
-                        var item = response['data'][i];
-                        if (item['schedule_date'] == firstDay_converted && item['area_id'] == areaType) {
-                            items_for_this_date.push(item);
-                        }
-                    }
-                    if (Object.keys(items_for_this_date).length == 0) {
-                        me.onEmptyDay(areaType);
-                        var newDate_1 = firstDay.setDate(firstDay.getDate() + 1);
-                        firstDay = new Date(newDate_1);
-                        continue;
-                    }
-                    var group_ids = [];
-                    for (var i = 0; i < Object.keys(items_for_this_date).length; i++) {
-                        var item = items_for_this_date[i];
-                        if (group_ids.indexOf(item['group_id']) == -1) {
-                            group_ids.push(item['group_id']);
-                        }
-                    }
-                    if (Object.keys(group_ids).length == 0) {
-                        me.onEmptyDay(areaType);
-                        var newDate_2 = firstDay.setDate(firstDay.getDate() + 1);
-                        firstDay = new Date(newDate_2);
-                        continue;
-                    }
-                    var grouped_items = [];
-                    for (var i = 0; i < Object.keys(group_ids).length; i++) {
-                        var temp = [];
-                        for (var j = 0; j < Object.keys(items_for_this_date).length; j++) {
-                            var item = items_for_this_date[j];
-                            if (group_ids[i] == item['group_id']) {
-                                temp.push(item);
-                            }
-                        }
-                        grouped_items.push(temp);
-                    }
-                    if (Object.keys(grouped_items).length == 0) {
-                        me.onEmptyDay(areaType);
-                        var newDate_3 = firstDay.setDate(firstDay.getDate() + 1);
-                        firstDay = new Date(newDate_3);
-                        continue;
-                    }
-                    if (areaType == me._commonService.areaType.TYPE_NEWYORK) {
-                        me.days_in_month_newyork.push(Object.keys(grouped_items).length);
-                    }
-                    else {
-                        me.days_in_month_ba.push(Object.keys(grouped_items).length);
-                    }
-                    var newDate = firstDay.setDate(firstDay.getDate() + 1);
-                    firstDay = new Date(newDate);
-                }
-            }
-        });
-    };
-    AdminSchedulesComponent.prototype.onEmptyDay = function (areaType) {
-        var me = this;
-        if (areaType == me._commonService.areaType.TYPE_NEWYORK) {
-            me.days_in_month_newyork.push(0);
-        }
-        else {
-            me.days_in_month_ba.push(0);
-        }
     };
     AdminSchedulesComponent.prototype.prevMonth = function () {
         var me = this;
@@ -2955,7 +2965,7 @@ module.exports = "\n<section class=\"content-header admin-schedule-gennew-conten
 /***/ 839:
 /***/ (function(module, exports) {
 
-module.exports = "\n<section class=\"content-header admin-schedules-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-calendar-o\"></i> Schedules\n    </h1>\n    <ol class=\"breadcrumb admin-schedules-breadcrumb-custom\">\n        <li><a href=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li class=\"active\">Schedules</li>\n    </ol>\n</section>\n\n<section class=\"panel general\">\n    <header class=\"panel-heading tab-bg-dark-navy-blue\">\n        <ul class=\"nav nav-tabs\">\n            <li class=\"active\">\n                <a data-toggle=\"tab\" href=\"#newyork\">From New York City</a>\n            </li>\n            <li class=\"\">\n                <a data-toggle=\"tab\" href=\"#bethesda\">From Bethesda/Arlington</a>\n            </li>\n        </ul>\n    </header>\n    <div class=\"panel-body\">\n        <div class=\"tab-content\">\n            <div id=\"newyork\" class=\"tab-pane active\">\n                <div class=\"h4 row\">\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-left\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"prevMonth()\">« Previous</a> \n                    </div>\n                    <div class=\"col-xs-6 col-md-6 text-center small\">\n                        <b>\n                            <font color=\"red\">Special schedule.</font>\n                            <br>\n                            <font color=\"orange\"> New weekly schedule takes effect</font>\n                        </b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-right\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"nextMonth()\">Next »</a> \n                    </div>\n                </div>\n                \n                <h2 class=\"text-center\" id=\"h2_year_month\">{{calendarInfo.cur_date_str}}</h2> \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols weekdays\">\n                        <div class=\"col-md-1\">Sun</div>\n                        <div class=\"col-md-1\">Mon</div>\n                        <div class=\"col-md-1\">Tue</div>\n                        <div class=\"col-md-1\">Wed</div>\n                        <div class=\"col-md-1\">Thu</div>\n                        <div class=\"col-md-1\">Fri</div>\n                        <div class=\"col-md-1\">Sat</div>\n                    </div>\n                </div>\n                \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols\">\n                        <div *ngFor=\"let item of month_firstday_dow_newyork\" class='col-md-1 fix-height' style='min-height: 0px;'></div>\n                        \n                        <div *ngFor=\"let item of days_in_month_newyork; let i=index;\" class='col-md-1 fix-height'>\n                            <div *ngIf=\"item > 0\">\n                                <h3 (click)=\"onClickEachDate($event.target.innerText, 1)\">{{i+1}}</h3><p>{{item}} buses</p>\n                            </div>\n                            <div *ngIf=\"item == 0\">\n                                <h3 (click)=\"onClickEachDate($event.target.innerText, 1)\">{{i+1}}</h3><p>0 bus</p>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                \n            </div>\n            <div id=\"bethesda\" class=\"tab-pane\">\n                <div class=\"h4 row\">\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-left\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"prevMonth()\">« Previous</a> \n                    </div>\n                    <div class=\"col-xs-6 col-md-6 text-center small\">\n                        <b>\n                            <font color=\"red\">Special schedule.</font>\n                            <br>\n                            <font color=\"orange\"> New weekly schedule takes effect</font>\n                        </b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-right\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"nextMonth()\">Next »</a> \n                    </div>\n                </div>\n                \n                <h2 class=\"text-center\" id=\"h2_year_month\">{{calendarInfo.cur_date_str}}</h2> \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols weekdays\">\n                        <div class=\"col-md-1\">Sun</div>\n                        <div class=\"col-md-1\">Mon</div>\n                        <div class=\"col-md-1\">Tue</div>\n                        <div class=\"col-md-1\">Wed</div>\n                        <div class=\"col-md-1\">Thu</div>\n                        <div class=\"col-md-1\">Fri</div>\n                        <div class=\"col-md-1\">Sat</div>\n                    </div>\n                </div>\n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols\">\n                        <div *ngFor=\"let item of month_firstday_dow_ba\" class='col-md-1 fix-height' style='min-height: 0px;'></div>\n\n                        <div *ngFor=\"let item of days_in_month_ba; let i=index;\" class='col-md-1 fix-height'>\n                            <div *ngIf=\"item > 0\">\n                                <h3 (click)=\"onClickEachDate($event.target.innerText, 2)\">{{i+1}}</h3><p>{{item}} buses</p>\n                            </div>\n                            <div *ngIf=\"item == 0\">\n                                <h3 (click)=\"onClickEachDate($event.target.innerText, 2)\">{{i+1}}</h3><p>0 bus</p>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</section>\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal_NY\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" (click)=\"onEditSchedule(1)\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" (click)=\"onGenNewSchedule(1)\" > Generate New</a>\n                <a class=\"btn btn-info\" (click)=\"onGenSpecialSchedule(1)\"> Generate Special</a>\n                \n                <h3>Current Schedule:</h3>\n                <div id='schedule_infos'>\n                    <div *ngFor=\"let group of sorted_groups; let i=index;\">\n                        <p><strong>Bus #{{i+1}}:</strong></p>\n                        <div *ngFor=\"let item of group;\">\n                            <p>{{item['time']}} from {{item[\"stop_area\"]}}</p>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>  \n      \n    </div>\n</div>\n\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal_BA\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" (click)=\"onEditSchedule(2)\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" (click)=\"onGenNewSchedule(2)\" > Generate New</a>\n                <a class=\"btn btn-info\" (click)=\"onGenSpecialSchedule(2)\"> Generate Special</a>\n                \n                <h3>Current Schedule:</h3>\n                <div id='schedule_infos'>\n                    <div *ngFor=\"let group of sorted_groups; let i=index;\">\n                        <p><strong>Bus #{{i+1}}:</strong></p>\n                        <div *ngFor=\"let item of group;\">\n                            <p>{{item['time']}} from {{item[\"stop_area\"]}}</p>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>  \n      \n    </div>\n</div>\n\n\n"
+module.exports = "\n<section class=\"content-header admin-schedules-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-calendar-o\"></i> Schedules\n    </h1>\n    <ol class=\"breadcrumb admin-schedules-breadcrumb-custom\">\n        <li><a href=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li class=\"active\">Schedules</li>\n    </ol>\n</section>\n\n<section class=\"panel general\">\n    <header class=\"panel-heading tab-bg-dark-navy-blue\">\n        <ul class=\"nav nav-tabs\">\n            <li class=\"active\">\n                <a data-toggle=\"tab\" href=\"#newyork\">From New York City</a>\n            </li>\n            <li class=\"\">\n                <a data-toggle=\"tab\" href=\"#bethesda\">From Bethesda/Arlington</a>\n            </li>\n        </ul>\n    </header>\n    <div class=\"panel-body\">\n        <div class=\"tab-content\">\n            <div id=\"newyork\" class=\"tab-pane active\">\n                <div class=\"h4 row\">\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-left\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"prevMonth()\">« Previous</a> \n                    </div>\n                    <div class=\"col-xs-6 col-md-6 text-center small\">\n                        <b>\n                            <font color=\"red\">Special schedule.</font>\n                            <br>\n                            <font color=\"orange\"> New weekly schedule takes effect</font>\n                        </b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-right\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"nextMonth()\">Next »</a> \n                    </div>\n                </div>\n                \n                <h2 class=\"text-center\" id=\"h2_year_month\">{{calendarInfo.cur_date_str}}</h2> \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols weekdays\">\n                        <div class=\"col-md-1\">Sun</div>\n                        <div class=\"col-md-1\">Mon</div>\n                        <div class=\"col-md-1\">Tue</div>\n                        <div class=\"col-md-1\">Wed</div>\n                        <div class=\"col-md-1\">Thu</div>\n                        <div class=\"col-md-1\">Fri</div>\n                        <div class=\"col-md-1\">Sat</div>\n                    </div>\n                </div>\n                \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols\">\n                        <div *ngFor=\"let item of month_firstday_dow\" class='col-md-1 fix-height' style='min-height: 0px;'></div>\n                        \n                        <div *ngFor=\"let item of dayinfos_in_month_newyork; let i=index;\" class='col-md-1 fix-height'>\n                            <div *ngIf=\"item['isHoliday'] == 0\">\n                                <h3 (click)=\"onClickEachDate($event.target.innerText, 1)\" style='color: red;'>{{i+1}}</h3><p style='color: red;'>{{item['bus_cnt']}} buses</p>\n                            </div>\n                            <div *ngIf=\"item['isHoliday'] == 1\">\n                                <div *ngIf=\"item['bus_cnt'] == 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, 1)\" >{{i+1}}</h3><p>0 bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] != 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, 1)\" >{{i+1}}</h3><p>{{item['bus_cnt']}} buses</p>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                \n            </div>\n            <div id=\"bethesda\" class=\"tab-pane\">\n                <div class=\"h4 row\">\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-left\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"prevMonth()\">« Previous</a> \n                    </div>\n                    <div class=\"col-xs-6 col-md-6 text-center small\">\n                        <b>\n                            <font color=\"red\">Special schedule.</font>\n                            <br>\n                            <font color=\"orange\"> New weekly schedule takes effect</font>\n                        </b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-right\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"nextMonth()\">Next »</a> \n                    </div>\n                </div>\n                \n                <h2 class=\"text-center\" id=\"h2_year_month\">{{calendarInfo.cur_date_str}}</h2> \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols weekdays\">\n                        <div class=\"col-md-1\">Sun</div>\n                        <div class=\"col-md-1\">Mon</div>\n                        <div class=\"col-md-1\">Tue</div>\n                        <div class=\"col-md-1\">Wed</div>\n                        <div class=\"col-md-1\">Thu</div>\n                        <div class=\"col-md-1\">Fri</div>\n                        <div class=\"col-md-1\">Sat</div>\n                    </div>\n                </div>\n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols\">\n                        <div *ngFor=\"let item of month_firstday_dow\" class='col-md-1 fix-height' style='min-height: 0px;'></div>\n\n                        <div *ngFor=\"let item of dayinfos_in_month_ba; let i=index;\" class='col-md-1 fix-height'>\n                            <div *ngIf=\"item['isHoliday'] == 0\">\n                                <h3 (click)=\"onClickEachDate($event.target.innerText, 1)\" style='color: red;'>{{i+1}}</h3><p style='color: red;'>{{item['bus_cnt']}} buses</p>\n                            </div>\n                            <div *ngIf=\"item['isHoliday'] == 1\">\n                                <div *ngIf=\"item['bus_cnt'] == 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, 1)\" >{{i+1}}</h3><p>0 bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] != 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, 1)\" >{{i+1}}</h3><p>{{item['bus_cnt']}} buses</p>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</section>\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal_NY\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" (click)=\"onEditSchedule(1)\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" (click)=\"onGenNewSchedule(1)\" > Generate New</a>\n                <a class=\"btn btn-info\" (click)=\"onGenSpecialSchedule(1)\"> Generate Special</a>\n                \n                <h3>Current Schedule:</h3>\n                <div id='schedule_infos'>\n                    <div *ngFor=\"let group of sorted_groups; let i=index;\">\n                        <p><strong>Bus #{{i+1}}:</strong></p>\n                        <div *ngFor=\"let item of group;\">\n                            <p>{{item['time']}} from {{item[\"stop_area\"]}}</p>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>  \n      \n    </div>\n</div>\n\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal_BA\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" (click)=\"onEditSchedule(2)\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" (click)=\"onGenNewSchedule(2)\" > Generate New</a>\n                <a class=\"btn btn-info\" (click)=\"onGenSpecialSchedule(2)\"> Generate Special</a>\n                \n                <h3>Current Schedule:</h3>\n                <div id='schedule_infos'>\n                    <div *ngFor=\"let group of sorted_groups; let i=index;\">\n                        <p><strong>Bus #{{i+1}}:</strong></p>\n                        <div *ngFor=\"let item of group;\">\n                            <p>{{item['time']}} from {{item[\"stop_area\"]}}</p>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>  \n      \n    </div>\n</div>\n\n\n"
 
 /***/ }),
 

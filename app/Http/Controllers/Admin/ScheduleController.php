@@ -76,34 +76,72 @@ class ScheduleController extends Controller
             $response = array();
             
             for ($i = mktime(0, 0, 0, $month, 1, $year); $i <= mktime(0, 0, 0, $month, cal_days_in_month(CAL_GREGORIAN,$month,$year)); $i += 24 * 60 *60) {
-                $cur_date = date("Y-m-d", $i);
+                $cur_date = date("Y-m-d", $i); 
                 
-                $cnt = \App\Models\Res_Times::where('w_h', $this->db_week_schedule)
-                    ->where('date', '<=',  $cur_date)
+                // Get holiday schedule first for this date.
+                $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                    //->where('date', $cur_date)
                     ->where('day_of_week',  date('w', $i))
                     ->where('valid',  $this->valid_field_enabled)
-                    ->count();
+                    ->count(); 
                 
+                $isHoliday = 0;
                 if ($cnt > 0) {
-                    
-                    $result = \App\Models\Res_Times::where('w_h', $this->db_week_schedule)
-                            ->where('date', '<=',  $cur_date)
+                    $result = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                            //->where('date', $cur_date)
                             ->where('day_of_week',  date('w', $i))
                             ->where('valid',  $this->valid_field_enabled)
                             ->get();
                     
                     foreach ($result as $reservation) {
-                        $temp = array();
-                        $temp['time'] = $reservation->time;
-                        $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
-                        $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
-                        $temp['group_id'] = $reservation->group_id;
-                        $temp['schedule_type'] = $reservation->w_h;
-                        $temp['schedule_date'] = $cur_date;
-                        $temp['area_id'] = $reservation->area_id;
+                        $temp_date1 = date_create($reservation->date)->getTimestamp();
+                        $temp_date2 = date_create($cur_date)->getTimestamp();
+                        
+                        if ($temp_date1 == $temp_date2) { 
+                            $temp = array();
+                            $temp['time'] = $reservation->time;
+                            $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
+                            $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
+                            $temp['group_id'] = $reservation->group_id;
+                            $temp['w_h'] = $reservation->w_h;
+                            $temp['date'] = $cur_date;
+                            $temp['area_id'] = $reservation->area_id;
 
-                        $response[] = $temp;
+                            $response[] = $temp;
+                            $isHoliday = 1;
+                        }
+                    } 
+                } 
+                
+                if ($isHoliday === 0) {
+                    $cnt = \App\Models\Res_Times::where('w_h', $this->db_week_schedule)
+                    ->where('date', '<=',  $cur_date)
+                    ->where('day_of_week',  date('w', $i))
+                    ->where('valid',  $this->valid_field_enabled)
+                    ->count();
+                
+                    if ($cnt > 0) {
+
+                        $result = \App\Models\Res_Times::where('w_h', $this->db_week_schedule)
+                                ->where('date', '<=',  $cur_date)
+                                ->where('day_of_week',  date('w', $i))
+                                ->where('valid',  $this->valid_field_enabled)
+                                ->get();
+
+                        foreach ($result as $reservation) {
+                            $temp = array();
+                            $temp['time'] = $reservation->time;
+                            $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
+                            $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
+                            $temp['group_id'] = $reservation->group_id;
+                            $temp['w_h'] = $reservation->w_h;
+                            $temp['date'] = $cur_date;
+                            $temp['area_id'] = $reservation->area_id;
+
+                            $response[] = $temp;
+                        }
                     }
+                
                 }
             }
             
