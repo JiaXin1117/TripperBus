@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\Input;
 
 class ScheduleController extends Controller
 {
-    protected $db_week_schedule = 1;
-    protected $db_hol_schedule = 2;
-    protected $valid_field_enabled = 1;
     
     public function __construct()
     {
@@ -24,31 +21,73 @@ class ScheduleController extends Controller
     public function getRetriveScheduleByDate() { 
         $date = Input::get('date');
         $cur_date = date_create($date); 
+        $response = array();
         
+        // Get Holiday Schedule First.
+        $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                //->where('date', $cur_date)
+                ->where('day_of_week',  date('w', $cur_date->getTimestamp()))
+                ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                ->count(); 
+        
+        if ($cnt > 0) {
+            $result = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                    //->where('date', $cur_date)
+                    ->where('day_of_week',  date('w', $cur_date->getTimestamp()))
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->get();
+            
+            //$isHoliday = 0;
+            foreach ($result as $reservation) {
+
+                if (date_create($reservation->date)->getTimestamp() == $cur_date->getTimestamp()) { 
+                    $temp = array();
+                    $temp['time'] = $reservation->time;
+                    $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
+                    $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
+                    $temp['group_id'] = $reservation->group_id;
+                    $temp['w_h'] = $reservation->w_h;
+                    $temp['date'] = $reservation->date;
+                    $temp['dow'] = $reservation->day_of_week;
+                    $temp['time_id'] = $reservation->id;
+                    $temp['open'] = $reservation->open;
+                    $temp['area_id'] = $reservation->area_id;
+
+                    $response[] = $temp;
+                    //$isHoliday = 1;
+                }
+            } 
+            
+            /*if ($isHoliday === 1) {
+                return response()->json([
+                    'state' => 'success',
+                    'data' => $response
+                ]);
+            }*/
+        } 
+        
+        // Get weekly schedule
         $cnt = \App\Models\Res_Times::where('date', '<=',  $cur_date)
-            ->where('day_of_week',  date('w', strtotime($date)))
-            ->where('valid',  $this->valid_field_enabled)
-            ->count();
-        if ($cnt == 0) {
-            return response()->json([
-                'state' => 'fail',
-                'data' => 'No weekly schedule set for this date.'
-            ]);
-        } else {
+                ->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                ->where('day_of_week',  date('w', strtotime($date)))
+                ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                ->count();
+        
+        if ($cnt > 0) {
             $result = \App\Models\Res_Times::where('date', '<=',  $cur_date)
+                    ->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
                     ->where('day_of_week',  date('w', strtotime($date)))
-                    ->where('valid',  $this->valid_field_enabled)
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                     ->get();
 
-            $response = array();
             foreach ($result as $reservation) {
                 $temp = array();
                 $temp['time'] = $reservation->time;
                 $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
                 $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
                 $temp['group_id'] = $reservation->group_id;
-                $temp['schedule_type'] = $reservation->w_h;
-                $temp['from_date'] = $reservation->date;
+                $temp['w_h'] = $reservation->w_h;
+                $temp['date'] = $reservation->date;
                 $temp['dow'] = $reservation->day_of_week;
                 $temp['time_id'] = $reservation->id;
                 $temp['open'] = $reservation->open;
@@ -56,6 +95,9 @@ class ScheduleController extends Controller
 
                 $response[] = $temp;
             }
+        }
+        
+        if (count($response) > 0) {
             return response()->json([
                 'state' => 'success',
                 'data' => $response
@@ -82,22 +124,19 @@ class ScheduleController extends Controller
                 $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
                     //->where('date', $cur_date)
                     ->where('day_of_week',  date('w', $i))
-                    ->where('valid',  $this->valid_field_enabled)
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                     ->count(); 
                 
-                $isHoliday = 0;
+                //$isHoliday = 0;
                 if ($cnt > 0) {
                     $result = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
                             //->where('date', $cur_date)
                             ->where('day_of_week',  date('w', $i))
-                            ->where('valid',  $this->valid_field_enabled)
+                            ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                             ->get();
                     
                     foreach ($result as $reservation) {
-                        $temp_date1 = date_create($reservation->date)->getTimestamp();
-                        $temp_date2 = date_create($cur_date)->getTimestamp();
-                        
-                        if ($temp_date1 == $temp_date2) { 
+                        if (date_create($reservation->date)->getTimestamp() == date_create($cur_date)->getTimestamp()) { 
                             $temp = array();
                             $temp['time'] = $reservation->time;
                             $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
@@ -108,46 +147,51 @@ class ScheduleController extends Controller
                             $temp['area_id'] = $reservation->area_id;
 
                             $response[] = $temp;
-                            $isHoliday = 1;
+                            //$isHoliday = 1;
                         }
                     } 
                 } 
                 
-                if ($isHoliday === 0) {
-                    $cnt = \App\Models\Res_Times::where('w_h', $this->db_week_schedule)
+                // Get weekly schedule.
+                $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
                     ->where('date', '<=',  $cur_date)
                     ->where('day_of_week',  date('w', $i))
-                    ->where('valid',  $this->valid_field_enabled)
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                     ->count();
-                
-                    if ($cnt > 0) {
 
-                        $result = \App\Models\Res_Times::where('w_h', $this->db_week_schedule)
-                                ->where('date', '<=',  $cur_date)
-                                ->where('day_of_week',  date('w', $i))
-                                ->where('valid',  $this->valid_field_enabled)
-                                ->get();
+                if ($cnt > 0) {
+                    $result = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                            ->where('date', '<=',  $cur_date)
+                            ->where('day_of_week',  date('w', $i))
+                            ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                            ->get();
 
-                        foreach ($result as $reservation) {
-                            $temp = array();
-                            $temp['time'] = $reservation->time;
-                            $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
-                            $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
-                            $temp['group_id'] = $reservation->group_id;
-                            $temp['w_h'] = $reservation->w_h;
-                            $temp['date'] = $cur_date;
-                            $temp['area_id'] = $reservation->area_id;
+                    foreach ($result as $reservation) {
+                        $temp = array();
+                        $temp['time'] = $reservation->time;
+                        $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
+                        $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
+                        $temp['group_id'] = $reservation->group_id;
+                        $temp['w_h'] = $reservation->w_h;
+                        $temp['date'] = $cur_date;
+                        $temp['area_id'] = $reservation->area_id;
 
-                            $response[] = $temp;
-                        }
+                        $response[] = $temp;
                     }
-                
                 }
+                
             }
             
+            if (count($response) > 0) {
+                return response()->json([
+                    'state' => 'success',
+                    'data' => $response
+                ]);
+            }
+
             return response()->json([
-                'state' => 'success',
-                'data' => $response
+                'state' => 'fail',
+                'data' => 'Cannot find reservation for this date.'
             ]);
             
     }
