@@ -145,6 +145,7 @@ class ScheduleController extends Controller
                             $temp['w_h'] = $reservation->w_h;
                             $temp['date'] = $cur_date;
                             $temp['area_id'] = $reservation->area_id;
+                            $temp['schedule_date'] = $reservation->date;
 
                             $response[] = $temp;
                             //$isHoliday = 1;
@@ -168,6 +169,7 @@ class ScheduleController extends Controller
 
                     foreach ($result as $reservation) {
                         $temp = array();
+                        
                         $temp['time'] = $reservation->time;
                         $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
                         $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
@@ -175,6 +177,7 @@ class ScheduleController extends Controller
                         $temp['w_h'] = $reservation->w_h;
                         $temp['date'] = $cur_date;
                         $temp['area_id'] = $reservation->area_id;
+                        $temp['schedule_date'] = $reservation->date;
 
                         $response[] = $temp;
                     }
