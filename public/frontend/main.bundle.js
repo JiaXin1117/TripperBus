@@ -511,11 +511,16 @@ var AdminSchedulesEditexistingComponent = (function () {
                     me.headerInfos.date = me.inputParams.date;
                 }
                 else {
-                    if (latest_date == "" || latest_date == undefined) {
+                    if (me.inputParams.type == me._commonService.scheduleType.TYPE_GENERATE_NEW) {
                         me.headerInfos.date = me.inputParams.date;
                     }
                     else {
-                        me.headerInfos.date = latest_date;
+                        if (latest_date == "" || latest_date == undefined) {
+                            me.headerInfos.date = me.inputParams.date;
+                        }
+                        else {
+                            me.headerInfos.date = latest_date;
+                        }
                     }
                 }
                 me.headerInfos.dow = me._commonService.convertDayOfWeekFormat(new Date(me.inputParams.date).getDay());
@@ -537,7 +542,8 @@ var AdminSchedulesEditexistingComponent = (function () {
                     var temp = [];
                     for (var j = 0; j < Object.keys(dayInfos).length; j++) {
                         var item = dayInfos[j];
-                        if (group_ids[i] == item['group_id'] && item['area_id'] == me.inputParams.area_id && item['w_h'] == me.inputParams.schedule_type) {
+                        if (group_ids[i] == item['group_id'] && item['area_id'] == me.inputParams.area_id
+                            && item['w_h'] == me.inputParams.schedule_type) {
                             if (me.inputParams.schedule_type == me._commonService.w_hType.TYPE_WEEKLY) {
                                 if (item['date'] != latest_date)
                                     continue;
@@ -661,11 +667,16 @@ var AdminSchedulesEditexistingComponent = (function () {
                     temp['date_from'] = me.inputParams.date;
                 }
                 else {
-                    if (me.headerInfos.schedule_latest_date == "" || me.headerInfos.schedule_latest_date == undefined) {
+                    if (me.inputParams.type == me._commonService.scheduleType.TYPE_GENERATE_NEW) {
                         temp['date_from'] = me.inputParams.date;
                     }
                     else {
-                        temp['date_from'] = me.headerInfos.schedule_latest_date;
+                        if (me.headerInfos.schedule_latest_date == "" || me.headerInfos.schedule_latest_date == undefined) {
+                            temp['date_from'] = me.inputParams.date;
+                        }
+                        else {
+                            temp['date_from'] = me.headerInfos.schedule_latest_date;
+                        }
                     }
                 }
                 temp['dow'] = me._commonService.convertWeekToNumber(me.headerInfos.dow);
@@ -678,7 +689,6 @@ var AdminSchedulesEditexistingComponent = (function () {
                 }
                 insert_request[i] = temp;
             }
-            console.log(insert_request);
         }
         this._httpService.sendPostJSON(me.urls.add_schedule_url, insert_request)
             .subscribe(function (data) {
@@ -757,7 +767,7 @@ var AdminSchedulesComponent = (function () {
     AdminSchedulesComponent.prototype.onEditSchedule = function (param_areaId) {
         this.hideModal();
         var link = ['/admin/schedules_edit', this.selected_date, this._commonService.scheduleType.TYPE_EDIT_EXISTING,
-            param_areaId, this._commonService.w_hType.TYPE_WEEKLY];
+            param_areaId, this.sorted_groups_schedule_type];
         this._router.navigate(link);
     };
     AdminSchedulesComponent.prototype.onGenNewSchedule = function (param_areaId) {
