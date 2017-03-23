@@ -13,7 +13,7 @@ module.exports = __webpack_require__(456);
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(51);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -396,8 +396,8 @@ var AdminRatesComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(67);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(80);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(95);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesEditexistingComponent; });
@@ -415,14 +415,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var AdminSchedulesEditexistingComponent = (function () {
-    function AdminSchedulesEditexistingComponent(_route, _commonService, _httpService) {
+    function AdminSchedulesEditexistingComponent(_route, _scheduleService, _router, _httpService) {
         this._route = _route;
-        this._commonService = _commonService;
+        this._scheduleService = _scheduleService;
+        this._router = _router;
         this._httpService = _httpService;
         this.inputParams = {
             date: "",
-            type: "",
+            button_type: "",
             area_id: "",
             schedule_type: ""
         };
@@ -431,7 +433,12 @@ var AdminSchedulesEditexistingComponent = (function () {
             dow: "",
             date: "",
             city: "",
-            schedule_latest_date: "",
+        };
+        this.addModalHeaderInfos = {
+            after_on: "",
+            dow: "",
+            date: "",
+            city: "",
         };
         this.urls = {
             retrieve_schedule_by_date_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_by_date",
@@ -448,9 +455,6 @@ var AdminSchedulesEditexistingComponent = (function () {
         this.adding_hours = [];
         this.adding_mins = [];
         this.adding_prices = [];
-        this.TYPE_EDIT_EXISTING = 0;
-        this.TYPE_GENERATE_NEW = 1;
-        this.TYPE_GENERATE_SPECIAL = 2;
     }
     AdminSchedulesEditexistingComponent.prototype.ngOnInit = function () {
         this.structTimeArray();
@@ -460,21 +464,10 @@ var AdminSchedulesEditexistingComponent = (function () {
     };
     AdminSchedulesEditexistingComponent.prototype.receiveParamsFromRoute = function () {
         this.inputParams.date = this._route.snapshot.params['sel_date'];
-        this.inputParams.type = this._route.snapshot.params['button_type'];
+        this.inputParams.button_type = this._route.snapshot.params['button_type'];
         this.inputParams.area_id = this._route.snapshot.params['area_id'];
         this.inputParams.schedule_type = this._route.snapshot.params['schedule_type'];
     };
-    /*public doActions() {
-            let me = this;
-            
-            if (me.inputParams.type == me._commonService.scheduleType.TYPE_GENERATE_NEW) {
-                jQuery("#gen_new_schedule_modal").modal('show');
-            } else if (me.inputParams.type == me._commonService.scheduleType.TYPE_GENERATE_SPECIAL) {
-                jQuery("#gen_special_schedule_modal").modal('show');
-            } else {
-                
-            }
-    }*/
     AdminSchedulesEditexistingComponent.prototype.popupAddScheduleModal = function () {
         jQuery("#add_schedule_modal").modal('show');
     };
@@ -487,52 +480,23 @@ var AdminSchedulesEditexistingComponent = (function () {
             if (response['state'] == 'success') {
                 var dayInfos = response['data'];
                 // Get latest schedule date for weekly schedule.
-                var latest_date = void 0;
-                if (me.inputParams.schedule_type == me._commonService.w_hType.TYPE_WEEKLY) {
+                if (me.inputParams.schedule_type == me._scheduleService.w_hType.TYPE_WEEKLY) {
                     // Collect weekly dates for this date.
                     var temp_dates = [];
                     for (var i = 0; i < Object.keys(dayInfos).length; i++) {
                         var item = dayInfos[i];
-                        if (item['w_h'] == me._commonService.w_hType.TYPE_WEEKLY && item['area_id'] == me.inputParams.area_id) {
+                        if (item['w_h'] == me._scheduleService.w_hType.TYPE_WEEKLY && item['area_id'] == me.inputParams.area_id) {
                             temp_dates.push(item['date']);
                         }
                     }
-                    latest_date = me._commonService.getLatestWeeklyDate(temp_dates);
-                    me.headerInfos.schedule_latest_date = latest_date;
+                    me.latest_date = me._scheduleService.getLatestWeeklyDate(temp_dates);
                 }
-                // Get header related infos.
-                if (me.inputParams.schedule_type == me._commonService.w_hType.TYPE_HOLIDAY) {
-                    me.headerInfos.after_on = "on";
-                }
-                else {
-                    me.headerInfos.after_on = "after";
-                }
-                if (me.inputParams.schedule_type == me._commonService.w_hType.TYPE_HOLIDAY) {
-                    me.headerInfos.date = me.inputParams.date;
-                }
-                else {
-                    if (me.inputParams.type == me._commonService.scheduleType.TYPE_GENERATE_NEW) {
-                        me.headerInfos.date = me.inputParams.date;
-                    }
-                    else {
-                        if (latest_date == "" || latest_date == undefined) {
-                            me.headerInfos.date = me.inputParams.date;
-                        }
-                        else {
-                            me.headerInfos.date = latest_date;
-                        }
-                    }
-                }
-                me.headerInfos.dow = me._commonService.convertDayOfWeekFormat(new Date(me.inputParams.date).getDay());
-                me.headerInfos.city = me._commonService.getCityName(me.inputParams.area_id);
+                // Page Header.
+                me.setHeaderInfoForPage(true);
+                // Add Modal Header.
+                me.setAddModalHeaderInfoForPage(true);
                 // Collect group ids.
-                var group_ids = [];
-                for (var i = 0; i < Object.keys(dayInfos).length; i++) {
-                    var item = dayInfos[i];
-                    if (group_ids.indexOf(item['group_id']) == -1) {
-                        group_ids.push(item['group_id']);
-                    }
-                }
+                var group_ids = me._scheduleService.collectGroupIDs(dayInfos);
                 if (Object.keys(group_ids).length == 0) {
                     console.log("No group id");
                     return;
@@ -544,8 +508,8 @@ var AdminSchedulesEditexistingComponent = (function () {
                         var item = dayInfos[j];
                         if (group_ids[i] == item['group_id'] && item['area_id'] == me.inputParams.area_id
                             && item['w_h'] == me.inputParams.schedule_type) {
-                            if (me.inputParams.schedule_type == me._commonService.w_hType.TYPE_WEEKLY) {
-                                if (item['date'] != latest_date)
+                            if (me.inputParams.schedule_type == me._scheduleService.w_hType.TYPE_WEEKLY) {
+                                if (item['date'] != me.latest_date)
                                     continue;
                             }
                             temp.push(item);
@@ -575,13 +539,76 @@ var AdminSchedulesEditexistingComponent = (function () {
                 }
             }
             else {
-                me.headerInfos.after_on = "after";
-                me.headerInfos.date = me.inputParams.date;
-                me.headerInfos.dow = me._commonService.convertDayOfWeekFormat(new Date(me.inputParams.date).getDay());
-                me.headerInfos.city = me._commonService.getCityName(me.inputParams.area_id);
-                me.headerInfos.schedule_latest_date = "";
+                // Page Header.
+                me.setHeaderInfoForPage(false);
+                // Add Modal Header.
+                me.setAddModalHeaderInfoForPage(false);
             }
         });
+    };
+    AdminSchedulesEditexistingComponent.prototype.setHeaderInfoForPage = function (param_isSuccess) {
+        var me = this;
+        if (param_isSuccess == true) {
+            // Get header related infos for edit existing.
+            if (me.inputParams.schedule_type == me._scheduleService.w_hType.TYPE_HOLIDAY) {
+                me.headerInfos.after_on = "on";
+            }
+            else {
+                me.headerInfos.after_on = "after";
+            }
+            if (me.inputParams.schedule_type == me._scheduleService.w_hType.TYPE_HOLIDAY) {
+                me.headerInfos.date = me.inputParams.date;
+            }
+            else {
+                if (me.latest_date == "" || me.latest_date == undefined) {
+                    me.headerInfos.date = me.inputParams.date;
+                }
+                else {
+                    me.headerInfos.date = me.latest_date;
+                }
+            }
+            me.headerInfos.dow = me._scheduleService.convertDayOfWeekFormat(new Date(me.inputParams.date).getDay());
+            me.headerInfos.city = me._scheduleService.getCityName(me.inputParams.area_id);
+        }
+        else {
+            me.headerInfos.after_on = "after";
+            me.headerInfos.date = me.inputParams.date;
+            me.headerInfos.dow = me._scheduleService.convertDayOfWeekFormat(new Date(me.inputParams.date).getDay());
+            me.headerInfos.city = me._scheduleService.getCityName(me.inputParams.area_id);
+        }
+    };
+    AdminSchedulesEditexistingComponent.prototype.setAddModalHeaderInfoForPage = function (param_isSuccess) {
+        var me = this;
+        if (param_isSuccess == true) {
+            if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
+                me.addModalHeaderInfos.after_on = "on";
+            }
+            else {
+                me.addModalHeaderInfos.after_on = "after";
+            }
+            if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
+                me.addModalHeaderInfos.date = me.inputParams.date;
+            }
+            else if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_NEW) {
+                me.addModalHeaderInfos.date = me.inputParams.date;
+            }
+            else {
+                if (me.latest_date == "" || me.latest_date == undefined) {
+                    me.addModalHeaderInfos.date = me.inputParams.date;
+                }
+                else {
+                    me.addModalHeaderInfos.date = me.latest_date;
+                }
+            }
+            me.addModalHeaderInfos.dow = me._scheduleService.convertDayOfWeekFormat(new Date(me.inputParams.date).getDay());
+            me.addModalHeaderInfos.city = me._scheduleService.getCityName(me.inputParams.area_id);
+        }
+        else {
+            me.addModalHeaderInfos.after_on = "after";
+            me.addModalHeaderInfos.date = me.inputParams.date;
+            me.addModalHeaderInfos.dow = me._scheduleService.convertDayOfWeekFormat(new Date(me.inputParams.date).getDay());
+            me.addModalHeaderInfos.city = me._scheduleService.getCityName(me.inputParams.area_id);
+        }
     };
     AdminSchedulesEditexistingComponent.prototype.onSaveAll = function () {
         var me = this;
@@ -663,38 +690,66 @@ var AdminSchedulesEditexistingComponent = (function () {
                 temp['stop'] = me.adding_stops[i];
                 temp['hour'] = me.adding_hours[i];
                 temp['min'] = me.adding_mins[i];
-                if (me.inputParams.schedule_type == me._commonService.w_hType.TYPE_HOLIDAY) {
-                    temp['date_from'] = me.inputParams.date;
-                }
-                else {
-                    if (me.inputParams.type == me._commonService.scheduleType.TYPE_GENERATE_NEW) {
+                // Set date_from value.
+                if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_EDIT_EXISTING) {
+                    if (me.inputParams.schedule_type == me._scheduleService.w_hType.TYPE_HOLIDAY) {
                         temp['date_from'] = me.inputParams.date;
+                        ;
                     }
                     else {
-                        if (me.headerInfos.schedule_latest_date == "" || me.headerInfos.schedule_latest_date == undefined) {
+                        if (me.latest_date == "" || me.latest_date == undefined) {
                             temp['date_from'] = me.inputParams.date;
                         }
                         else {
-                            temp['date_from'] = me.headerInfos.schedule_latest_date;
+                            temp['date_from'] = me.latest_date;
                         }
                     }
                 }
-                temp['dow'] = me._commonService.convertWeekToNumber(me.headerInfos.dow);
-                temp['area_id'] = me.inputParams.area_id;
-                if (me.inputParams.type == me._commonService.scheduleType.TYPE_GENERATE_NEW) {
-                    temp['w_h'] = me._commonService.w_hType.TYPE_WEEKLY;
+                else {
+                    temp['date_from'] = me.inputParams.date;
                 }
-                else if (me.inputParams.type == me._commonService.scheduleType.TYPE_GENERATE_SPECIAL) {
-                    temp['w_h'] = me._commonService.w_hType.TYPE_HOLIDAY;
+                // Set day of week for adding date.
+                var date_temp = new Date(me.inputParams.date);
+                temp['dow'] = date_temp.getDay();
+                temp['area_id'] = me.inputParams.area_id;
+                if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
+                    temp['w_h'] = me._scheduleService.w_hType.TYPE_HOLIDAY;
+                }
+                else if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_NEW) {
+                    temp['w_h'] = me._scheduleService.w_hType.TYPE_WEEKLY;
+                }
+                else {
+                    temp['w_h'] = me.inputParams.schedule_type;
                 }
                 insert_request[i] = temp;
             }
         }
+        console.log(insert_request);
         this._httpService.sendPostJSON(me.urls.add_schedule_url, insert_request)
             .subscribe(function (data) {
-            window.location.reload();
+            me.refreshCurrentPage(me.inputParams.button_type);
         }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
         jQuery("#add_schedule_modal").modal('hide');
+    };
+    AdminSchedulesEditexistingComponent.prototype.refreshCurrentPage = function (param_btnType) {
+        var link;
+        var me = this;
+        if (param_btnType == me._scheduleService.buttonType.TYPE_EDIT_EXISTING) {
+            link = ['/admin/schedules_edit', me.inputParams.date, me._scheduleService.buttonType.TYPE_EDIT_EXISTING,
+                me.inputParams.area_id, me.inputParams.schedule_type];
+            me._router.navigate(link);
+        }
+        else if (param_btnType == me._scheduleService.buttonType.TYPE_GENERATE_NEW) {
+            link = ['/admin/schedules_edit', me.inputParams.date, me._scheduleService.buttonType.TYPE_GENERATE_NEW,
+                me.inputParams.area_id, me._scheduleService.w_hType.TYPE_WEEKLY];
+            me._router.navigate(link);
+        }
+        else {
+            link = ['/admin/schedules_edit', me.inputParams.date, me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL,
+                me.inputParams.area_id, me._scheduleService.w_hType.TYPE_HOLIDAY];
+            me._router.navigate(link);
+        }
+        setTimeout(window.location.reload(), 500);
     };
     AdminSchedulesEditexistingComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Component */])({
@@ -702,10 +757,10 @@ var AdminSchedulesEditexistingComponent = (function () {
             template: __webpack_require__(836),
             styles: [__webpack_require__(800)]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__["a" /* ScheduleService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__["a" /* ScheduleService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */]) === 'function' && _c) || Object, (typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _d) || Object])
     ], AdminSchedulesEditexistingComponent);
     return AdminSchedulesEditexistingComponent;
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
 }());
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-schedules-editexisting.component.js.map
 
@@ -717,9 +772,9 @@ var AdminSchedulesEditexistingComponent = (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(80);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(95);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__(51);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -736,10 +791,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var AdminSchedulesComponent = (function () {
-    function AdminSchedulesComponent(_httpService, _router, _commonService) {
+    function AdminSchedulesComponent(_httpService, _router, _scheduleService) {
         this._httpService = _httpService;
         this._router = _router;
-        this._commonService = _commonService;
+        this._scheduleService = _scheduleService;
         this.urls = {
             retrieve_schedule_by_month_url: __WEBPACK_IMPORTED_MODULE_3__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_by_month",
             retrieve_schedule_by_date_url: __WEBPACK_IMPORTED_MODULE_3__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_by_date"
@@ -762,24 +817,23 @@ var AdminSchedulesComponent = (function () {
     };
     AdminSchedulesComponent.prototype.initiate = function () {
         var me = this;
-        me.sorted_groups_schedule_type = me._commonService.w_hType.TYPE_WEEKLY;
     };
     AdminSchedulesComponent.prototype.onEditSchedule = function (param_areaId) {
         this.hideModal();
-        var link = ['/admin/schedules_edit', this.selected_date, this._commonService.scheduleType.TYPE_EDIT_EXISTING,
+        var link = ['/admin/schedules_edit', this.selected_date, this._scheduleService.buttonType.TYPE_EDIT_EXISTING,
             param_areaId, this.sorted_groups_schedule_type];
         this._router.navigate(link);
     };
     AdminSchedulesComponent.prototype.onGenNewSchedule = function (param_areaId) {
         this.hideModal();
-        var link = ['/admin/schedules_edit', this.selected_date, this._commonService.scheduleType.TYPE_GENERATE_NEW,
-            param_areaId, this._commonService.w_hType.TYPE_WEEKLY];
+        var link = ['/admin/schedules_edit', this.selected_date, this._scheduleService.buttonType.TYPE_GENERATE_NEW,
+            param_areaId, this.sorted_groups_schedule_type];
         this._router.navigate(link);
     };
     AdminSchedulesComponent.prototype.onGenSpecialSchedule = function (param_areaId) {
         this.hideModal();
-        var link = ['/admin/schedules_edit', this.selected_date, this._commonService.scheduleType.TYPE_GENERATE_SPECIAL,
-            param_areaId, this._commonService.w_hType.TYPE_HOLIDAY];
+        var link = ['/admin/schedules_edit', this.selected_date, this._scheduleService.buttonType.TYPE_GENERATE_SPECIAL,
+            param_areaId, this.sorted_groups_schedule_type];
         this._router.navigate(link);
     };
     AdminSchedulesComponent.prototype.addDaysInDateRange = function (firstDay, lastDay, areaType) {
@@ -797,7 +851,7 @@ var AdminSchedulesComponent = (function () {
         this._httpService.sendGetRequestWithParams(url)
             .subscribe(function (data) {
             var response = data;
-            if (areaType == me._commonService.areaType.TYPE_NEWYORK) {
+            if (areaType == me._scheduleService.areaType.TYPE_NEWYORK) {
                 me.dayinfos_in_month_newyork = [];
             }
             else {
@@ -814,7 +868,7 @@ var AdminSchedulesComponent = (function () {
                         }
                     }
                     if (Object.keys(items_for_this_date).length == 0) {
-                        me.setDayInfo(areaType, me._commonService.w_hType.TYPE_WEEKLY, 0);
+                        me.setDayInfo(areaType, me._scheduleService.w_hType.TYPE_WEEKLY, 0);
                         var newDate_1 = firstDay.setDate(firstDay.getDate() + 1);
                         firstDay = new Date(newDate_1);
                         continue;
@@ -832,7 +886,7 @@ var AdminSchedulesComponent = (function () {
                         var temp = [];
                         for (var j = 0; j < Object.keys(items_for_this_date).length; j++) {
                             var item = items_for_this_date[j];
-                            if (group_ids[i] == item['group_id'] && item['w_h'] == me._commonService.w_hType.TYPE_HOLIDAY
+                            if (group_ids[i] == item['group_id'] && item['w_h'] == me._scheduleService.w_hType.TYPE_HOLIDAY
                                 && item['date'] == firstDay_converted) {
                                 temp.push(item);
                             }
@@ -842,7 +896,7 @@ var AdminSchedulesComponent = (function () {
                         }
                     }
                     if (Object.keys(grouped_items).length != 0) {
-                        me.setDayInfo(areaType, me._commonService.w_hType.TYPE_HOLIDAY, Object.keys(grouped_items).length);
+                        me.setDayInfo(areaType, me._scheduleService.w_hType.TYPE_HOLIDAY, Object.keys(grouped_items).length);
                     }
                     else {
                         //**************** Get grouped weekly items. **************************************
@@ -850,18 +904,18 @@ var AdminSchedulesComponent = (function () {
                         var temp_dates = [];
                         for (var j = 0; j < Object.keys(items_for_this_date).length; j++) {
                             var item = items_for_this_date[j];
-                            if (item['w_h'] == me._commonService.w_hType.TYPE_WEEKLY) {
+                            if (item['w_h'] == me._scheduleService.w_hType.TYPE_WEEKLY) {
                                 temp_dates.push(item['schedule_date']);
                             }
                         }
                         // Get latest date for weekly schedule.
-                        var latest_date = me._commonService.getLatestWeeklyDate(temp_dates);
+                        var latest_date = me._scheduleService.getLatestWeeklyDate(temp_dates);
                         grouped_items = [];
                         for (var i = 0; i < Object.keys(group_ids).length; i++) {
                             var temp = [];
                             for (var j = 0; j < Object.keys(items_for_this_date).length; j++) {
                                 var item = items_for_this_date[j];
-                                if (group_ids[i] == item['group_id'] && item['w_h'] == me._commonService.w_hType.TYPE_WEEKLY
+                                if (group_ids[i] == item['group_id'] && item['w_h'] == me._scheduleService.w_hType.TYPE_WEEKLY
                                     && item['schedule_date'] == latest_date) {
                                     temp.push(item);
                                 }
@@ -871,17 +925,17 @@ var AdminSchedulesComponent = (function () {
                             }
                         }
                         if (Object.keys(grouped_items).length == 0) {
-                            me.setDayInfo(areaType, me._commonService.w_hType.TYPE_WEEKLY, 0);
+                            me.setDayInfo(areaType, me._scheduleService.w_hType.TYPE_WEEKLY, 0);
                             var newDate_2 = firstDay.setDate(firstDay.getDate() + 1);
                             firstDay = new Date(newDate_2);
                             continue;
                         }
                         else {
                             if (firstDay_converted == latest_date) {
-                                me.setDayInfo(areaType, me._commonService.w_hType.TYPE_WEEKLY_NEW, Object.keys(grouped_items).length);
+                                me.setDayInfo(areaType, me._scheduleService.w_hType.TYPE_WEEKLY_NEW, Object.keys(grouped_items).length);
                             }
                             else {
-                                me.setDayInfo(areaType, me._commonService.w_hType.TYPE_WEEKLY, Object.keys(grouped_items).length);
+                                me.setDayInfo(areaType, me._scheduleService.w_hType.TYPE_WEEKLY, Object.keys(grouped_items).length);
                             }
                         }
                     }
@@ -896,7 +950,7 @@ var AdminSchedulesComponent = (function () {
         var temp_day = {};
         temp_day['isHoliday'] = isHoliday;
         temp_day['bus_cnt'] = busCnt;
-        if (areaType == me._commonService.areaType.TYPE_NEWYORK) {
+        if (areaType == me._scheduleService.areaType.TYPE_NEWYORK) {
             me.dayinfos_in_month_newyork.push(temp_day);
         }
         else {
@@ -905,6 +959,8 @@ var AdminSchedulesComponent = (function () {
     };
     AdminSchedulesComponent.prototype.onClickEachDate = function (selected_date, areaType, scheduleType) {
         var me = this;
+        me.sorted_groups_schedule_type = scheduleType;
+        me.sorted_groups = [];
         var cur_month_temp = me.calendarInfo.cur_month + 1;
         if (cur_month_temp < 10) {
             cur_month_temp = "0" + cur_month_temp;
@@ -927,16 +983,15 @@ var AdminSchedulesComponent = (function () {
                 }
                 // Get latest schedule date for weekly schedule.
                 var latest_date = void 0;
-                if (scheduleType == me._commonService.w_hType.TYPE_WEEKLY) {
-                    // Collect weekly dates for this date.
+                if (scheduleType == me._scheduleService.w_hType.TYPE_WEEKLY) {
                     var temp_dates = [];
                     for (var j = 0; j < Object.keys(response['data']).length; j++) {
                         var item = response['data'][j];
-                        if (item['w_h'] == me._commonService.w_hType.TYPE_WEEKLY && item['area_id'] == areaType) {
+                        if (item['w_h'] == me._scheduleService.w_hType.TYPE_WEEKLY && item['area_id'] == areaType) {
                             temp_dates.push(item['date']);
                         }
                     }
-                    latest_date = me._commonService.getLatestWeeklyDate(temp_dates);
+                    latest_date = me._scheduleService.getLatestWeeklyDate(temp_dates);
                 }
                 var grouped_items = [];
                 for (var i = 0; i < Object.keys(group_ids).length; i++) {
@@ -944,7 +999,7 @@ var AdminSchedulesComponent = (function () {
                     for (var j = 0; j < Object.keys(response['data']).length; j++) {
                         var item = response['data'][j];
                         if (group_ids[i] == item['group_id'] && item['area_id'] == areaType && item['w_h'] == scheduleType) {
-                            if (scheduleType == me._commonService.w_hType.TYPE_WEEKLY) {
+                            if (scheduleType == me._scheduleService.w_hType.TYPE_WEEKLY) {
                                 if (item['date'] != latest_date)
                                     continue;
                             }
@@ -976,19 +1031,16 @@ var AdminSchedulesComponent = (function () {
                     }
                 });
                 me.sorted_groups = grouped_items;
-                me.sorted_groups_schedule_type = grouped_items[0][0]['w_h'];
                 me.showModalForDate(areaType);
             }
             else {
-                me.sorted_groups = [];
-                me.sorted_groups_schedule_type = me._commonService.w_hType.TYPE_WEEKLY;
                 me.showModalForDate(areaType);
             }
         });
     };
     AdminSchedulesComponent.prototype.showModalForDate = function (areaType) {
         var me = this;
-        if (areaType == me._commonService.areaType.TYPE_NEWYORK) {
+        if (areaType == me._scheduleService.areaType.TYPE_NEWYORK) {
             jQuery("#schedule_per_day_modal_NY").modal('show');
         }
         else {
@@ -1014,7 +1066,7 @@ var AdminSchedulesComponent = (function () {
         var d = new Date();
         this.calendarInfo.cur_year = d.getFullYear();
         this.calendarInfo.cur_month = d.getMonth();
-        this.calendarInfo.cur_date_str = this._commonService.convertMonthFormat(this.calendarInfo.cur_month) + " " + this.calendarInfo.cur_year;
+        this.calendarInfo.cur_date_str = this._scheduleService.convertMonthFormat(this.calendarInfo.cur_month) + " " + this.calendarInfo.cur_year;
     };
     AdminSchedulesComponent.prototype.showModal = function () {
         //jQuery("#schedule_per_day_modal").modal('show');
@@ -1027,10 +1079,10 @@ var AdminSchedulesComponent = (function () {
         var me = this;
         var firstDay = new Date(me.calendarInfo.cur_year, me.calendarInfo.cur_month, 1);
         var lastDay = new Date(me.calendarInfo.cur_year, me.calendarInfo.cur_month + 1, 0);
-        this.addDaysInDateRange(firstDay, lastDay, me._commonService.areaType.TYPE_NEWYORK);
+        this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_NEWYORK);
         firstDay = new Date(me.calendarInfo.cur_year, me.calendarInfo.cur_month, 1);
         lastDay = new Date(me.calendarInfo.cur_year, me.calendarInfo.cur_month + 1, 0);
-        this.addDaysInDateRange(firstDay, lastDay, me._commonService.areaType.TYPE_BA);
+        this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_BA);
     };
     AdminSchedulesComponent.prototype.prevMonth = function () {
         var me = this;
@@ -1041,13 +1093,13 @@ var AdminSchedulesComponent = (function () {
         else {
             this.calendarInfo.cur_month -= 1;
         }
-        this.calendarInfo.cur_date_str = this._commonService.convertMonthFormat(this.calendarInfo.cur_month) + " " + this.calendarInfo.cur_year;
+        this.calendarInfo.cur_date_str = this._scheduleService.convertMonthFormat(this.calendarInfo.cur_month) + " " + this.calendarInfo.cur_year;
         var firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1);
         var lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0);
-        this.addDaysInDateRange(firstDay, lastDay, me._commonService.areaType.TYPE_NEWYORK);
+        this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_NEWYORK);
         firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1);
         lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0);
-        this.addDaysInDateRange(firstDay, lastDay, me._commonService.areaType.TYPE_BA);
+        this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_BA);
     };
     AdminSchedulesComponent.prototype.nextMonth = function () {
         var me = this;
@@ -1058,13 +1110,13 @@ var AdminSchedulesComponent = (function () {
         else {
             this.calendarInfo.cur_month += 1;
         }
-        this.calendarInfo.cur_date_str = this._commonService.convertMonthFormat(this.calendarInfo.cur_month) + " " + this.calendarInfo.cur_year;
+        this.calendarInfo.cur_date_str = this._scheduleService.convertMonthFormat(this.calendarInfo.cur_month) + " " + this.calendarInfo.cur_year;
         var firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1);
         var lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0);
-        this.addDaysInDateRange(firstDay, lastDay, me._commonService.areaType.TYPE_NEWYORK);
+        this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_NEWYORK);
         firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1);
         lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0);
-        this.addDaysInDateRange(firstDay, lastDay, me._commonService.areaType.TYPE_BA);
+        this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_BA);
     };
     AdminSchedulesComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Component */])({
@@ -1072,7 +1124,7 @@ var AdminSchedulesComponent = (function () {
             template: __webpack_require__(839),
             styles: [__webpack_require__(803)]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__angular_router__["a" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_4__angular_router__["a" /* Router */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */]) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__angular_router__["a" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_4__angular_router__["a" /* Router */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__["a" /* ScheduleService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__["a" /* ScheduleService */]) === 'function' && _c) || Object])
     ], AdminSchedulesComponent);
     return AdminSchedulesComponent;
     var _a, _b, _c;
@@ -1204,7 +1256,7 @@ var AdminUsersComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(80);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(51);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(95);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_http__ = __webpack_require__(237);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginComponent; });
@@ -1280,7 +1332,7 @@ var LoginComponent = (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service_auth_service__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(51);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LogoutComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1479,7 +1531,7 @@ var AdminHeaderComponent = (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(80);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(95);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminScheduleEditBusComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1496,9 +1548,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var AdminScheduleEditBusComponent = (function () {
-    function AdminScheduleEditBusComponent(_httpService, _commonService) {
+    function AdminScheduleEditBusComponent(_httpService, _scheduleService) {
         this._httpService = _httpService;
-        this._commonService = _commonService;
+        this._scheduleService = _scheduleService;
         this.arr_stops = [];
         this.arr_hours = [];
         this.arr_mins = [];
@@ -1529,7 +1581,7 @@ var AdminScheduleEditBusComponent = (function () {
     };
     AdminScheduleEditBusComponent.prototype.checkGroupDisability = function () {
         var me = this;
-        if (me.selected_group[0]['open'] == me._commonService.scheduleDisabilty.TYPE_DISABLED) {
+        if (me.selected_group[0]['open'] == me._scheduleService.scheduleDisabilty.TYPE_DISABLED) {
             me.selected_group_disabled = true;
         }
         else {
@@ -1667,7 +1719,7 @@ var AdminScheduleEditBusComponent = (function () {
             var group_item = me.selected_group[i];
             var temp = {};
             temp['time_id'] = group_item['time_id'];
-            temp['isEnabled'] = me._commonService.scheduleDisabilty.TYPE_ENABLED;
+            temp['isEnabled'] = me._scheduleService.scheduleDisabilty.TYPE_ENABLED;
             reenable_request[i] = temp;
         }
         this._httpService.sendPostJSON(me.urls.disable_url, reenable_request)
@@ -1713,7 +1765,7 @@ var AdminScheduleEditBusComponent = (function () {
             template: __webpack_require__(835),
             styles: [__webpack_require__(799)]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */]) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__["a" /* ScheduleService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__["a" /* ScheduleService */]) === 'function' && _b) || Object])
     ], AdminScheduleEditBusComponent);
     return AdminScheduleEditBusComponent;
     var _a, _b;
@@ -1727,8 +1779,8 @@ var AdminScheduleEditBusComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(67);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(80);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(95);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesGennewComponent; });
@@ -1747,9 +1799,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var AdminSchedulesGennewComponent = (function () {
-    function AdminSchedulesGennewComponent(_route, _commonService, _httpService) {
+    function AdminSchedulesGennewComponent(_route, _scheduleService, _httpService) {
         this._route = _route;
-        this._commonService = _commonService;
+        this._scheduleService = _scheduleService;
         this._httpService = _httpService;
         this.sel_date = "";
         this.selected_dow = "";
@@ -1844,7 +1896,7 @@ var AdminSchedulesGennewComponent = (function () {
                     //********  Show header infos ************
                     var data_1 = response['data'][0];
                     console.log(data_1);
-                    _this.selected_dow = _this._commonService.convertDayOfWeekFormat(data_1['dow']);
+                    _this.selected_dow = _this._scheduleService.convertDayOfWeekFormat(data_1['dow']);
                     if (data_1['schedule_type'] == 1) {
                         _this.selected_schedule_type = 'after';
                     }
@@ -1889,7 +1941,7 @@ var AdminSchedulesGennewComponent = (function () {
                 temp['hour'] = me.adding_hours[i];
                 temp['min'] = me.adding_mins[i];
                 temp['date_from'] = me.sel_date;
-                temp['dow'] = me._commonService.convertWeekToNumber(me.selected_dow);
+                temp['dow'] = me._scheduleService.convertWeekToNumber(me.selected_dow);
                 insert_request[i] = temp;
             }
         }
@@ -1912,7 +1964,7 @@ var AdminSchedulesGennewComponent = (function () {
             template: __webpack_require__(837),
             styles: [__webpack_require__(801)]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__["a" /* ScheduleService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__["a" /* ScheduleService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _c) || Object])
     ], AdminSchedulesGennewComponent);
     return AdminSchedulesGennewComponent;
     var _a, _b, _c;
@@ -1926,8 +1978,8 @@ var AdminSchedulesGennewComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(67);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__ = __webpack_require__(80);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(95);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminSchedulesGenspecialComponent; });
@@ -1946,9 +1998,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var AdminSchedulesGenspecialComponent = (function () {
-    function AdminSchedulesGenspecialComponent(_route, _commonService, _httpService) {
+    function AdminSchedulesGenspecialComponent(_route, _scheduleService, _httpService) {
         this._route = _route;
-        this._commonService = _commonService;
+        this._scheduleService = _scheduleService;
         this._httpService = _httpService;
         this.sel_date = "";
         this.selected_dow = "";
@@ -2043,7 +2095,7 @@ var AdminSchedulesGenspecialComponent = (function () {
                     //********  Show header infos ************
                     var data_1 = response['data'][0];
                     console.log(data_1);
-                    _this.selected_dow = _this._commonService.convertDayOfWeekFormat(data_1['dow']);
+                    _this.selected_dow = _this._scheduleService.convertDayOfWeekFormat(data_1['dow']);
                     if (data_1['schedule_type'] == 1) {
                         _this.selected_schedule_type = 'after';
                     }
@@ -2088,7 +2140,7 @@ var AdminSchedulesGenspecialComponent = (function () {
                 temp['hour'] = me.adding_hours[i];
                 temp['min'] = me.adding_mins[i];
                 temp['date_from'] = me.sel_date;
-                temp['dow'] = me._commonService.convertWeekToNumber(me.selected_dow);
+                temp['dow'] = me._scheduleService.convertWeekToNumber(me.selected_dow);
                 insert_request[i] = temp;
             }
         }
@@ -2104,7 +2156,7 @@ var AdminSchedulesGenspecialComponent = (function () {
             template: __webpack_require__(838),
             styles: [__webpack_require__(802)]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_common_service_common_service__["a" /* CommonService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__["a" /* ScheduleService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_schedule_service_schedule_service__["a" /* ScheduleService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_http_service_http_service__["a" /* HttpService */]) === 'function' && _c) || Object])
     ], AdminSchedulesGenspecialComponent);
     return AdminSchedulesGenspecialComponent;
     var _a, _b, _c;
@@ -2268,7 +2320,7 @@ var AdminComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(51);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__admin__ = __webpack_require__(383);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__admin_admin_main_admin_main_component__ = __webpack_require__(375);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__admin_admin_schedules_admin_schedules_component__ = __webpack_require__(379);
@@ -2448,7 +2500,7 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__main_login_login_component__ = __webpack_require__(384);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__services_http_service_http_service__ = __webpack_require__(80);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__services_common_service_common_service__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__services_schedule_service_schedule_service__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__main_main_header_main_header_component__ = __webpack_require__(602);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__main_main_index_component__ = __webpack_require__(386);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__main_main_footer_main_footer_component__ = __webpack_require__(601);
@@ -2547,7 +2599,7 @@ var AppModule = (function () {
             providers: [
                 __WEBPACK_IMPORTED_MODULE_25__services_http_service_http_service__["a" /* HttpService */],
                 __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__["a" /* AuthService */],
-                __WEBPACK_IMPORTED_MODULE_27__services_common_service_common_service__["a" /* CommonService */]
+                __WEBPACK_IMPORTED_MODULE_27__services_schedule_service_schedule_service__["a" /* ScheduleService */]
             ],
             exports: [
                 __WEBPACK_IMPORTED_MODULE_8__admin_admin_header_admin_header_component__["a" /* AdminHeaderComponent */],
@@ -3044,7 +3096,7 @@ module.exports = "<div class=\"col-sm-6 col-md-4\" [hidden]=\"isHidden\">\n    \
 /***/ 836:
 /***/ (function(module, exports) {
 
-module.exports = "\n<section class=\"content-header admin-schedule-edit-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-clock-o\"></i> Schedule Times\n    </h1>\n    <ol class=\"breadcrumb admin-schedule-edit-breadcrumb-custom\">\n        <li><a routerLink=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li><a routerLink=\"/admin/schedules\"><i class=\"fa fa-clock-o\"></i> Schedule Times</a></li>\n        <li class=\"active\" id=\"li_header_detail\">{{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}</li>\n    </ol>\n</section>\n\n<section class=\"panel admin-main-panel admin-schedule-edit-main-panel-custom\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\"></span>\n            <span id=\"box_title_span\">Every {{ headerInfos.dow }} {{ headerInfos.after_on }} {{ headerInfos.date }} from  {{ headerInfos.city }}</span>\n            <a href=\"javascript:void(0)\" class=\"btn btn-xs btn-primary pull-right open-modal\" (click)=\"popupAddScheduleModal()\"><span class=\"fa fa-plus\"></span> Schedule</a>\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <div *ngFor = \"let group of groups; let i = index;\">\n            <app-admin-schedule-edit-bus [group]=\"group\" [stops]=\"arr_stops\" [group_idx]=\"i\"></app-admin-schedule-edit-bus>\n        </div>\n        \n        <div class=\"row\">\n            <div class=\"col-sm-12 text-center form-group\">\n                <button class=\"btn btn-success btn-lg\" (click)=\"onSaveAll()\"><span class=\"fa fa-check\"></span> Save All </button>\n            </div>\n        </div>\n    </div>\n</section>\n\n\n<div id=\"add_schedule_modal\" class=\"modal fade\" role=\"dialog\">\n  <div class=\"modal-dialog\">\n\n    <div class=\"modal-content\">\n        <div class=\"modal-header\">\n            <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n            <h4 class=\"modal-title\">\n                <span>\n                    Generate Schedule {{ headerInfos.after_on }} {{ headerInfos.date }} from  {{ headerInfos.city }}\n                </span>\n            </h4>\n        </div>\n      <div class=\"modal-body\">\n            <table class=\"table table-borderless text-center\">\n                <tbody>\n                    <tr>\n                        <th>Stop</th>\n                        <th>Hour</th>\n                        <th>Min</th>\n                        <th>Price</th>\n                    </tr>\n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                </tbody>\n            </table>\n        </div>\n        <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n            <button class=\"btn btn-success\" (click)=\"onAddSchedule()\">Add Schedule</button>\n        </div>\n    </div>\n\n  </div>\n</div>\n\n\n<div id=\"confirm_saveall_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Confirmations</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>Successfully saved all bus reservations.</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-success\" data-dismiss=\"modal\">OK</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n\n\n<!--div id=\"gen_new_schedule_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">\n                    <span>\n                        Generate New Schedule from {{ inputParams.date }}\n                    </span>\n                </h4>\n            </div>\n            <div class=\"modal-body\">\n                <table class=\"table table-borderless text-center\">\n                    <tbody>\n                        <tr>\n                            <th>Stop</th>\n                            <th>Hour</th>\n                            <th>Min</th>\n                            <th>Price</th>\n                        </tr>\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                    </tbody>\n                </table>\n            </div>\n            \n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n                <button class=\"btn btn-success\" (click)=\"onGenNewSchedule()\">Add Schedule</button>\n            </div>\n            \n        </div>\n\n    </div>\n</div>\n\n\n<div id=\"gen_special_schedule_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">\n                    <span>\n                        Generate Holiday Schedule on {{ inputParams.date }}\n                    </span>\n                </h4>\n            </div>\n            <div class=\"modal-body\">\n                <table class=\"table table-borderless text-center\">\n                    <tbody>\n                        <tr>\n                            <th>Stop</th>\n                            <th>Hour</th>\n                            <th>Min</th>\n                            <th>Price</th>\n                        </tr>\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                    </tbody>\n                </table>\n            </div>\n            \n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n                <button class=\"btn btn-success\" (click)=\"onGenSpecialSchedule()\">Add Schedule</button>\n            </div>\n            \n        </div>\n\n    </div>\n</div -->\n\n\n\n"
+module.exports = "\n<section class=\"content-header admin-schedule-edit-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-clock-o\"></i> Schedule Times\n    </h1>\n    <ol class=\"breadcrumb admin-schedule-edit-breadcrumb-custom\">\n        <li><a routerLink=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li><a routerLink=\"/admin/schedules\"><i class=\"fa fa-clock-o\"></i> Schedule Times</a></li>\n        <li class=\"active\" id=\"li_header_detail\">{{ selected_dow }} {{ selected_schedule_type }} {{ selected_date_from }} from {{ selected_stop }}</li>\n    </ol>\n</section>\n\n<section class=\"panel admin-main-panel admin-schedule-edit-main-panel-custom\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\"></span>\n            <span id=\"box_title_span\" *ngIf=\"inputParams.schedule_type == _scheduleService.w_hType.TYPE_WEEKLY\">Every {{ headerInfos.dow }} {{ headerInfos.after_on }} {{ headerInfos.date }} from  {{ headerInfos.city }}</span>\n            <span id=\"box_title_span\" *ngIf=\"inputParams.schedule_type == _scheduleService.w_hType.TYPE_HOLIDAY\">Holiday schedule on {{ headerInfos.date }} from  {{ headerInfos.city }}</span>\n            <a href=\"javascript:void(0)\" class=\"btn btn-xs btn-primary pull-right open-modal\" (click)=\"popupAddScheduleModal()\"><span class=\"fa fa-plus\"></span> Schedule</a>\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <div *ngFor = \"let group of groups; let i = index;\">\n            <app-admin-schedule-edit-bus [group]=\"group\" [stops]=\"arr_stops\" [group_idx]=\"i\"></app-admin-schedule-edit-bus>\n        </div>\n        \n        <div class=\"row\">\n            <div class=\"col-sm-12 text-center form-group\">\n                <button class=\"btn btn-success btn-lg\" (click)=\"onSaveAll()\"><span class=\"fa fa-check\"></span> Save All </button>\n            </div>\n        </div>\n    </div>\n</section>\n\n\n<div id=\"add_schedule_modal\" class=\"modal fade\" role=\"dialog\">\n  <div class=\"modal-dialog\">\n\n    <div class=\"modal-content\">\n        <div class=\"modal-header\">\n            <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n            <h4 class=\"modal-title\">\n                <span *ngIf=\"inputParams.button_type != _scheduleService.buttonType.TYPE_GENERATE_SPECIAL\">\n                    Generate Schedule {{ addModalHeaderInfos.after_on }} {{ addModalHeaderInfos.date }} from  {{ addModalHeaderInfos.city }}\n                </span>\n                <span *ngIf=\"inputParams.button_type == _scheduleService.buttonType.TYPE_GENERATE_SPECIAL\">\n                    Create Holiday Schedule on {{ addModalHeaderInfos.date }} from  {{ addModalHeaderInfos.city }}\n                </span>\n            </h4>\n        </div>\n      <div class=\"modal-body\">\n            <table class=\"table table-borderless text-center\">\n                <tbody>\n                    <tr>\n                        <th>Stop</th>\n                        <th>Hour</th>\n                        <th>Min</th>\n                        <th>Price</th>\n                    </tr>\n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td>\n                    </tr>\n                    \n                </tbody>\n            </table>\n        </div>\n        <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n            <button class=\"btn btn-success\" (click)=\"onAddSchedule()\">Add Schedule</button>\n        </div>\n    </div>\n\n  </div>\n</div>\n\n\n<div id=\"confirm_saveall_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Confirmations</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>Successfully saved all bus reservations.</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-success\" data-dismiss=\"modal\">OK</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n\n\n<!--div id=\"gen_new_schedule_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">\n                    <span>\n                        Generate New Schedule from {{ inputParams.date }}\n                    </span>\n                </h4>\n            </div>\n            <div class=\"modal-body\">\n                <table class=\"table table-borderless text-center\">\n                    <tbody>\n                        <tr>\n                            <th>Stop</th>\n                            <th>Hour</th>\n                            <th>Min</th>\n                            <th>Price</th>\n                        </tr>\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                    </tbody>\n                </table>\n            </div>\n            \n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n                <button class=\"btn btn-success\" (click)=\"onGenNewSchedule()\">Add Schedule</button>\n            </div>\n            \n        </div>\n\n    </div>\n</div>\n\n\n<div id=\"gen_special_schedule_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">\n                    <span>\n                        Generate Holiday Schedule on {{ inputParams.date }}\n                    </span>\n                </h4>\n            </div>\n            <div class=\"modal-body\">\n                <table class=\"table table-borderless text-center\">\n                    <tbody>\n                        <tr>\n                            <th>Stop</th>\n                            <th>Hour</th>\n                            <th>Min</th>\n                            <th>Price</th>\n                        </tr>\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                        <tr>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                    <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                    <option *ngFor=\"let hour of arr_hours\" value=\"{{hour}}\">{{hour}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                    <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                    <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                                </select>\n                            </td>\n                        </tr>\n\n                    </tbody>\n                </table>\n            </div>\n            \n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n                <button class=\"btn btn-success\" (click)=\"onGenSpecialSchedule()\">Add Schedule</button>\n            </div>\n            \n        </div>\n\n    </div>\n</div -->\n\n\n\n"
 
 /***/ }),
 
@@ -3065,7 +3117,7 @@ module.exports = "\n<section class=\"content-header admin-schedule-gennew-conten
 /***/ 839:
 /***/ (function(module, exports) {
 
-module.exports = "\n<section class=\"content-header admin-schedules-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-calendar-o\"></i> Schedules\n    </h1>\n    <ol class=\"breadcrumb admin-schedules-breadcrumb-custom\">\n        <li><a href=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li class=\"active\">Schedules</li>\n    </ol>\n</section>\n\n<section class=\"panel general\">\n    <header class=\"panel-heading tab-bg-dark-navy-blue\">\n        <ul class=\"nav nav-tabs\">\n            <li class=\"active\">\n                <a data-toggle=\"tab\" href=\"#newyork\">From New York City</a>\n            </li>\n            <li class=\"\">\n                <a data-toggle=\"tab\" href=\"#bethesda\">From Bethesda/Arlington</a>\n            </li>\n        </ul>\n    </header>\n    <div class=\"panel-body\">\n        <div class=\"tab-content\">\n            <div id=\"newyork\" class=\"tab-pane active\">\n                <div class=\"h4 row\">\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-left\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"prevMonth()\">« Previous</a> \n                    </div>\n                    <div class=\"col-xs-6 col-md-6 text-center small\">\n                        <b>\n                            <font color=\"red\">Special schedule.</font>\n                            <br>\n                            <font color=\"orange\"> New weekly schedule takes effect</font>\n                        </b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-right\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"nextMonth()\">Next »</a> \n                    </div>\n                </div>\n                \n                <h2 class=\"text-center\" id=\"h2_year_month\">{{calendarInfo.cur_date_str}}</h2> \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols weekdays\">\n                        <div class=\"col-md-1\">Sun</div>\n                        <div class=\"col-md-1\">Mon</div>\n                        <div class=\"col-md-1\">Tue</div>\n                        <div class=\"col-md-1\">Wed</div>\n                        <div class=\"col-md-1\">Thu</div>\n                        <div class=\"col-md-1\">Fri</div>\n                        <div class=\"col-md-1\">Sat</div>\n                    </div>\n                </div>\n                \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols\">\n                        <div *ngFor=\"let item of month_firstday_dow\" class='col-md-1 fix-height' style='min-height: 0px;'></div>\n                        \n                        <div *ngFor=\"let item of dayinfos_in_month_newyork; let i=index;\" class='col-md-1 fix-height'>\n                            <div *ngIf=\"item['isHoliday'] == _commonService.w_hType.TYPE_HOLIDAY\">\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_NEWYORK, _commonService.w_hType.TYPE_HOLIDAY)\" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_NEWYORK, _commonService.w_hType.TYPE_HOLIDAY)\" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} buses</p>\n                                </div>\n                            </div>\n                            <div *ngIf=\"item['isHoliday'] == _commonService.w_hType.TYPE_WEEKLY\">\n                                <div *ngIf=\"item['bus_cnt'] == 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_NEWYORK, _commonService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>0 bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_NEWYORK, _commonService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>{{item['bus_cnt']}} buses</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_NEWYORK, _commonService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>{{item['bus_cnt']}} bus</p>\n                                </div>\n                            </div>\n                            <div *ngIf=\"item['isHoliday'] == _commonService.w_hType.TYPE_WEEKLY_NEW\">\n                                <div *ngIf=\"item['bus_cnt'] == 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_NEWYORK, _commonService.w_hType.TYPE_WEEKLY)\"  class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>0 bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_NEWYORK, _commonService.w_hType.TYPE_WEEKLY)\" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} buses</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_NEWYORK, _commonService.w_hType.TYPE_WEEKLY)\" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} bus</p>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                \n            </div>\n            <div id=\"bethesda\" class=\"tab-pane\">\n                <div class=\"h4 row\">\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-left\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"prevMonth()\">« Previous</a> \n                    </div>\n                    <div class=\"col-xs-6 col-md-6 text-center small\">\n                        <b>\n                            <font color=\"red\">Special schedule.</font>\n                            <br>\n                            <font color=\"orange\"> New weekly schedule takes effect</font>\n                        </b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-right\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"nextMonth()\">Next »</a> \n                    </div>\n                </div>\n                \n                <h2 class=\"text-center\" id=\"h2_year_month\">{{calendarInfo.cur_date_str}}</h2> \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols weekdays\">\n                        <div class=\"col-md-1\">Sun</div>\n                        <div class=\"col-md-1\">Mon</div>\n                        <div class=\"col-md-1\">Tue</div>\n                        <div class=\"col-md-1\">Wed</div>\n                        <div class=\"col-md-1\">Thu</div>\n                        <div class=\"col-md-1\">Fri</div>\n                        <div class=\"col-md-1\">Sat</div>\n                    </div>\n                </div>\n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols\">\n                        <div *ngFor=\"let item of month_firstday_dow\" class='col-md-1 fix-height' style='min-height: 0px;'></div>\n\n                        <div *ngFor=\"let item of dayinfos_in_month_ba; let i=index;\" class='col-md-1 fix-height'>\n                            <div *ngIf=\"item['isHoliday'] == _commonService.w_hType.TYPE_HOLIDAY\">\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_BA, _commonService.w_hType.TYPE_HOLIDAY)\" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_BA, _commonService.w_hType.TYPE_HOLIDAY)\" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} buses</p>\n                                </div>\n                            </div>\n                            <div *ngIf=\"item['isHoliday'] == _commonService.w_hType.TYPE_WEEKLY\">\n                                <div *ngIf=\"item['bus_cnt'] == 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_BA, _commonService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>0 bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_BA, _commonService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>{{item['bus_cnt']}} buses</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_BA, _commonService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>{{item['bus_cnt']}} bus</p>\n                                </div>\n                            </div>\n                            <div *ngIf=\"item['isHoliday'] == _commonService.w_hType.TYPE_WEEKLY_NEW\">\n                                <div *ngIf=\"item['bus_cnt'] == 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_BA, _commonService.w_hType.TYPE_WEEKLY)\"  class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>0 bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_BA, _commonService.w_hType.TYPE_WEEKLY)\" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} buses</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _commonService.areaType.TYPE_BA, _commonService.w_hType.TYPE_WEEKLY)\" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} bus</p>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</section>\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal_NY\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" (click)=\"onEditSchedule(_commonService.areaType.TYPE_NEWYORK)\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" (click)=\"onGenNewSchedule(_commonService.areaType.TYPE_NEWYORK)\" > Generate New</a>\n                <a class=\"btn btn-info\" *ngIf=\"sorted_groups_schedule_type == _commonService.w_hType.TYPE_WEEKLY\" (click)=\"onGenSpecialSchedule(_commonService.areaType.TYPE_NEWYORK)\"> Create Holiday</a>\n                \n                <h3>Current Schedule:</h3>\n                <div id='schedule_infos'>\n                    <div *ngFor=\"let group of sorted_groups; let i=index;\">\n                        <p><strong>Bus #{{i+1}}:</strong></p>\n                        <div *ngFor=\"let item of group;\">\n                            <p>{{item['time']}} from {{item[\"stop_area\"]}}</p>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>  \n      \n    </div>\n</div>\n\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal_BA\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" (click)=\"onEditSchedule(_commonService.areaType.TYPE_BA)\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" (click)=\"onGenNewSchedule(_commonService.areaType.TYPE_BA)\" > Generate New</a>\n                <a class=\"btn btn-info\" *ngIf=\"sorted_groups_schedule_type == _commonService.w_hType.TYPE_WEEKLY\" (click)=\"onGenSpecialSchedule(_commonService.areaType.TYPE_BA)\"> Create Holiday</a>\n                \n                <h3>Current Schedule:</h3>\n                <div id='schedule_infos'>\n                    <div *ngFor=\"let group of sorted_groups; let i=index;\">\n                        <p><strong>Bus #{{i+1}}:</strong></p>\n                        <div *ngFor=\"let item of group;\">\n                            <p>{{item['time']}} from {{item[\"stop_area\"]}}</p>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>  \n      \n    </div>\n</div>\n\n\n"
+module.exports = "\n<section class=\"content-header admin-schedules-content-header-custom\">\n    <h1>\n        <i class=\"fa fa-calendar-o\"></i> Schedules\n    </h1>\n    <ol class=\"breadcrumb admin-schedules-breadcrumb-custom\">\n        <li><a href=\"/admin\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li class=\"active\">Schedules</li>\n    </ol>\n</section>\n\n<section class=\"panel general\">\n    <header class=\"panel-heading tab-bg-dark-navy-blue\">\n        <ul class=\"nav nav-tabs\">\n            <li class=\"active\">\n                <a data-toggle=\"tab\" href=\"#newyork\">From New York City</a>\n            </li>\n            <li class=\"\">\n                <a data-toggle=\"tab\" href=\"#bethesda\">From Bethesda/Arlington</a>\n            </li>\n        </ul>\n    </header>\n    <div class=\"panel-body\">\n        <div class=\"tab-content\">\n            <div id=\"newyork\" class=\"tab-pane active\">\n                <div class=\"h4 row\">\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-left\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"prevMonth()\">« Previous</a> \n                    </div>\n                    <div class=\"col-xs-6 col-md-6 text-center small\">\n                        <b>\n                            <font color=\"red\">Special schedule.</font>\n                            <br>\n                            <font color=\"orange\"> New weekly schedule takes effect</font>\n                        </b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-right\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"nextMonth()\">Next »</a> \n                    </div>\n                </div>\n                \n                <h2 class=\"text-center\" id=\"h2_year_month\">{{calendarInfo.cur_date_str}}</h2> \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols weekdays\">\n                        <div class=\"col-md-1\">Sun</div>\n                        <div class=\"col-md-1\">Mon</div>\n                        <div class=\"col-md-1\">Tue</div>\n                        <div class=\"col-md-1\">Wed</div>\n                        <div class=\"col-md-1\">Thu</div>\n                        <div class=\"col-md-1\">Fri</div>\n                        <div class=\"col-md-1\">Sat</div>\n                    </div>\n                </div>\n                \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols\">\n                        <div *ngFor=\"let item of month_firstday_dow\" class='col-md-1 fix-height' style='min-height: 0px;'></div>\n                        \n                        <div *ngFor=\"let item of dayinfos_in_month_newyork; let i=index;\" class='col-md-1 fix-height'>\n                            <div *ngIf=\"item['isHoliday'] == _scheduleService.w_hType.TYPE_HOLIDAY\">\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_HOLIDAY)\" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_HOLIDAY)\" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} buses</p>\n                                </div>\n                            </div>\n                            <div *ngIf=\"item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY\">\n                                <div *ngIf=\"item['bus_cnt'] == 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>0 bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>{{item['bus_cnt']}} buses</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>{{item['bus_cnt']}} bus</p>\n                                </div>\n                            </div>\n                            <div *ngIf=\"item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY_NEW\">\n                                <div *ngIf=\"item['bus_cnt'] == 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)\"  class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>0 bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)\" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} buses</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)\" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} bus</p>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                \n            </div>\n            <div id=\"bethesda\" class=\"tab-pane\">\n                <div class=\"h4 row\">\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-left\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"prevMonth()\">« Previous</a> \n                    </div>\n                    <div class=\"col-xs-6 col-md-6 text-center small\">\n                        <b>\n                            <font color=\"red\">Special schedule.</font>\n                            <br>\n                            <font color=\"orange\"> New weekly schedule takes effect</font>\n                        </b>\n                    </div>\n                    <div class=\"col-xs-3 col-sm-3 col-md-3 text-right\">\n                        <a class=\"btn btn-info btn-calendar-prev-next\" href=\"javascript:void(0)\" (click)=\"nextMonth()\">Next »</a> \n                    </div>\n                </div>\n                \n                <h2 class=\"text-center\" id=\"h2_year_month\">{{calendarInfo.cur_date_str}}</h2> \n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols weekdays\">\n                        <div class=\"col-md-1\">Sun</div>\n                        <div class=\"col-md-1\">Mon</div>\n                        <div class=\"col-md-1\">Tue</div>\n                        <div class=\"col-md-1\">Wed</div>\n                        <div class=\"col-md-1\">Thu</div>\n                        <div class=\"col-md-1\">Fri</div>\n                        <div class=\"col-md-1\">Sat</div>\n                    </div>\n                </div>\n                <div class=\"col-xs-12 hidden-xs\">\n                    <div class=\"row seven-cols\">\n                        <div *ngFor=\"let item of month_firstday_dow\" class='col-md-1 fix-height' style='min-height: 0px;'></div>\n\n                        <div *ngFor=\"let item of dayinfos_in_month_ba; let i=index;\" class='col-md-1 fix-height'>\n                            <div *ngIf=\"item['isHoliday'] == _scheduleService.w_hType.TYPE_HOLIDAY\">\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_HOLIDAY)\" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_HOLIDAY)\" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} buses</p>\n                                </div>\n                            </div>\n                            <div *ngIf=\"item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY\">\n                                <div *ngIf=\"item['bus_cnt'] == 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>0 bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>{{item['bus_cnt']}} buses</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)\" >{{i+1}}</h3><p>{{item['bus_cnt']}} bus</p>\n                                </div>\n                            </div>\n                            <div *ngIf=\"item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY_NEW\">\n                                <div *ngIf=\"item['bus_cnt'] == 0\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)\"  class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>0 bus</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] > 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)\" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} buses</p>\n                                </div>\n                                <div *ngIf=\"item['bus_cnt'] == 1\">\n                                    <h3 (click)=\"onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)\" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} bus</p>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</section>\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal_NY\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" (click)=\"onEditSchedule(_scheduleService.areaType.TYPE_NEWYORK)\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" (click)=\"onGenNewSchedule(_scheduleService.areaType.TYPE_NEWYORK)\" > Generate New</a>\n                <a class=\"btn btn-info\" *ngIf=\"sorted_groups_schedule_type == _scheduleService.w_hType.TYPE_WEEKLY\" (click)=\"onGenSpecialSchedule(_scheduleService.areaType.TYPE_NEWYORK)\"> Create Holiday</a>\n                \n                <h3>Current Schedule:</h3>\n                <div id='schedule_infos'>\n                    <div *ngFor=\"let group of sorted_groups; let i=index;\">\n                        <p><strong>Bus #{{i+1}}:</strong></p>\n                        <div *ngFor=\"let item of group;\">\n                            <p>{{item['time']}} from {{item[\"stop_area\"]}}</p>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>  \n      \n    </div>\n</div>\n\n\n<div class=\"modal fade\" id=\"schedule_per_day_modal_BA\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n    \n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Schedule</h4>\n            </div>\n            <div class=\"modal-body\">\n                <a class=\"btn btn-success\" (click)=\"onEditSchedule(_scheduleService.areaType.TYPE_BA)\" > Edit exisiting</a>\n                <a class=\"btn btn-info\" (click)=\"onGenNewSchedule(_scheduleService.areaType.TYPE_BA)\" > Generate New</a>\n                <a class=\"btn btn-info\" *ngIf=\"sorted_groups_schedule_type == _scheduleService.w_hType.TYPE_WEEKLY\" (click)=\"onGenSpecialSchedule(_scheduleService.areaType.TYPE_BA)\"> Create Holiday</a>\n                \n                <h3>Current Schedule:</h3>\n                <div id='schedule_infos'>\n                    <div *ngFor=\"let group of sorted_groups; let i=index;\">\n                        <p><strong>Bus #{{i+1}}:</strong></p>\n                        <div *ngFor=\"let item of group;\">\n                            <p>{{item['time']}} from {{item[\"stop_area\"]}}</p>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>  \n      \n    </div>\n</div>\n\n\n"
 
 /***/ }),
 
@@ -3169,7 +3221,7 @@ var BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CommonService; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScheduleService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3180,9 +3232,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
-var CommonService = (function () {
-    function CommonService() {
-        this.scheduleType = {
+var ScheduleService = (function () {
+    function ScheduleService() {
+        this.buttonType = {
             TYPE_EDIT_EXISTING: 0,
             TYPE_GENERATE_NEW: 1,
             TYPE_GENERATE_SPECIAL: 2
@@ -3201,7 +3253,7 @@ var CommonService = (function () {
             TYPE_BA: 2,
         };
     }
-    CommonService.prototype.convertMonthFormat = function (m) {
+    ScheduleService.prototype.convertMonthFormat = function (m) {
         var month = new Array();
         month[0] = "JANUARY";
         month[1] = "FEBRUARY";
@@ -3217,7 +3269,7 @@ var CommonService = (function () {
         month[11] = "DECEMBER";
         return month[m];
     };
-    CommonService.prototype.convertDayOfWeekFormat = function (w) {
+    ScheduleService.prototype.convertDayOfWeekFormat = function (w) {
         var dow = new Array();
         dow[0] = "Sunday";
         dow[1] = "Monday";
@@ -3228,7 +3280,7 @@ var CommonService = (function () {
         dow[6] = "Saturday";
         return dow[w];
     };
-    CommonService.prototype.convertWeekToNumber = function (w) {
+    ScheduleService.prototype.convertWeekToNumber = function (w) {
         var dow = new Array();
         dow["Sunday"] = 0;
         dow["Monday"] = 1;
@@ -3239,7 +3291,7 @@ var CommonService = (function () {
         dow["Saturday"] = 6;
         return dow[w];
     };
-    CommonService.prototype.getLatestWeeklyDate = function (param_dateArray) {
+    ScheduleService.prototype.getLatestWeeklyDate = function (param_dateArray) {
         var max = param_dateArray[0];
         for (var i = 0; i < Object.keys(param_dateArray).length; i++) {
             var item = param_dateArray[i];
@@ -3251,19 +3303,29 @@ var CommonService = (function () {
         }
         return max;
     };
-    CommonService.prototype.getCityName = function (w) {
+    ScheduleService.prototype.getCityName = function (w) {
         var city = new Array();
         city[1] = "New York";
         city[2] = "BETHESDA/ARLINGTON";
         return city[w];
     };
-    CommonService = __decorate([
+    ScheduleService.prototype.collectGroupIDs = function (infoArray) {
+        var group_ids = [];
+        for (var i = 0; i < Object.keys(infoArray).length; i++) {
+            var item = infoArray[i];
+            if (group_ids.indexOf(item['group_id']) == -1) {
+                group_ids.push(item['group_id']);
+            }
+        }
+        return group_ids;
+    };
+    ScheduleService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
         __metadata('design:paramtypes', [])
-    ], CommonService);
-    return CommonService;
+    ], ScheduleService);
+    return ScheduleService;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/common.service.js.map
+//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/schedule.service.js.map
 
 /***/ })
 
