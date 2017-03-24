@@ -8,7 +8,7 @@ module.exports = __webpack_require__(456);
 
 /***/ }),
 
-/***/ 250:
+/***/ 177:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -473,7 +473,7 @@ var AdminSchedulesEditexistingComponent = (function () {
     };
     AdminSchedulesEditexistingComponent.prototype.showHeaderInfos = function () {
         var me = this;
-        var url = this.urls.retrieve_schedule_by_date_url + "?date=" + me.inputParams.date;
+        var url = this.urls.retrieve_schedule_by_date_url + "?date=" + me._scheduleService.convertDateToUTC(me.inputParams.date);
         this._httpService.sendGetRequestWithParams(url)
             .subscribe(function (data) {
             var response = data;
@@ -693,24 +693,22 @@ var AdminSchedulesEditexistingComponent = (function () {
                 // Set date_from value.
                 if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_EDIT_EXISTING) {
                     if (me.inputParams.schedule_type == me._scheduleService.w_hType.TYPE_HOLIDAY) {
-                        temp['date_from'] = me.inputParams.date;
-                        ;
+                        temp['date_from'] = me._scheduleService.convertDateToUTC(me.inputParams.date);
                     }
                     else {
                         if (me.latest_date == "" || me.latest_date == undefined) {
-                            temp['date_from'] = me.inputParams.date;
+                            temp['date_from'] = me._scheduleService.convertDateToUTC(me.inputParams.date);
                         }
                         else {
-                            temp['date_from'] = me.latest_date;
+                            temp['date_from'] = me._scheduleService.convertDateToUTC(me.latest_date);
                         }
                     }
                 }
                 else {
-                    temp['date_from'] = me.inputParams.date;
+                    temp['date_from'] = me._scheduleService.convertDateToUTC(me.inputParams.date);
                 }
-                /*// Set day of week for adding date.
-                let date_temp = new Date(me.inputParams.date);
-                temp['dow'] = date_temp.getDay();*/
+                // Set day of week for adding date.
+                temp['dow'] = me._scheduleService.getUTCDowFromLocalDate(me.inputParams.date);
                 temp['area_id'] = me.inputParams.area_id;
                 if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
                     temp['w_h'] = me._scheduleService.w_hType.TYPE_HOLIDAY;
@@ -724,7 +722,6 @@ var AdminSchedulesEditexistingComponent = (function () {
                 insert_request[i] = temp;
             }
         }
-        console.log(insert_request);
         this._httpService.sendPostJSON(me.urls.add_schedule_url, insert_request)
             .subscribe(function (data) {
             me.refreshCurrentPage(me.inputParams.button_type);
@@ -837,7 +834,6 @@ var AdminSchedulesComponent = (function () {
         this._router.navigate(link);
     };
     AdminSchedulesComponent.prototype.addDaysInDateRange = function (firstDay, lastDay, areaType) {
-        var _this = this;
         var me = this;
         if (firstDay.getDate() == 1) {
             var dow = firstDay.getDay();
@@ -859,7 +855,7 @@ var AdminSchedulesComponent = (function () {
             }
             if (response['state'] == 'success') {
                 while (firstDay <= lastDay) {
-                    var firstDay_converted = _this.convertDate(firstDay);
+                    var firstDay_converted = me._scheduleService.convertDateToUTC(me.convertDate(firstDay));
                     var items_for_this_date = [];
                     for (var i = 0; i < Object.keys(response['data']).length; i++) {
                         var item = response['data'][i];
@@ -968,8 +964,9 @@ var AdminSchedulesComponent = (function () {
         if (selected_date < 10) {
             selected_date = "0" + selected_date;
         }
-        var url = this.urls.retrieve_schedule_by_date_url + "?date=" + me.calendarInfo.cur_year + "-" + cur_month_temp + "-" + selected_date;
         me.selected_date = me.calendarInfo.cur_year + "-" + cur_month_temp + "-" + selected_date;
+        var url = this.urls.retrieve_schedule_by_date_url + "?date=" + me._scheduleService.convertDateToUTC(me.selected_date);
+        console.log(url);
         this._httpService.sendGetRequestWithParams(url)
             .subscribe(function (data) {
             var response = data;
@@ -1255,10 +1252,10 @@ var AdminUsersComponent = (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(80);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(250);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(177);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(51);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(95);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_http__ = __webpack_require__(236);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_http__ = __webpack_require__(237);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1331,7 +1328,7 @@ var LoginComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service_auth_service__ = __webpack_require__(250);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service_auth_service__ = __webpack_require__(177);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(51);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LogoutComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -2339,6 +2336,7 @@ var AdminComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__main_main_index_component__ = __webpack_require__(386);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__main_logout_logout_component__ = __webpack_require__(385);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__admin_admin_schedules_admin_schedules_editexisting_admin_schedules_editexisting_component__ = __webpack_require__(378);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__services_auth_service_auth_service__ = __webpack_require__(177);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppRoutingModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2369,11 +2367,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var routes = [
     {
         path: 'admin',
         component: __WEBPACK_IMPORTED_MODULE_2__admin__["a" /* AdminComponent */],
-        //canActivate: [AuthService],
+        canActivate: [__WEBPACK_IMPORTED_MODULE_20__services_auth_service_auth_service__["a" /* AuthService */]],
         children: [
             { path: '', component: __WEBPACK_IMPORTED_MODULE_3__admin_admin_main_admin_main_component__["a" /* AdminMainComponent */] },
             { path: 'schedules', component: __WEBPACK_IMPORTED_MODULE_4__admin_admin_schedules_admin_schedules_component__["a" /* AdminSchedulesComponent */] },
@@ -2474,7 +2473,7 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(174);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(552);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(236);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(237);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_routing_app_routing_module__ = __webpack_require__(598);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(599);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__page_not_found_page_not_found_component__ = __webpack_require__(603);
@@ -2497,7 +2496,7 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__admin_admin_footer_admin_footer_component__ = __webpack_require__(591);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__main_login_login_component__ = __webpack_require__(384);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__services_http_service_http_service__ = __webpack_require__(80);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(250);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(177);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__services_schedule_service_schedule_service__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__main_main_header_main_header_component__ = __webpack_require__(602);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__main_main_index_component__ = __webpack_require__(386);
@@ -2847,7 +2846,7 @@ module.exports = ".alert-enabled {\r\n    background-color: #00a65a !important;\
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(236);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(237);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__ = __webpack_require__(427);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HttpService; });
@@ -3316,6 +3315,31 @@ var ScheduleService = (function () {
             }
         }
         return group_ids;
+    };
+    ScheduleService.prototype.convertDateToUTC = function (param_localDate) {
+        var d = new Date(param_localDate);
+        var utc_month;
+        var temp = d.getUTCMonth() + 1;
+        if (temp < 10) {
+            utc_month = "0" + temp.toString();
+        }
+        else {
+            utc_month = temp.toString();
+        }
+        var utc_day;
+        temp = d.getUTCDate();
+        if (temp < 10) {
+            utc_day = "0" + temp.toString();
+        }
+        else {
+            utc_day = temp.toString();
+        }
+        var result = d.getUTCFullYear() + "-" + utc_month + "-" + d.getUTCDate();
+        return result;
+    };
+    ScheduleService.prototype.getUTCDowFromLocalDate = function (param_localDate) {
+        var d = new Date(param_localDate);
+        return d.getUTCDay();
     };
     ScheduleService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
