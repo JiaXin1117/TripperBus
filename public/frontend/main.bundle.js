@@ -836,7 +836,7 @@ var AdminSchedulesComponent = (function () {
     AdminSchedulesComponent.prototype.addDaysInDateRange = function (firstDay, lastDay, areaType) {
         var me = this;
         if (firstDay.getDate() == 1) {
-            var dow = firstDay.getDay();
+            var dow = me._scheduleService.getUTCDowFromLocalDate(me.convertDate(firstDay));
             me.month_firstday_dow = [];
             for (var i = 0; i < dow; i++) {
                 me.month_firstday_dow[i] = i;
