@@ -323,7 +323,7 @@ class ScheduleController extends Controller
             $new_time->w_h = isset($item['w_h']) ? $item['w_h'] : config('config.TYPE_SCHEDULE_WEEKLY');
             $new_time->valid = isset($item['valid']) ? $item['valid'] : config('config.TYPE_SCHEDULE_UNREMOVED');
             $new_time->open = isset($item['open']) ? $item['open'] : config('config.TYPE_SCHEDULE_ENABLED');
-            $new_time->day_of_week = $item['dow']; 
+            $new_time->day_of_week = (int)date_format(date_create($item['date_from']), 'w');
             $new_time->area_id = $item['area_id']; 
             
             $new_time->save(); 

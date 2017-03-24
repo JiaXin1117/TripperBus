@@ -708,9 +708,9 @@ var AdminSchedulesEditexistingComponent = (function () {
                 else {
                     temp['date_from'] = me.inputParams.date;
                 }
-                // Set day of week for adding date.
-                var date_temp = new Date(me.inputParams.date);
-                temp['dow'] = date_temp.getDay();
+                /*// Set day of week for adding date.
+                let date_temp = new Date(me.inputParams.date);
+                temp['dow'] = date_temp.getDay();*/
                 temp['area_id'] = me.inputParams.area_id;
                 if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
                     temp['w_h'] = me._scheduleService.w_hType.TYPE_HOLIDAY;
