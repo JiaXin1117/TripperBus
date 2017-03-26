@@ -12,30 +12,39 @@
     <!-- Custom Scripts -->
     <script type="text/javascript">
         var temp = {};
-        temp['date_from'] = "2016-06-05";
-        temp['dow'] = 'Monday';
-        temp['hour'] = '01';
-        temp['min'] = '10';
-        temp['stop'] = '313 W 31 St';
+        temp['area_id'] = 1;
+        temp['date'] = '2017-03-9';
+        temp['dow'] = 4;
+        temp['group_id'] = 5;
+        temp['hour'] = '15';
+        temp['max_cap'] = 4;
+        temp['min'] = "35";
+        temp['open'] = 1;
+        temp['stop_area'] = '313 W 31 St';
+        temp['time'] = "15:35:00";
+        temp['time_id'] = 5;
+        temp['w_h'] = 0;
+        
+        var group1 = [];
+        group1[0] = temp;
         
         var temp1 = {};
-        temp1['date_from'] = "2016-06-05";
-        temp1['dow'] = 'Monday';
-        temp1['hour'] = '08';
-        temp1['min'] = '30';
-        temp1['stop'] = 'Arlington';
+        temp1['area_id'] = "1";
+        temp1['date'] = '2017-03-9';
+        temp1['dow'] = 4;
+        temp1['hour'] = '02';
+        temp1['min'] = '20';
+        temp1['stop_area'] = '313 W 31 St';
+        temp1['time'] = "02:20:00";
+        temp1['w_h'] = "0";
         
-        var temp2 = {};
-        temp2['date_from'] = "2016-06-05";
-        temp2['dow'] = 'Monday';
-        temp2['hour'] = '05';
-        temp2['min'] = '35';
-        temp2['stop'] = 'Bethesda';
+        var group2 = [];
+        group2[0] = temp1;
         
         var request_data = [];
-        request_data[0] = temp;
-        request_data[1] = temp1;
-        request_data[2] = temp2; 
+        request_data[0] = group1;
+        request_data[1] = group2;
+        //request_data[2] = temp2; 
         
         $.ajax({
             url : "http://localhost/TripperBus_Backend/api/admin/schedule/add_existing_schedule",

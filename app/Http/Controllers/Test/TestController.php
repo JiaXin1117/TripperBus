@@ -13,7 +13,7 @@ class TestController extends Controller
     }
     
     public function getIndex(Request $request) {
-        //return view('test.test_index');
-        echo date_format(date_create('2017-03-04'), 'w');
+        return view('test.test_index');
+        //echo date_format(date_create('2017-03-04'), 'w');
     }
 }

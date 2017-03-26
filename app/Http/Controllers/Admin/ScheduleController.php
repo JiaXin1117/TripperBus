@@ -275,60 +275,91 @@ class ScheduleController extends Controller
         
         for ($i=0; $i<count($data); $i++) { 
             $one_group = $data[$i]; 
+            $isNewGroup = 0;
+            
             for ($j=0; $j<count($one_group); $j++) { 
                 $item = $one_group[$j]; 
                 
-                $time_id = (int)$item['time_id']; 
-                $temp = Res_Times::find($time_id); 
-
-                if (!is_null($temp)) {
+                if (isset($item['time_id'])) {
+                    $time_id = (int)$item['time_id']; 
+                    $temp = Res_Times::find($time_id); 
+                 
                     $temp->time = $item['time']; 
                     $stop_id = Res_Stops::where('short', $item['stop_area'])
                             ->first()->id; 
                     $temp->stop_id = $stop_id;
                     $temp->save(); 
+                } else {
+                    $isNewGroup = 1;
+                    break;
                 }
             }
             
-            
+            if ($isNewGroup === 1) {
+                $new_group = new Res_Groups; 
+                $new_group->max_cap = config('config.MAX_CAP_BUS'); 
+                $new_group->save();
+
+                for ($j=0; $j<count($one_group); $j++) { 
+                    $item = $one_group[$j]; 
+
+                    $new_time = new Res_Times;
+                    // Get store id.
+                    $stop_id = Res_Stops::where('short', $item['stop_area'])
+                                ->first()->id; 
+                    $new_time->stop_id = $stop_id;
+                    $new_time->group_id = $new_group->id; 
+
+                    // Get time. 
+                    $time = $item['hour'] . ":" . $item['min'] . ":00"; 
+                    $new_time->time = $time; 
+                    $new_time->date = $item['date']; 
+                    $new_time->w_h = isset($item['w_h']) ? $item['w_h'] : config('config.TYPE_SCHEDULE_WEEKLY');
+                    $new_time->valid = isset($item['valid']) ? $item['valid'] : config('config.TYPE_SCHEDULE_UNREMOVED');
+                    $new_time->open = isset($item['open']) ? $item['open'] : config('config.TYPE_SCHEDULE_ENABLED');
+                    $new_time->day_of_week = $item['dow']; 
+                    $new_time->area_id = $item['area_id']; 
+
+                    $new_time->save(); 
+                } 
+            }
         }
     }
     
     public function postAddForEditExistingSchedule(Request $request) { 
         $data = json_decode($request->getContent(), true); 
-        
         if (count($data) == 0) return;
         
-        $new_group = new Res_Groups; 
-        $new_group->max_cap = config('config.MAX_CAP_BUS'); 
-        $new_group->save();
-        
         for ($i=0; $i<count($data); $i++) {
-            $item = $data[$i]; 
+            $one_group = $data[$i]; //
             
-            $new_time = new Res_Times;
+            $new_group = new Res_Groups; 
+            $new_group->max_cap = config('config.MAX_CAP_BUS'); 
+            $new_group->save();
             
-            // Get store id.
-            $stop_id = Res_Stops::where('short', $item['stop'])
-                        ->first()->id; 
+            for ($j=0; $j<count($one_group); $j++) { 
+                    $item = $one_group[$j]; 
             
-            $new_time->stop_id = $stop_id;
-            $new_time->group_id = $new_group->id; 
-            
-            // Get time. 
-            $time = $item['hour'] . ":" . $item['min'] . ":00"; 
-            
-            $new_time->time = $time; 
-            $new_time->date = $item['date_from'];
-            $new_time->w_h = isset($item['w_h']) ? $item['w_h'] : config('config.TYPE_SCHEDULE_WEEKLY');
-            $new_time->valid = isset($item['valid']) ? $item['valid'] : config('config.TYPE_SCHEDULE_UNREMOVED');
-            $new_time->open = isset($item['open']) ? $item['open'] : config('config.TYPE_SCHEDULE_ENABLED');
-            $new_time->day_of_week = $item['dow']; 
-            $new_time->area_id = $item['area_id']; 
-            
-            $new_time->save(); 
-            
-        }
+                    $new_time = new Res_Times;
+                    // Get store id.
+                    $stop_id = Res_Stops::where('short', $item['stop_area'])
+                                ->first()->id; 
+                    $new_time->stop_id = $stop_id;
+                    $new_time->group_id = $new_group->id; 
+
+                    // Get time. 
+                    $time = $item['hour'] . ":" . $item['min'] . ":00"; 
+                    $new_time->time = $time; 
+                    $new_time->date = $item['date']; 
+                    $new_time->w_h = isset($item['w_h']) ? $item['w_h'] : config('config.TYPE_SCHEDULE_WEEKLY');
+                    $new_time->valid = isset($item['valid']) ? $item['valid'] : config('config.TYPE_SCHEDULE_UNREMOVED');
+                    $new_time->open = isset($item['open']) ? $item['open'] : config('config.TYPE_SCHEDULE_ENABLED');
+                    $new_time->day_of_week = $item['dow']; 
+                    $new_time->area_id = $item['area_id']; 
+
+                    $new_time->save(); 
+            } 
+        }  
     }
     
 }
