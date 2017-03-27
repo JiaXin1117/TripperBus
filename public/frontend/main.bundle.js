@@ -1347,7 +1347,7 @@ var LoginComponent = (function () {
             if (loginResult['state'] == 'success') {
                 _this.alert_visible = "none";
                 localStorage.setItem("currentUser", JSON.stringify(userInfo));
-                _this.router.navigate(['/admin']);
+                _this.router.navigate(['/admin/main']);
             }
             else {
                 _this.alert_visible = "inherit";
