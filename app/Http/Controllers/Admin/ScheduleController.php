@@ -362,4 +362,54 @@ class ScheduleController extends Controller
         }  
     }
     
+    public function getAvailableStopsForArea() {
+            $param_areaId = Input::get("area_id");
+            
+            $cnt = Res_Stops::where('area_id', $param_areaId)->count();
+            if ($cnt > 0) {
+                $stops = Res_Stops::where('area_id', $param_areaId)->get();
+                
+                return response()->json([
+                    'state' => 'success',
+                    'data' => $stops
+                ]);
+            }
+            
+            return response()->json([
+                'state' => 'fail'
+            ]);
+    }
+    
+    public function getStopInfo() {
+            $param_stopId = Input::get("stop_id");
+            
+            $stop = Res_Stops::find($param_stopId);
+            if (isset($stop)) {
+                return response()->json([
+                    'state' => 'success',
+                    'data' => $stop
+                ]);
+            }
+            
+            return response()->json([
+                'state' => 'fail'
+            ]);
+    }
+    
+    public function getGroupInfo() {
+            $param_groupId = Input::get('group_id');
+            
+            $group = Res_Groups::find($param_groupId);
+            if (isset($group)) {
+                return response()->json([
+                    'state' => 'success',
+                    'data' => $group
+                ]);
+            }
+            
+            return response()->json([
+                'state' => 'fail'
+            ]);
+    }
+    
 }
