@@ -789,8 +789,10 @@ var AdminSchedulesEditexistingComponent = (function () {
             retrieve_all_stops_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_stops",
             save_all_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/saveall_existing_schedule",
             add_schedule_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/add_existing_schedule",
+            save_groups_additional_info_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/save_groups_additional_infos",
         };
         this.groups = [];
+        this.group_additional_infos = [];
         this.arr_stops = [];
         this.arr_hours = [];
         this.arr_mins = [];
@@ -878,6 +880,7 @@ var AdminSchedulesEditexistingComponent = (function () {
                         }
                     });
                     me.groups = grouped_items;
+                    me.initiateGroupAdditionalInfosArray(Object.keys(me.groups).length);
                 }
             }
             else {
@@ -887,6 +890,12 @@ var AdminSchedulesEditexistingComponent = (function () {
                 me.setAddModalHeaderInfoForPage(false);
             }
         });
+    };
+    AdminSchedulesEditexistingComponent.prototype.initiateGroupAdditionalInfosArray = function (param_cnt) {
+        var me = this;
+        for (var i = 0; i < param_cnt; i++) {
+            me.group_additional_infos[i] = {};
+        }
     };
     AdminSchedulesEditexistingComponent.prototype.getDOW_From_DateString = function (param_date_str) {
         var me = this;
@@ -1060,9 +1069,16 @@ var AdminSchedulesEditexistingComponent = (function () {
         else {
             temp_url = me.urls.save_all_url;
         }
-        this._httpService.sendPostJSON(temp_url, me.groups)
+        console.log(me.groups);
+        me._httpService.sendPostJSON(temp_url, me.groups)
             .subscribe(function (data) {
-            jQuery("#confirm_saveall_modal").modal('show');
+            var temp_save_url = me.urls.save_groups_additional_info_url;
+            console.log(me.group_additional_infos);
+            console.log(temp_save_url);
+            me._httpService.sendPostJSON(temp_save_url, me.group_additional_infos)
+                .subscribe(function (data) {
+                jQuery("#confirm_saveall_modal").modal('show');
+            }, function (error) { return alert(error); }, function () { });
         }, function (error) { return alert(error); }, function () { });
     };
     AdminSchedulesEditexistingComponent.prototype.onAddSchedule = function () {
@@ -1107,6 +1123,7 @@ var AdminSchedulesEditexistingComponent = (function () {
             }
         }
         me.groups.push(insert_request);
+        me.initiateGroupAdditionalInfosArray(Object.keys(me.groups).length);
         jQuery("#add_schedule_modal").modal('hide');
         /*this._httpService.sendPostJSON(me.urls.add_schedule_url, insert_request)
             .subscribe(
@@ -2101,13 +2118,14 @@ var AdminScheduleEditBusComponent = (function () {
         this.arr_hours = [];
         this.arr_mins = [];
         this.selected_group = [];
+        this.selected_group_available_dest_stops = [];
+        this.selected_group_stop_info = {
+            short: "",
+            id: "",
+        };
         this.selected_stops = [];
         this.selected_hours = [];
         this.selected_mins = [];
-        this.selected_group_stop_info = {
-            short: "",
-        };
-        this.selected_group_available_stops = [];
         this.isDisabled = false;
         this.isHidden = false;
         this.urls = {
@@ -2128,7 +2146,6 @@ var AdminScheduleEditBusComponent = (function () {
         var me = this;
         // Get group_id.
         var groupId = me.selected_group[0]['group_id'];
-        console.log(groupId);
         // Get dest stop id.
         var groupURL = me.urls.get_group_info_url + "?group_id=" + groupId;
         me._httpService.sendGetRequestWithParams(groupURL)
@@ -2136,12 +2153,15 @@ var AdminScheduleEditBusComponent = (function () {
             if (data['state'] == 'success') {
                 var destStopId = data['data']['dest_stop_id'];
                 me.selected_group_max_capacity = data['data']['max_cap'];
+                me.selected_group_additional_info['max_capacity'] = me.selected_group_max_capacity;
                 var stopURL = me.urls.get_stop_url + "?stop_id=" + destStopId;
                 me._httpService.sendGetRequestWithParams(stopURL)
                     .subscribe(function (data) {
                     if (data['state'] == 'success') {
                         var stopInfo = data['data'];
                         me.selected_group_stop_info.short = stopInfo['short'];
+                        me.selected_group_stop_info.id = stopInfo['id'];
+                        me.selected_group_additional_info['dest_stop_id'] = me.selected_group_stop_info.id;
                     }
                 }, function (error) { return alert(error); }, function () { });
             }
@@ -2149,11 +2169,18 @@ var AdminScheduleEditBusComponent = (function () {
     };
     AdminScheduleEditBusComponent.prototype.getAvailableStops = function () {
         var me = this;
-        var url = me.urls.get_all_stop_for_area_url + "?area_id=" + me.selected_group_area_id;
+        var url;
+        if (me.selected_group_area_id == me._scheduleService.areaType.TYPE_NEWYORK) {
+            url = me.urls.get_all_stop_for_area_url + "?area_id=" + me._scheduleService.areaType.TYPE_BA;
+        }
+        else {
+            url = me.urls.get_all_stop_for_area_url + "?area_id=" + me._scheduleService.areaType.TYPE_NEWYORK;
+        }
         me._httpService.sendGetRequestWithParams(url)
             .subscribe(function (data) {
             if (data['state'] == 'success') {
-                me.selected_group_available_stops = data['data'];
+                me.selected_group_available_dest_stops = data['data'];
+                me.selected_group_stop_info.id = data['data'][0]['id'];
             }
         }, function (error) { return alert(error); }, function () { });
     };
@@ -2221,6 +2248,7 @@ var AdminScheduleEditBusComponent = (function () {
             me.selected_hours[i] = item['time'].substring(0, 2);
             me.selected_mins[i] = item['time'].substring(3, 5);
         }
+        me.selected_group_max_capacity = me._scheduleService.groupMaxCapacity;
         me.getStopInfoForGroup();
         me.getAvailableStops();
     };
@@ -2252,32 +2280,15 @@ var AdminScheduleEditBusComponent = (function () {
         enumerable: true,
         configurable: true
     });
-    /*public onSave() {
-        let me = this;
-        
-        let update_request = [];
-        for (let i=0; i<Object.keys(me.selected_group).length; i++) {
-            let group_item = me.selected_group[i];
-            
-            let temp = {};
-            temp['time_id'] = group_item['time_id'];
-            temp['stop'] = me.selected_stops[i];
-            temp['hour'] = me.selected_hours[i];
-            temp['min'] = me.selected_mins[i];
-            
-            update_request[i] = temp;
-        }
-        
-        this._httpService.sendPostJSON(me.urls.update_url, update_request)
-            .subscribe(
-                data => {
-                    
-                },
-                error => alert(error),
-                () => console.log('Finished')
-            );
-        
-    }*/
+    Object.defineProperty(AdminScheduleEditBusComponent.prototype, "group_additional_info", {
+        set: function (param_additional_info) {
+            var me = this;
+            me.selected_group_additional_info = param_additional_info;
+            me.selected_group_additional_info['group_id'] = me.selected_group[0]['group_id'];
+        },
+        enumerable: true,
+        configurable: true
+    });
     AdminScheduleEditBusComponent.prototype.onRemove = function () {
         var me = this;
         var remove_request = [];
@@ -2339,6 +2350,14 @@ var AdminScheduleEditBusComponent = (function () {
         temp = me.selected_group[idx]['time'].substring(0, 2) + ":" + $event + ":" + me.selected_group[idx]['time'].substring(6);
         me.selected_group[idx]['time'] = temp;
     };
+    AdminScheduleEditBusComponent.prototype.onChangeDestStop = function ($event) {
+        var me = this;
+        me.selected_group_additional_info['dest_stop_id'] = $event;
+    };
+    AdminScheduleEditBusComponent.prototype.onChangeMaxCapacity = function ($event) {
+        var me = this;
+        me.selected_group_additional_info['max_capacity'] = $event;
+    };
     __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* Input */])(), 
         __metadata('design:type', Array), 
@@ -2359,6 +2378,11 @@ var AdminScheduleEditBusComponent = (function () {
         __metadata('design:type', Number), 
         __metadata('design:paramtypes', [Number])
     ], AdminScheduleEditBusComponent.prototype, "outbound_area_id", null);
+    __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* Input */])(), 
+        __metadata('design:type', Array), 
+        __metadata('design:paramtypes', [Array])
+    ], AdminScheduleEditBusComponent.prototype, "group_additional_info", null);
     AdminScheduleEditBusComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Component */])({
             selector: 'app-admin-schedule-edit-bus',
@@ -4010,14 +4034,14 @@ module.exports = "\n<section class=\"content-header admin-rates-content-header-c
 /***/ 952:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"col-sm-6 col-md-4\" [hidden]=\"isHidden\">\n    \n    <div class=\"alert\" [ngClass]=\"getClass()\">\n            <h3 class=\"text-center\">BUS #{{selected_group_idx + 1}}</h3>\n\n            <div class=\"row\">\n                <div class=\"col-sm-5\">\n                    <h5 class=\"text-center\">Stop</h5>\n                </div>\n                <div class=\"col-sm-4\">\n                    <h5 class=\"text-center\">Hour</h5>\n                </div>\n                <div class=\"col-sm-3\">\n                    <h5 class=\"text-center\">Min</h5>\n                </div>\n            </div>\n            \n            <div id='detailed_info'>\n                <div class=\"row\" *ngFor = \"let group_item of selected_group; let i = index;\" >\n                    <div class=\"col-sm-5\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_stops[i]\" (ngModelChange)=\"onChangeStopsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let stop of arr_stops;\">{{stop}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-4\">\n                        <select class=\"form-control \" [(ngModel)]=\"selected_hours[i]\" (ngModelChange)=\"onChangeHoursSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-3\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_mins[i]\" (ngModelChange)=\"onChangeMinsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let min of arr_mins;\">{{min}}</option>\n                        </select>\n                    </div>\n                </div>\n            </div>\n            \n            <div class=\"destination-div\">\n                <h5 class=\"text-center\">Destination: </h5>\n                <select class=\"form-control\" [(ngModel)]=\"selected_group_stop_info.short\" (ngModelChange)=\"onChangeDestStop($event)\">\n                    <option *ngFor=\"let stop of selected_group_available_stops; let i=index;\" value=\"{{ stop['short'] }}\">{{ stop['short'] }}</option>\n                </select>\n            </div>\n            \n            <div class=\"max-capacity-div\">\n                <h5 class=\"text-center\">Max Capacity: </h5>\n                <input class=\"form-control \" type=\"text\" value=\"{{ selected_group_max_capacity }}\" [(ngModel)]=\"selected_group_max_capacity\" (ngModelChange)=\"onChangeMaxCapacity($event)\">\n            </div>\n\n            <div class=\"row\">\n                <div class=\"col-xs-12 text-center\" style='padding-top: 15px;'>\n                    <button class=\"btn btn-sm btn-danger\" (click)=\"onRemove()\">Remove</button>\n                    <button *ngIf=\"!selected_group_disabled\" class=\"btn btn-sm btn-warning\" (click)=\"onDisable()\">Disable</button>\n                    <button *ngIf=\"selected_group_disabled\" class=\"btn btn-sm btn-warning\" style=\"background-color: green;\" (click)=\"onReenable()\">Re-enable</button>\n                </div>\n            </div>\n    </div>\n</div>\n\n<!--div id=\"confirm_remove_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Delete</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>Are you sure you want to delete this?</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button class=\"btn btn-danger\" (click)=\"onRemove()\">Delete</button> \n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n\n<div id=\"confirm_disable_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Disable</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>Are you sure you want to disable this?</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button class=\"btn btn-danger\" (click)=\"onDisable()\">Disable</button> \n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\n            </div>\n        </div>\n\n    </div>\n</div -->\n"
+module.exports = "<div class=\"col-sm-6 col-md-4\" [hidden]=\"isHidden\">\n    \n    <div class=\"alert\" [ngClass]=\"getClass()\">\n            <h3 class=\"text-center\">BUS #{{selected_group_idx + 1}}</h3>\n\n            <div class=\"row\">\n                <div class=\"col-sm-5\">\n                    <h5 class=\"text-center\">Stop</h5>\n                </div>\n                <div class=\"col-sm-4\">\n                    <h5 class=\"text-center\">Hour</h5>\n                </div>\n                <div class=\"col-sm-3\">\n                    <h5 class=\"text-center\">Min</h5>\n                </div>\n            </div>\n            \n            <div id='detailed_info'>\n                <div class=\"row\" *ngFor = \"let group_item of selected_group; let i = index;\" >\n                    <div class=\"col-sm-5\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_stops[i]\" (ngModelChange)=\"onChangeStopsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let stop of arr_stops;\">{{stop}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-4\">\n                        <select class=\"form-control \" [(ngModel)]=\"selected_hours[i]\" (ngModelChange)=\"onChangeHoursSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-3\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_mins[i]\" (ngModelChange)=\"onChangeMinsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let min of arr_mins;\">{{min}}</option>\n                        </select>\n                    </div>\n                </div>\n            </div>\n            \n            <div class=\"destination-div\">\n                <h5 class=\"text-center\">Destination: </h5>\n                <select class=\"form-control\" (ngModelChange)=\"onChangeDestStop($event)\" [(ngModel)]=\"selected_group_stop_info.id\">\n                    <option *ngFor=\"let stop of selected_group_available_dest_stops; let i=index;\" value=\"{{ stop['id'] }}\">{{ stop['short'] }}</option>\n                </select>\n            </div>\n            \n            <div class=\"max-capacity-div\">\n                <h5 class=\"text-center\">Max Capacity: </h5>\n                <input class=\"form-control\" name=\"input_max_capacity\" type=\"text\" [(ngModel)]=\"selected_group_max_capacity\" (ngModelChange)=\"onChangeMaxCapacity($event)\">\n            </div>\n\n            <div class=\"row\">\n                <div class=\"col-xs-12 text-center\" style='padding-top: 15px;'>\n                    <button class=\"btn btn-sm btn-danger\" (click)=\"onRemove()\">Remove</button>\n                    <button *ngIf=\"!selected_group_disabled\" class=\"btn btn-sm btn-warning\" (click)=\"onDisable()\">Disable</button>\n                    <button *ngIf=\"selected_group_disabled\" class=\"btn btn-sm btn-warning\" style=\"background-color: green;\" (click)=\"onReenable()\">Re-enable</button>\n                </div>\n            </div>\n    </div>\n</div>\n\n\n"
 
 /***/ }),
 
 /***/ 953:
 /***/ (function(module, exports) {
 
-module.exports = "\n<section class=\"content-header admin-schedule-edit-content-header-custom\">\n    <h1 style=\"width: 65%;\">\n        <i class=\"fa fa-clock-o\"></i> Schedule Times - {{ headerInfos.date_top_heading }}\n    </h1>\n    <ol class=\"breadcrumb admin-schedule-edit-breadcrumb-custom\">\n        <li><a routerLink=\"/admin/main\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li><a routerLink=\"/admin/schedules\"><i class=\"fa fa-clock-o\"></i> Schedule Times</a></li>\n        <li class=\"active\" id=\"li_header_detail\">{{ headerInfos.dow }} {{ headerInfos.after_on }} {{ headerInfos.date }} from {{ headerInfos.city }}</li>\n    </ol>\n</section>\n\n<section class=\"panel admin-main-panel admin-schedule-edit-main-panel-custom\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\"></span>\n            <span id=\"box_title_span\" *ngIf=\"inputParams.schedule_type == _scheduleService.w_hType.TYPE_WEEKLY\">This date has schedule of: Every {{ headerInfos.dow }} {{ headerInfos.after_on }} {{ headerInfos.date }} from  {{ headerInfos.city }}</span>\n            <!--span id=\"box_title_span\" *ngIf=\"inputParams.schedule_type == _scheduleService.w_hType.TYPE_HOLIDAY\">Holiday schedule on {{ headerInfos.date }} from  {{ headerInfos.city }}</span-->\n            <span id=\"box_title_span\" *ngIf=\"inputParams.schedule_type == _scheduleService.w_hType.TYPE_HOLIDAY\">This date has special holiday schedule</span>\n            <a href=\"javascript:void(0)\" class=\"btn btn-xs btn-primary pull-right open-modal\" (click)=\"popupAddScheduleModal()\"><span class=\"fa fa-plus\"></span> Schedule</a>\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <div *ngFor = \"let group of groups; let i = index;\">\n            <app-admin-schedule-edit-bus [group]=\"group\" [stops]=\"arr_stops\" [group_idx]=\"i\" [outbound_area_id]=\"inputParams.area_id\"></app-admin-schedule-edit-bus>\n        </div>\n        \n        <div class=\"row\">\n            <div class=\"col-sm-12 text-center form-group\">\n                <button class=\"btn btn-success btn-lg\" (click)=\"onSaveAll()\"><span class=\"fa fa-check\"></span> Save All </button>\n            </div>\n        </div>\n    </div>\n</section>\n\n\n<div id=\"add_schedule_modal\" class=\"modal fade\" role=\"dialog\">\n  <div class=\"modal-dialog\">\n\n    <div class=\"modal-content\">\n        <div class=\"modal-header\">\n            <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n            <h4 class=\"modal-title\">\n                <span *ngIf=\"inputParams.button_type == _scheduleService.buttonType.TYPE_EDIT_EXISTING && inputParams.schedule_type == _scheduleService.w_hType.TYPE_HOLIDAY\">\n                    Create Holiday Schedule on {{ addModalHeaderInfos.date }} from  {{ addModalHeaderInfos.city }}\n                </span>\n                <span *ngIf=\"inputParams.button_type == _scheduleService.buttonType.TYPE_EDIT_EXISTING && inputParams.schedule_type == _scheduleService.w_hType.TYPE_WEEKLY\">\n                    Generate Schedule after {{ addModalHeaderInfos.date }} from  {{ addModalHeaderInfos.city }}\n                </span>\n                <span *ngIf=\"inputParams.button_type == _scheduleService.buttonType.TYPE_GENERATE_NEW\">\n                    Generate Schedule after {{ addModalHeaderInfos.date }} from  {{ addModalHeaderInfos.city }}\n                </span>\n                <span *ngIf=\"inputParams.button_type == _scheduleService.buttonType.TYPE_GENERATE_SPECIAL\">\n                    Create Holiday Schedule on {{ addModalHeaderInfos.date }} from  {{ addModalHeaderInfos.city }}\n                </span>\n            </h4>\n        </div>\n      <div class=\"modal-body\">\n            <table class=\"table table-borderless text-center\">\n                <tbody>\n                    <tr>\n                        <th>Stop</th>\n                        <th>Hour</th>\n                        <th>Min</th>\n                        <!--th>Price</th-->\n                    </tr>\n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <!--td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td-->\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <!--td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td-->\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <!--td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td-->\n                    </tr>\n                    \n                </tbody>\n            </table>\n        </div>\n        <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n            <button class=\"btn btn-success\" (click)=\"onAddSchedule()\">Add Schedule</button>\n        </div>\n    </div>\n\n  </div>\n</div>\n\n\n<div id=\"confirm_saveall_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Confirmations</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>Successfully saved all bus reservations.</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-success\" data-dismiss=\"modal\" (click)=\"refreshCurrentPage(inputParams.button_type)\">OK</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n\n\n\n\n\n\n"
+module.exports = "\n<section class=\"content-header admin-schedule-edit-content-header-custom\">\n    <h1 style=\"width: 65%;\">\n        <i class=\"fa fa-clock-o\"></i> Schedule Times - {{ headerInfos.date_top_heading }}\n    </h1>\n    <ol class=\"breadcrumb admin-schedule-edit-breadcrumb-custom\">\n        <li><a routerLink=\"/admin/main\"><i class=\"fa fa-dashboard\"></i> Main</a></li>\n        <li><a routerLink=\"/admin/schedules\"><i class=\"fa fa-clock-o\"></i> Schedule Times</a></li>\n        <li class=\"active\" id=\"li_header_detail\">{{ headerInfos.dow }} {{ headerInfos.after_on }} {{ headerInfos.date }} from {{ headerInfos.city }}</li>\n    </ol>\n</section>\n\n<section class=\"panel admin-main-panel admin-schedule-edit-main-panel-custom\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\"></span>\n            <span id=\"box_title_span\" *ngIf=\"inputParams.schedule_type == _scheduleService.w_hType.TYPE_WEEKLY\">This date has schedule of: Every {{ headerInfos.dow }} {{ headerInfos.after_on }} {{ headerInfos.date }} from  {{ headerInfos.city }}</span>\n            <!--span id=\"box_title_span\" *ngIf=\"inputParams.schedule_type == _scheduleService.w_hType.TYPE_HOLIDAY\">Holiday schedule on {{ headerInfos.date }} from  {{ headerInfos.city }}</span-->\n            <span id=\"box_title_span\" *ngIf=\"inputParams.schedule_type == _scheduleService.w_hType.TYPE_HOLIDAY\">This date has special holiday schedule</span>\n            <a href=\"javascript:void(0)\" class=\"btn btn-xs btn-primary pull-right open-modal\" (click)=\"popupAddScheduleModal()\"><span class=\"fa fa-plus\"></span> Schedule</a>\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <div *ngFor = \"let group of groups; let i = index;\">\n            <app-admin-schedule-edit-bus [group]=\"group\" [stops]=\"arr_stops\" [group_idx]=\"i\" [outbound_area_id]=\"inputParams.area_id\" [group_additional_info]=\"group_additional_infos[i]\"></app-admin-schedule-edit-bus>\n        </div>\n        \n        <div class=\"row\">\n            <div class=\"col-sm-12 text-center form-group\">\n                <button class=\"btn btn-success btn-lg\" (click)=\"onSaveAll()\"><span class=\"fa fa-check\"></span> Save All </button>\n            </div>\n        </div>\n    </div>\n</section>\n\n\n<div id=\"add_schedule_modal\" class=\"modal fade\" role=\"dialog\">\n  <div class=\"modal-dialog\">\n\n    <div class=\"modal-content\">\n        <div class=\"modal-header\">\n            <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n            <h4 class=\"modal-title\">\n                <span *ngIf=\"inputParams.button_type == _scheduleService.buttonType.TYPE_EDIT_EXISTING && inputParams.schedule_type == _scheduleService.w_hType.TYPE_HOLIDAY\">\n                    Create Holiday Schedule on {{ addModalHeaderInfos.date }} from  {{ addModalHeaderInfos.city }}\n                </span>\n                <span *ngIf=\"inputParams.button_type == _scheduleService.buttonType.TYPE_EDIT_EXISTING && inputParams.schedule_type == _scheduleService.w_hType.TYPE_WEEKLY\">\n                    Generate Schedule after {{ addModalHeaderInfos.date }} from  {{ addModalHeaderInfos.city }}\n                </span>\n                <span *ngIf=\"inputParams.button_type == _scheduleService.buttonType.TYPE_GENERATE_NEW\">\n                    Generate Schedule after {{ addModalHeaderInfos.date }} from  {{ addModalHeaderInfos.city }}\n                </span>\n                <span *ngIf=\"inputParams.button_type == _scheduleService.buttonType.TYPE_GENERATE_SPECIAL\">\n                    Create Holiday Schedule on {{ addModalHeaderInfos.date }} from  {{ addModalHeaderInfos.city }}\n                </span>\n            </h4>\n        </div>\n      <div class=\"modal-body\">\n            <table class=\"table table-borderless text-center\">\n                <tbody>\n                    <tr>\n                        <th>Stop</th>\n                        <th>Hour</th>\n                        <th>Min</th>\n                        <!--th>Price</th-->\n                    </tr>\n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[0]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[0]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[0]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <!--td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[0]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td-->\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[1]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[1]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[1]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <!--td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[1]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td-->\n                    </tr>\n                    \n                    <tr>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_stops[2]\">\n                                <option *ngFor=\"let stop of arr_stops\" value=\"{{stop}}\">{{stop}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_hours[2]\">\n                                <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_mins[2]\">\n                                <option *ngFor=\"let min of arr_mins\" value=\"{{min}}\">{{min}}</option>\n                            </select>\n                        </td>\n                        <!--td>\n                            <select class=\"form-control\" [(ngModel)]=\"adding_prices[2]\">\n                                <option *ngFor=\"let price of arr_prices\" value=\"{{price}}\">{{price}}</option>\n                            </select>\n                        </td-->\n                    </tr>\n                    \n                </tbody>\n            </table>\n        </div>\n        <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-warning pull-left\" data-dismiss=\"modal\">Close</button>\n            <button class=\"btn btn-success\" (click)=\"onAddSchedule()\">Add Schedule</button>\n        </div>\n    </div>\n\n  </div>\n</div>\n\n\n<div id=\"confirm_saveall_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Confirmations</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>Successfully saved all bus reservations.</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-success\" data-dismiss=\"modal\" (click)=\"refreshCurrentPage(inputParams.button_type)\">OK</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n\n\n\n\n\n\n"
 
 /***/ }),
 

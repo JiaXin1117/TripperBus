@@ -298,6 +298,7 @@ class ScheduleController extends Controller
             if ($isNewGroup === 1) {
                 $new_group = new Res_Groups; 
                 $new_group->max_cap = config('config.MAX_CAP_BUS'); 
+                $new_group->dest_stop_id = 1; 
                 $new_group->save();
 
                 for ($j=0; $j<count($one_group); $j++) { 
@@ -322,6 +323,26 @@ class ScheduleController extends Controller
 
                     $new_time->save(); 
                 } 
+            }
+        }
+    }
+    
+    public function postSaveGroupsAdditionalInfo(Request $request) {
+        $groupAdditionalInfo = json_decode($request->getContent(), true); 
+        if (count($groupAdditionalInfo) == 0) return;
+        
+        for ($i=0; $i<count($groupAdditionalInfo); $i++) {
+            $item = $groupAdditionalInfo[$i];
+            
+            if (!isset($item['group_id']) || !isset($item['max_capacity']) || !isset($item['dest_stop_id']) ) continue;
+            
+            $temp = Res_Groups::find($item['group_id']); 
+            
+            if (isset($temp)) {
+                $temp->max_cap = $item['max_capacity']; 
+                $temp->dest_stop_id = $item['dest_stop_id']; 
+                
+                $temp->save(); 
             }
         }
     }

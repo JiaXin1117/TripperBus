@@ -64,6 +64,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.schedule.saveall_existing_schedule',
             'uses' => 'ScheduleController@postSaveAllForEditExistingSchedule',
         ]);
+        Route::post('/save_groups_additional_infos', [
+            'as' => 'admin.schedule.save_groups_additional_infos',
+            'uses' => 'ScheduleController@postSaveGroupsAdditionalInfo',
+        ]);
         Route::post('/add_existing_schedule', [
             'as' => 'admin.schedule.add_existing_schedule',
             'uses' => 'ScheduleController@postAddForEditExistingSchedule',
