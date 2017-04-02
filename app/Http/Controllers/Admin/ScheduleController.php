@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Res_Stops;
 use App\Models\Res_Groups;
+use App\Models\Res_Groups_DestStops;
 use App\Models\Res_Times;
 use Illuminate\Support\Facades\Input;
 
@@ -273,10 +274,14 @@ class ScheduleController extends Controller
     public function postSaveAllForEditExistingSchedule(Request $request) {
         $data = json_decode($request->getContent(), true); 
         
-        for ($i=0; $i<count($data); $i++) { 
-            $one_group = $data[$i]; 
+        $group_main_info = $data['group_main_info'];
+        $group_additional_info = $data['group_additional_info'];
+        
+        for ($i=0; $i<count($group_main_info); $i++) { 
+            $one_group = $group_main_info[$i]; 
             $isNewGroup = 0;
             
+            // ********* Update infos on res_times. 
             for ($j=0; $j<count($one_group); $j++) { 
                 $item = $one_group[$j]; 
                 
@@ -294,24 +299,24 @@ class ScheduleController extends Controller
                     break;
                 }
             }
+            // Update infos on res_times. ********* 
             
             if ($isNewGroup === 1) {
                 $new_group = new Res_Groups; 
-                $new_group->max_cap = config('config.MAX_CAP_BUS'); 
-                $new_group->dest_stop_id = 1; 
+                $new_group->max_cap = $group_additional_info[$i]['max_capacity'];
                 $new_group->save();
 
                 for ($j=0; $j<count($one_group); $j++) { 
                     $item = $one_group[$j]; 
 
+                    //************ Store infos on Res_Times Table. 
                     $new_time = new Res_Times;
-                    // Get store id.
+                    
                     $stop_id = Res_Stops::where('short', $item['stop_area'])
                                 ->first()->id; 
                     $new_time->stop_id = $stop_id;
                     $new_time->group_id = $new_group->id; 
 
-                    // Get time. 
                     $time = $item['hour'] . ":" . $item['min'] . ":00"; 
                     $new_time->time = $time; 
                     $new_time->date = $item['date']; 
@@ -322,7 +327,33 @@ class ScheduleController extends Controller
                     $new_time->area_id = $item['area_id']; 
 
                     $new_time->save(); 
+                    //Store infos on Res_Times Table. **************
                 } 
+
+                //*********** Store infos about dest stops. 
+                foreach ($group_additional_info[$i]['dest_stops'] as $dest_stop) {
+                    $new_group_deststop = new Res_Groups_DestStops; 
+                    $new_group_deststop->group_id = $new_group->id;
+                    $new_group_deststop->dest_stop_id = $dest_stop['stop_id'];
+                    $new_group_deststop->save();
+                }
+                // Store infos about dest stops. ***********
+
+            } else {
+                // ********* Update infos about dest_stops.
+                $temp = Res_Groups::find($group_additional_info[$i]['group_id']); 
+                $temp->max_cap = $group_additional_info[$i]['max_capacity'];
+                $temp->save(); 
+
+                Res_Groups_DestStops::where('group_id', $group_additional_info[$i]['group_id'])->delete();                  
+
+                foreach ($group_additional_info[$i]['dest_stops'] as $dest_stop) {
+                    $new_group_deststop = new Res_Groups_DestStops; 
+                    $new_group_deststop->group_id = $group_additional_info[$i]['group_id'];
+                    $new_group_deststop->dest_stop_id = $dest_stop['stop_id'];
+                    $new_group_deststop->save();
+                }
+                // Update infos about dest_stops. *********
             }
         }
     }
@@ -330,7 +361,7 @@ class ScheduleController extends Controller
     public function postSaveGroupsAdditionalInfo(Request $request) {
         $groupAdditionalInfo = json_decode($request->getContent(), true); 
         if (count($groupAdditionalInfo) == 0) return;
-        
+              
         for ($i=0; $i<count($groupAdditionalInfo); $i++) {
             $item = $groupAdditionalInfo[$i];
             
@@ -351,20 +382,26 @@ class ScheduleController extends Controller
         $data = json_decode($request->getContent(), true); 
         if (count($data) == 0) return;
         
-        for ($i=0; $i<count($data); $i++) {
-            $one_group = $data[$i]; //
+        $group_main_info = $data['group_main_info'];
+        $group_additional_info = $data['group_additional_info'];
+        
+        for ($i=0; $i<count($group_main_info); $i++) {
+            $one_group = $group_main_info[$i]; 
             
             $new_group = new Res_Groups; 
-            $new_group->max_cap = config('config.MAX_CAP_BUS'); 
+            $new_group->max_cap = $group_additional_info[$i]['max_capacity'];
+            $new_group->dest_stop_id = $group_additional_info[$i]['dest_stop_id']; 
             $new_group->save();
             
             for ($j=0; $j<count($one_group); $j++) { 
                     $item = $one_group[$j]; 
             
                     $new_time = new Res_Times;
+                    
                     // Get store id.
                     $stop_id = Res_Stops::where('short', $item['stop_area'])
                                 ->first()->id; 
+                    
                     $new_time->stop_id = $stop_id;
                     $new_time->group_id = $new_group->id; 
 
@@ -425,6 +462,24 @@ class ScheduleController extends Controller
                 return response()->json([
                     'state' => 'success',
                     'data' => $group
+                ]);
+            }
+            
+            return response()->json([
+                'state' => 'fail'
+            ]);
+    }
+
+    public function getDestStopsForGroup() {
+            $param_groupId = Input::get("group_id");
+            
+            $cnt = Res_Groups_DestStops::where('group_id', $param_groupId)->count();
+            if ($cnt > 0) {
+                $items = Res_Groups_DestStops::where('group_id', $param_groupId)->get();
+                
+                return response()->json([
+                    'state' => 'success',
+                    'data' => $items
                 ]);
             }
             

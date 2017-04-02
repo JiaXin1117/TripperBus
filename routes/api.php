@@ -46,6 +46,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.schedule.retrieve_group_info',
             'uses' => 'ScheduleController@getGroupInfo',
         ]);
+        Route::get('/retrieve_dest_stops_for_group', [
+            'as' => 'admin.schedule.retrieve_dest_stops_for_group',
+            'uses' => 'ScheduleController@getDestStopsForGroup',
+        ]);
         
         // POST Requests
         Route::post('/update_existing_schedule', [

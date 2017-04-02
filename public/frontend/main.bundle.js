@@ -769,7 +769,8 @@ var AdminSchedulesEditexistingComponent = (function () {
             date: "",
             button_type: "",
             area_id: "",
-            schedule_type: ""
+            schedule_type: "",
+            default_dest_stop_id: "",
         };
         this.headerInfos = {
             after_on: "",
@@ -790,6 +791,7 @@ var AdminSchedulesEditexistingComponent = (function () {
             save_all_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/saveall_existing_schedule",
             add_schedule_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/add_existing_schedule",
             save_groups_additional_info_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/save_groups_additional_infos",
+            get_all_stop_for_area_url: __WEBPACK_IMPORTED_MODULE_4__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_stops_for_area",
         };
         this.groups = [];
         this.group_additional_infos = [];
@@ -804,6 +806,7 @@ var AdminSchedulesEditexistingComponent = (function () {
     AdminSchedulesEditexistingComponent.prototype.ngOnInit = function () {
         this.structTimeArray();
         this.receiveParamsFromRoute();
+        this.getDefaultStopID();
         this.getAllStopsInfo();
         this.showHeaderInfos();
     };
@@ -815,6 +818,23 @@ var AdminSchedulesEditexistingComponent = (function () {
     };
     AdminSchedulesEditexistingComponent.prototype.popupAddScheduleModal = function () {
         jQuery("#add_schedule_modal").modal('show');
+    };
+    // Get default stop id from current area id.
+    AdminSchedulesEditexistingComponent.prototype.getDefaultStopID = function () {
+        var me = this;
+        var url;
+        if (me.inputParams.area_id == me._scheduleService.areaType.TYPE_NEWYORK) {
+            url = me.urls.get_all_stop_for_area_url + "?area_id=" + me._scheduleService.areaType.TYPE_BA;
+        }
+        else {
+            url = me.urls.get_all_stop_for_area_url + "?area_id=" + me._scheduleService.areaType.TYPE_NEWYORK;
+        }
+        me._httpService.sendGetRequestWithParams(url)
+            .subscribe(function (data) {
+            if (data['state'] == 'success') {
+                me.inputParams.default_dest_stop_id = data['data'][0]['id'];
+            }
+        }, function (error) { return alert(error); }, function () { });
     };
     AdminSchedulesEditexistingComponent.prototype.showHeaderInfos = function () {
         var me = this;
@@ -1061,24 +1081,21 @@ var AdminSchedulesEditexistingComponent = (function () {
                 }
             }
         }
-        var temp_url;
-        if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_NEW
-            || me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
+        /*let temp_url;
+        if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_NEW || me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
             temp_url = me.urls.add_schedule_url;
-        }
-        else {
+        } else {
             temp_url = me.urls.save_all_url;
-        }
-        console.log(me.groups);
-        me._httpService.sendPostJSON(temp_url, me.groups)
+        }*/
+        var temp_url = me.urls.save_all_url;
+        // Struct post data for saving all.
+        var temp_post_data = {};
+        temp_post_data['group_main_info'] = me.groups;
+        temp_post_data['group_additional_info'] = me.group_additional_infos;
+        console.log(temp_post_data);
+        me._httpService.sendPostJSON(temp_url, temp_post_data)
             .subscribe(function (data) {
-            var temp_save_url = me.urls.save_groups_additional_info_url;
-            console.log(me.group_additional_infos);
-            console.log(temp_save_url);
-            me._httpService.sendPostJSON(temp_save_url, me.group_additional_infos)
-                .subscribe(function (data) {
-                jQuery("#confirm_saveall_modal").modal('show');
-            }, function (error) { return alert(error); }, function () { });
+            jQuery("#confirm_saveall_modal").modal('show');
         }, function (error) { return alert(error); }, function () { });
     };
     AdminSchedulesEditexistingComponent.prototype.onAddSchedule = function () {
@@ -1086,44 +1103,46 @@ var AdminSchedulesEditexistingComponent = (function () {
         var insert_request = [];
         for (var i = 0; i < Object.keys(me.adding_stops).length; i++) {
             if (me.adding_stops[i] != "" && me.adding_hours[i] != "" && me.adding_mins[i] != "" /*&& me.adding_prices[i] != ""*/) {
-                var temp = {};
-                temp['stop_area'] = me.adding_stops[i];
-                temp['hour'] = me.adding_hours[i];
-                temp['min'] = me.adding_mins[i];
-                temp['time'] = temp['hour'] + ":" + temp['min'] + ":00";
+                var temp_1 = {};
+                temp_1['stop_area'] = me.adding_stops[i];
+                temp_1['hour'] = me.adding_hours[i];
+                temp_1['min'] = me.adding_mins[i];
+                temp_1['time'] = temp_1['hour'] + ":" + temp_1['min'] + ":00";
                 // Set date_from value.
                 if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_EDIT_EXISTING) {
                     if (me.inputParams.schedule_type == me._scheduleService.w_hType.TYPE_HOLIDAY) {
-                        temp['date'] = me._scheduleService.convertDateToUTC(me.inputParams.date);
+                        temp_1['date'] = me._scheduleService.convertDateToUTC(me.inputParams.date);
                     }
                     else {
                         if (me.latest_date == "" || me.latest_date == undefined) {
-                            temp['date'] = __WEBPACK_IMPORTED_MODULE_5_moment__(me.inputParams.date).utc().format("YYYY-MM-DD");
+                            temp_1['date'] = __WEBPACK_IMPORTED_MODULE_5_moment__(me.inputParams.date).utc().format("YYYY-MM-DD");
                         }
                         else {
-                            temp['date'] = __WEBPACK_IMPORTED_MODULE_5_moment__(me.latest_date).utc().format("YYYY-MM-DD");
+                            temp_1['date'] = __WEBPACK_IMPORTED_MODULE_5_moment__(me.latest_date).utc().format("YYYY-MM-DD");
                         }
                     }
                 }
                 else {
-                    temp['date'] = __WEBPACK_IMPORTED_MODULE_5_moment__(me.inputParams.date).utc().format("YYYY-MM-DD");
+                    temp_1['date'] = __WEBPACK_IMPORTED_MODULE_5_moment__(me.inputParams.date).utc().format("YYYY-MM-DD");
                 }
-                temp['dow'] = __WEBPACK_IMPORTED_MODULE_5_moment__(me.inputParams.date).utc().day();
-                temp['area_id'] = me.inputParams.area_id;
+                temp_1['dow'] = __WEBPACK_IMPORTED_MODULE_5_moment__(me.inputParams.date).utc().day();
+                temp_1['area_id'] = me.inputParams.area_id;
                 if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
-                    temp['w_h'] = me._scheduleService.w_hType.TYPE_HOLIDAY;
+                    temp_1['w_h'] = me._scheduleService.w_hType.TYPE_HOLIDAY;
                 }
                 else if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_NEW) {
-                    temp['w_h'] = me._scheduleService.w_hType.TYPE_WEEKLY;
+                    temp_1['w_h'] = me._scheduleService.w_hType.TYPE_WEEKLY;
                 }
                 else {
-                    temp['w_h'] = me.inputParams.schedule_type;
+                    temp_1['w_h'] = me.inputParams.schedule_type;
                 }
-                insert_request[i] = temp;
+                insert_request[i] = temp_1;
             }
         }
         me.groups.push(insert_request);
-        me.initiateGroupAdditionalInfosArray(Object.keys(me.groups).length);
+        // Add empty array to group_additional_infos array.
+        var temp = {};
+        me.group_additional_infos.push(temp);
         jQuery("#add_schedule_modal").modal('hide');
         /*this._httpService.sendPostJSON(me.urls.add_schedule_url, insert_request)
             .subscribe(
@@ -1847,6 +1866,10 @@ var ScheduleService = (function () {
             TYPE_NEWYORK: 1,
             TYPE_BA: 2,
         };
+        this.stopDropOffType = {
+            TYPE_DROPOFF: 1,
+            TYPE_NONDROPOFF: 0,
+        };
         this.groupMaxCapacity = 57;
     }
     ScheduleService.prototype.convertMonthFormat = function (m) {
@@ -2118,11 +2141,9 @@ var AdminScheduleEditBusComponent = (function () {
         this.arr_hours = [];
         this.arr_mins = [];
         this.selected_group = [];
+        this.selected_group_additional_info = [];
+        this.selected_group_dest_stops = [];
         this.selected_group_available_dest_stops = [];
-        this.selected_group_stop_info = {
-            short: "",
-            id: "",
-        };
         this.selected_stops = [];
         this.selected_hours = [];
         this.selected_mins = [];
@@ -2135,6 +2156,7 @@ var AdminScheduleEditBusComponent = (function () {
             get_group_info_url: __WEBPACK_IMPORTED_MODULE_3__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_group_info",
             get_stop_url: __WEBPACK_IMPORTED_MODULE_3__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_stop_from_id",
             get_all_stop_for_area_url: __WEBPACK_IMPORTED_MODULE_3__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_stops_for_area",
+            get_dest_stops_for_group: __WEBPACK_IMPORTED_MODULE_3__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_dest_stops_for_group",
         };
     }
     AdminScheduleEditBusComponent.prototype.ngOnInit = function () {
@@ -2142,32 +2164,28 @@ var AdminScheduleEditBusComponent = (function () {
         this.initiateFields();
         this.checkGroupDisability();
     };
-    AdminScheduleEditBusComponent.prototype.getStopInfoForGroup = function () {
+    AdminScheduleEditBusComponent.prototype.getMaxCapOfGroup = function () {
         var me = this;
         // Get group_id.
         var groupId = me.selected_group[0]['group_id'];
-        // Get dest stop id.
-        var groupURL = me.urls.get_group_info_url + "?group_id=" + groupId;
-        me._httpService.sendGetRequestWithParams(groupURL)
-            .subscribe(function (data) {
-            if (data['state'] == 'success') {
-                var destStopId = data['data']['dest_stop_id'];
-                me.selected_group_max_capacity = data['data']['max_cap'];
-                me.selected_group_additional_info['max_capacity'] = me.selected_group_max_capacity;
-                var stopURL = me.urls.get_stop_url + "?stop_id=" + destStopId;
-                me._httpService.sendGetRequestWithParams(stopURL)
-                    .subscribe(function (data) {
-                    if (data['state'] == 'success') {
-                        var stopInfo = data['data'];
-                        me.selected_group_stop_info.short = stopInfo['short'];
-                        me.selected_group_stop_info.id = stopInfo['id'];
-                        me.selected_group_additional_info['dest_stop_id'] = me.selected_group_stop_info.id;
-                    }
-                }, function (error) { return alert(error); }, function () { });
-            }
-        }, function (error) { return alert(error); }, function () { });
+        if (groupId == undefined) {
+            me.selected_group_max_capacity = me._scheduleService.groupMaxCapacity;
+            me.selected_group_additional_info['max_capacity'] = me.selected_group_max_capacity;
+        }
+        else {
+            var groupURL = me.urls.get_group_info_url + "?group_id=" + groupId;
+            me._httpService.sendGetRequestWithParams(groupURL)
+                .subscribe(function (data) {
+                if (data['state'] == 'success') {
+                    var groupInfo = data['data'];
+                    me.selected_group_max_capacity = groupInfo['max_cap'];
+                    me.selected_group_additional_info['max_capacity'] = me.selected_group_max_capacity;
+                }
+            }, function (error) { return alert(error); }, function () { });
+        }
     };
-    AdminScheduleEditBusComponent.prototype.getAvailableStops = function () {
+    // Get destination stops for this group. 
+    AdminScheduleEditBusComponent.prototype.getDestStopsForGroup = function () {
         var me = this;
         var url;
         if (me.selected_group_area_id == me._scheduleService.areaType.TYPE_NEWYORK) {
@@ -2176,13 +2194,113 @@ var AdminScheduleEditBusComponent = (function () {
         else {
             url = me.urls.get_all_stop_for_area_url + "?area_id=" + me._scheduleService.areaType.TYPE_NEWYORK;
         }
+        // Get all stops can be used as destination stops. 
         me._httpService.sendGetRequestWithParams(url)
             .subscribe(function (data) {
             if (data['state'] == 'success') {
                 me.selected_group_available_dest_stops = data['data'];
-                me.selected_group_stop_info.id = data['data'][0]['id'];
+                // Get group_id.
+                var groupId = me.selected_group[0]['group_id'];
+                // Get dest stop id.
+                if (groupId == undefined) {
+                    for (var i = 0; i < Object.keys(me.selected_group_available_dest_stops).length; i++) {
+                        var temp = {};
+                        var item = me.selected_group_available_dest_stops[i];
+                        temp['stop_id'] = item['id'];
+                        temp['stop_short'] = item['short'];
+                        if (item['default_dropoff'] == me._scheduleService.stopDropOffType.TYPE_DROPOFF) {
+                            temp['is_dest_stop'] = 'yes';
+                        }
+                        else {
+                            temp['is_dest_stop'] = 'no';
+                        }
+                        me.selected_group_dest_stops.push(temp);
+                    }
+                    me.extract_DestStopInfos();
+                }
+                else {
+                    var url_1 = me.urls.get_dest_stops_for_group + "?group_id=" + groupId;
+                    me._httpService.sendGetRequestWithParams(url_1)
+                        .subscribe(function (data) {
+                        if (data['state'] == 'success') {
+                            var destStops = data['data'];
+                            for (var i = 0; i < Object.keys(destStops).length; i++) {
+                                var item = destStops[i];
+                                var temp = {};
+                                temp['stop_id'] = item['dest_stop_id'];
+                                temp['stop_short'] = me.get_StopInfo_From_StopID(item['dest_stop_id'])['short'];
+                                temp['is_dest_stop'] = 'yes';
+                                me.selected_group_dest_stops.push(temp);
+                            }
+                            for (var i = 0; i < Object.keys(me.selected_group_available_dest_stops).length; i++) {
+                                var item = me.selected_group_available_dest_stops[i];
+                                var isExisting = 0;
+                                for (var j = 0; j < Object.keys(destStops).length; j++) {
+                                    if (item['id'] == destStops[j]['dest_stop_id']) {
+                                        isExisting = 1;
+                                        break;
+                                    }
+                                }
+                                if (isExisting == 0) {
+                                    var temp = {};
+                                    temp['stop_id'] = item['id'];
+                                    temp['stop_short'] = item['short'];
+                                    if (item['default_dropoff'] == me._scheduleService.stopDropOffType.TYPE_DROPOFF) {
+                                        temp['is_dest_stop'] = 'yes';
+                                    }
+                                    else {
+                                        temp['is_dest_stop'] = 'no';
+                                    }
+                                    me.selected_group_dest_stops.push(temp);
+                                }
+                            }
+                            me.extract_DestStopInfos();
+                        }
+                        else {
+                            for (var i = 0; i < Object.keys(me.selected_group_available_dest_stops).length; i++) {
+                                var item = me.selected_group_available_dest_stops[i];
+                                var temp = {};
+                                temp['stop_id'] = item['id'];
+                                temp['stop_short'] = item['short'];
+                                if (item['default_dropoff'] == me._scheduleService.stopDropOffType.TYPE_DROPOFF) {
+                                    temp['is_dest_stop'] = 'yes';
+                                }
+                                else {
+                                    temp['is_dest_stop'] = 'no';
+                                }
+                                me.selected_group_dest_stops.push(temp);
+                            }
+                            me.extract_DestStopInfos();
+                        }
+                    }, function (error) { return alert(error); }, function () { });
+                }
             }
         }, function (error) { return alert(error); }, function () { });
+    };
+    AdminScheduleEditBusComponent.prototype.get_StopInfo_From_StopID = function (param_stopID) {
+        var me = this;
+        var response = {};
+        var destStop;
+        for (var i = 0; i < Object.keys(me.selected_group_available_dest_stops).length; i++) {
+            destStop = me.selected_group_available_dest_stops[i];
+            if (destStop['id'] == param_stopID) {
+                break;
+            }
+        }
+        return destStop;
+    };
+    AdminScheduleEditBusComponent.prototype.extract_DestStopInfos = function () {
+        var me = this;
+        me.selected_group_additional_info['dest_stops'] = [];
+        for (var i = 0; i < Object.keys(me.selected_group_dest_stops).length; i++) {
+            var item = me.selected_group_dest_stops[i];
+            if (item['is_dest_stop'] == 'yes') {
+                var temp = {};
+                temp['stop_id'] = item['stop_id'];
+                temp['stop_short'] = item['stop_short'];
+                me.selected_group_additional_info['dest_stops'].push(temp);
+            }
+        }
     };
     AdminScheduleEditBusComponent.prototype.getClass = function () {
         if (this.selected_group_disabled) {
@@ -2242,15 +2360,19 @@ var AdminScheduleEditBusComponent = (function () {
     };
     AdminScheduleEditBusComponent.prototype.initiateFields = function () {
         var me = this;
+        // Set max capcity of this group.
+        me.selected_group_max_capacity = me._scheduleService.groupMaxCapacity;
+        me.selected_group_additional_info['max_capacity'] = me.selected_group_max_capacity;
         for (var i = 0; i < Object.keys(me.selected_group).length; i++) {
             var item = me.selected_group[i];
             me.selected_stops[i] = item['stop_area'];
             me.selected_hours[i] = item['time'].substring(0, 2);
             me.selected_mins[i] = item['time'].substring(3, 5);
         }
-        me.selected_group_max_capacity = me._scheduleService.groupMaxCapacity;
-        me.getStopInfoForGroup();
-        me.getAvailableStops();
+        // Get destination stops of this group.        
+        me.getDestStopsForGroup();
+        // Get max cap of this group.
+        me.getMaxCapOfGroup();
     };
     Object.defineProperty(AdminScheduleEditBusComponent.prototype, "stops", {
         set: function (param_stops) {
@@ -2301,7 +2423,7 @@ var AdminScheduleEditBusComponent = (function () {
         this._httpService.sendPostJSON(me.urls.remove_url, remove_request)
             .subscribe(function (data) {
             me.isHidden = true;
-        }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
+        }, function (error) { return alert(error); }, function () { });
     };
     AdminScheduleEditBusComponent.prototype.onDisable = function () {
         var me = this;
@@ -2316,7 +2438,7 @@ var AdminScheduleEditBusComponent = (function () {
             .subscribe(function (data) {
             me.isDisabled = true;
             me.selected_group_disabled = true;
-        }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
+        }, function (error) { return alert(error); }, function () { });
     };
     AdminScheduleEditBusComponent.prototype.onReenable = function () {
         var me = this;
@@ -2332,7 +2454,7 @@ var AdminScheduleEditBusComponent = (function () {
             .subscribe(function (data) {
             me.isDisabled = false;
             me.selected_group_disabled = false;
-        }, function (error) { return alert(error); }, function () { return console.log('Finished'); });
+        }, function (error) { return alert(error); }, function () { });
     };
     AdminScheduleEditBusComponent.prototype.onChangeStopsSelect = function ($event, idx) {
         var me = this;
@@ -2350,13 +2472,26 @@ var AdminScheduleEditBusComponent = (function () {
         temp = me.selected_group[idx]['time'].substring(0, 2) + ":" + $event + ":" + me.selected_group[idx]['time'].substring(6);
         me.selected_group[idx]['time'] = temp;
     };
-    AdminScheduleEditBusComponent.prototype.onChangeDestStop = function ($event) {
-        var me = this;
-        me.selected_group_additional_info['dest_stop_id'] = $event;
-    };
     AdminScheduleEditBusComponent.prototype.onChangeMaxCapacity = function ($event) {
         var me = this;
         me.selected_group_additional_info['max_capacity'] = $event;
+    };
+    AdminScheduleEditBusComponent.prototype.onChangeDestinationCheckBox = function ($event) {
+        var me = this;
+        var stop_state = $event.target.checked;
+        var stop_id = $event.target.getAttribute('value');
+        for (var i = 0; i < Object.keys(me.selected_group_dest_stops).length; i++) {
+            var item = me.selected_group_dest_stops[i];
+            if (item['stop_id'] == stop_id) {
+                if (stop_state == false) {
+                    item['is_dest_stop'] = 'no';
+                }
+                else {
+                    item['is_dest_stop'] = 'yes';
+                }
+            }
+        }
+        me.extract_DestStopInfos();
     };
     __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* Input */])(), 
@@ -3817,7 +3952,7 @@ module.exports = "\r\n.admin-rates-breadcrumb-custom {\r\n    float: right;\r\n 
 /***/ 914:
 /***/ (function(module, exports) {
 
-module.exports = ".alert-enabled {\r\n    background-color: #00a65a !important;\r\n}\r\n\r\n.alert-disabled {\r\n    background-color: orange !important;\r\n}\r\n\r\nh3, h5 {\r\n    color: white !important;\r\n}"
+module.exports = ".alert-enabled {\r\n    background-color: #00a65a !important;\r\n}\r\n\r\n.alert-disabled {\r\n    background-color: orange !important;\r\n}\r\n\r\nh3, h5 {\r\n    color: white !important;\r\n}\r\n\r\n.max-capacity-div {\r\n    margin-top: 10px;\r\n}\r\n\r\n.destination-div {\r\n    margin-top: 10px;\r\n}\r\n\r\n.input-max-capacity {\r\n    text-align: center;\r\n    width: 50px;\r\n}\r\n\r\n.col-sm-4-custom {\r\n    padding-right: 0px;\r\n}"
 
 /***/ }),
 
@@ -4034,7 +4169,7 @@ module.exports = "\n<section class=\"content-header admin-rates-content-header-c
 /***/ 952:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"col-sm-6 col-md-4\" [hidden]=\"isHidden\">\n    \n    <div class=\"alert\" [ngClass]=\"getClass()\">\n            <h3 class=\"text-center\">BUS #{{selected_group_idx + 1}}</h3>\n\n            <div class=\"row\">\n                <div class=\"col-sm-5\">\n                    <h5 class=\"text-center\">Stop</h5>\n                </div>\n                <div class=\"col-sm-4\">\n                    <h5 class=\"text-center\">Hour</h5>\n                </div>\n                <div class=\"col-sm-3\">\n                    <h5 class=\"text-center\">Min</h5>\n                </div>\n            </div>\n            \n            <div id='detailed_info'>\n                <div class=\"row\" *ngFor = \"let group_item of selected_group; let i = index;\" >\n                    <div class=\"col-sm-5\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_stops[i]\" (ngModelChange)=\"onChangeStopsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let stop of arr_stops;\">{{stop}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-4\">\n                        <select class=\"form-control \" [(ngModel)]=\"selected_hours[i]\" (ngModelChange)=\"onChangeHoursSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-3\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_mins[i]\" (ngModelChange)=\"onChangeMinsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let min of arr_mins;\">{{min}}</option>\n                        </select>\n                    </div>\n                </div>\n            </div>\n            \n            <div class=\"destination-div\">\n                <h5 class=\"text-center\">Destination: </h5>\n                <select class=\"form-control\" (ngModelChange)=\"onChangeDestStop($event)\" [(ngModel)]=\"selected_group_stop_info.id\">\n                    <option *ngFor=\"let stop of selected_group_available_dest_stops; let i=index;\" value=\"{{ stop['id'] }}\">{{ stop['short'] }}</option>\n                </select>\n            </div>\n            \n            <div class=\"max-capacity-div\">\n                <h5 class=\"text-center\">Max Capacity: </h5>\n                <input class=\"form-control\" name=\"input_max_capacity\" type=\"text\" [(ngModel)]=\"selected_group_max_capacity\" (ngModelChange)=\"onChangeMaxCapacity($event)\">\n            </div>\n\n            <div class=\"row\">\n                <div class=\"col-xs-12 text-center\" style='padding-top: 15px;'>\n                    <button class=\"btn btn-sm btn-danger\" (click)=\"onRemove()\">Remove</button>\n                    <button *ngIf=\"!selected_group_disabled\" class=\"btn btn-sm btn-warning\" (click)=\"onDisable()\">Disable</button>\n                    <button *ngIf=\"selected_group_disabled\" class=\"btn btn-sm btn-warning\" style=\"background-color: green;\" (click)=\"onReenable()\">Re-enable</button>\n                </div>\n            </div>\n    </div>\n</div>\n\n\n"
+module.exports = "<div class=\"col-sm-6 col-md-4\" [hidden]=\"isHidden\">\n    \n    <div class=\"alert\" [ngClass]=\"getClass()\">\n            <h3 class=\"text-center\">BUS #{{selected_group_idx + 1}}</h3>\n\n            <div class=\"row\">\n                <div class=\"col-sm-5\">\n                    <h5 class=\"text-center\">Stop</h5>\n                </div>\n                <div class=\"col-sm-4\">\n                    <h5 class=\"text-center\">Hour</h5>\n                </div>\n                <div class=\"col-sm-3\">\n                    <h5 class=\"text-center\">Min</h5>\n                </div>\n            </div>\n            \n            <div id='detailed_info'>\n                <div class=\"row\" *ngFor = \"let group_item of selected_group; let i = index;\" >\n                    <div class=\"col-sm-5\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_stops[i]\" (ngModelChange)=\"onChangeStopsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let stop of arr_stops;\">{{stop}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-4\">\n                        <select class=\"form-control \" [(ngModel)]=\"selected_hours[i]\" (ngModelChange)=\"onChangeHoursSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let hour of arr_hours\" value=\"{{hour['value']}}\">{{hour['text']}}</option>\n                        </select>\n                    </div>\n                    <div class=\"col-sm-3\">\n                        <select class=\"form-control\" [(ngModel)]=\"selected_mins[i]\" (ngModelChange)=\"onChangeMinsSelect($event, i)\" [disabled]=\"isDisabled\">\n                            <option *ngFor=\"let min of arr_mins;\">{{min}}</option>\n                        </select>\n                    </div>\n                </div>\n            </div>\n            \n            <div class=\"destination-div\">\n                    <h5 style=\"text-align: center;\">Destination: </h5>\n                    \n                    <div class=\"row div-stops-area\">\n                        <div class=\"col-sm-4 col-sm-4-custom\" *ngFor=\"let dest_stop of selected_group_dest_stops; let i=index;\">\n                            <label class=\"checkbox-inline\" *ngIf=\"dest_stop['is_dest_stop'] == 'yes'\">\n                                <input type=\"checkbox\" checked (change)=\"onChangeDestinationCheckBox($event)\" value=\"{{ dest_stop['stop_id'] }}\">{{ dest_stop['stop_short'] }}\n                            </label>\n                            <label class=\"checkbox-inline\" *ngIf=\"dest_stop['is_dest_stop'] == 'no'\">\n                                <input type=\"checkbox\" value=\"{{ dest_stop['stop_id'] }}\" (change)=\"onChangeDestinationCheckBox($event)\">{{ dest_stop['stop_short'] }}\n                            </label>\n                        </div>\n                    </div>\n                    \n                    \n                    <!--select class=\"form-control\" (ngModelChange)=\"onChangeDestStop($event)\" [(ngModel)]=\"selected_group_dest_stop_info.id\">\n                        <option *ngFor=\"let dest_stop of selected_group_available_dest_stops; let i=index;\" value=\"{{ dest_stop['id'] }}\">{{ dest_stop['short'] }}</option>\n                    </select-->\n            </div>\n            \n            <div class=\"max-capacity-div row\">\n                <div class=\"col-sm-6\">\n                    <h5 style=\"text-align: right;\">Max Capacity: </h5>\n                </div>\n                <div class=\"col-sm-6\">\n                    <input class=\"form-control input-max-capacity\" name=\"input_max_capacity\" type=\"text\" [(ngModel)]=\"selected_group_max_capacity\" (ngModelChange)=\"onChangeMaxCapacity($event)\">\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"col-xs-12 text-center\" style='padding-top: 15px;'>\n                    <button class=\"btn btn-sm btn-danger\" (click)=\"onRemove()\">Remove</button>\n                    <button *ngIf=\"!selected_group_disabled\" class=\"btn btn-sm btn-warning\" (click)=\"onDisable()\">Disable</button>\n                    <button *ngIf=\"selected_group_disabled\" class=\"btn btn-sm btn-warning\" style=\"background-color: green;\" (click)=\"onReenable()\">Re-enable</button>\n                </div>\n            </div>\n    </div>\n</div>\n\n\n"
 
 /***/ }),
 
