@@ -232,7 +232,6 @@ class ScheduleController extends Controller
                 
                 $temp->save(); 
             }
-            
         }
     }
     

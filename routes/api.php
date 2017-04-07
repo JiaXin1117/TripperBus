@@ -78,6 +78,21 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
         ]);
         
     });
+
+
+    Route::group(['prefix' => 'main'], function() {
+        Route::get('/retrieve_reservations_by_date', [
+            'as' => 'admin.main.retrieve_reservations_by_date',
+            'uses' => 'MainController@getRetrieveReservations',
+        ]);
+
+        Route::post('/retrieve_group_additional_info', [
+            'as' => 'admin.main.retrieve_group_additional_info',
+            'uses' => 'MainController@postRetrieveGroupInformations',
+        ]);
+
+        
+    });
 });
 
 Route::group(['namespace' => 'Test', 'prefix' => 'test'], function() {
