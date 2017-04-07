@@ -8,7 +8,7 @@ module.exports = __webpack_require__(574);
 
 /***/ }),
 
-/***/ 179:
+/***/ 252:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -499,8 +499,10 @@ var AdminMainRegularModeComponent = (function () {
             leaving_from: "",
             return_date: "",
         };
-        this.selected_group_main_infos = [];
-        this.selected_group_additional_infos = [];
+        this.selected_group_main_infos_outbound = [];
+        this.selected_group_additional_infos_outbound = [];
+        this.selected_group_main_infos_return = [];
+        this.selected_group_additional_infos_return = [];
         this.all_stops = [];
     }
     AdminMainRegularModeComponent.prototype.ngOnInit = function () {
@@ -510,6 +512,7 @@ var AdminMainRegularModeComponent = (function () {
         me.structHeaderReturn();
         me.get_all_stops();
         me.get_schedules_for_outbound();
+        me.get_schedules_for_return();
     };
     AdminMainRegularModeComponent.prototype.receiveInputParams = function () {
         var me = this;
@@ -572,7 +575,7 @@ var AdminMainRegularModeComponent = (function () {
         }
         return cnt;
     };
-    // Get main informaitons of current schedules. FMRGJ-KR
+    // Get outbound informaitons of current schedules. FMRGJ-KR
     AdminMainRegularModeComponent.prototype.get_schedules_for_outbound = function () {
         var me = this;
         var url = me._mainService.URLS.retrieve_schedules_by_date_url + "?date=" + __WEBPACK_IMPORTED_MODULE_5_moment__(me.inputParams.outbound_date).utc().format("YYYY-MM-DD");
@@ -657,7 +660,7 @@ var AdminMainRegularModeComponent = (function () {
                                 return -1;
                             }
                         });
-                        me.selected_group_main_infos = grouped_items;
+                        me.selected_group_main_infos_outbound = grouped_items;
                     }
                 });
                 // Get group main informations. ***********************
@@ -666,15 +669,120 @@ var AdminMainRegularModeComponent = (function () {
                 me._httpService.sendPostRequestWithParams(group_additional_url, group_ids_1)
                     .subscribe(function (data) {
                     if (data['state'] == 'success') {
-                        me.selected_group_additional_infos = data['data'];
+                        me.selected_group_additional_infos_outbound = data['data'];
                     }
                 });
             }
         });
     };
-    // Get additional informations of current schedules. FMRGJ-KR
-    AdminMainRegularModeComponent.prototype.get_additional_infos_of_schedules = function () {
+    // Get outbound informaitons of current schedules. FMRGJ-KR
+    AdminMainRegularModeComponent.prototype.get_schedules_for_return = function () {
         var me = this;
+        var url = me._mainService.URLS.retrieve_schedules_by_date_url + "?date=" + __WEBPACK_IMPORTED_MODULE_5_moment__(me.inputParams.return_date).utc().format("YYYY-MM-DD");
+        me._httpService.sendGetRequestWithParams(url)
+            .subscribe(function (data) {
+            var response = data;
+            if (response['state'] == 'success') {
+                var dayInfos_2 = response['data'];
+                // Get schedule type of outbound date.
+                var schedule_type_2 = me.get_schedule_type(dayInfos_2);
+                var weekly_schedule_latest_date_2;
+                var return_areaID_1 = me.get_return_areaID_from_leaving_areaID(me.inputParams.leaving_from);
+                // Get latest schedule date for weekly schedule.
+                if (schedule_type_2 == me._scheduleService.w_hType.TYPE_WEEKLY) {
+                    // Collect weekly dates for this date.
+                    var temp_dates = [];
+                    for (var i = 0; i < Object.keys(dayInfos_2).length; i++) {
+                        var item = dayInfos_2[i];
+                        if (item['w_h'] == me._scheduleService.w_hType.TYPE_WEEKLY && item['area_id'] == return_areaID_1) {
+                            temp_dates.push(item['date']);
+                        }
+                    }
+                    weekly_schedule_latest_date_2 = me._scheduleService.getLatestWeeklyDate(temp_dates);
+                }
+                // Collect group ids.
+                var group_ids_2 = me._scheduleService.collectGroupIDs(dayInfos_2);
+                if (Object.keys(group_ids_2).length == 0) {
+                    return;
+                }
+                // *********************** Get group main informations.
+                var reservation_url = me._mainService.URLS.retrieve_reservations_by_date_url + "?date="
+                    + __WEBPACK_IMPORTED_MODULE_5_moment__(me.inputParams.return_date).utc().format("YYYY-MM-DD")
+                    + "&leaving_from=" + return_areaID_1;
+                me._httpService.sendGetRequestWithParams(reservation_url)
+                    .subscribe(function (data) {
+                    var reservations;
+                    if (data['status'] == 'success') {
+                        reservations = data['data'];
+                    }
+                    else {
+                        reservations = undefined;
+                    }
+                    var grouped_items = [];
+                    for (var i = 0; i < Object.keys(group_ids_2).length; i++) {
+                        var temp = [];
+                        for (var j = 0; j < Object.keys(dayInfos_2).length; j++) {
+                            var item = dayInfos_2[j];
+                            if (group_ids_2[i] == item['group_id'] && item['area_id'] == return_areaID_1
+                                && item['w_h'] == schedule_type_2) {
+                                if (schedule_type_2 == me._scheduleService.w_hType.TYPE_WEEKLY) {
+                                    if (item['date'] != weekly_schedule_latest_date_2)
+                                        continue;
+                                }
+                                // Get reservation count.
+                                if (reservations != undefined) {
+                                    item['reservation_cnt'] = me.get_reservations_cnt(reservations, item);
+                                }
+                                else {
+                                    item['reservation_cnt'] = 0;
+                                }
+                                // Get stop short name.
+                                item['stop_short'] = item['stop_area'];
+                                temp.push(item);
+                            }
+                        }
+                        if (Object.keys(temp).length == 0) {
+                            continue;
+                        }
+                        temp.sort(function (a, b) {
+                            if (a['time'] > b['time'])
+                                return 1;
+                            else {
+                                return -1;
+                            }
+                        });
+                        grouped_items.push(temp);
+                    }
+                    if (Object.keys(grouped_items).length != 0) {
+                        grouped_items.sort(function (a, b) {
+                            if (a[0]['time'] > b[0]['time'])
+                                return 1;
+                            else {
+                                return -1;
+                            }
+                        });
+                        me.selected_group_main_infos_return = grouped_items;
+                    }
+                });
+                // Get group main informations. ***********************
+                // *********************** Get group additional informations.
+                var group_additional_url = me._mainService.URLS.retrieve_group_additional_info_url;
+                me._httpService.sendPostRequestWithParams(group_additional_url, group_ids_2)
+                    .subscribe(function (data) {
+                    if (data['state'] == 'success') {
+                        me.selected_group_additional_infos_return = data['data'];
+                    }
+                });
+            }
+        });
+    };
+    // Get return area id from leaving area id. FMRGJ-KR
+    AdminMainRegularModeComponent.prototype.get_return_areaID_from_leaving_areaID = function (param_leaving_areaID) {
+        var me = this;
+        if (param_leaving_areaID == me._scheduleService.areaType.TYPE_NEWYORK) {
+            return me._scheduleService.areaType.TYPE_BA;
+        }
+        return me._scheduleService.areaType.TYPE_NEWYORK;
     };
     // Get related stop information from short stop name. FMRGJ-KR
     AdminMainRegularModeComponent.prototype.get_stop_info_from_stopshort = function (param_stop_short) {
@@ -1807,10 +1915,10 @@ var AdminUsersComponent = (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_http_service_http_service__ = __webpack_require__(54);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(179);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service_auth_service__ = __webpack_require__(252);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config_config__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_http__ = __webpack_require__(239);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_http__ = __webpack_require__(238);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1883,7 +1991,7 @@ var LoginComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service_auth_service__ = __webpack_require__(179);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service_auth_service__ = __webpack_require__(252);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(31);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LogoutComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -2135,7 +2243,7 @@ var ScheduleService = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(239);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(238);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__ = __webpack_require__(546);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HttpService; });
@@ -3383,7 +3491,6 @@ var AdminComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__admin_admin_main_admin_main_regular_mode_admin_main_regular_mode_component__ = __webpack_require__(378);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__admin_admin_main_admin_main_bus_edit_mode_admin_main_bus_edit_mode_component__ = __webpack_require__(376);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__admin_admin_main_admin_main_move_people_mode_admin_main_move_people_mode_component__ = __webpack_require__(377);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__services_auth_service_auth_service__ = __webpack_require__(179);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppRoutingModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3417,12 +3524,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 var routes = [
     {
         path: 'admin',
         component: __WEBPACK_IMPORTED_MODULE_2__admin__["a" /* AdminComponent */],
-        canActivate: [__WEBPACK_IMPORTED_MODULE_23__services_auth_service_auth_service__["a" /* AuthService */]],
+        //canActivate: [AuthService],
         children: [
             { path: 'main', component: __WEBPACK_IMPORTED_MODULE_3__admin_admin_main_admin_main_component__["a" /* AdminMainComponent */] },
             { path: 'main/regular_mode/:outbound_date/:leaving_from/:return_date', component: __WEBPACK_IMPORTED_MODULE_20__admin_admin_main_admin_main_regular_mode_admin_main_regular_mode_component__["a" /* AdminMainRegularModeComponent */] },
@@ -3527,7 +3633,7 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(176);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(666);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(239);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(238);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_routing_app_routing_module__ = __webpack_require__(713);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(714);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__page_not_found_page_not_found_component__ = __webpack_require__(718);
@@ -3550,7 +3656,7 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__admin_admin_footer_admin_footer_component__ = __webpack_require__(705);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__main_login_login_component__ = __webpack_require__(388);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__services_http_service_http_service__ = __webpack_require__(54);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(179);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__services_auth_service_auth_service__ = __webpack_require__(252);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__services_schedule_service_schedule_service__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__services_main_service_main_service__ = __webpack_require__(98);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__main_main_header_main_header_component__ = __webpack_require__(717);
@@ -3835,8 +3941,8 @@ var environment = {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BACKEND_SERVER_URL; });
-//export const BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
-var BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
+var BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
+//export const BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
 //# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/config.js.map
 
 /***/ }),
@@ -4168,7 +4274,7 @@ module.exports = ".header-div {\r\n    margin-top: -15px;\r\n}\r\n\r\n.row-conte
 /***/ 911:
 /***/ (function(module, exports) {
 
-module.exports = ".bus-root-div {\r\n    border: 1px solid black;\r\n    margin: 15px;\r\n    padding-right: 5px;\r\n    padding-left: 5px;\r\n}\r\n\r\n.bus-header-h3 {\r\n    border: 1px solid black;\r\n    background-color: #bdb76b;\r\n    padding-top: 10px;\r\n    padding-bottom: 10px;\r\n}"
+module.exports = ".bus-root-div {\r\n    border: 1px solid black;\r\n    padding-right: 5px;\r\n    padding-left: 5px;\r\n    margin-bottom: 10px;\r\n}\r\n\r\n.bus-header-h3 {\r\n    border: 1px solid black;\r\n    background-color: #bdb76b;\r\n    padding-top: 10px;\r\n    padding-bottom: 10px;\r\n    margin-top: 5px;\r\n    font-weight: bold;\r\n    font-size: 25px;\r\n}\r\n\r\n.schedules-table table, .schedules-table th, .schedules-table td {\r\n    border: 1px solid black;\r\n}\r\n\r\n.schedules-table {\r\n    width: 100%;\r\n}\r\n\r\n.td-left {\r\n    text-align: left;\r\n}\r\n\r\n.td-right {\r\n    text-align: center;\r\n}\r\n\r\n.total-h5 {\r\n    font-weight: bold;\r\n    font-size: 15px;\r\n}\r\n\r\n.group-additional-info-table {\r\n    width: 100%;\r\n}\r\n\r\ntable.group-additional-info-table .td-left {\r\n    width: 150px;\r\n    text-align: left;\r\n}\r\n\r\ntable.group-additional-info-table .td-right {\r\n    text-align: left;\r\n}\r\n\r\n.group-additional-info {\r\n    border: 1px solid black;\r\n    margin-bottom: 5px;\r\n}\r\n"
 
 /***/ }),
 
@@ -4392,14 +4498,14 @@ module.exports = "<div class=\"text-center header-div\">\n    <label (click)=\"o
 /***/ 950:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"col-sm-6 col-md-6 bus-root-div\">\n      <h3 class=\"text-center bus-header-h3\">BUS #{{ group_idx + 1 }}</h3>\n      \n      <div class=\"group-main-info\">\n          <p *ngFor=\"let group_main_item of group_main_info; let i = index;\">\n              <span>{{ group_main_item['time'] }}</span> from <span>{{ group_main_item['stop_short'] }}</span> <span>{{ group_main_item['reservation_cnt'] }}</span>\n          </p>\n      </div>\n\n      <div class=\"group-additional-info\">\n          <h5>Total: {{ group_total_reservations }}.  Max Capacity: {{ group_additional_info['group_max_capacity'] }}</h5>\n          <p>Destinations: {{ group_additional_info['group_destinations'] }}</p>\n      </div>\n</div>\n\n\n"
+module.exports = "<div class=\"col-sm-12 col-md-12 bus-root-div\">\n      <h3 class=\"text-center bus-header-h3\">BUS #{{ group_idx + 1 }}</h3>\n      \n      <div class=\"group-main-info\">\n          <table class=\"schedules-table\">\n              <tr *ngFor=\"let group_main_item of group_main_info; let i = index;\">\n                  <td class=\"td-left\">\n                      <span>TIME ID: {{ group_main_item['time_id'] }} {{ group_main_item['time'] }}</span> from <span>{{ group_main_item['stop_short'] }}</span> \n                  </td>\n                  <td class=\"td-right\">\n                      <span>{{ group_main_item['reservation_cnt'] }}</span>\n                  </td>\n              </tr>\n          </table>\n          <p >\n              \n          </p>\n      </div>\n\n      <div class=\"group-additional-info\">\n          <h5 class=\"total-h5\">Total: {{ group_total_reservations }}.  Max Capacity: {{ group_additional_info['group_max_capacity'] }}</h5>\n          <table class=\"group-additional-info-table\">\n              \n              <tr>\n                  <td class=\"td-left\">\n                      TravelZoo Booked: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Coupons Allowed: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Price: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Destinations: \n                  </td>  \n                  <td class=\"td-right\">\n                      {{ group_additional_info['group_destinations'] }}\n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Bus is: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n          </table>\n          \n      </div>\n</div>\n\n\n"
 
 /***/ }),
 
 /***/ 951:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"text-center header-div\">\n    <label>\n        <img class=\"img-responsive\" src=\"./assets/common/img/reg_mode_b.gif\" width=\"192\" height=\"59\" alt=\"Regular Mode\">\n    </label>\n    \n    <label style=\"vertical-align: top;\" (click)=\"onClickBusEditMode()\">\n        <img class=\"img-responsive\" src=\"./assets/common/img/bus_edit_mode_r.gif\" width=\"192\" height=\"45\" alt=\"Bus Prices Mode\">\n    </label>\n    \n    <label style=\"vertical-align: top;\" (click)=\"onClickMovePeopleMode()\">\n        <img class=\"img-responsive\" src=\"./assets/common/img/move_people_mode_r.gif\" width=\"192\" height=\"45\" alt=\"Move People Mode\">\n    </label>\n</div>\n\n<div class=\"row row-content\" >\n    <div class=\"col-sm-6\" style=\"text-align: center;\">\n        <div class=\"header-outbound\">\n                <h3>Leaving from {{ headerLeave.city }} on </h3>\n                <p>{{ headerLeave.date}} at:</p>\n        </div>\n        <div class=\"content-outbound\">\n                <div *ngFor=\"let group_main_info of selected_group_main_infos; let i = index;\"> \n                    <div *ngFor=\"let group_additional_info of selected_group_additional_infos; let j = index;\"> \n                        <div *ngIf=\"group_additional_info['group_id'] == group_main_info[0]['group_id']\">\n                            <app-admin-main-bus [selected_group_main_info] = \"group_main_info\" [selected_group_additional_info] = \"group_additional_info\" [selected_group_idx] = \"i\" ></app-admin-main-bus>\n                        </div>\n                    </div>\n                </div>\n        </div>\n    </div>\n    <div class=\"col-sm-6\" style=\"text-align: center;\">\n        <div class=\"header-return\">\n                <h3>Returning from {{ headerReturn.city }} on </h3>\n                <p>{{ headerReturn.date }} at: </p>\n        </div>\n        <div class=\"content-return\">\n                \n        </div>\n    </div>\n</div>\n\n"
+module.exports = "<div class=\"text-center header-div\">\n    <label>\n        <img class=\"img-responsive\" src=\"./assets/common/img/reg_mode_b.gif\" width=\"192\" height=\"59\" alt=\"Regular Mode\">\n    </label>\n    \n    <label style=\"vertical-align: top;\" (click)=\"onClickBusEditMode()\">\n        <img class=\"img-responsive\" src=\"./assets/common/img/bus_edit_mode_r.gif\" width=\"192\" height=\"45\" alt=\"Bus Prices Mode\">\n    </label>\n    \n    <label style=\"vertical-align: top;\" (click)=\"onClickMovePeopleMode()\">\n        <img class=\"img-responsive\" src=\"./assets/common/img/move_people_mode_r.gif\" width=\"192\" height=\"45\" alt=\"Move People Mode\">\n    </label>\n</div>\n\n<div class=\"row row-content\" >\n    <div class=\"col-sm-6\" style=\"text-align: center;\">\n        <div class=\"header-outbound\">\n                <h3>Leaving from {{ headerLeave.city }} on </h3>\n                <p>{{ headerLeave.date}} at:</p>\n        </div>\n        <div class=\"content-outbound\">\n                <div *ngFor=\"let group_main_info of selected_group_main_infos_outbound; let i = index;\"> \n                    <div *ngFor=\"let group_additional_info of selected_group_additional_infos_outbound; let j = index;\"> \n                        <div *ngIf=\"group_additional_info['group_id'] == group_main_info[0]['group_id']\">\n                            <app-admin-main-bus [selected_group_main_info] = \"group_main_info\" [selected_group_additional_info] = \"group_additional_info\" [selected_group_idx] = \"i\" ></app-admin-main-bus>\n                        </div>\n                    </div>\n                </div>\n        </div>\n    </div>\n    <div class=\"col-sm-6\" style=\"text-align: center;\">\n        <div class=\"header-return\">\n                <h3>Returning from {{ headerReturn.city }} on </h3>\n                <p>{{ headerReturn.date }} at: </p>\n        </div>\n        <div class=\"content-return\">\n                <div *ngFor=\"let group_main_info of selected_group_main_infos_return; let i = index;\"> \n                    <div *ngFor=\"let group_additional_info of selected_group_additional_infos_return; let j = index;\"> \n                        <div *ngIf=\"group_additional_info['group_id'] == group_main_info[0]['group_id']\">\n                            <app-admin-main-bus [selected_group_main_info] = \"group_main_info\" [selected_group_additional_info] = \"group_additional_info\" [selected_group_idx] = \"i\" ></app-admin-main-bus>\n                        </div>\n                    </div>\n                </div>\n        </div>\n    </div>\n</div>\n\n"
 
 /***/ }),
 
