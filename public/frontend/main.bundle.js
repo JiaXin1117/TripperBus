@@ -534,7 +534,9 @@ var AdminMainRegularModeComponent = (function () {
         else {
             me.headerReturn.city = me._scheduleService.getCityName(me._scheduleService.areaType.TYPE_NEWYORK);
         }
-        me.headerReturn.date = me._scheduleService.getDateAsLongFormat(me.inputParams.return_date);
+        if (me.inputParams.return_date != undefined && me.inputParams.return_date != "") {
+            me.headerReturn.date = me._scheduleService.getDateAsLongFormat(me.inputParams.return_date);
+        }
     };
     AdminMainRegularModeComponent.prototype.onClickBusEditMode = function () {
         var me = this;
@@ -552,7 +554,7 @@ var AdminMainRegularModeComponent = (function () {
         var isHolidaySchedule = 0;
         for (var i = 0; i < Object.keys(param_schedules).length; i++) {
             var item = param_schedules[i];
-            if (item['w_h'] == me._scheduleService.w_hType.TYPE_HOLIDAY) {
+            if (item['w_h'] == me._scheduleService.w_hType.TYPE_HOLIDAY && item['area_id'] == me.inputParams.leaving_from) {
                 isHolidaySchedule = 1;
                 break;
             }
@@ -678,6 +680,9 @@ var AdminMainRegularModeComponent = (function () {
     // Get outbound informaitons of current schedules. FMRGJ-KR
     AdminMainRegularModeComponent.prototype.get_schedules_for_return = function () {
         var me = this;
+        if (me.inputParams.return_date == undefined || me.inputParams.return_date == "") {
+            return;
+        }
         var url = me._mainService.URLS.retrieve_schedules_by_date_url + "?date=" + __WEBPACK_IMPORTED_MODULE_5_moment__(me.inputParams.return_date).utc().format("YYYY-MM-DD");
         me._httpService.sendGetRequestWithParams(url)
             .subscribe(function (data) {
@@ -852,7 +857,15 @@ var AdminMainComponent = (function () {
         this._mainService = _mainService;
     }
     AdminMainComponent.prototype.ngOnInit = function () {
-        this.setDatePickers();
+        var me = this;
+        me.initiateVars();
+        me.setDatePickers();
+    };
+    AdminMainComponent.prototype.initiateVars = function () {
+        var me = this;
+        me.leaving_city = "0";
+        me.page_mode = me._mainService.pageMode.REGULAR_MODE;
+        me.return_date = "";
     };
     AdminMainComponent.prototype.setDatePickers = function () {
         var me = this;
@@ -871,7 +884,12 @@ var AdminMainComponent = (function () {
     };
     AdminMainComponent.prototype.onPressGoButton = function () {
         var me = this;
-        if (me.outbound_date == undefined || me.leaving_city == undefined || me.return_date == undefined || me.page_mode == undefined) {
+        if (me.leaving_city == "0") {
+            jQuery("#choose_location_modal").modal("show");
+            return;
+        }
+        if (me.outbound_date == undefined) {
+            jQuery("#choose_outbound_date_modal").modal("show");
             return;
         }
         if (me.page_mode == me._mainService.pageMode.REGULAR_MODE) {
@@ -2215,6 +2233,8 @@ var ScheduleService = (function () {
     // Get date as wednesday march 29 2017 format from YYYY-MM-DD format.
     ScheduleService.prototype.getDateAsLongFormat = function (param_date_str) {
         var me = this;
+        if (param_date_str == undefined || param_date_str == "")
+            return "";
         // Get Day of Week.
         var dateInfo = me.getInfo_From_YMD_String(param_date_str);
         var result = "";
@@ -4276,7 +4296,7 @@ module.exports = ".header-div {\r\n    margin-top: -15px;\r\n}\r\n\r\n.row-conte
 /***/ 911:
 /***/ (function(module, exports) {
 
-module.exports = ".bus-root-div {\r\n    border: 1px solid black;\r\n    padding-right: 5px;\r\n    padding-left: 5px;\r\n    margin-bottom: 10px;\r\n}\r\n\r\n.bus-header-h3 {\r\n    border: 1px solid black;\r\n    background-color: #bdb76b;\r\n    padding-top: 10px;\r\n    padding-bottom: 10px;\r\n    margin-top: 5px;\r\n    font-weight: bold;\r\n    font-size: 25px;\r\n}\r\n\r\n.schedules-table table, .schedules-table th, .schedules-table td {\r\n    border: 1px solid black;\r\n}\r\n\r\n.schedules-table {\r\n    width: 100%;\r\n}\r\n\r\n.td-left {\r\n    text-align: left;\r\n}\r\n\r\n.td-right {\r\n    text-align: center;\r\n}\r\n\r\n.total-h5 {\r\n    font-weight: bold;\r\n    font-size: 15px;\r\n}\r\n\r\n.group-additional-info-table {\r\n    width: 100%;\r\n}\r\n\r\ntable.group-additional-info-table .td-left {\r\n    width: 150px;\r\n    text-align: left;\r\n}\r\n\r\ntable.group-additional-info-table .td-right {\r\n    text-align: left;\r\n}\r\n\r\n.group-additional-info {\r\n    border: 1px solid black;\r\n    margin-bottom: 5px;\r\n}\r\n"
+module.exports = ".bus-root-div {\r\n    border: 1px solid black;\r\n    padding-right: 5px;\r\n    padding-left: 5px;\r\n    margin: 10px;\r\n    min-width: 300px;\r\n    max-width: 450px;\r\n}\r\n\r\n.bus-header-h3 {\r\n    border: 1px solid black;\r\n    background-color: #bdb76b;\r\n    padding-top: 10px;\r\n    padding-bottom: 10px;\r\n    margin-top: 5px;\r\n    font-weight: bold;\r\n    font-size: 25px;\r\n}\r\n\r\n.schedules-table table, .schedules-table th, .schedules-table td {\r\n    border: 1px solid black;\r\n}\r\n\r\n.schedules-table {\r\n    width: 100%;\r\n}\r\n\r\n.td-left {\r\n    text-align: left;\r\n}\r\n\r\n.td-right {\r\n    text-align: center;\r\n}\r\n\r\n.total-h5 {\r\n    font-weight: bold;\r\n    font-size: 15px;\r\n}\r\n\r\n.group-additional-info-table {\r\n    width: 100%;\r\n}\r\n\r\ntable.group-additional-info-table .td-left {\r\n    width: 150px;\r\n    text-align: left;\r\n}\r\n\r\ntable.group-additional-info-table .td-right {\r\n    text-align: left;\r\n}\r\n\r\n.group-additional-info {\r\n    border: 1px solid black;\r\n    margin-bottom: 5px;\r\n}\r\n"
 
 /***/ }),
 
@@ -4500,7 +4520,7 @@ module.exports = "<div class=\"text-center header-div\">\n    <label (click)=\"o
 /***/ 950:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"col-sm-12 col-md-12 bus-root-div\">\n      <h3 class=\"text-center bus-header-h3\">BUS #{{ group_idx + 1 }}</h3>\n      \n      <div class=\"group-main-info\">\n          <table class=\"schedules-table\">\n              <tr *ngFor=\"let group_main_item of group_main_info; let i = index;\">\n                  <td class=\"td-left\">\n                      <span>TIME ID: {{ group_main_item['time_id'] }} {{ group_main_item['time'] }}</span> from <span>{{ group_main_item['stop_short'] }}</span> \n                  </td>\n                  <td class=\"td-right\">\n                      <span>{{ group_main_item['reservation_cnt'] }}</span>\n                  </td>\n              </tr>\n          </table>\n          <p >\n              \n          </p>\n      </div>\n\n      <div class=\"group-additional-info\">\n          <h5 class=\"total-h5\">Total: {{ group_total_reservations }}.  Max Capacity: {{ group_additional_info['group_max_capacity'] }}</h5>\n          <table class=\"group-additional-info-table\">\n              \n              <tr>\n                  <td class=\"td-left\">\n                      TravelZoo Booked: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Coupons Allowed: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Price: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Destinations: \n                  </td>  \n                  <td class=\"td-right\">\n                      {{ group_additional_info['group_destinations'] }}\n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Bus is: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n          </table>\n          \n      </div>\n</div>\n\n\n"
+module.exports = "<div class=\"col-sm-6 col-md-6 bus-root-div\">\n      <h3 class=\"text-center bus-header-h3\">BUS #{{ group_idx + 1 }}</h3>\n      \n      <div class=\"group-main-info\">\n          <table class=\"schedules-table\">\n              <tr *ngFor=\"let group_main_item of group_main_info; let i = index;\">\n                  <td class=\"td-left\">\n                      <span>TIME ID: {{ group_main_item['time_id'] }} {{ group_main_item['time'] }}</span> from <span>{{ group_main_item['stop_short'] }}</span> \n                  </td>\n                  <td class=\"td-right\">\n                      <span>{{ group_main_item['reservation_cnt'] }}</span>\n                  </td>\n              </tr>\n          </table>\n          <p >\n              \n          </p>\n      </div>\n\n      <div class=\"group-additional-info\">\n          <h5 class=\"total-h5\">Total: {{ group_total_reservations }}.  Max Capacity: {{ group_additional_info['group_max_capacity'] }}</h5>\n          <table class=\"group-additional-info-table\">\n              \n              <tr>\n                  <td class=\"td-left\">\n                      TravelZoo Booked: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Coupons Allowed: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Price: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Destinations: \n                  </td>  \n                  <td class=\"td-right\">\n                      {{ group_additional_info['group_destinations'] }}\n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Bus is: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n          </table>\n          \n      </div>\n</div>\n\n\n"
 
 /***/ }),
 
@@ -4514,7 +4534,7 @@ module.exports = "<div class=\"text-center header-div\">\n    <label>\n        <
 /***/ 952:
 /***/ (function(module, exports) {
 
-module.exports = "\n<section class=\"admin-main-content-header\">\n    <h1>\n        <i class=\"fa fa-desktop\"></i> Control Panel Main Page\n    </h1>\n</section>\n\n<section class=\"panel admin-main-panel\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\"></span> To book a reservation or for any other date-specific process\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <div class=\"top30\">\n            <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                <div class=\"form-group admin-main-form-control-custom\">\n                    <label>Outbound date:</label>\n                    <input type=\"text\" class=\"form-control\" id=\"outbound_date\">\n                </div>\n            </div>\n            <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                <div class=\"form-group\">\n                    <label>Leaving from:</label>\n                    <select class=\"form-control admin-main-form-control-custom\" [(ngModel)]=\"leaving_city\">\n                        <option value=\"1\">New York</option>\n                        <option value=\"2\">Bethesda/Arlington</option>\n                    </select>\n                </div>\n            </div>\n            <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                <div class=\"form-group admin-main-form-control-custom\">\n                    <label>Return date:</label>\n                    <input type=\"text\" class=\"form-control\" id=\"return_date\">  (optional)\n                </div>\t\n            </div>\n            <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                <div class=\"form-group\">\n                    <label>Open next page in:</label>\n                    <select class=\"form-control admin-main-form-control-custom\" [(ngModel)]=\"page_mode\">\n                        <option value=\"0\" selected>Regular Mode</option>\n                        <option value=\"1\">Bus Edit Mode</option>\n                        <option value=\"2\">Move People Mode</option>\n                    </select>\n                </div>\t            \n            </div>\n            <div class=\"clearfix\"></div>\n            <div class=\"col-xs-12 text-center\">\n                <div class=\"form-group\">\n                    <input type=\"button\" (click)=\"onPressGoButton()\" class=\"btn btn-green btn-lg promin_select sm-expandable\" value=\"Go\">\n                </div>\n            </div>\n            <div class=\"clearfix\"></div>\n        </div>\n    </div>\n</section>"
+module.exports = "\n<section class=\"admin-main-content-header\">\n    <h1>\n        <i class=\"fa fa-desktop\"></i> Control Panel Main Page\n    </h1>\n</section>\n\n<section class=\"panel admin-main-panel\">\n    <header class=\"panel-heading\">\n        <h3 class=\"box-title\">\n            <span class=\"fa fa-pencil-square\"></span> To book a reservation or for any other date-specific process\n        </h3>\n    </header>\n    <div class=\"panel-body\">\n        <div class=\"top30\">\n            <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                <div class=\"form-group admin-main-form-control-custom\">\n                    <label>Outbound date:</label>\n                    <input type=\"text\" class=\"form-control\" id=\"outbound_date\">\n                </div>\n            </div>\n            <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                <div class=\"form-group\">\n                    <label>Leaving from:</label>\n                    <select class=\"form-control admin-main-form-control-custom\" [(ngModel)]=\"leaving_city\">\n                        <option value=\"0\">Please choose location</option>\n                        <option value=\"1\">New York</option>\n                        <option value=\"2\">Bethesda/Arlington</option>\n                    </select>\n                </div>\n            </div>\n            <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                <div class=\"form-group admin-main-form-control-custom\">\n                    <label>Return date:</label>\n                    <input type=\"text\" class=\"form-control\" id=\"return_date\">  (optional)\n                </div>\t\n            </div>\n            <div class=\"col-xs-12 col-sm-3 col-md-3\">\n                <div class=\"form-group\">\n                    <label>Open next page in:</label>\n                    <select class=\"form-control admin-main-form-control-custom\" [(ngModel)]=\"page_mode\">\n                        <option value=\"0\" selected>Regular Mode</option>\n                        <option value=\"1\">Bus Edit Mode</option>\n                        <option value=\"2\">Move People Mode</option>\n                    </select>\n                </div>\t            \n            </div>\n            <div class=\"clearfix\"></div>\n            <div class=\"col-xs-12 text-center\">\n                <div class=\"form-group\">\n                    <input type=\"button\" (click)=\"onPressGoButton()\" class=\"btn btn-green btn-lg promin_select sm-expandable\" value=\"Go\">\n                </div>\n            </div>\n            <div class=\"clearfix\"></div>\n        </div>\n    </div>\n</section>\n\n\n<div id=\"choose_location_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Error</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>Please choose  outbound city.</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-success\" data-dismiss=\"modal\">OK</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n\n<div id=\"choose_outbound_date_modal\" class=\"modal fade\" role=\"dialog\">\n    <div class=\"modal-dialog\">\n\n        <!-- Modal content-->\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                <h4 class=\"modal-title\">Error</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>Please choose  outbound date.</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-success\" data-dismiss=\"modal\">OK</button>\n            </div>\n        </div>\n\n    </div>\n</div>"
 
 /***/ }),
 
