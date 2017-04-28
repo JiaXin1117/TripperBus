@@ -48,7 +48,7 @@ var AuthService = (function () {
     return AuthService;
     var _a;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/auth.service.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/auth.service.js.map
 
 /***/ }),
 
@@ -83,7 +83,7 @@ var AdminAreasComponent = (function () {
     ], AdminAreasComponent);
     return AdminAreasComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-areas.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-areas.component.js.map
 
 /***/ }),
 
@@ -118,7 +118,7 @@ var AdminCouponsCampaignsComponent = (function () {
     ], AdminCouponsCampaignsComponent);
     return AdminCouponsCampaignsComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-coupons-campaigns.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-coupons-campaigns.component.js.map
 
 /***/ }),
 
@@ -153,7 +153,7 @@ var AdminCouponsCompaniesComponent = (function () {
     ], AdminCouponsCompaniesComponent);
     return AdminCouponsCompaniesComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-coupons-companies.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-coupons-companies.component.js.map
 
 /***/ }),
 
@@ -188,7 +188,7 @@ var AdminCouponsTypesComponent = (function () {
     ], AdminCouponsTypesComponent);
     return AdminCouponsTypesComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-coupons-types.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-coupons-types.component.js.map
 
 /***/ }),
 
@@ -223,7 +223,7 @@ var AdminCouponsComponent = (function () {
     ], AdminCouponsComponent);
     return AdminCouponsComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-coupons.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-coupons.component.js.map
 
 /***/ }),
 
@@ -258,7 +258,7 @@ var AdminCustomersComponent = (function () {
     ], AdminCustomersComponent);
     return AdminCustomersComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-customers.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-customers.component.js.map
 
 /***/ }),
 
@@ -353,7 +353,7 @@ var AdminMainBusEditModeComponent = (function () {
     return AdminMainBusEditModeComponent;
     var _a, _b, _c, _d;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-main-bus-edit-mode.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-main-bus-edit-mode.component.js.map
 
 /***/ }),
 
@@ -448,7 +448,7 @@ var AdminMainMovePeopleModeComponent = (function () {
     return AdminMainMovePeopleModeComponent;
     var _a, _b, _c, _d;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-main-move-people-mode.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-main-move-people-mode.component.js.map
 
 /***/ }),
 
@@ -824,7 +824,7 @@ var AdminMainRegularModeComponent = (function () {
     return AdminMainRegularModeComponent;
     var _a, _b, _c, _d, _e;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-main-regular-mode.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-main-regular-mode.component.js.map
 
 /***/ }),
 
@@ -916,7 +916,7 @@ var AdminMainComponent = (function () {
     return AdminMainComponent;
     var _a, _b;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-main.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-main.component.js.map
 
 /***/ }),
 
@@ -951,7 +951,7 @@ var AdminPagesComponent = (function () {
     ], AdminPagesComponent);
     return AdminPagesComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-pages.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-pages.component.js.map
 
 /***/ }),
 
@@ -986,7 +986,7 @@ var AdminRatesComponent = (function () {
     ], AdminRatesComponent);
     return AdminRatesComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-rates.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-rates.component.js.map
 
 /***/ }),
 
@@ -1443,7 +1443,7 @@ var AdminSchedulesEditexistingComponent = (function () {
     return AdminSchedulesEditexistingComponent;
     var _a, _b, _c, _d;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-schedules-editexisting.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-schedules-editexisting.component.js.map
 
 /***/ }),
 
@@ -1807,7 +1807,7 @@ var AdminSchedulesComponent = (function () {
     return AdminSchedulesComponent;
     var _a, _b, _c;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-schedules.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-schedules.component.js.map
 
 /***/ }),
 
@@ -1842,7 +1842,7 @@ var AdminSettingsComponent = (function () {
     ], AdminSettingsComponent);
     return AdminSettingsComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-settings.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-settings.component.js.map
 
 /***/ }),
 
@@ -1877,7 +1877,7 @@ var AdminStopsComponent = (function () {
     ], AdminStopsComponent);
     return AdminStopsComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-stops.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-stops.component.js.map
 
 /***/ }),
 
@@ -1912,7 +1912,7 @@ var AdminUsersComponent = (function () {
     ], AdminUsersComponent);
     return AdminUsersComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-users.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-users.component.js.map
 
 /***/ }),
 
@@ -1923,7 +1923,7 @@ var AdminUsersComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__admin_component__ = __webpack_require__(712);
 /* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__admin_component__["a"]; });
 
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/index.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/index.js.map
 
 /***/ }),
 
@@ -2000,7 +2000,7 @@ var LoginComponent = (function () {
     return LoginComponent;
     var _a, _b, _c, _d;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/login.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/login.component.js.map
 
 /***/ }),
 
@@ -2050,7 +2050,7 @@ var LogoutComponent = (function () {
     return LogoutComponent;
     var _a, _b;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/logout.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/logout.component.js.map
 
 /***/ }),
 
@@ -2085,7 +2085,7 @@ var MainIndexComponent = (function () {
     ], MainIndexComponent);
     return MainIndexComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/main-index.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/main-index.component.js.map
 
 /***/ }),
 
@@ -2254,7 +2254,7 @@ var ScheduleService = (function () {
     ], ScheduleService);
     return ScheduleService;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/schedule.service.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/schedule.service.js.map
 
 /***/ }),
 
@@ -2307,7 +2307,7 @@ var HttpService = (function () {
     return HttpService;
     var _a;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/http.service.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/http.service.js.map
 
 /***/ }),
 
@@ -2342,7 +2342,7 @@ if (__WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment *
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["a" /* enableProdMode */])();
 }
 __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_3__app_app_module__["a" /* AppModule */]);
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/main.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/main.js.map
 
 /***/ }),
 
@@ -2386,7 +2386,7 @@ var AdminFooterComponent = (function () {
     ], AdminFooterComponent);
     return AdminFooterComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-footer.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-footer.component.js.map
 
 /***/ }),
 
@@ -2421,7 +2421,7 @@ var AdminHeaderComponent = (function () {
     ], AdminHeaderComponent);
     return AdminHeaderComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-header.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-header.component.js.map
 
 /***/ }),
 
@@ -2459,6 +2459,7 @@ var AdminMainBusComponent = (function () {
     AdminMainBusComponent.prototype.ngOnInit = function () {
         var me = this;
         me.calculate_total_reservations_cnt();
+        me.calculate_price();
     };
     Object.defineProperty(AdminMainBusComponent.prototype, "selected_group_main_info", {
         set: function (param_group_main_info) {
@@ -2484,12 +2485,41 @@ var AdminMainBusComponent = (function () {
         enumerable: true,
         configurable: true
     });
+    AdminMainBusComponent.prototype.set_default_price = function () {
+        var me = this;
+        me.group_price = me._mainService.schedule_default_price;
+    };
     AdminMainBusComponent.prototype.calculate_total_reservations_cnt = function () {
         var me = this;
         for (var i = 0; i < Object.keys(me.group_main_info).length; i++) {
             var item = me.group_main_info[i];
             me.group_total_reservations += item['reservation_cnt'];
         }
+    };
+    AdminMainBusComponent.prototype.calculate_price = function () {
+        var me = this;
+        // Get price informations. FMRGJ-KR
+        var url = me._mainService.URLS.get_price_for_bus_url + "?group_id=" + me.group_additional_info['group_id'];
+        me._httpService.sendGetRequestWithParams(url)
+            .subscribe(function (data) {
+            if (data['state'] == 'success') {
+                var response = data['data'];
+                // Construct price informations.
+                var temp_price_info = [];
+                temp_price_info['first_seats'] = response['first_seats'];
+                temp_price_info['first_price'] = response['first_price'];
+                temp_price_info['last_seats'] = response['last_seats'];
+                temp_price_info['last_price'] = response['last_price'];
+                // Calculate Price
+                if (me.group_total_reservations < temp_price_info['first_seats']) {
+                    me.group_price = temp_price_info['first_price'];
+                }
+                else if (me.group_total_reservations > (me.group_additional_info['group_max_capacity'] - temp_price_info['last_seats'])) {
+                    me.group_price = temp_price_info['last_price'];
+                }
+                console.log(me.group_price);
+            }
+        });
     };
     __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* Input */])(), 
@@ -2517,7 +2547,7 @@ var AdminMainBusComponent = (function () {
     return AdminMainBusComponent;
     var _a, _b, _c;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-main-bus.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-main-bus.component.js.map
 
 /***/ }),
 
@@ -2939,7 +2969,7 @@ var AdminScheduleEditBusComponent = (function () {
     return AdminScheduleEditBusComponent;
     var _a, _b;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-schedule-edit-bus.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-schedule-edit-bus.component.js.map
 
 /***/ }),
 
@@ -3138,7 +3168,7 @@ var AdminSchedulesGennewComponent = (function () {
     return AdminSchedulesGennewComponent;
     var _a, _b, _c;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-schedules-gennew.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-schedules-gennew.component.js.map
 
 /***/ }),
 
@@ -3330,7 +3360,7 @@ var AdminSchedulesGenspecialComponent = (function () {
     return AdminSchedulesGenspecialComponent;
     var _a, _b, _c;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-schedules-genspecial.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-schedules-genspecial.component.js.map
 
 /***/ }),
 
@@ -3428,7 +3458,7 @@ var AdminSidebarComponent = (function () {
     ], AdminSidebarComponent);
     return AdminSidebarComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin-sidebar.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin-sidebar.component.js.map
 
 /***/ }),
 
@@ -3480,7 +3510,7 @@ var AdminComponent = (function () {
     ], AdminComponent);
     return AdminComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/admin.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/admin.component.js.map
 
 /***/ }),
 
@@ -3599,7 +3629,7 @@ var AppRoutingModule = (function () {
     ], AppRoutingModule);
     return AppRoutingModule;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/app-routing.module.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/app-routing.module.js.map
 
 /***/ }),
 
@@ -3644,7 +3674,7 @@ var AppComponent = (function () {
     ], AppComponent);
     return AppComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/app.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/app.component.js.map
 
 /***/ }),
 
@@ -3832,7 +3862,7 @@ var AppModule = (function () {
     ], AppModule);
     return AppModule;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/app.module.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/app.module.js.map
 
 /***/ }),
 
@@ -3867,7 +3897,7 @@ var MainFooterComponent = (function () {
     ], MainFooterComponent);
     return MainFooterComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/main-footer.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/main-footer.component.js.map
 
 /***/ }),
 
@@ -3902,7 +3932,7 @@ var MainHeaderComponent = (function () {
     ], MainHeaderComponent);
     return MainHeaderComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/main-header.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/main-header.component.js.map
 
 /***/ }),
 
@@ -3937,7 +3967,7 @@ var PageNotFoundComponent = (function () {
     ], PageNotFoundComponent);
     return PageNotFoundComponent;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/page-not-found.component.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/page-not-found.component.js.map
 
 /***/ }),
 
@@ -3954,7 +3984,7 @@ var environment = {
     production: false,
     baseHref: '/TripperBus_Backend/frontend/'
 };
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/environment.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/environment.js.map
 
 /***/ }),
 
@@ -3965,7 +3995,7 @@ var environment = {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BACKEND_SERVER_URL; });
 //export const BACKEND_SERVER_URL = "http://localhost/TripperBus_Backend/";
 var BACKEND_SERVER_URL = "http://54.214.196.171/TripperBus/public/";
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/config.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/config.js.map
 
 /***/ }),
 
@@ -4520,7 +4550,7 @@ module.exports = "<div class=\"text-center header-div\">\n    <label (click)=\"o
 /***/ 950:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"col-sm-6 col-md-6 bus-root-div\">\n      <h3 class=\"text-center bus-header-h3\">BUS #{{ group_idx + 1 }}</h3>\n      \n      <div class=\"group-main-info\">\n          <table class=\"schedules-table\">\n              <tr *ngFor=\"let group_main_item of group_main_info; let i = index;\">\n                  <td class=\"td-left\">\n                      <span>TIME ID: {{ group_main_item['time_id'] }} {{ group_main_item['time'] }}</span> from <span>{{ group_main_item['stop_short'] }}</span> \n                  </td>\n                  <td class=\"td-right\">\n                      <span>{{ group_main_item['reservation_cnt'] }}</span>\n                  </td>\n              </tr>\n          </table>\n          <p >\n              \n          </p>\n      </div>\n\n      <div class=\"group-additional-info\">\n          <h5 class=\"total-h5\">Total: {{ group_total_reservations }}.  Max Capacity: {{ group_additional_info['group_max_capacity'] }}</h5>\n          <table class=\"group-additional-info-table\">\n              \n              <tr>\n                  <td class=\"td-left\">\n                      TravelZoo Booked: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Coupons Allowed: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Price: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Destinations: \n                  </td>  \n                  <td class=\"td-right\">\n                      {{ group_additional_info['group_destinations'] }}\n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Bus is: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n          </table>\n          \n      </div>\n</div>\n\n\n"
+module.exports = "<div class=\"col-sm-6 col-md-6 bus-root-div\">\n      <h3 class=\"text-center bus-header-h3\">BUS #{{ group_idx + 1 }}</h3>\n      \n      <div class=\"group-main-info\">\n          <table class=\"schedules-table\">\n              <tr *ngFor=\"let group_main_item of group_main_info; let i = index;\">\n                  <td class=\"td-left\">\n                      <span>TIME ID: {{ group_main_item['time_id'] }} {{ group_main_item['time'] }}</span> from <span>{{ group_main_item['stop_short'] }}</span> \n                  </td>\n                  <td class=\"td-right\">\n                      <span>{{ group_main_item['reservation_cnt'] }}</span>\n                  </td>\n              </tr>\n          </table>\n          <p >\n              \n          </p>\n      </div>\n\n      <div class=\"group-additional-info\">\n          <h5 class=\"total-h5\">Total: {{ group_total_reservations }}.  Max Capacity: {{ group_additional_info['group_max_capacity'] }}</h5>\n          <table class=\"group-additional-info-table\">\n              \n              <tr>\n                  <td class=\"td-left\">\n                      TravelZoo Booked: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Coupons Allowed: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Price: \n                  </td>  \n                  <td class=\"td-right\">\n                      ${{ group_price }}\n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Destinations: \n                  </td>  \n                  <td class=\"td-right\">\n                      {{ group_additional_info['group_destinations'] }}\n                  </td>\n              </tr>\n              <tr>\n                  <td class=\"td-left\">\n                      Bus is: \n                  </td>  \n                  <td class=\"td-right\">\n                      \n                  </td>\n              </tr>\n          </table>\n          \n      </div>\n</div>\n\n\n"
 
 /***/ }),
 
@@ -4701,7 +4731,9 @@ var MainService = (function () {
             retrieve_reservations_by_date_url: __WEBPACK_IMPORTED_MODULE_1__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/main/retrieve_reservations_by_date",
             retrieve_group_additional_info_url: __WEBPACK_IMPORTED_MODULE_1__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/main/retrieve_group_additional_info",
             retrieve_all_stops_url: __WEBPACK_IMPORTED_MODULE_1__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/schedule/retrieve_stops",
+            get_price_for_bus_url: __WEBPACK_IMPORTED_MODULE_1__config_config__["a" /* BACKEND_SERVER_URL */] + "api/admin/main/get_price_for_bus",
         };
+        this.schedule_default_price = 25;
     }
     MainService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(), 
@@ -4709,7 +4741,7 @@ var MainService = (function () {
     ], MainService);
     return MainService;
 }());
-//# sourceMappingURL=E:/CurrentProjects/TripperBus/FrontEnd/dev/src/main.service.js.map
+//# sourceMappingURL=E:/TripperBus/FrontEnd/dev/src/main.service.js.map
 
 /***/ })
 
