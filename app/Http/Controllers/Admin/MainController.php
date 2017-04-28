@@ -44,6 +44,27 @@ class MainController extends Controller
         ]);
     }
 
+    public function getPriceInfo() {
+        $param_group_id = Input::get('group_id');
+
+        $cnt = \App\Models\Res_Schedule_Prices::where('group_id', $param_group_id)
+                ->count(); 
+
+        if ($cnt > 0) {
+            $result = \App\Models\Res_Schedule_Prices::where('group_id', $param_group_id)
+                ->first(); 
+
+            return response()->json([
+                'state' => 'success',
+                'data' => $result
+            ]);
+        }
+
+        return response()->json([
+            'state' => 'fail'
+        ]);
+    }
+
     public function postRetrieveGroupInformations(Request $request) {
         $param_groupIDs = json_decode($request->getContent(), true); 
         
@@ -78,6 +99,8 @@ class MainController extends Controller
             'state' => 'success',
             'data' => $response
         ]);
-    } 
+    }
+
+     
     
 }

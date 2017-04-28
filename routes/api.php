@@ -85,6 +85,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.main.retrieve_reservations_by_date',
             'uses' => 'MainController@getRetrieveReservations',
         ]);
+        Route::get('/get_price_for_bus', [
+            'as' => 'admin.main.get_price_for_bus',
+            'uses' => 'MainController@getPriceInfo',
+        ]);
 
         Route::post('/retrieve_group_additional_info', [
             'as' => 'admin.main.retrieve_group_additional_info',
