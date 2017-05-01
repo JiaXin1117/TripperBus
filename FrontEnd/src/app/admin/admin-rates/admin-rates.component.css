@@ -1,0 +1,23 @@
+
+.admin-rates-breadcrumb-custom {
+    float: right;
+    background: transparent;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 12px;
+    padding: 7px 5px;
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    border-radius: 2px;
+}
+
+.admin-rates-content-header-custom {
+    position: relative;
+}
+
+.admin-rates-rate-select {
+    width: 30%;
+    margin: 0px 35%;
+    min-width: 100px;
+}

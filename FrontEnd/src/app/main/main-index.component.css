@@ -1,0 +1,7 @@
+.main-root {
+    padding: 25px 10%;
+    /*background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 80%), 
+                        url("./assets/img/3-newyork.jpg") !important;
+    background-size: cover;*/
+    min-height: 100vh !important;
+}

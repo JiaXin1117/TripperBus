@@ -1,0 +1,226 @@
+
+<section class="content-header admin-schedules-content-header-custom">
+    <h1>
+        <i class="fa fa-calendar-o"></i> Schedules
+    </h1>
+    <ol class="breadcrumb admin-schedules-breadcrumb-custom">
+        <li><a routerLink="/admin/main"><i class="fa fa-dashboard"></i> Main</a></li>
+        <li class="active">Schedules</li>
+    </ol>
+</section>
+
+<section class="panel general">
+    <header class="panel-heading tab-bg-dark-navy-blue">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#newyork">From New York City</a>
+            </li>
+            <li class="">
+                <a data-toggle="tab" href="#bethesda">From Bethesda/Arlington</a>
+            </li>
+        </ul>
+    </header>
+    <div class="panel-body">
+        <div class="tab-content">
+            <div id="newyork" class="tab-pane active">
+                <div class="h4 row">
+                    <div class="col-xs-3 col-sm-3 col-md-3 text-left">
+                        <a class="btn btn-info btn-calendar-prev-next" href="javascript:void(0)" (click)="prevMonth()">« Previous</a> 
+                    </div>
+                    <div class="col-xs-6 col-md-6 text-center small">
+                        <b>
+                            <font color="red">Special schedule.</font>
+                            <br>
+                            <font color="orange"> New weekly schedule takes effect</font>
+                        </b>
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 text-right">
+                        <a class="btn btn-info btn-calendar-prev-next" href="javascript:void(0)" (click)="nextMonth()">Next »</a> 
+                    </div>
+                </div>
+                
+                <h2 class="text-center" id="h2_year_month">{{calendarInfo.cur_date_str}}</h2> 
+                <div class="col-xs-12 hidden-xs">
+                    <div class="row seven-cols weekdays">
+                        <div class="col-md-1">Sun</div>
+                        <div class="col-md-1">Mon</div>
+                        <div class="col-md-1">Tue</div>
+                        <div class="col-md-1">Wed</div>
+                        <div class="col-md-1">Thu</div>
+                        <div class="col-md-1">Fri</div>
+                        <div class="col-md-1">Sat</div>
+                    </div>
+                </div>
+                
+                <div class="col-xs-12 hidden-xs">
+                    <div class="row seven-cols">
+                        <div *ngFor="let item of month_firstday_dow" class='col-md-1 fix-height' style='min-height: 0px;'></div>
+                        
+                        <div *ngFor="let item of dayinfos_in_month_newyork; let i=index;" class='col-md-1 fix-height'>
+                            <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_HOLIDAY">
+                                <div *ngIf="item['bus_cnt'] == 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_HOLIDAY)" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} bus</p>
+                                </div>
+                                <div *ngIf="item['bus_cnt'] > 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_HOLIDAY)" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} buses</p>
+                                </div>
+                            </div>
+                            <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY">
+                                <div *ngIf="item['bus_cnt'] == 0">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>0 bus</p>
+                                </div>
+                                <div *ngIf="item['bus_cnt'] > 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>{{item['bus_cnt']}} buses</p>
+                                </div>
+                                <div *ngIf="item['bus_cnt'] == 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>{{item['bus_cnt']}} bus</p>
+                                </div>
+                            </div>
+                            <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY_NEW">
+                                <div *ngIf="item['bus_cnt'] == 0">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)"  class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>0 bus</p>
+                                </div>
+                                <div *ngIf="item['bus_cnt'] > 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} buses</p>
+                                </div>
+                                <div *ngIf="item['bus_cnt'] == 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} bus</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div id="bethesda" class="tab-pane">
+                <div class="h4 row">
+                    <div class="col-xs-3 col-sm-3 col-md-3 text-left">
+                        <a class="btn btn-info btn-calendar-prev-next" href="javascript:void(0)" (click)="prevMonth()">« Previous</a> 
+                    </div>
+                    <div class="col-xs-6 col-md-6 text-center small">
+                        <b>
+                            <font color="red">Special schedule.</font>
+                            <br>
+                            <font color="orange"> New weekly schedule takes effect</font>
+                        </b>
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 text-right">
+                        <a class="btn btn-info btn-calendar-prev-next" href="javascript:void(0)" (click)="nextMonth()">Next »</a> 
+                    </div>
+                </div>
+                
+                <h2 class="text-center" id="h2_year_month">{{calendarInfo.cur_date_str}}</h2> 
+                <div class="col-xs-12 hidden-xs">
+                    <div class="row seven-cols weekdays">
+                        <div class="col-md-1">Sun</div>
+                        <div class="col-md-1">Mon</div>
+                        <div class="col-md-1">Tue</div>
+                        <div class="col-md-1">Wed</div>
+                        <div class="col-md-1">Thu</div>
+                        <div class="col-md-1">Fri</div>
+                        <div class="col-md-1">Sat</div>
+                    </div>
+                </div>
+                <div class="col-xs-12 hidden-xs">
+                    <div class="row seven-cols">
+                        <div *ngFor="let item of month_firstday_dow" class='col-md-1 fix-height' style='min-height: 0px;'></div>
+
+                        <div *ngFor="let item of dayinfos_in_month_ba; let i=index;" class='col-md-1 fix-height'>
+                            <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_HOLIDAY">
+                                <div *ngIf="item['bus_cnt'] == 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_HOLIDAY)" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} bus</p>
+                                </div>
+                                <div *ngIf="item['bus_cnt'] > 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_HOLIDAY)" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} buses</p>
+                                </div>
+                            </div>
+                            <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY">
+                                <div *ngIf="item['bus_cnt'] == 0">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>0 bus</p>
+                                </div>
+                                <div *ngIf="item['bus_cnt'] > 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>{{item['bus_cnt']}} buses</p>
+                                </div>
+                                <div *ngIf="item['bus_cnt'] == 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>{{item['bus_cnt']}} bus</p>
+                                </div>
+                            </div>
+                            <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY_NEW">
+                                <div *ngIf="item['bus_cnt'] == 0">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)"  class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>0 bus</p>
+                                </div>
+                                <div *ngIf="item['bus_cnt'] > 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} buses</p>
+                                </div>
+                                <div *ngIf="item['bus_cnt'] == 1">
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} bus</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="schedule_per_day_modal_NY" role="dialog">
+    <div class="modal-dialog">
+    
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Schedule</h4>
+            </div>
+            <div class="modal-body">
+                <a class="btn btn-success" (click)="onEditSchedule(_scheduleService.areaType.TYPE_NEWYORK)" > Edit exisiting</a>
+                <a class="btn btn-info" *ngIf="sorted_groups_schedule_type == _scheduleService.w_hType.TYPE_WEEKLY" (click)="onGenNewSchedule(_scheduleService.areaType.TYPE_NEWYORK)" > Generate New</a>
+                <a class="btn btn-info" *ngIf="sorted_groups_schedule_type == _scheduleService.w_hType.TYPE_WEEKLY" (click)="onGenSpecialSchedule(_scheduleService.areaType.TYPE_NEWYORK)"> Create Holiday</a>
+                
+                <h3>Current Schedule:</h3>
+                <div id='schedule_infos'>
+                    <div *ngFor="let group of sorted_groups; let i=index;">
+                        <p><strong>Bus #{{i+1}}:</strong></p>
+                        <div *ngFor="let item of group;">
+                            <p>{{item['time']}} from {{item["stop_area"]}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+      
+    </div>
+</div>
+
+
+<div class="modal fade" id="schedule_per_day_modal_BA" role="dialog">
+    <div class="modal-dialog">
+    
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Schedule</h4>
+            </div>
+            <div class="modal-body">
+                <a class="btn btn-success" (click)="onEditSchedule(_scheduleService.areaType.TYPE_BA)" > Edit exisiting</a>
+                <a class="btn btn-info" *ngIf="sorted_groups_schedule_type == _scheduleService.w_hType.TYPE_WEEKLY" (click)="onGenNewSchedule(_scheduleService.areaType.TYPE_BA)" > Generate New</a>
+                <a class="btn btn-info" *ngIf="sorted_groups_schedule_type == _scheduleService.w_hType.TYPE_WEEKLY" (click)="onGenSpecialSchedule(_scheduleService.areaType.TYPE_BA)"> Create Holiday</a>
+                
+                <h3>Current Schedule:</h3>
+                <div id='schedule_infos'>
+                    <div *ngFor="let group of sorted_groups; let i=index;">
+                        <p><strong>Bus #{{i+1}}:</strong></p>
+                        <div *ngFor="let item of group;">
+                            <p>{{item['time']}} from {{item["stop_area"]}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+      
+    </div>
+</div>
+
+

@@ -1,0 +1,130 @@
+footer {
+    background: #282d31;
+    border-top: 4px solid #e34f2e;
+    display: block;
+}
+
+.footer_in {
+    padding: 0 15px;
+}
+
+.footer_cnt {
+    padding: 54px 0 45px 0;
+    margin: 0 -15px;
+}
+
+.links.link_travel {
+    width: 23.5%;
+}
+
+.links {
+    padding: 0 15px;
+    float: left;
+    display: inline-block;
+}
+
+.links.link_abt {
+    width: 27.5%;
+}
+
+.links.link_service {
+    width: 22.5%;
+}
+
+.links.link_cantact {
+    width: 26.5%;
+}
+
+.copy {
+    padding: 35px 0 35px 0;
+    border-top: 1px solid #393f43;
+}
+
+.links h4 {
+    padding: 0 0 7px 0;
+}
+h4 {
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+    font-family: "ProximaNova-Bold";
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: normal;
+    color: #ffffff;
+}
+
+.links ul li a {
+    padding: 0;
+    margin: 0;
+    font-family: "ProximaNova-Regular";
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: normal;
+    color: #909293;
+    transition: all ease-in-out 0.5s;
+    -moz-transition: all ease-in-out 0.5s;
+    -ms-transition: all ease-in-out 0.5s;
+    -o-transition: all ease-in-out 0.5s;
+    -webkit-transition: all ease-in-out 0.5s;
+}
+
+.links ul li {
+    padding: 7px 0 7px 0;
+}
+
+.links ul {
+    padding-left: 0px;
+}
+
+.links ul li span {
+    padding: 0;
+    margin: 0;
+    font-family: "ProximaNova-Regular";
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: normal;
+    color: #c7c8c8;
+}
+
+.links.link_cantact ul li a {
+    font-family: "ProximaNova-Bold";
+    color: #ffb300;
+    word-wrap: break-word;
+}
+
+.links.link_cantact .socialicons {
+    padding: 38px 0 0 0;
+}
+
+.links.link_cantact .socialicons li {
+    padding: 0 17px 0 0px;
+    display: inline-block;
+}
+
+.links.link_cantact .socialicons i {
+    font-size: 21px; 
+    color: #c7c8c8;
+}
+
+.copy .footer_logo {
+    padding: 0 20px 0 0;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.copy p {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 13px;
+    line-height: 24px;
+    color: #909193;
+}
+
+.flt_rt {
+    float: right;
+    display: inline;
+}
+
+img.main-footer-logo-img {
+    margin-top: -10px;
+}

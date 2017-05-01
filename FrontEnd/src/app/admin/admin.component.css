@@ -1,0 +1,30 @@
+.admin-root {
+    font-family: 'open_sansregular', sans-serif, Arial !important;
+    font-size: 13px;
+    line-height: 1.42857143;
+    color: #333;
+    display: block;
+    position: relative;
+    width: 100%;
+}
+
+.admin-left {
+    width: 220px; 
+    min-height: calc(100vh - 50px);
+    background-color: #222d32;
+    float: left;
+    position: absolute;
+}
+
+.admin-right {
+    float: left;
+    position: absolute;
+    width: calc(100% - 220px);
+    margin-left: 220px;
+    min-height: calc(100vh - 50px);
+}
+
+.admin-right-content {
+    padding: 15px 15px;
+}
+

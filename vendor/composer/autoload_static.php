@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit167beb68eac0d5171feff0c8554c299f
+class ComposerStaticInit89c39182bcb8120819a1e833da1c96df
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -282,6 +282,7 @@ class ComposerStaticInit167beb68eac0d5171feff0c8554c299f
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Http\\Controllers\\Admin\\MainController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/MainController.php',
         'App\\Http\\Controllers\\Admin\\ScheduleController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ScheduleController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
@@ -292,6 +293,9 @@ class ComposerStaticInit167beb68eac0d5171feff0c8554c299f
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Models\\Res_Groups' => __DIR__ . '/../..' . '/app/Models/Res_Groups.php',
+        'App\\Models\\Res_Groups_DestStops' => __DIR__ . '/../..' . '/app/Models/Res_Groups_DestStops.php',
+        'App\\Models\\Res_Reservations' => __DIR__ . '/../..' . '/app/Models/Res_Reservations.php',
+        'App\\Models\\Res_Schedule_Prices' => __DIR__ . '/../..' . '/app/Models/Res_Schedule_Prices.php',
         'App\\Models\\Res_Stops' => __DIR__ . '/../..' . '/app/Models/Res_Stops.php',
         'App\\Models\\Res_Times' => __DIR__ . '/../..' . '/app/Models/Res_Times.php',
         'App\\Models\\Res_Users' => __DIR__ . '/../..' . '/app/Models/Res_Users.php',
@@ -3242,10 +3246,10 @@ class ComposerStaticInit167beb68eac0d5171feff0c8554c299f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit167beb68eac0d5171feff0c8554c299f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit167beb68eac0d5171feff0c8554c299f::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit167beb68eac0d5171feff0c8554c299f::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit167beb68eac0d5171feff0c8554c299f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit89c39182bcb8120819a1e833da1c96df::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit89c39182bcb8120819a1e833da1c96df::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit89c39182bcb8120819a1e833da1c96df::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit89c39182bcb8120819a1e833da1c96df::$classMap;
 
         }, null, ClassLoader::class);
     }

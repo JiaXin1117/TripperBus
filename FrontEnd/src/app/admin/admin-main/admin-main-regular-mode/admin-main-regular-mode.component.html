@@ -1,0 +1,47 @@
+<div class="text-center header-div">
+    <label>
+        <img class="img-responsive" src="./assets/common/img/reg_mode_b.gif" width="192" height="59" alt="Regular Mode">
+    </label>
+    
+    <label style="vertical-align: top;" (click)="onClickBusEditMode()">
+        <img class="img-responsive" src="./assets/common/img/bus_edit_mode_r.gif" width="192" height="45" alt="Bus Prices Mode">
+    </label>
+    
+    <label style="vertical-align: top;" (click)="onClickMovePeopleMode()">
+        <img class="img-responsive" src="./assets/common/img/move_people_mode_r.gif" width="192" height="45" alt="Move People Mode">
+    </label>
+</div>
+
+<div class="row row-content" >
+    <div class="col-sm-6" style="text-align: center;">
+        <div class="header-outbound">
+                <h3>Leaving from {{ headerLeave.city }} on </h3>
+                <p>{{ headerLeave.date}} at:</p>
+        </div>
+        <div class="content-outbound">
+                <div *ngFor="let group_main_info of selected_group_main_infos_outbound; let i = index;"> 
+                    <div *ngFor="let group_additional_info of selected_group_additional_infos_outbound; let j = index;"> 
+                        <div *ngIf="group_additional_info['group_id'] == group_main_info[0]['group_id']">
+                            <app-admin-main-bus [selected_group_main_info] = "group_main_info" [selected_group_additional_info] = "group_additional_info" [selected_group_idx] = "i" ></app-admin-main-bus>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div class="col-sm-6" style="text-align: center;">
+        <div class="header-return">
+                <h3>Returning from {{ headerReturn.city }} on </h3>
+                <p>{{ headerReturn.date }} at: </p>
+        </div>
+        <div class="content-return">
+                <div *ngFor="let group_main_info of selected_group_main_infos_return; let i = index;"> 
+                    <div *ngFor="let group_additional_info of selected_group_additional_infos_return; let j = index;"> 
+                        <div *ngIf="group_additional_info['group_id'] == group_main_info[0]['group_id']">
+                            <app-admin-main-bus [selected_group_main_info] = "group_main_info" [selected_group_additional_info] = "group_additional_info" [selected_group_idx] = "i" ></app-admin-main-bus>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+

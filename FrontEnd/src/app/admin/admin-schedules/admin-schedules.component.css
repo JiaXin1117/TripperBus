@@ -1,0 +1,56 @@
+
+.admin-schedules-breadcrumb-custom {
+    float: right;
+    background: transparent;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 12px;
+    padding: 7px 5px;
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    border-radius: 2px;
+}
+
+.admin-schedules-content-header-custom {
+    position: relative;
+}
+
+.btn-calendar-prev-next {
+    width: 95px;
+}
+
+.seven-cols.weekdays .col-md-1 {
+    float: left;
+    text-align: center;
+    font-weight: bold;
+    display: inline-block;
+    width: 14.285714285714285714285714285714%;
+}
+
+.seven-cols .col-md-1 {
+    display: inline-block;
+    width: 14.285714285714285714285714285714%;
+}
+
+.seven-cols .col-md-1.fix-height {
+    min-height: 120px;
+    padding: 5px;
+    text-align: center;
+}
+
+.seven-cols h3 {
+    cursor: pointer;
+}
+
+.seven-cols p {
+    cursor: context-menu;
+}
+
+.calendar_day_holiday {
+    color: red;
+}
+
+.calendar_day_new_schedule {
+    color: orange;
+}

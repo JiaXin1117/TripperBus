@@ -1,0 +1,76 @@
+.admin-sidebar {
+    min-height: 0px !important;
+    top: 0px !important;
+    background-color: #222d32;
+}
+
+.admin-sidebar-aside {
+    color: #b8c7ce;
+}
+
+.admin-sidebar-form-custom {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    border: 0px solid #555;
+    margin: 10px 10px;
+    width: 180px;
+}
+
+.sidebar-menu span {
+    color: #b8c7ce;
+}
+.sidebar-menu i {
+    color: #b8c7ce;
+}
+
+.admin-sidebar-search-input {
+    background-color: #374850;
+    border: 1px solid transparent;
+}
+
+.admin-sidebar-search-btn {
+    color: #999;
+    border-top-left-radius: 0;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 0;
+    background-color: #374850;
+}
+
+.sidebar-menu .sidebar-menu-li:hover {
+    background-color: #333;
+}
+.sidebar-menu .sidebar-menu-li:hover span, .sidebar-menu .sidebar-menu-li:hover i {
+    color: white !important;
+}
+
+.admin-sidebar-router-active {
+    background-color: #333;
+}
+.admin-sidebar-router-active span, .admin-sidebar-router-active i{
+    color: white !important;
+}
+
+#admin-sidebar-coupons-details > ul > li > a {
+    padding: 5px 5px 5px 0px;
+    display: block;
+}
+#admin-sidebar-coupons-details > ul {
+    list-style: none;
+}
+
+#admin-sidebar-coupons-details ul li:hover {
+    background-color: #333;
+}
+#admin-sidebar-coupons-details ul li:hover span, #admin-sidebar-coupons-details ul li:hover i {
+    color: white !important;
+}
+
+
+
+
+
+
+
+

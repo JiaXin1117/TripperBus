@@ -1,0 +1,20 @@
+.admin-header {
+    background-color: #3c8dbc;
+}
+.admin-header-icon-bar-custom {
+    background-color: white;
+}
+
+.admin-header-account {
+    color: white;
+    background-color: transparent !important;
+    height: 49px;
+}
+.admin-header-account:hover, .admin-header-account:focus {
+    background-color: rgba(0,0,0,0.1) !important;
+}
+
+.admin-header-user-img {
+    height: 25px;
+}
+

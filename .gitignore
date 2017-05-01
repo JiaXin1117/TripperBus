@@ -10,3 +10,5 @@ Homestead.yaml
 .env
 /config/database.php
 /public/.htaccess
+/vendor
+/FrontEnd/node_modules

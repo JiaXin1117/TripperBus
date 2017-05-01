@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
+    'App\\Http\\Controllers\\Admin\\MainController' => $baseDir . '/app/Http/Controllers/Admin/MainController.php',
     'App\\Http\\Controllers\\Admin\\ScheduleController' => $baseDir . '/app/Http/Controllers/Admin/ScheduleController.php',
     'App\\Http\\Controllers\\Auth\\LoginController' => $baseDir . '/app/Http/Controllers/Auth/LoginController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
@@ -18,6 +19,9 @@ return array(
     'App\\Http\\Middleware\\TrimStrings' => $baseDir . '/app/Http/Middleware/TrimStrings.php',
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Models\\Res_Groups' => $baseDir . '/app/Models/Res_Groups.php',
+    'App\\Models\\Res_Groups_DestStops' => $baseDir . '/app/Models/Res_Groups_DestStops.php',
+    'App\\Models\\Res_Reservations' => $baseDir . '/app/Models/Res_Reservations.php',
+    'App\\Models\\Res_Schedule_Prices' => $baseDir . '/app/Models/Res_Schedule_Prices.php',
     'App\\Models\\Res_Stops' => $baseDir . '/app/Models/Res_Stops.php',
     'App\\Models\\Res_Times' => $baseDir . '/app/Models/Res_Times.php',
     'App\\Models\\Res_Users' => $baseDir . '/app/Models/Res_Users.php',

@@ -1,0 +1,43 @@
+
+<section class="content-header admin-coupons-companies-content-header-custom">
+    <h1>
+        <i class="fa fa-tags"></i> Companies
+    </h1>
+    <ol class="breadcrumb admin-coupons-companies-breadcrumb-custom">
+        <li><a routerLink="/admin/main"><i class="fa fa-dashboard"></i> Main</a></li>
+        <li class="active" style="color: black;"><i class="fa fa-tags"></i> Coupons</li>
+        <li class="active">Companies</li>
+    </ol>
+</section>
+
+<section class="panel admin-main-panel admin-coupons-companies-main-panel-custom">
+    <header class="panel-heading">
+        <h3 class="box-title">
+            <span class="fa fa-list-alt"></span> Companies
+            <a href="http://tripperbus.infinixsoft.com/admin/users/create?role=1" class="btn btn-xs btn-primary pull-right"><span class="fa fa-plus"></span> Companies</a>
+        </h3>
+    </header>
+    <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Company</th>
+                    <th width="200">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody class="table">
+                <tr class="rows 1">
+                    <td><span class="userName">1</span></td>
+                    <td><span class="userName">TripperBus</span></td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="http://tripperbus.infinixsoft.com/admin/codes-companies/1/edit" class="btn btn-xs btn-success"><span class="fa fa-pencil"></span> Edit</a>  
+                            <a href="#" class="btn btn-xs btn-danger btn-select" data-toggle="modal" data-target="#delete-modal" data-id="1"><span class="fa fa-trash"></span> Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

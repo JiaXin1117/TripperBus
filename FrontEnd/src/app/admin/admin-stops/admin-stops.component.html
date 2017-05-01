@@ -1,0 +1,50 @@
+
+<section class="content-header admin-stops-content-header-custom">
+    <h1>
+        <i class="fa fa-bus"></i> Stops
+    </h1>
+    <ol class="breadcrumb admin-stops-breadcrumb-custom">
+        <li><a routerLink="/admin/main"><i class="fa fa-dashboard"></i> Main</a></li>
+        <li class="active">Stops</li>
+    </ol>
+</section>
+
+<section class="panel admin-main-panel admin-stops-main-panel-custom">
+    <header class="panel-heading">
+        <h3 class="box-title">
+            <span class="fa fa-list-alt"></span> Stops
+            <a href="http://tripperbus.infinixsoft.com/admin/stops/create" class="btn btn-xs btn-primary pull-right"><span class="fa fa-plus"></span> Stop</a>
+        </h3>
+    </header>
+    <div class="panel-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Order</th>
+                    <th>Admin Address</th>
+                    <th>City</th>
+                    <th>Area</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span>1</span></td>
+                    <td><span>1</span></td>
+                    <td><span>New York</span></td>
+                    <td>New York, NY 10001</td>
+                    <td>New York City </td>
+                    <td><span class="label label-success">ACTIVE</span></td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="http://tripperbus.infinixsoft.com/admin/stops/1/edit" class="btn btn-xs btn-success"><span class="fa fa-pencil"></span> Edit</a>  
+                            <a href="#" class="btn btn-xs btn-danger btn-select" data-toggle="modal" data-target="#delete-modal" data-id="1"><span class="fa fa-trash"></span> Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

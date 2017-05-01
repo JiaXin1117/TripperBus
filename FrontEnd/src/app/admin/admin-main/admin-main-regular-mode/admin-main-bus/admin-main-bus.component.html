@@ -1,0 +1,69 @@
+<div class="col-sm-6 col-md-6 bus-root-div">
+      <h3 class="text-center bus-header-h3">BUS #{{ group_idx + 1 }}</h3>
+      
+      <div class="group-main-info">
+          <table class="schedules-table">
+              <tr *ngFor="let group_main_item of group_main_info; let i = index;">
+                  <td class="td-left">
+                      <span>TIME ID: {{ group_main_item['time_id'] }} {{ group_main_item['time'] }}</span> from <span>{{ group_main_item['stop_short'] }}</span> 
+                  </td>
+                  <td class="td-right">
+                      <span>{{ group_main_item['reservation_cnt'] }}</span>
+                  </td>
+              </tr>
+          </table>
+          <p >
+              
+          </p>
+      </div>
+
+      <div class="group-additional-info">
+          <h5 class="total-h5">Total: {{ group_total_reservations }}.  Max Capacity: {{ group_additional_info['group_max_capacity'] }}</h5>
+          <table class="group-additional-info-table">
+              
+              <tr>
+                  <td class="td-left">
+                      TravelZoo Booked: 
+                  </td>  
+                  <td class="td-right">
+                      
+                  </td>
+              </tr>
+              <tr>
+                  <td class="td-left">
+                      Coupons Allowed: 
+                  </td>  
+                  <td class="td-right">
+                      
+                  </td>
+              </tr>
+              <tr>
+                  <td class="td-left">
+                      Price: 
+                  </td>  
+                  <td class="td-right">
+                      ${{ group_price }}
+                  </td>
+              </tr>
+              <tr>
+                  <td class="td-left">
+                      Destinations: 
+                  </td>  
+                  <td class="td-right">
+                      {{ group_additional_info['group_destinations'] }}
+                  </td>
+              </tr>
+              <tr>
+                  <td class="td-left">
+                      Bus is: 
+                  </td>  
+                  <td class="td-right">
+                      
+                  </td>
+              </tr>
+          </table>
+          
+      </div>
+</div>
+
+
