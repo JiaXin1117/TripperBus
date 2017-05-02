@@ -89,6 +89,16 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.main.get_price_for_bus',
             'uses' => 'MainController@getPriceInfo',
         ]);
+        
+        Route::get('/get_bus_times', [
+            'as' => 'admin.main.get_bus_times',
+            'uses' => 'BusEditController@getBusTimes',
+        ]);
+
+        Route::post('/update_buses', [
+            'as' => 'admin.main.update_buses',
+            'uses' => 'BusEditController@updateBuses',
+        ]);
 
         Route::post('/retrieve_group_additional_info', [
             'as' => 'admin.main.retrieve_group_additional_info',

@@ -6,7 +6,7 @@
   "apps": [
     {
         "root": "src",
-        "outDir": "E:/CurrentProjects/TripperBus/Git/public/frontend",
+        "outDir": "../public/frontend",
         "assets": [
             "assets",
             "favicon.ico"

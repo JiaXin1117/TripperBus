@@ -19,7 +19,7 @@ export class AdminSidebarComponent implements OnInit {
     onResize(event) { 
     }
     
-    private defaultData = [
+    public defaultData = [
         {
             text: 'Coupons',
             icon: 'fa fa-tags',
@@ -54,7 +54,7 @@ export class AdminSidebarComponent implements OnInit {
         }
     ];
     
-    private setTreeView() {
+    public setTreeView() {
         let me = this;
         jQuery("#treeview-coupons").click(function(){
             if (jQuery("#admin-sidebar-coupons-details").css("display") == 'none'){ 

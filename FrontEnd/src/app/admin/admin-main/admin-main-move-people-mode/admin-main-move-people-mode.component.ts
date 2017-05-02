@@ -10,26 +10,26 @@ import {ScheduleService} from "../../../services/schedule_service/schedule.servi
 })
 export class AdminMainMovePeopleModeComponent implements OnInit {
 
-    protected headerLeave: any = {
+    public headerLeave: any = {
         city: "",
         date: "",
     };
     
-    protected headerReturn: any = {
+    public headerReturn: any = {
         city: "",
         date: "",
     };
     
-    protected inputParams: any = {
+    public inputParams: any = {
         outbound_date: "",
         leaving_from: "",
         return_date: "",
     };
 
-    constructor(private _route: ActivatedRoute, 
-                private _router: Router,
-                private _mainService: MainService,
-                private _scheduleService: ScheduleService
+    constructor(public _route: ActivatedRoute, 
+                public _router: Router,
+                public _mainService: MainService,
+                public _scheduleService: ScheduleService
                 ) {
     }
 

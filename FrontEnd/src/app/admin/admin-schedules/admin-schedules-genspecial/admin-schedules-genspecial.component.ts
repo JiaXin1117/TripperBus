@@ -15,36 +15,36 @@ declare var jQuery:any;
 })
 export class AdminSchedulesGenspecialComponent implements OnInit {
 
-    protected sel_date: string = "";
-    protected selected_dow: string = "";
-    protected selected_schedule_type: string = "";
-    protected selected_date_from: string = "";
-    protected selected_stop: string = "";
+    public sel_date: string = "";
+    public selected_dow: string = "";
+    public selected_schedule_type: string = "";
+    public selected_date_from: string = "";
+    public selected_stop: string = "";
     
-    protected urls: any = {
+    public urls: any = {
         retrieve_schedule_by_date_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_by_date",
         retrieve_all_stops_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops",
         save_all_url: BACKEND_SERVER_URL + "api/admin/schedule/saveall_existing_schedule",    
         add_schedule_url: BACKEND_SERVER_URL + "api/admin/schedule/add_existing_schedule",    
     };
     
-    protected groups: any[] = [];
-    protected stops: string[] = [];
+    public groups: any[] = [];
+    public stops: string[] = [];
     
-    protected adding_stops: string[] = [];
-    protected adding_hours: string[] = [];
-    protected adding_mins: string[] = [];
-    protected adding_prices: string[] = [];
+    public adding_stops: string[] = [];
+    public adding_hours: string[] = [];
+    public adding_mins: string[] = [];
+    public adding_prices: string[] = [];
     
-    protected arr_stops: string[] = [];
-    protected arr_hours: number[] = [];
-    protected arr_mins: number[] = [];
-    protected arr_prices: string[] = [];
+    public arr_stops: string[] = [];
+    public arr_hours: number[] = [];
+    public arr_mins: number[] = [];
+    public arr_prices: string[] = [];
 
         
-    constructor(private _route: ActivatedRoute, 
-                private _scheduleService: ScheduleService, 
-                private _httpService: HttpService ) { 
+    constructor(public _route: ActivatedRoute, 
+                public _scheduleService: ScheduleService, 
+                public _httpService: HttpService ) { 
     }
 
     ngOnInit() {

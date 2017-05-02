@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute }   from '@angular/router';
-import {MainService} from "../../../services/main_service/main.service";
-import {ScheduleService} from "../../../services/schedule_service/schedule.service";
+import { MainService} from "../../../services/main_service/main.service";
+import { ScheduleService} from "../../../services/schedule_service/schedule.service";
+import { HttpService} from "../../../services/http_service/http.service";
+import { Bus } from '../../../model/bus.type';
+import * as moment from "moment";
+export { AdminMainBusEditorComponent } from './admin-main-bus-editor/admin-main-bus-editor.component';
 
 @Component({
   selector: 'app-admin-main-bus-edit-mode',
@@ -10,26 +14,31 @@ import {ScheduleService} from "../../../services/schedule_service/schedule.servi
 })
 export class AdminMainBusEditModeComponent implements OnInit {
 
-    protected headerLeave: any = {
+    public headerLeave: any = {
         city: "",
         date: "",
     };
     
-    protected headerReturn: any = {
+    public headerReturn: any = {
         city: "",
         date: "",
     };
     
-    protected inputParams: any = {
+    public inputParams: any = {
         outbound_date: "",
         leaving_from: "",
         return_date: "",
     };
-
-    constructor(private _route: ActivatedRoute, 
-                private _router: Router,
-                private _mainService: MainService,
-                private _scheduleService: ScheduleService
+    
+    public leaving_buses: Bus[];
+    public returning_buses: Bus[];
+    public errorMessage: string = "";
+    public successMessage: string = "";
+    constructor(public _route: ActivatedRoute, 
+                public _router: Router,
+                public _mainService: MainService,
+                public _scheduleService: ScheduleService,
+                public _httpService: HttpService
                 ) {
     }
 
@@ -39,6 +48,17 @@ export class AdminMainBusEditModeComponent implements OnInit {
             me.receiveInputParams();
             me.structHeaderLeaving();
             me.structHeaderReturn();
+            
+            let url = this._mainService.URLS.get_buses_for_edit + "?outbound_date=" + moment(this.inputParams.outbound_date).utc().format("YYYY-MM-DD") + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date; 
+        
+            this._httpService.sendGetRequestWithParams(url)
+                .subscribe(
+                    data => {
+                        if(data.state == "success"){
+                            this.leaving_buses = data.data_1;
+                            this.returning_buses = data.data_2;
+                        }
+                    });
     }
     
     public receiveInputParams() {
@@ -82,5 +102,19 @@ export class AdminMainBusEditModeComponent implements OnInit {
         let link = ['/admin/main/move_people_mode', me.inputParams.outbound_date, me.inputParams.leaving_from, me.inputParams.return_date]; 
         me._router.navigate(link);
     }
-
+    
+    public updateBuses(){
+        let url = this._mainService.URLS.update_buses_for_edit + "?outbound_date=" + moment(this.inputParams.outbound_date).utc().format("YYYY-MM-DD") + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date; 
+        let data = this.leaving_buses.concat(this.returning_buses);
+        this._httpService.sendPostJSON(url, {buses: data})
+            .subscribe(
+                data => {
+                    this.successMessage = "The buses are successfully updated.";
+                    this.errorMessage = "";
+                },
+                error => {
+                    this.successMessage = "";
+                    this.errorMessage = "Something went wrong. Please contact administrator.";
+                });
+    }
 }

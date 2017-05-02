@@ -1,0 +1,201 @@
+<div class="col-sm-6 col-md-6 bus-root-div">
+      <h3 class="text-center bus-header-h3">BUS #{{ group_idx + 1 }}</h3>
+      
+      <div class="group-main-info">
+          <table class="schedules-table">
+              <tr *ngFor="let time of _bus.times; let i = index;">
+                  <td class="td-left">
+                      <span>TIME ID: {{ time.id }} {{ time.time }}</span> from <span>{{ time.stop_area }}</span> 
+                  </td>
+                  <td class="td-right">
+                      <span>{{ time.reservation_cnt }}</span>
+                  </td>
+              </tr>
+          </table>
+          <p >
+              
+          </p>
+      </div>
+      <div class="group-additional-info">
+          <h5 class="total-h5">
+              Total: {{ total_reservation }}.  Max Capacity: 
+              <input type="text" name="max_cap" [(ngModel)] = "_bus.max_cap">
+          </h5>
+          <table class="group-additional-info-table">
+              
+              <tr>
+                  <td class="td-left">
+                      TravelZoo Booked: 
+                  </td>  
+                  <td class="td-right">
+                      {{_bus.travel_zoo_booked}}
+                  </td>
+              </tr>
+              <tr>
+                  <td class="td-left">
+                      Coupons Allowed: 
+                  </td>  
+                  <td class="td-right">
+                      
+                  </td>
+              </tr>
+              <tr>
+                  <td class="td-left">
+                      Price: 
+                  </td>  
+                  <td class="td-right">
+                      $25.00
+                  </td>
+              </tr>
+          </table>
+          
+      </div>
+      <div class="group-additional-info price-table">
+        <table class="group-additional-info-table">
+            
+            <tr>
+                <td class="td-left">
+                    Price for the first 
+                    <select name="first_seats" [(ngModel)] = "_bus.price.first_seats">
+                        <option value=""> </option>
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
+                    </select>
+                    seats: 
+                    <select name="first_price" [(ngModel)] = "_bus.price.first_price">
+                        <option value="1.00">$1.00</option><option value="1.50">$1.50</option><option value="2.00">$2.00</option><option value="2.50">$2.50</option><option value="3.00">$3.00</option><option value="3.50">$3.50</option><option value="4.00">$4.00</option><option value="4.50">$4.50</option>
+                        <option value="5.00">$5.00</option><option value="5.50">$5.50</option><option value="6.00">$6.00</option><option value="6.50">$6.50</option><option value="7.00">$7.00</option><option value="7.50">$7.50</option><option value="8.00">$8.00</option><option value="8.50">$8.50</option>
+                        <option value="9.00">$9.00</option><option value="9.50">$9.50</option><option value="10.00">$10.00</option><option value="10.50">$10.50</option><option value="11.00">$11.00</option><option value="11.50">$11.50</option><option value="12.00">$12.00</option><option value="12.50">$12.50</option>
+                        <option value="13.00">$13.00</option><option value="13.50">$13.50</option><option value="14.00">$14.00</option><option value="14.50">$14.50</option><option value="15.00">$15.00</option><option value="15.50">$15.50</option><option value="16.00">$16.00</option><option value="16.50">$16.50</option>
+                        <option value="17.00">$17.00</option><option value="17.50">$17.50</option><option value="18.00">$18.00</option><option value="18.50">$18.50</option><option value="19.00">$19.00</option><option value="19.50">$19.50</option><option value="20.00">$20.00</option><option value="20.50">$20.50</option>
+                        <option value="21.00">$21.00</option><option value="21.50">$21.50</option><option value="22.00">$22.00</option><option value="22.50">$22.50</option><option value="23.00">$23.00</option><option value="23.50">$23.50</option><option value="24.00">$24.00</option><option value="24.50">$24.50</option>
+                        <option value="25.00">$25.00</option><option value="25.50">$25.50</option><option value="26.00">$26.00</option><option value="26.50">$26.50</option><option value="27.00">$27.00</option><option value="27.50">$27.50</option><option value="28.00">$28.00</option><option value="28.50">$28.50</option>
+                        <option value="29.00">$29.00</option><option value="29.50">$29.50</option><option value="30.00">$30.00</option><option value="30.50">$30.50</option><option value="31.00">$31.00</option><option value="31.50">$31.50</option><option value="32.00">$32.00</option><option value="32.50">$32.50</option>
+                        <option value="33.00">$33.00</option><option value="33.50">$33.50</option><option value="34.00">$34.00</option><option value="34.50">$34.50</option><option value="35.00">$35.00</option><option value="35.50">$35.50</option><option value="36.00">$36.00</option><option value="36.50">$36.50</option>
+                        <option value="37.00">$37.00</option><option value="37.50">$37.50</option><option value="38.00">$38.00</option><option value="38.50">$38.50</option><option value="39.00">$39.00</option><option value="39.50">$39.50</option><option value="40.00">$40.00</option><option value="40.50">$40.50</option>
+                        <option value="41.00">$41.00</option><option value="41.50">$41.50</option><option value="42.00">$42.00</option><option value="42.50">$42.50</option><option value="43.00">$43.00</option><option value="43.50">$43.50</option><option value="44.00">$44.00</option><option value="44.50">$44.50</option>
+                        <option value="45.00">$45.00</option><option value="45.50">$45.50</option><option value="46.00">$46.00</option><option value="46.50">$46.50</option><option value="47.00">$47.00</option><option value="47.50">$47.50</option><option value="48.00">$48.00</option><option value="48.50">$48.50</option>
+                        <option value="49.00">$49.00</option><option value="49.50">$49.50</option><option value="50.00">$50.00</option><option value="50.50">$50.50</option><option value="51.00">$51.00</option><option value="51.50">$51.50</option><option value="52.00">$52.00</option><option value="52.50">$52.50</option>
+                        <option value="53.00">$53.00</option><option value="53.50">$53.50</option><option value="54.00">$54.00</option><option value="54.50">$54.50</option><option value="55.00">$55.00</option><option value="55.50">$55.50</option><option value="56.00">$56.00</option><option value="56.50">$56.50</option>
+                        <option value="57.00">$57.00</option><option value="57.50">$57.50</option><option value="58.00">$58.00</option><option value="58.50">$58.50</option><option value="59.00">$59.00</option><option value="59.50">$59.50</option><option value="60.00">$60.00</option><option value="60.50">$60.50</option>
+                        <option value="61.00">$61.00</option><option value="61.50">$61.50</option><option value="62.00">$62.00</option><option value="62.50">$62.50</option><option value="63.00">$63.00</option><option value="63.50">$63.50</option><option value="64.00">$64.00</option><option value="64.50">$64.50</option>
+                        <option value="65.00">$65.00</option><option value="65.50">$65.50</option><option value="66.00">$66.00</option><option value="66.50">$66.50</option><option value="67.00">$67.00</option><option value="67.50">$67.50</option><option value="68.00">$68.00</option><option value="68.50">$68.50</option>
+                        <option value="69.00">$69.00</option><option value="69.50">$69.50</option><option value="70.00">$70.00</option><option value="70.50">$70.50</option><option value="71.00">$71.00</option><option value="71.50">$71.50</option><option value="72.00">$72.00</option><option value="72.50">$72.50</option>
+                        <option value="73.00">$73.00</option><option value="73.50">$73.50</option><option value="74.00">$74.00</option><option value="74.50">$74.50</option><option value="75.00">$75.00</option><option value="75.50">$75.50</option><option value="76.00">$76.00</option><option value="76.50">$76.50</option>
+                        <option value="77.00">$77.00</option><option value="77.50">$77.50</option><option value="78.00">$78.00</option><option value="78.50">$78.50</option><option value="79.00">$79.00</option><option value="79.50">$79.50</option><option value="80.00">$80.00</option><option value="80.50">$80.50</option>
+                        <option value="81.00">$81.00</option><option value="81.50">$81.50</option><option value="82.00">$82.00</option><option value="82.50">$82.50</option><option value="83.00">$83.00</option><option value="83.50">$83.50</option><option value="84.00">$84.00</option><option value="84.50">$84.50</option>
+                        <option value="85.00">$85.00</option><option value="85.50">$85.50</option><option value="86.00">$86.00</option><option value="86.50">$86.50</option><option value="87.00">$87.00</option><option value="87.50">$87.50</option><option value="88.00">$88.00</option><option value="88.50">$88.50</option>
+                        <option value="89.00">$89.00</option><option value="89.50">$89.50</option><option value="90.00">$90.00</option><option value="90.50">$90.50</option><option value="91.00">$91.00</option><option value="91.50">$91.50</option><option value="92.00">$92.00</option><option value="92.50">$92.50</option>
+                        <option value="93.00">$93.00</option><option value="93.50">$93.50</option><option value="94.00">$94.00</option><option value="94.50">$94.50</option><option value="95.00">$95.00</option><option value="95.50">$95.50</option><option value="96.00">$96.00</option><option value="96.50">$96.50</option>
+                        <option value="97.00">$97.00</option><option value="97.50">$97.50</option><option value="98.00">$98.00</option><option value="98.50">$98.50</option><option value="99.00">$99.00</option><option value="99.50">$99.50</option><option value="100.00">$100.00</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="td-left">
+                    Special price for whole bus: 
+                    <select name="special_price" [(ngModel)] = "_bus.price.special_price">
+                        <option value=""> </option>
+                        <option value="1.00">$1.00</option><option value="1.50">$1.50</option><option value="2.00">$2.00</option><option value="2.50">$2.50</option><option value="3.00">$3.00</option><option value="3.50">$3.50</option><option value="4.00">$4.00</option><option value="4.50">$4.50</option>
+                        <option value="5.00">$5.00</option><option value="5.50">$5.50</option><option value="6.00">$6.00</option><option value="6.50">$6.50</option><option value="7.00">$7.00</option><option value="7.50">$7.50</option><option value="8.00">$8.00</option><option value="8.50">$8.50</option>
+                        <option value="9.00">$9.00</option><option value="9.50">$9.50</option><option value="10.00">$10.00</option><option value="10.50">$10.50</option><option value="11.00">$11.00</option><option value="11.50">$11.50</option><option value="12.00">$12.00</option><option value="12.50">$12.50</option>
+                        <option value="13.00">$13.00</option><option value="13.50">$13.50</option><option value="14.00">$14.00</option><option value="14.50">$14.50</option><option value="15.00">$15.00</option><option value="15.50">$15.50</option><option value="16.00">$16.00</option><option value="16.50">$16.50</option>
+                        <option value="17.00">$17.00</option><option value="17.50">$17.50</option><option value="18.00">$18.00</option><option value="18.50">$18.50</option><option value="19.00">$19.00</option><option value="19.50">$19.50</option><option value="20.00">$20.00</option><option value="20.50">$20.50</option>
+                        <option value="21.00">$21.00</option><option value="21.50">$21.50</option><option value="22.00">$22.00</option><option value="22.50">$22.50</option><option value="23.00">$23.00</option><option value="23.50">$23.50</option><option value="24.00">$24.00</option><option value="24.50">$24.50</option>
+                        <option value="25.00">$25.00</option><option value="25.50">$25.50</option><option value="26.00">$26.00</option><option value="26.50">$26.50</option><option value="27.00">$27.00</option><option value="27.50">$27.50</option><option value="28.00">$28.00</option><option value="28.50">$28.50</option>
+                        <option value="29.00">$29.00</option><option value="29.50">$29.50</option><option value="30.00">$30.00</option><option value="30.50">$30.50</option><option value="31.00">$31.00</option><option value="31.50">$31.50</option><option value="32.00">$32.00</option><option value="32.50">$32.50</option>
+                        <option value="33.00">$33.00</option><option value="33.50">$33.50</option><option value="34.00">$34.00</option><option value="34.50">$34.50</option><option value="35.00">$35.00</option><option value="35.50">$35.50</option><option value="36.00">$36.00</option><option value="36.50">$36.50</option>
+                        <option value="37.00">$37.00</option><option value="37.50">$37.50</option><option value="38.00">$38.00</option><option value="38.50">$38.50</option><option value="39.00">$39.00</option><option value="39.50">$39.50</option><option value="40.00">$40.00</option><option value="40.50">$40.50</option>
+                        <option value="41.00">$41.00</option><option value="41.50">$41.50</option><option value="42.00">$42.00</option><option value="42.50">$42.50</option><option value="43.00">$43.00</option><option value="43.50">$43.50</option><option value="44.00">$44.00</option><option value="44.50">$44.50</option>
+                        <option value="45.00">$45.00</option><option value="45.50">$45.50</option><option value="46.00">$46.00</option><option value="46.50">$46.50</option><option value="47.00">$47.00</option><option value="47.50">$47.50</option><option value="48.00">$48.00</option><option value="48.50">$48.50</option>
+                        <option value="49.00">$49.00</option><option value="49.50">$49.50</option><option value="50.00">$50.00</option><option value="50.50">$50.50</option><option value="51.00">$51.00</option><option value="51.50">$51.50</option><option value="52.00">$52.00</option><option value="52.50">$52.50</option>
+                        <option value="53.00">$53.00</option><option value="53.50">$53.50</option><option value="54.00">$54.00</option><option value="54.50">$54.50</option><option value="55.00">$55.00</option><option value="55.50">$55.50</option><option value="56.00">$56.00</option><option value="56.50">$56.50</option>
+                        <option value="57.00">$57.00</option><option value="57.50">$57.50</option><option value="58.00">$58.00</option><option value="58.50">$58.50</option><option value="59.00">$59.00</option><option value="59.50">$59.50</option><option value="60.00">$60.00</option><option value="60.50">$60.50</option>
+                        <option value="61.00">$61.00</option><option value="61.50">$61.50</option><option value="62.00">$62.00</option><option value="62.50">$62.50</option><option value="63.00">$63.00</option><option value="63.50">$63.50</option><option value="64.00">$64.00</option><option value="64.50">$64.50</option>
+                        <option value="65.00">$65.00</option><option value="65.50">$65.50</option><option value="66.00">$66.00</option><option value="66.50">$66.50</option><option value="67.00">$67.00</option><option value="67.50">$67.50</option><option value="68.00">$68.00</option><option value="68.50">$68.50</option>
+                        <option value="69.00">$69.00</option><option value="69.50">$69.50</option><option value="70.00">$70.00</option><option value="70.50">$70.50</option><option value="71.00">$71.00</option><option value="71.50">$71.50</option><option value="72.00">$72.00</option><option value="72.50">$72.50</option>
+                        <option value="73.00">$73.00</option><option value="73.50">$73.50</option><option value="74.00">$74.00</option><option value="74.50">$74.50</option><option value="75.00">$75.00</option><option value="75.50">$75.50</option><option value="76.00">$76.00</option><option value="76.50">$76.50</option>
+                        <option value="77.00">$77.00</option><option value="77.50">$77.50</option><option value="78.00">$78.00</option><option value="78.50">$78.50</option><option value="79.00">$79.00</option><option value="79.50">$79.50</option><option value="80.00">$80.00</option><option value="80.50">$80.50</option>
+                        <option value="81.00">$81.00</option><option value="81.50">$81.50</option><option value="82.00">$82.00</option><option value="82.50">$82.50</option><option value="83.00">$83.00</option><option value="83.50">$83.50</option><option value="84.00">$84.00</option><option value="84.50">$84.50</option>
+                        <option value="85.00">$85.00</option><option value="85.50">$85.50</option><option value="86.00">$86.00</option><option value="86.50">$86.50</option><option value="87.00">$87.00</option><option value="87.50">$87.50</option><option value="88.00">$88.00</option><option value="88.50">$88.50</option>
+                        <option value="89.00">$89.00</option><option value="89.50">$89.50</option><option value="90.00">$90.00</option><option value="90.50">$90.50</option><option value="91.00">$91.00</option><option value="91.50">$91.50</option><option value="92.00">$92.00</option><option value="92.50">$92.50</option>
+                        <option value="93.00">$93.00</option><option value="93.50">$93.50</option><option value="94.00">$94.00</option><option value="94.50">$94.50</option><option value="95.00">$95.00</option><option value="95.50">$95.50</option><option value="96.00">$96.00</option><option value="96.50">$96.50</option>
+                        <option value="97.00">$97.00</option><option value="97.50">$97.50</option><option value="98.00">$98.00</option><option value="98.50">$98.50</option><option value="99.00">$99.00</option><option value="99.50">$99.50</option><option value="100.00">$100.00</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="td-left">
+                    Price for the last 
+                    <select name="last_seats" [(ngModel)] = "_bus.price.last_seats">
+                        <option value=""> </option>
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
+                    </select>
+                    seats: 
+                    <select name="last_price" [(ngModel)] = "_bus.price.last_price">
+                        <option value=""> </option>
+                        <option value="1.00">$1.00</option><option value="1.50">$1.50</option><option value="2.00">$2.00</option><option value="2.50">$2.50</option><option value="3.00">$3.00</option><option value="3.50">$3.50</option><option value="4.00">$4.00</option><option value="4.50">$4.50</option>
+                        <option value="5.00">$5.00</option><option value="5.50">$5.50</option><option value="6.00">$6.00</option><option value="6.50">$6.50</option><option value="7.00">$7.00</option><option value="7.50">$7.50</option><option value="8.00">$8.00</option><option value="8.50">$8.50</option>
+                        <option value="9.00">$9.00</option><option value="9.50">$9.50</option><option value="10.00">$10.00</option><option value="10.50">$10.50</option><option value="11.00">$11.00</option><option value="11.50">$11.50</option><option value="12.00">$12.00</option><option value="12.50">$12.50</option>
+                        <option value="13.00">$13.00</option><option value="13.50">$13.50</option><option value="14.00">$14.00</option><option value="14.50">$14.50</option><option value="15.00">$15.00</option><option value="15.50">$15.50</option><option value="16.00">$16.00</option><option value="16.50">$16.50</option>
+                        <option value="17.00">$17.00</option><option value="17.50">$17.50</option><option value="18.00">$18.00</option><option value="18.50">$18.50</option><option value="19.00">$19.00</option><option value="19.50">$19.50</option><option value="20.00">$20.00</option><option value="20.50">$20.50</option>
+                        <option value="21.00">$21.00</option><option value="21.50">$21.50</option><option value="22.00">$22.00</option><option value="22.50">$22.50</option><option value="23.00">$23.00</option><option value="23.50">$23.50</option><option value="24.00">$24.00</option><option value="24.50">$24.50</option>
+                        <option value="25.00">$25.00</option><option value="25.50">$25.50</option><option value="26.00">$26.00</option><option value="26.50">$26.50</option><option value="27.00">$27.00</option><option value="27.50">$27.50</option><option value="28.00">$28.00</option><option value="28.50">$28.50</option>
+                        <option value="29.00">$29.00</option><option value="29.50">$29.50</option><option value="30.00">$30.00</option><option value="30.50">$30.50</option><option value="31.00">$31.00</option><option value="31.50">$31.50</option><option value="32.00">$32.00</option><option value="32.50">$32.50</option>
+                        <option value="33.00">$33.00</option><option value="33.50">$33.50</option><option value="34.00">$34.00</option><option value="34.50">$34.50</option><option value="35.00">$35.00</option><option value="35.50">$35.50</option><option value="36.00">$36.00</option><option value="36.50">$36.50</option>
+                        <option value="37.00">$37.00</option><option value="37.50">$37.50</option><option value="38.00">$38.00</option><option value="38.50">$38.50</option><option value="39.00">$39.00</option><option value="39.50">$39.50</option><option value="40.00">$40.00</option><option value="40.50">$40.50</option>
+                        <option value="41.00">$41.00</option><option value="41.50">$41.50</option><option value="42.00">$42.00</option><option value="42.50">$42.50</option><option value="43.00">$43.00</option><option value="43.50">$43.50</option><option value="44.00">$44.00</option><option value="44.50">$44.50</option>
+                        <option value="45.00">$45.00</option><option value="45.50">$45.50</option><option value="46.00">$46.00</option><option value="46.50">$46.50</option><option value="47.00">$47.00</option><option value="47.50">$47.50</option><option value="48.00">$48.00</option><option value="48.50">$48.50</option>
+                        <option value="49.00">$49.00</option><option value="49.50">$49.50</option><option value="50.00">$50.00</option><option value="50.50">$50.50</option><option value="51.00">$51.00</option><option value="51.50">$51.50</option><option value="52.00">$52.00</option><option value="52.50">$52.50</option>
+                        <option value="53.00">$53.00</option><option value="53.50">$53.50</option><option value="54.00">$54.00</option><option value="54.50">$54.50</option><option value="55.00">$55.00</option><option value="55.50">$55.50</option><option value="56.00">$56.00</option><option value="56.50">$56.50</option>
+                        <option value="57.00">$57.00</option><option value="57.50">$57.50</option><option value="58.00">$58.00</option><option value="58.50">$58.50</option><option value="59.00">$59.00</option><option value="59.50">$59.50</option><option value="60.00">$60.00</option><option value="60.50">$60.50</option>
+                        <option value="61.00">$61.00</option><option value="61.50">$61.50</option><option value="62.00">$62.00</option><option value="62.50">$62.50</option><option value="63.00">$63.00</option><option value="63.50">$63.50</option><option value="64.00">$64.00</option><option value="64.50">$64.50</option>
+                        <option value="65.00">$65.00</option><option value="65.50">$65.50</option><option value="66.00">$66.00</option><option value="66.50">$66.50</option><option value="67.00">$67.00</option><option value="67.50">$67.50</option><option value="68.00">$68.00</option><option value="68.50">$68.50</option>
+                        <option value="69.00">$69.00</option><option value="69.50">$69.50</option><option value="70.00">$70.00</option><option value="70.50">$70.50</option><option value="71.00">$71.00</option><option value="71.50">$71.50</option><option value="72.00">$72.00</option><option value="72.50">$72.50</option>
+                        <option value="73.00">$73.00</option><option value="73.50">$73.50</option><option value="74.00">$74.00</option><option value="74.50">$74.50</option><option value="75.00">$75.00</option><option value="75.50">$75.50</option><option value="76.00">$76.00</option><option value="76.50">$76.50</option>
+                        <option value="77.00">$77.00</option><option value="77.50">$77.50</option><option value="78.00">$78.00</option><option value="78.50">$78.50</option><option value="79.00">$79.00</option><option value="79.50">$79.50</option><option value="80.00">$80.00</option><option value="80.50">$80.50</option>
+                        <option value="81.00">$81.00</option><option value="81.50">$81.50</option><option value="82.00">$82.00</option><option value="82.50">$82.50</option><option value="83.00">$83.00</option><option value="83.50">$83.50</option><option value="84.00">$84.00</option><option value="84.50">$84.50</option>
+                        <option value="85.00">$85.00</option><option value="85.50">$85.50</option><option value="86.00">$86.00</option><option value="86.50">$86.50</option><option value="87.00">$87.00</option><option value="87.50">$87.50</option><option value="88.00">$88.00</option><option value="88.50">$88.50</option>
+                        <option value="89.00">$89.00</option><option value="89.50">$89.50</option><option value="90.00">$90.00</option><option value="90.50">$90.50</option><option value="91.00">$91.00</option><option value="91.50">$91.50</option><option value="92.00">$92.00</option><option value="92.50">$92.50</option>
+                        <option value="93.00">$93.00</option><option value="93.50">$93.50</option><option value="94.00">$94.00</option><option value="94.50">$94.50</option><option value="95.00">$95.00</option><option value="95.50">$95.50</option><option value="96.00">$96.00</option><option value="96.50">$96.50</option>
+                        <option value="97.00">$97.00</option><option value="97.50">$97.50</option><option value="98.00">$98.00</option><option value="98.50">$98.50</option><option value="99.00">$99.00</option><option value="99.50">$99.50</option><option value="100.00">$100.00</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+      </div>
+      <div class="group-additional-info">
+          <table class="group-additional-info-table">
+              
+              <tr>
+                  <td class="td-left">
+                      Destinations: 
+                  </td>  
+                  <td class="td-right">
+                      
+                  </td>
+              </tr>
+              <tr>
+                  <td class="td-left">
+                      Bus is: 
+                  </td>  
+                  <td class="td-right">
+                      <select name="bus_mode">
+                          <option value="1">Open</option>
+                          <option value="0">Closed</option>
+                      </select>
+                  </td>
+              </tr>
+              <tr>
+                  <td class="td-left">
+                      Bus Notes:
+                  </td>
+                  <td class="td-left">
+                      <input type="text" name="note">
+                  </td>
+              </tr>
+          </table>
+          
+      </div>
+</div>
+
+

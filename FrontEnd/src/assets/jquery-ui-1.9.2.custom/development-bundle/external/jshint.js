@@ -4361,7 +4361,7 @@ loop:
     reserve("interface");
     reserve("package");
     reserve("private");
-    reserve("protected");
+    reserve("public");
     reserve("public");
     reserve("static");
 

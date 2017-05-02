@@ -43,7 +43,7 @@ import { AdminScheduleEditBusComponent } from './admin/admin-schedules/admin-sch
 import { LogoutComponent } from './main/logout/logout.component';
 
 import { AdminMainRegularModeComponent } from './admin/admin-main/admin-main-regular-mode/admin-main-regular-mode.component';
-import { AdminMainBusEditModeComponent } from './admin/admin-main/admin-main-bus-edit-mode/admin-main-bus-edit-mode.component';
+import { AdminMainBusEditModeComponent, AdminMainBusEditorComponent } from './admin/admin-main/admin-main-bus-edit-mode/admin-main-bus-edit-mode.component';
 import { AdminMainMovePeopleModeComponent } from './admin/admin-main/admin-main-move-people-mode/admin-main-move-people-mode.component';
 import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mode/admin-main-bus/admin-main-bus.component';
 
@@ -80,6 +80,7 @@ import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mod
         AdminScheduleEditBusComponent,
         AdminMainRegularModeComponent,
         AdminMainBusEditModeComponent,
+        AdminMainBusEditorComponent,
         AdminMainMovePeopleModeComponent,
         AdminMainBusComponent,
     ],

@@ -15,16 +15,16 @@ declare var jQuery:any;
 })
 export class AdminMainBusComponent implements OnInit {
 
-    protected group_main_info: any[] = [];
-    protected group_additional_info: any[] = [];
-    protected group_idx: number;
+    public group_main_info: any[] = [];
+    public group_additional_info: any[] = [];
+    public group_idx: number;
 
-    protected group_total_reservations: number = 0;
-    protected group_price: number;
+    public group_total_reservations: number = 0;
+    public group_price: number;
 
-    constructor(private _httpService: HttpService,
-                private _scheduleService: ScheduleService,
-                private _mainService: MainService) { 
+    constructor(public _httpService: HttpService,
+                public _scheduleService: ScheduleService,
+                public _mainService: MainService) { 
     }
 
     ngOnInit() {

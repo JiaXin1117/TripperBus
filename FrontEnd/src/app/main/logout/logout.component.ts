@@ -9,11 +9,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class LogoutComponent implements OnInit {
 
-    private _options: any = {
+    public _options: any = {
         logInPath: "/login"
     };
 
-    constructor( private _authService: AuthService, private _router: Router ) {
+    constructor( public _authService: AuthService, public _router: Router ) {
         this.logout();
     }
 

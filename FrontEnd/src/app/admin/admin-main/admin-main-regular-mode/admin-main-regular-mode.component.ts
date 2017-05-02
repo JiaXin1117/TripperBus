@@ -15,35 +15,35 @@ declare var jQuery:any;
 })
 export class AdminMainRegularModeComponent implements OnInit {
 
-    protected headerLeave: any = {
+    public headerLeave: any = {
         city: "",
         date: "",
     };
     
-    protected headerReturn: any = {
+    public headerReturn: any = {
         city: "",
         date: "",
     };
     
-    protected inputParams: any = {
+    public inputParams: any = {
         outbound_date: "",
         leaving_from: "",
         return_date: "",
     };
 
-    protected selected_group_main_infos_outbound: any[] = [];
-    protected selected_group_additional_infos_outbound: any[] = [];
+    public selected_group_main_infos_outbound: any[] = [];
+    public selected_group_additional_infos_outbound: any[] = [];
 
-    protected selected_group_main_infos_return: any[] = [];
-    protected selected_group_additional_infos_return: any[] = [];
+    public selected_group_main_infos_return: any[] = [];
+    public selected_group_additional_infos_return: any[] = [];
 
-    protected all_stops: any[] = [];
+    public all_stops: any[] = [];
 
-    constructor(private _route: ActivatedRoute, 
-                private _router: Router,
-                private _mainService: MainService,
-                private _scheduleService: ScheduleService,
-                private _httpService: HttpService
+    constructor(public _route: ActivatedRoute, 
+                public _router: Router,
+                public _mainService: MainService,
+                public _scheduleService: ScheduleService,
+                public _httpService: HttpService
                 ) {
     }
 

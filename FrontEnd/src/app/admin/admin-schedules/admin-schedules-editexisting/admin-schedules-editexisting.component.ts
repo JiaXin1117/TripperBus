@@ -15,7 +15,7 @@ declare var jQuery:any;
 })
 export class AdminSchedulesEditexistingComponent implements OnInit {
 
-    protected inputParams: any = {
+    public inputParams: any = {
         date: "",
         button_type: "",
         area_id: "",
@@ -23,7 +23,7 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
         default_dest_stop_id: "",
     };
     
-    protected headerInfos: any = {
+    public headerInfos: any = {
         after_on: "",
         dow: "",
         date: "",
@@ -31,14 +31,14 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
         date_top_heading: "",
     };
     
-    protected addModalHeaderInfos: any = {
+    public addModalHeaderInfos: any = {
         after_on: "",
         dow: "",
         date: "",
         city: "",
     };
     
-    protected urls: any = {
+    public urls: any = {
         retrieve_schedule_by_date_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_by_date",
         retrieve_all_stops_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops",
         save_all_url: BACKEND_SERVER_URL + "api/admin/schedule/saveall_existing_schedule",    
@@ -47,25 +47,25 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
         get_all_stop_for_area_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops_for_area",    
     };
     
-    protected groups: any[] = [];
-    protected group_additional_infos: any[] = [];
+    public groups: any[] = [];
+    public group_additional_infos: any[] = [];
     
-    protected latest_date: any;
+    public latest_date: any;
     
-    protected arr_stops: string[] = [];
-    protected arr_hours: any[] = [];
-    protected arr_mins: number[] = [];
-    protected arr_prices: string[] = [];
+    public arr_stops: string[] = [];
+    public arr_hours: any[] = [];
+    public arr_mins: number[] = [];
+    public arr_prices: string[] = [];
     
-    protected adding_stops: string[] = [];
-    protected adding_hours: string[] = [];
-    protected adding_mins: string[] = [];
-    //protected adding_prices: string[] = [];
+    public adding_stops: string[] = [];
+    public adding_hours: string[] = [];
+    public adding_mins: string[] = [];
+    //public adding_prices: string[] = [];
     
-    constructor(private _route: ActivatedRoute, 
-                private _scheduleService: ScheduleService, 
-                private _router: Router,
-                private _httpService: HttpService ) { 
+    constructor(public _route: ActivatedRoute, 
+                public _scheduleService: ScheduleService, 
+                public _router: Router,
+                public _httpService: HttpService ) { 
     }
 
     ngOnInit() {

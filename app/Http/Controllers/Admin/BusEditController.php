@@ -1,0 +1,167 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Res_Stops;
+use App\Models\Res_Groups;
+use App\Models\Res_Groups_DestStops;
+use App\Models\Res_Times;
+use App\Models\Res_Reservations;
+use App\Models\Res_Schedule_Prices;
+use Illuminate\Support\Facades\Input;
+use DB;
+use Illuminate\Support\Facades\Validator;
+
+class BusEditController extends Controller
+{
+    
+    public function __construct()
+    {
+        
+    }
+    
+    public function getBusTimes(Request $request){
+        $reqData = $request->only(['outbound_date', 'leaving_from', 'return_date']);
+        $validator = Validator::make($reqData, [
+            'outbound_date' => 'required',
+            'leaving_from' => 'required|numeric'
+        ]);
+        if ($validator->fails()) {
+            $res['success'] = false;
+            $res['message'] = "The data is not correct.";
+            return response()->json($res);
+        }
+        //Leaving
+        $result1 = Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                    ->where('area_id', $reqData['leaving_from'])
+                    ->where('date',  $reqData['outbound_date'])
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->get()->toarray();
+        $result2 = Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                    ->where('area_id', $reqData['leaving_from'])
+                    ->where('day_of_week',  date('w', strtotime($reqData['outbound_date'])))
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->get()->toarray();
+        $result = array_merge($result1, $result2);
+        $res = array();
+        foreach ($result as $bus_time) {
+            $groupId = $bus_time['group_id'];
+            $groupHash = 0;
+            for($i = 0; $i < count($res); $i++){
+                if($res[$i]['group_id'] == $groupId)
+                {
+                    $groupHash = $i;
+                    break;
+                }
+            }
+            if($i == count($res)){
+                $groupHash = $i;
+                $temp = array();
+                $temp['max_cap'] = Res_Groups::find($groupId)->max_cap;
+                $temp['group_id'] = $groupId;
+                $temp['travel_zoo_booked'] = 0;
+                $temp['reserved'] = 0;
+                $temp['price'] = Res_Schedule_Prices::where('group_id', $groupId)->first();
+                $temp['times'] = array();
+                $res[] = $temp;
+            }
+            $temp = array();
+            $temp['time'] = $bus_time['time'];
+            $temp['id'] = $bus_time['id'];
+            $temp['stop_area'] = Res_Stops::find($bus_time['stop_id'])->short;
+            $temp['w_h'] = $bus_time['w_h'];
+            $temp['date'] = $bus_time['date'];
+            $temp['dow'] = $bus_time['day_of_week'];
+            $temp['time_id'] = $bus_time['id'];
+            $temp['open'] = $bus_time['open'];
+            $temp['area_id'] = $bus_time['area_id'];
+            $temp['reservation_cnt'] = Res_Reservations::where('time_id', $temp['id'])
+                    ->where('group_id', $groupId)
+                    ->where('outbound_area_id', $reqData['leaving_from'])
+                    ->where('date',  $reqData['outbound_date'])
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->count();
+
+            $res[$groupHash]['times'][] = $temp;
+        }
+
+        //Returning
+        $res1 = array();
+        if($reqData['return_date'] != null && $reqData['return_date'] != ""){
+            $result1 = Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                        ->where('area_id', '<>',  $reqData['leaving_from'])
+                        ->where('date',  $reqData['return_date'])
+                        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                        ->get()->toarray();
+            $result2 = Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                        ->where('area_id', '<>', $reqData['leaving_from'])
+                        ->where('day_of_week',  date('w', strtotime($reqData['return_date'])))
+                        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                        ->get()->toarray();
+            $result = array_merge($result1, $result2);
+            foreach ($result as $bus_time) {
+                $groupId = $bus_time['group_id'];
+                $groupHash = 0;
+                for($i = 0; $i < count($res1); $i++){
+                    if($res1[$i]['group_id'] == $groupId)
+                    {
+                        $groupHash = $i;
+                        break;
+                    }
+                }
+                if($i == count($res1)){
+                    $groupHash = $i;
+                    $temp = array();
+                    $temp['max_cap'] = Res_Groups::find($groupId)->max_cap;
+                    $temp['group_id'] = $groupId;
+                    $temp['travel_zoo_booked'] = 0;
+                    $temp['reserved'] = 0;
+                    $temp['price'] = Res_Schedule_Prices::where('group_id', $groupId)->first();
+                    $temp['times'] = array();
+                    $res1[] = $temp;
+                }
+                $temp = array();
+                $temp['time'] = $bus_time['time'];
+                $temp['id'] = $bus_time['id'];
+                $temp['stop_area'] = Res_Stops::find($bus_time['stop_id'])->short;
+                $temp['w_h'] = $bus_time['w_h'];
+                $temp['date'] = $bus_time['date'];
+                $temp['dow'] = $bus_time['day_of_week'];
+                $temp['time_id'] = $bus_time['id'];
+                $temp['open'] = $bus_time['open'];
+                $temp['area_id'] = $bus_time['area_id'];
+                $temp['reservation_cnt'] = Res_Reservations::where('time_id', $temp['id'])
+                        ->where('group_id', $groupId)
+                        ->where('outbound_area_id', $reqData['leaving_from'])
+                        ->where('date',  $reqData['return_date'])
+                        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                        ->count();
+
+                $res1[$groupHash]['times'][] = $temp;
+            }
+        }
+        return response()->json([
+            'state' => 'success',
+            'data_1' => $res,
+            'data_2' => $res1
+        ]);
+    }
+
+    public function updateBuses(Request $request){
+        $buses = $request->only(['buses']);
+        $buses = $buses['buses'];
+        foreach($buses as $bus){
+            Res_Groups::where('id', $bus['group_id'])
+                ->update(['max_cap' => $bus['max_cap']]);
+            Res_Schedule_Prices::where('group_id', $bus['group_id'])
+                ->update(['first_seats' => $bus['price']['first_seats'],
+                          'first_price' => $bus['price']['first_price'],
+                          'special_price' => $bus['price']['special_price'],
+                          'last_seats' => $bus['price']['last_seats'],
+                          'last_price' => $bus['price']['last_price']
+                        ]);
+        }
+    }
+}

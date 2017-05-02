@@ -15,30 +15,30 @@ declare var jQuery:any;
 })
 export class AdminSchedulesComponent implements OnInit {
 
-    protected urls: any = {
+    public urls: any = {
         retrieve_schedule_by_month_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_by_month",
         retrieve_schedule_by_date_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_by_date"  
     };
     
-    protected calendarInfo: any = {
+    public calendarInfo: any = {
         cur_date_str: "",
         cur_year: "",
         cur_month: ""
     };
     
-    protected selected_date: string = "";
+    public selected_date: string = "";
     
-    protected sorted_groups: any[] = [];
-    protected sorted_groups_schedule_type: any;
+    public sorted_groups: any[] = [];
+    public sorted_groups_schedule_type: any;
     
-    protected month_firstday_dow: number[] = [];
+    public month_firstday_dow: number[] = [];
     
-    protected dayinfos_in_month_newyork: any[] = [];
-    protected dayinfos_in_month_ba: any[] = [];
+    public dayinfos_in_month_newyork: any[] = [];
+    public dayinfos_in_month_ba: any[] = [];
     
-    constructor( private _httpService: HttpService, 
-                private _router: Router, 
-                private _scheduleService: ScheduleService ) {
+    constructor( public _httpService: HttpService, 
+                public _router: Router, 
+                public _scheduleService: ScheduleService ) {
             
     }
 

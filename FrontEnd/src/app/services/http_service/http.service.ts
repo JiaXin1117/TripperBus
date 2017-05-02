@@ -5,7 +5,7 @@ import 'rxjs/Rx';
 @Injectable()
 export class HttpService {
 
-    constructor( private _http: Http ) { 
+    constructor( public _http: Http ) { 
     }
     
     public sendPostRequestWithParams(url, params) {

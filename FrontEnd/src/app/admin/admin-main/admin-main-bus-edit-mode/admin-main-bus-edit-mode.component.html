@@ -12,7 +12,7 @@
     </label>
 </div>
 
-<div class="row row-content" >
+<!--<div class="row row-content" >
     <div class="col-sm-6" style="text-align: center;">
         <h3>Leaving from {{ headerLeave.city }} on </h3>
         <p>{{ headerLeave.date}} at:</p>
@@ -21,4 +21,47 @@
         <h3>Returning from {{ headerReturn.city }} on </h3>
         <p>{{ headerReturn.date }} at: </p>
     </div>
+</div>-->
+<div class="row row-content" >
+    <div class="col-sm-6" style="text-align: center;">
+        <div class="header-outbound">
+                <h3>Leaving from {{ headerLeave.city }} on </h3>
+                <p>{{ headerLeave.date}} at:</p>
+        </div>
+        <div class="content-outbound">
+                <div *ngFor="let bus of leaving_buses; let i = index;"> 
+                    <app-admin-main-bus-editor [bus] = "bus" [selected_group_idx] = "i" ></app-admin-main-bus-editor>
+                </div>
+        </div>
+    </div>
+    <div class="col-sm-6" style="text-align: center;">
+        <div class="header-return">
+                <h3>Returning from {{ headerReturn.city }} on </h3>
+                <p>{{ headerReturn.date }} at: </p>
+        </div>
+        <!--<div class="content-return">
+                <div *ngFor="let group_main_info of selected_group_main_infos_return; let i = index;"> 
+                    <div *ngFor="let group_additional_info of selected_group_additional_infos_return; let j = index;"> 
+                        <div *ngIf="group_additional_info['group_id'] == group_main_info[0]['group_id']">
+                            <app-admin-main-bus [selected_group_main_info] = "group_main_info" [selected_group_additional_info] = "group_additional_info" [selected_group_idx] = "i" ></app-admin-main-bus>
+                        </div>
+                    </div>
+                </div>
+        </div>-->
+    </div>
+</div>
+<div class="row text-center">
+    <div class="alert alert-danger " *ngIf = "errorMessage != ''" style="margin: 20px 0px;">
+        <button aria-label="Close" class="close" type="button" (click) = "errorMessage = ''">
+            <span aria-hidden="true">×</span>
+        </button>
+        <p>{{errorMessage}}</p>
+    </div>
+    <div class="alert alert-success " *ngIf = "successMessage != ''" style="margin: 20px 0px;">
+        <button aria-label="Close" class="close" type="button" (click) = "successMessage = ''">
+            <span aria-hidden="true">×</span>
+        </button>
+        <p>{{successMessage}}</p>
+    </div>
+    <button type="button" class="btn btn-primary" (click) = "updateBuses();">Save Changes</button>
 </div>

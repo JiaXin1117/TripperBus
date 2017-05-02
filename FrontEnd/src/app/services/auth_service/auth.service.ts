@@ -4,11 +4,11 @@ import { CanActivate, ActivatedRoute, Router } from '@angular/router';
 @Injectable()
 export class AuthService implements CanActivate {
 
-    private _options: any = {
+    public _options: any = {
         logInPath: "\login"
     };
 
-    constructor( private _router: Router ) {
+    constructor( public _router: Router ) {
         
     }
     

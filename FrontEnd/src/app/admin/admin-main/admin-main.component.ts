@@ -12,13 +12,13 @@ declare var jQuery:any;
 })
 export class AdminMainComponent implements OnInit {
 
-    protected outbound_date: any;
-    protected leaving_city: string;
-    protected return_date: string;
-    protected page_mode: number;
+    public outbound_date: any;
+    public leaving_city: string;
+    public return_date: string;
+    public page_mode: number;
 
-    constructor( private _router: Router 
-                , private _mainService: MainService ) {
+    constructor( public _router: Router 
+                , public _mainService: MainService ) {
     }
 
     ngOnInit() {

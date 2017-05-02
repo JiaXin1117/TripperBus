@@ -16,6 +16,8 @@ export class MainService {
         retrieve_group_additional_info_url: BACKEND_SERVER_URL + "api/admin/main/retrieve_group_additional_info",
         retrieve_all_stops_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops",
         get_price_for_bus_url: BACKEND_SERVER_URL + "api/admin/main/get_price_for_bus",
+        get_buses_for_edit: BACKEND_SERVER_URL + "api/admin/main/get_bus_times",
+        update_buses_for_edit: BACKEND_SERVER_URL + "api/admin/main/update_buses",
     };
 
     schedule_default_price: number = 25;

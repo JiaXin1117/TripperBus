@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-
+declare var jQuery: any;
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',

@@ -19,8 +19,8 @@ export class LoginComponent implements OnInit {
     public password: string = "";
     public alert_visible: string = "none";
 
-    constructor( private _httpService: HttpService, private _authService: AuthService, private router: Router, 
-                private route: ActivatedRoute ) {
+    constructor( public _httpService: HttpService, public _authService: AuthService, public router: Router, 
+                public route: ActivatedRoute ) {
         
     }
 

@@ -13,28 +13,28 @@ declare var jQuery:any;
   styleUrls: ['./admin-schedule-edit-bus.component.css']
 })
 export class AdminScheduleEditBusComponent implements OnInit {
-    protected arr_stops: string[] = [];
-    protected arr_hours: any[] = [];
-    protected arr_mins: number[] = [];
+    public arr_stops: string[] = [];
+    public arr_hours: any[] = [];
+    public arr_mins: number[] = [];
     
-    protected selected_group: any[] = [];
-    protected selected_group_additional_info: any[] = [];
+    public selected_group: any[] = [];
+    public selected_group_additional_info: any[] = [];
 
-    protected selected_group_idx: number;
-    protected selected_group_disabled: boolean;
-    protected selected_group_area_id: number;
-    protected selected_group_max_capacity: number;
-    protected selected_group_dest_stops: any[] = [];
-    protected selected_group_available_dest_stops: any[] = [];
+    public selected_group_idx: number;
+    public selected_group_disabled: boolean;
+    public selected_group_area_id: number;
+    public selected_group_max_capacity: number;
+    public selected_group_dest_stops: any[] = [];
+    public selected_group_available_dest_stops: any[] = [];
 
-    protected selected_stops: string[] = [];
-    protected selected_hours: string[] = [];
-    protected selected_mins: string[] = [];
+    public selected_stops: string[] = [];
+    public selected_hours: string[] = [];
+    public selected_mins: string[] = [];
     
-    protected isDisabled: boolean = false;
-    protected isHidden: boolean = false;
+    public isDisabled: boolean = false;
+    public isHidden: boolean = false;
     
-    protected urls: any = {
+    public urls: any = {
         update_url: BACKEND_SERVER_URL + "api/admin/schedule/update_existing_schedule",
         remove_url: BACKEND_SERVER_URL + "api/admin/schedule/remove_existing_schedule",
         disable_url: BACKEND_SERVER_URL + "api/admin/schedule/disable_existing_schedule",
@@ -44,8 +44,8 @@ export class AdminScheduleEditBusComponent implements OnInit {
         get_dest_stops_for_group: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_dest_stops_for_group",
     };
     
-    constructor(private _httpService: HttpService,
-                private _scheduleService: ScheduleService
+    constructor(public _httpService: HttpService,
+                public _scheduleService: ScheduleService
                 ) { 
     }
 
