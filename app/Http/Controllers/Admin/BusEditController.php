@@ -10,6 +10,7 @@ use App\Models\Res_Groups_DestStops;
 use App\Models\Res_Times;
 use App\Models\Res_Reservations;
 use App\Models\Res_Schedule_Prices;
+use App\Models\Res_DateSchedule;
 use Illuminate\Support\Facades\Input;
 use DB;
 use Illuminate\Support\Facades\Validator;
@@ -59,11 +60,22 @@ class BusEditController extends Controller
             if($i == count($res)){
                 $groupHash = $i;
                 $temp = array();
-                $temp['max_cap'] = Res_Groups::find($groupId)->max_cap;
+                $price = Res_DateSchedule::where('group_id', $groupId)->where('date', $reqData['outbound_date'])->first();
+                $max_cap = 0;
+                if($price == null){
+                    $price = Res_Schedule_Prices::where('group_id', $groupId)->first();
+                    $price['bus_opened'] = 0;
+                    $price['bus_note'] = '';
+                    $max_cap = Res_Groups::find($groupId)->max_cap;
+                }
+                else
+                    $max_cap = $price->max_cap;
+                $temp['max_cap'] = $max_cap;
                 $temp['group_id'] = $groupId;
                 $temp['travel_zoo_booked'] = 0;
+                $temp['date'] = $reqData['outbound_date'];
                 $temp['reserved'] = 0;
-                $temp['price'] = Res_Schedule_Prices::where('group_id', $groupId)->first();
+                $temp['price'] = $price;
                 $temp['times'] = array();
                 $res[] = $temp;
             }
@@ -72,7 +84,6 @@ class BusEditController extends Controller
             $temp['id'] = $bus_time['id'];
             $temp['stop_area'] = Res_Stops::find($bus_time['stop_id'])->short;
             $temp['w_h'] = $bus_time['w_h'];
-            $temp['date'] = $bus_time['date'];
             $temp['dow'] = $bus_time['day_of_week'];
             $temp['time_id'] = $bus_time['id'];
             $temp['open'] = $bus_time['open'];
@@ -114,12 +125,23 @@ class BusEditController extends Controller
                 if($i == count($res1)){
                     $groupHash = $i;
                     $temp = array();
-                    $temp['max_cap'] = Res_Groups::find($groupId)->max_cap;
+                    $price = Res_DateSchedule::where('group_id', $groupId)->where('date', $reqData['return_date'])->first();
+                    $max_cap = 0;
+                    if($price == null){
+                        $price = Res_Schedule_Prices::where('group_id', $groupId)->first();
+                        $price['bus_opened'] = 0;
+                        $price['bus_note'] = '';
+                        $max_cap = Res_Groups::find($groupId)->max_cap;
+                    }
+                    else
+                        $max_cap = $price->max_cap;
+                    $temp['max_cap'] = $max_cap;
                     $temp['group_id'] = $groupId;
                     $temp['travel_zoo_booked'] = 0;
                     $temp['reserved'] = 0;
-                    $temp['price'] = Res_Schedule_Prices::where('group_id', $groupId)->first();
+                    $temp['price'] = $price;
                     $temp['times'] = array();
+                    $temp['date'] = $reqData['return_date'];
                     $res1[] = $temp;
                 }
                 $temp = array();
@@ -127,7 +149,6 @@ class BusEditController extends Controller
                 $temp['id'] = $bus_time['id'];
                 $temp['stop_area'] = Res_Stops::find($bus_time['stop_id'])->short;
                 $temp['w_h'] = $bus_time['w_h'];
-                $temp['date'] = $bus_time['date'];
                 $temp['dow'] = $bus_time['day_of_week'];
                 $temp['time_id'] = $bus_time['id'];
                 $temp['open'] = $bus_time['open'];
@@ -153,15 +174,24 @@ class BusEditController extends Controller
         $buses = $request->only(['buses']);
         $buses = $buses['buses'];
         foreach($buses as $bus){
-            Res_Groups::where('id', $bus['group_id'])
-                ->update(['max_cap' => $bus['max_cap']]);
-            Res_Schedule_Prices::where('group_id', $bus['group_id'])
-                ->update(['first_seats' => $bus['price']['first_seats'],
-                          'first_price' => $bus['price']['first_price'],
-                          'special_price' => $bus['price']['special_price'],
-                          'last_seats' => $bus['price']['last_seats'],
-                          'last_price' => $bus['price']['last_price']
-                        ]);
+            $price = Res_DateSchedule::where('group_id', $bus['group_id'])->where('date', $bus['date'])->first();
+            if($price == null){
+                Res_DateSchedule::unguard();
+                $new_date_schedule = array();
+                $new_date_schedule['group_id'] = $bus['group_id'];
+                $new_date_schedule['date'] = $bus['date'];
+                $price = Res_DateSchedule::create($new_date_schedule);
+                Res_DateSchedule::reguard();
+            }
+            $price->first_seats = $bus['price']['first_seats'];
+            $price->first_price = $bus['price']['first_price'];
+            $price->special_price = $bus['price']['special_price'];
+            $price->last_seats = $bus['price']['last_seats'];
+            $price->last_price = $bus['price']['last_price'];
+            $price->bus_opened = $bus['price']['bus_opened'];
+            $price->bus_note = $bus['price']['bus_note'];
+            $price->max_cap = $bus['max_cap'];
+            $price->save();
         }
     }
 }

@@ -179,9 +179,9 @@
                       Bus is: 
                   </td>  
                   <td class="td-right">
-                      <select name="bus_mode">
-                          <option value="1">Open</option>
-                          <option value="0">Closed</option>
+                      <select name="bus_mode" [(ngModel)] = "_bus.price.bus_opened">
+                          <option value="0">Open</option>
+                          <option value="1">Closed</option>
                       </select>
                   </td>
               </tr>
@@ -190,7 +190,7 @@
                       Bus Notes:
                   </td>
                   <td class="td-left">
-                      <input type="text" name="note">
+                      <input type="text" name="note" [(ngModel)] = "_bus.price.bus_note">
                   </td>
               </tr>
           </table>
