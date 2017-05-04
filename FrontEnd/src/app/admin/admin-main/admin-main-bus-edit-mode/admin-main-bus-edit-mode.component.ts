@@ -49,7 +49,7 @@ export class AdminMainBusEditModeComponent implements OnInit {
             me.structHeaderLeaving();
             me.structHeaderReturn();
             
-            let url = this._mainService.URLS.get_buses_for_edit + "?outbound_date=" + moment(this.inputParams.outbound_date).utc().format("YYYY-MM-DD") + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date; 
+            let url = this._mainService.URLS.get_buses_for_edit + "?outbound_date=" + this.inputParams.outbound_date + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date; 
         
             this._httpService.sendGetRequestWithParams(url)
                 .subscribe(
@@ -104,7 +104,7 @@ export class AdminMainBusEditModeComponent implements OnInit {
     }
     
     public updateBuses(){
-        let url = this._mainService.URLS.update_buses_for_edit + "?outbound_date=" + moment(this.inputParams.outbound_date).utc().format("YYYY-MM-DD") + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date; 
+        let url = this._mainService.URLS.update_buses_for_edit + "?outbound_date=" + this.inputParams.outbound_date + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date; 
         let data = this.leaving_buses.concat(this.returning_buses);
         this._httpService.sendPostJSON(url, {buses: data})
             .subscribe(

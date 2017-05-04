@@ -50,7 +50,7 @@ export class AdminMainRegularModeComponent implements OnInit {
             me.structHeaderLeaving();
             me.structHeaderReturn();
             
-            let url = this._mainService.URLS.get_buses_for_edit + "?outbound_date=" + moment(this.inputParams.outbound_date).utc().format("YYYY-MM-DD") + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date; 
+            let url = this._mainService.URLS.get_buses_for_edit + "?outbound_date=" + this.inputParams.outbound_date + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date; 
         
             this._httpService.sendGetRequestWithParams(url)
                 .subscribe(
