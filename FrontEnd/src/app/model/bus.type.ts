@@ -23,6 +23,7 @@ export class Bus {
   public travel_zoo_booked:     number;
   public reserved:     number;
   public price:   any;
+  public destination: string;
   public times:   any[];
   constructor(){
     this.max_cap = 0;
@@ -31,5 +32,6 @@ export class Bus {
     this.reserved = 0;
     this.price = new Price();
     this.times = [];
+    this.destination = "";
   }
 }

@@ -75,6 +75,13 @@ class BusEditController extends Controller
                 $temp['travel_zoo_booked'] = 0;
                 $temp['date'] = $reqData['outbound_date'];
                 $temp['reserved'] = 0;
+                $temp['destination'] = '';
+                $destinations = Res_Stops::where('area_id', '<>', $bus_time['area_id'])->get()->toarray();
+                for($i = 0; $i < count($destinations); $i++){
+                    $temp['destination'] .= $destinations[$i]['short'];
+                    if($i < count($destinations)-1)
+                        $temp['destination'] .= ',';
+                }
                 $temp['price'] = $price;
                 $temp['times'] = array();
                 $res[] = $temp;
@@ -139,6 +146,13 @@ class BusEditController extends Controller
                     $temp['group_id'] = $groupId;
                     $temp['travel_zoo_booked'] = 0;
                     $temp['reserved'] = 0;
+                    $temp['destination'] = '';
+                    $destinations = Res_Stops::where('area_id', '<>', $bus_time['area_id'])->get()->toarray();
+                    for($i = 0; $i < count($destinations); $i++){
+                        $temp['destination'] .= $destinations[$i]['short'];
+                        if($i < count($destinations)-1)
+                            $temp['destination'] .= ',';
+                    }
                     $temp['price'] = $price;
                     $temp['times'] = array();
                     $temp['date'] = $reqData['return_date'];

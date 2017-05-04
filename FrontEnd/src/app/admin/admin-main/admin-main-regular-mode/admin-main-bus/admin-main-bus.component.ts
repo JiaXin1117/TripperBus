@@ -5,7 +5,7 @@ import {ScheduleService} from "../../../../services/schedule_service/schedule.se
 import {MainService} from "../../../../services/main_service/main.service";
 
 import { BACKEND_SERVER_URL } from '../../../../config/config';
-
+import { Bus } from '../../../../model/bus.type';
 declare var jQuery:any;
 
 @Component({
@@ -15,13 +15,10 @@ declare var jQuery:any;
 })
 export class AdminMainBusComponent implements OnInit {
 
-    public group_main_info: any[] = [];
-    public group_additional_info: any[] = [];
-    public group_idx: number;
-
-    public group_total_reservations: number = 0;
-    public group_price: number;
-
+    public _bus: Bus = new Bus();
+    public group_idx: number = 0;
+    public total_reservation: number = 0;
+    public price: number = 0;
     constructor(public _httpService: HttpService,
                 public _scheduleService: ScheduleService,
                 public _mainService: MainService) { 
@@ -29,73 +26,28 @@ export class AdminMainBusComponent implements OnInit {
 
     ngOnInit() {
         let me = this;
-
-        me.calculate_total_reservations_cnt();
-        me.calculate_price();
     }
 
     @Input()
-    set selected_group_main_info(param_group_main_info: any[]) {
+    set bus(bus: Bus) {
         let me = this;
-        me.group_main_info = param_group_main_info; 
-    }
-
-    @Input()
-    set selected_group_additional_info(param_group_additional_infos: any[]) {
-        let me = this;
-        me.group_additional_info = param_group_additional_infos; 
+        me._bus = bus; 
+        this.total_reservation = 0;
+        for(let i = 0; i < this._bus.times.length; i++)
+            this.total_reservation += this._bus.times[i].reservation_cnt;
+        this.price = 0;
+        if(this._bus.price.first_seats > 0 && this.total_reservation <= this._bus.price.first_seats)
+            this.price = this._bus.price.first_price;
+        else if(this.total_reservation < this._bus.price.last_seats)
+            this.price = this._bus.price.special_price;
+        else
+            this.price = this._bus.price.last_price;
     }
 
     @Input()
     set selected_group_idx(param_group_idx: number) {
         let me = this;
         me.group_idx = param_group_idx; 
-    }
-
-    public set_default_price() {
-        let me = this;
-
-        me.group_price = me._mainService.schedule_default_price;
-    }
-
-    public calculate_total_reservations_cnt() {
-        let me = this; 
-
-        for (let i=0; i<Object.keys(me.group_main_info).length; i++) {
-            let item = me.group_main_info[i];
-            me.group_total_reservations += item['reservation_cnt'];            
-        }
-    }
-
-    public calculate_price() {
-        let me = this; 
-
-        // Get price informations. FMRGJ-KR
-        let url = me._mainService.URLS.get_price_for_bus_url + "?group_id=" + me.group_additional_info['group_id']; 
-        me._httpService.sendGetRequestWithParams(url)
-            .subscribe(
-                data => {
-                    if (data['state'] == 'success') {
-                        let response = data['data'];
-
-                        // Construct price informations.
-                        let temp_price_info = [];
-                        temp_price_info['first_seats'] = response['first_seats'];
-                        temp_price_info['first_price'] = response['first_price'];
-                        temp_price_info['last_seats'] = response['last_seats'];
-                        temp_price_info['last_price'] = response['last_price']; 
-
-                        // Calculate Price
-                        if (me.group_total_reservations < temp_price_info['first_seats']) {
-                            me.group_price = temp_price_info['first_price'];
-                        } else if (me.group_total_reservations > (me.group_additional_info['group_max_capacity'] - temp_price_info['last_seats'])) {
-                            me.group_price = temp_price_info['last_price'];
-                        } console.log(me.group_price);
-
-                    }
-                }
-            );
-
     }
 
 }

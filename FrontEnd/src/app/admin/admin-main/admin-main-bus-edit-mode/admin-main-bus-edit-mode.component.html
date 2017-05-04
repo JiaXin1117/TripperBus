@@ -39,15 +39,11 @@
                 <h3>Returning from {{ headerReturn.city }} on </h3>
                 <p>{{ headerReturn.date }} at: </p>
         </div>
-        <!--<div class="content-return">
-                <div *ngFor="let group_main_info of selected_group_main_infos_return; let i = index;"> 
-                    <div *ngFor="let group_additional_info of selected_group_additional_infos_return; let j = index;"> 
-                        <div *ngIf="group_additional_info['group_id'] == group_main_info[0]['group_id']">
-                            <app-admin-main-bus [selected_group_main_info] = "group_main_info" [selected_group_additional_info] = "group_additional_info" [selected_group_idx] = "i" ></app-admin-main-bus>
-                        </div>
-                    </div>
+        <div class="content-outbound">
+                <div *ngFor="let bus of returning_buses; let i = index;"> 
+                    <app-admin-main-bus-editor [bus] = "bus" [selected_group_idx] = "i" ></app-admin-main-bus-editor>
                 </div>
-        </div>-->
+        </div>
     </div>
 </div>
 <div class="row text-center" style="margin-bottom: 50px;">

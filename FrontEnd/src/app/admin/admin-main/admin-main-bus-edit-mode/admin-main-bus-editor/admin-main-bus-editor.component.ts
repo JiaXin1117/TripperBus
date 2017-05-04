@@ -43,4 +43,14 @@ export class AdminMainBusEditorComponent implements OnInit {
         me.group_idx = param_group_idx; 
     }
 
+    get price(): number{
+        let price = 0;
+        if(this._bus.price.first_seats > 0 && this.total_reservation <= this._bus.price.first_seats)
+            price = this._bus.price.first_price;
+        else if(this.total_reservation < this._bus.price.last_seats)
+            price = this._bus.price.special_price;
+        else
+            price = this._bus.price.last_price;
+        return price;
+    }
 }

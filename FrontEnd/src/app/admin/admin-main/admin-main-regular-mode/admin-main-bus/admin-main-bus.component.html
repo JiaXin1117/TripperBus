@@ -3,12 +3,12 @@
       
       <div class="group-main-info">
           <table class="schedules-table">
-              <tr *ngFor="let group_main_item of group_main_info; let i = index;">
+              <tr *ngFor="let time of _bus.times; let i = index;">
                   <td class="td-left">
-                      <span>TIME ID: {{ group_main_item['time_id'] }} {{ group_main_item['time'] }}</span> from <span>{{ group_main_item['stop_short'] }}</span> 
+                      <span>TIME ID: {{ time.id }} {{ time.time }}</span> from <span>{{ time.stop_area }}</span> 
                   </td>
                   <td class="td-right">
-                      <span>{{ group_main_item['reservation_cnt'] }}</span>
+                      <span>{{ time.reservation_cnt }}</span>
                   </td>
               </tr>
           </table>
@@ -16,9 +16,10 @@
               
           </p>
       </div>
-
       <div class="group-additional-info">
-          <h5 class="total-h5">Total: {{ group_total_reservations }}.  Max Capacity: {{ group_additional_info['group_max_capacity'] }}</h5>
+          <h5 class="total-h5">
+              Total: {{ total_reservation }}.  Max Capacity: {{_bus.max_cap}}
+          </h5>
           <table class="group-additional-info-table">
               
               <tr>
@@ -26,7 +27,7 @@
                       TravelZoo Booked: 
                   </td>  
                   <td class="td-right">
-                      
+                      {{_bus.travel_zoo_booked}}
                   </td>
               </tr>
               <tr>
@@ -42,15 +43,21 @@
                       Price: 
                   </td>  
                   <td class="td-right">
-                      ${{ group_price }}
+                      ${{price}}
                   </td>
               </tr>
+          </table>
+          
+      </div>
+      <div class="group-additional-info">
+          <table class="group-additional-info-table">
+              
               <tr>
                   <td class="td-left">
                       Destinations: 
                   </td>  
                   <td class="td-right">
-                      {{ group_additional_info['group_destinations'] }}
+                      {{_bus.destination}}
                   </td>
               </tr>
               <tr>
@@ -58,7 +65,7 @@
                       Bus is: 
                   </td>  
                   <td class="td-right">
-                      
+                      {{_bus.price.bus_opened==0?'Open':'Closed'}}
                   </td>
               </tr>
           </table>
