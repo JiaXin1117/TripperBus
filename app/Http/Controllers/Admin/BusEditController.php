@@ -39,11 +39,13 @@ class BusEditController extends Controller
                     ->where('area_id', $reqData['leaving_from'])
                     ->where('date',  $reqData['outbound_date'])
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->orderBy('time', 'asc')
                     ->get()->toarray();
         $result2 = Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
                     ->where('area_id', $reqData['leaving_from'])
                     ->where('day_of_week',  date('w', strtotime($reqData['outbound_date'])))
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->orderBy('time', 'asc')
                     ->get()->toarray();
         $result = array_merge($result1, $result2);
         $res = array();
@@ -87,7 +89,7 @@ class BusEditController extends Controller
                 $res[] = $temp;
             }
             $temp = array();
-            $temp['time'] = $bus_time['time'];
+            $temp['time'] = date("g:i A", strtotime($bus_time['time']));
             $temp['id'] = $bus_time['id'];
             $temp['stop_area'] = Res_Stops::find($bus_time['stop_id'])->short;
             $temp['w_h'] = $bus_time['w_h'];
@@ -112,11 +114,13 @@ class BusEditController extends Controller
                         ->where('area_id', '<>',  $reqData['leaving_from'])
                         ->where('date',  $reqData['return_date'])
                         ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                        ->orderBy('time', 'asc')
                         ->get()->toarray();
             $result2 = Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
                         ->where('area_id', '<>', $reqData['leaving_from'])
                         ->where('day_of_week',  date('w', strtotime($reqData['return_date'])))
                         ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                        ->orderBy('time', 'asc')
                         ->get()->toarray();
             $result = array_merge($result1, $result2);
             foreach ($result as $bus_time) {
@@ -159,7 +163,7 @@ class BusEditController extends Controller
                     $res1[] = $temp;
                 }
                 $temp = array();
-                $temp['time'] = $bus_time['time'];
+                $temp['time'] = date("g:i A", strtotime($bus_time['time']));
                 $temp['id'] = $bus_time['id'];
                 $temp['stop_area'] = Res_Stops::find($bus_time['stop_id'])->short;
                 $temp['w_h'] = $bus_time['w_h'];
