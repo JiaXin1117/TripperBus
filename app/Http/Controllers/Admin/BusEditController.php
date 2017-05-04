@@ -11,6 +11,7 @@ use App\Models\Res_Times;
 use App\Models\Res_Reservations;
 use App\Models\Res_Schedule_Prices;
 use App\Models\Res_DateSchedule;
+use App\Models\Settings;
 use Illuminate\Support\Facades\Input;
 use DB;
 use Illuminate\Support\Facades\Validator;
@@ -35,6 +36,7 @@ class BusEditController extends Controller
             return response()->json($res);
         }
         //Leaving
+        $default_price = Settings::where('key', 'DEFAULT_PRICE')->first()->value;
         $result1 = Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
                     ->where('area_id', $reqData['leaving_from'])
                     ->where('date',  $reqData['outbound_date'])
@@ -184,7 +186,8 @@ class BusEditController extends Controller
         return response()->json([
             'state' => 'success',
             'data_1' => $res,
-            'data_2' => $res1
+            'data_2' => $res1,
+            'default_price' => $default_price,
         ]);
     }
 
