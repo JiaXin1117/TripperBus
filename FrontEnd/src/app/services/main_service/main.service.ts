@@ -18,6 +18,8 @@ export class MainService {
         get_price_for_bus_url: BACKEND_SERVER_URL + "api/admin/main/get_price_for_bus",
         get_buses_for_edit: BACKEND_SERVER_URL + "api/admin/main/get_bus_times",
         update_buses_for_edit: BACKEND_SERVER_URL + "api/admin/main/update_buses",
+        move_reservations: BACKEND_SERVER_URL + "api/admin/main/move_reservations",
+        get_buses_for_move_people: BACKEND_SERVER_URL + "api/admin/main/get_bus_for_move",
     };
 
     schedule_default_price: number = 25;

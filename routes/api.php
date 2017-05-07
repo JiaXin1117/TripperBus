@@ -100,6 +100,16 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'uses' => 'BusEditController@updateBuses',
         ]);
 
+        Route::get('/get_bus_for_move', [
+            'as' => 'admin.main.get_bus_for_move',
+            'uses' => 'BusEditController@getBusForMove',
+        ]);
+        
+        Route::post('/move_reservations', [
+            'as' => 'admin.main.move_reservations',
+            'uses' => 'BusEditController@moveReservations',
+        ]);
+
         Route::post('/retrieve_group_additional_info', [
             'as' => 'admin.main.retrieve_group_additional_info',
             'uses' => 'MainController@postRetrieveGroupInformations',
