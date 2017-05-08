@@ -13,26 +13,26 @@
 </div>
 
 <div class="row row-content" >
-    <div class="col-sm-6" style="text-align: center;">
+    <div class="col-sm-6" style="text-align: center;" [class.wide] = "headerReturn.date == ''">
         <div class="header-outbound">
                 <h3>Leaving from {{ headerLeave.city }} on </h3>
                 <p>{{ headerLeave.date}} at:</p>
         </div>
         <div class="content-outbound">
-                <div *ngFor="let bus of leaving_buses; let i = index;"> 
-                    <app-admin-main-bus-move [bus] = "bus" [selected_group_idx] = "i" [times] = "leaving_times"></app-admin-main-bus-move>
-                </div>
+            <div *ngFor="let bus of leaving_buses; let i = index;"> 
+                <app-admin-main-bus-move [bus] = "bus" [selected_group_idx] = "i" [times] = "leaving_times"></app-admin-main-bus-move>
+            </div>
         </div>
     </div>
-    <div class="col-sm-6" style="text-align: center;">
+    <div class="col-sm-6" style="text-align: center;" *ngIf = "headerReturn.date != ''">
         <div class="header-return">
-                <h3>Returning from {{ headerReturn.city }} on </h3>
-                <p>{{ headerReturn.date }} at: </p>
+            <h3>Returning from {{ headerReturn.city }} on </h3>
+            <p>{{ headerReturn.date }} at: </p>
         </div>
         <div class="content-outbound">
-                <div *ngFor="let bus of returning_buses; let i = index;"> 
-                    <app-admin-main-bus-move [bus] = "bus" [selected_group_idx] = "i" [times] = "returning_times"></app-admin-main-bus-move>
-                </div>
+            <div *ngFor="let bus of returning_buses; let i = index;"> 
+                <app-admin-main-bus-move [bus] = "bus" [selected_group_idx] = "i" [times] = "returning_times"></app-admin-main-bus-move>
+            </div>
         </div>
     </div>
 </div>

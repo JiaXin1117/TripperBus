@@ -5,3 +5,7 @@
 .row-content {
     border-top: 2px solid gainsboro;
 }
+
+.content-outbound{
+    display: inline-block;
+}
