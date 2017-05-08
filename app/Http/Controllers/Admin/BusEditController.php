@@ -102,8 +102,6 @@ class BusEditController extends Controller
             $temp['open'] = $bus_time['open'];
             $temp['area_id'] = $bus_time['area_id'];
             $temp['reservation_cnt'] = intval(Res_Reservations::where('time_id', $temp['id'])
-                    ->where('group_id', $groupId)
-                    ->where('outbound_area_id', $reqData['leaving_from'])
                     ->where('date',  $reqData['outbound_date'])
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                     ->select(DB::raw('sum(reserve_count) as reservation_cnt'))
@@ -179,8 +177,6 @@ class BusEditController extends Controller
                 $temp['open'] = $bus_time['open'];
                 $temp['area_id'] = $bus_time['area_id'];
                 $temp['reservation_cnt'] = intval(Res_Reservations::where('time_id', $temp['id'])
-                        ->where('group_id', $groupId)
-                        ->where('outbound_area_id', $reqData['leaving_from'])
                         ->where('date',  $reqData['return_date'])
                         ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                         ->select(DB::raw('sum(reserve_count) as reservation_cnt'))
