@@ -47,6 +47,7 @@ class BusEditController extends Controller
                             })
                             ->orWhere(function($squery) use($reqData){
                                 $squery->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                                ->where('date', '<=',  $reqData['outbound_date'])
                                 ->where('day_of_week',  date('w', strtotime($reqData['outbound_date'])));
                             });
                         })
@@ -123,6 +124,7 @@ class BusEditController extends Controller
                             })
                             ->orWhere(function($squery) use($reqData){
                                 $squery->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                                ->where('date', '<=',  $reqData['return_date'])
                                 ->where('day_of_week',  date('w', strtotime($reqData['return_date'])));
                             });
                         })
@@ -245,6 +247,7 @@ class BusEditController extends Controller
                             })
                             ->orWhere(function($squery) use($reqData){
                                 $squery->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                                ->where('date', '<=',  $reqData['outbound_date'])
                                 ->where('day_of_week',  date('w', strtotime($reqData['outbound_date'])));
                             });
                         })
@@ -330,6 +333,7 @@ class BusEditController extends Controller
                             })
                             ->orWhere(function($squery) use($reqData){
                                 $squery->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                                ->where('date', '<=',  $reqData['return_date'])
                                 ->where('day_of_week',  date('w', strtotime($reqData['return_date'])));
                             });
                         })

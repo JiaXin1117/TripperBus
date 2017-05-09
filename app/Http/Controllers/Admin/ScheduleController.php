@@ -26,8 +26,8 @@ class ScheduleController extends Controller
         
         // Get Holiday Schedule First.
         $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
-                //->where('date', $cur_date)
-                ->where('day_of_week',  date('w', $cur_date->getTimestamp()))
+                ->where('date', $cur_date)
+                // ->where('day_of_week',  date('w', $cur_date->getTimestamp()))
                 ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                 ->count(); 
         
@@ -123,16 +123,16 @@ class ScheduleController extends Controller
                 
                 // Get holiday schedule first for this date.
                 $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
-                    //->where('date', $cur_date)
-                    ->where('day_of_week',  date('w', $i))
+                    ->where('date', $cur_date)
+                    // ->where('day_of_week',  date('w', $i))
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                     ->count(); 
                 
                 //$isHoliday = 0;
                 if ($cnt > 0) {
                     $result = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
-                            //->where('date', $cur_date)
-                            ->where('day_of_week',  date('w', $i))
+                            ->where('date', $cur_date)
+                            // ->where('day_of_week',  date('w', $i))
                             ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                             ->get();
                     
