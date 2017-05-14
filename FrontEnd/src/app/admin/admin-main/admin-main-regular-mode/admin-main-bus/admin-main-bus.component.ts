@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import {HttpService} from "../../../../services/http_service/http.service";
 import {ScheduleService} from "../../../../services/schedule_service/schedule.service";
@@ -14,11 +14,12 @@ declare var jQuery:any;
   styleUrls: ['./admin-main-bus.component.css']
 })
 export class AdminMainBusComponent implements OnInit {
-
+    @Output() onTimeSelected = new EventEmitter<any>();
     public _bus: Bus = new Bus();
     public group_idx: number = 0;
     public total_reservation: number = 0;
     public price: number = 0;
+    public _busType: number = 0;
     constructor(public _httpService: HttpService,
                 public _scheduleService: ScheduleService,
                 public _mainService: MainService) { 
@@ -45,9 +46,17 @@ export class AdminMainBusComponent implements OnInit {
     }
 
     @Input()
+    set busType(type){
+        this._busType = type;
+    }
+
+    @Input()
     set selected_group_idx(param_group_idx: number) {
         let me = this;
         me.group_idx = param_group_idx; 
     }
 
+    timeSelected(timeId){
+        this.onTimeSelected.emit({timeId: timeId, price: this.price});
+    }
 }

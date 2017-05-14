@@ -30,7 +30,7 @@
         </div>
         <div class="content-outbound">
                 <div *ngFor="let bus of leaving_buses; let i = index;"> 
-                    <app-admin-main-bus [bus] = "bus" [selected_group_idx] = "i" ></app-admin-main-bus>
+                    <app-admin-main-bus [bus] = "bus" [selected_group_idx] = "i" (onTimeSelected) = "outboundTimeSelected($event);"></app-admin-main-bus>
                 </div>
         </div>
     </div>
@@ -41,8 +41,20 @@
         </div>
         <div class="content-outbound">
                 <div *ngFor="let bus of returning_buses; let i = index;"> 
-                    <app-admin-main-bus [bus] = "bus" [selected_group_idx] = "i" ></app-admin-main-bus>
+                    <app-admin-main-bus [bus] = "bus" [selected_group_idx] = "i" (onTimeSelected) = "returningTimeSelected($event);" [busType] = "1"></app-admin-main-bus>
                 </div>
         </div>
     </div>
+</div>
+<div class="row text-center" style="margin-bottom: 50px;" *ngIf = "outbound_timeId != 0">
+    <div class="alert alert-success " style="margin: 20px 0px;">
+        <button aria-label="Close" class="close" type="button" (click) = "successMessage = ''">
+            <!--<span aria-hidden="true">×</span>-->
+        </button>
+        <p>
+            Outbound Choice: ${{outbound_price}} . <span *ngIf = "returning_timeId != 0">Return Choice: ${{returning_price}}.</span>
+        </p>
+        <p>Total Per Seat: ${{outbound_price + returning_price}}</p>
+    </div>
+    <button type="button" class="btn btn-primary" (click) = "gotoNextStep();">Next Step</button>
 </div>

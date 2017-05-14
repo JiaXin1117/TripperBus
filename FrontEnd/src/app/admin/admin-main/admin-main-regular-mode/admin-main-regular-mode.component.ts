@@ -35,6 +35,10 @@ export class AdminMainRegularModeComponent implements OnInit {
     public returning_buses: Bus[];
     public errorMessage: string = "";
     public successMessage: string = "";
+    public outbound_timeId: number = 0;
+    public outbound_price: number = 0;
+    public returning_timeId: number = 0;
+    public returning_price: number = 0;
     constructor(public _route: ActivatedRoute, 
                 public _router: Router,
                 public _mainService: MainService,
@@ -105,4 +109,19 @@ export class AdminMainRegularModeComponent implements OnInit {
         me._router.navigate(link);
     }
 
+    public outboundTimeSelected(data){
+        this.outbound_timeId = data.timeId;
+        this.outbound_price = data.price;
+    }
+
+    public returningTimeSelected(data){
+        this.returning_timeId = data.timeId;
+        this.returning_price = data.price;
+    }
+
+    public gotoNextStep(){
+        if(this.headerReturn.date != '' && this.returning_timeId == 0)
+            return;
+        this._router.navigate(['/admin/main/reservation_mode/', this.outbound_timeId, this.returning_timeId]);
+    }
 }

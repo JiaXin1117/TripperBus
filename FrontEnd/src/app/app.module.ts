@@ -45,6 +45,7 @@ import { LogoutComponent } from './main/logout/logout.component';
 import { AdminMainRegularModeComponent } from './admin/admin-main/admin-main-regular-mode/admin-main-regular-mode.component';
 import { AdminMainBusEditModeComponent, AdminMainBusEditorComponent } from './admin/admin-main/admin-main-bus-edit-mode/admin-main-bus-edit-mode.component';
 import { AdminMainMovePeopleModeComponent, AdminMainBusMoveComponent } from './admin/admin-main/admin-main-move-people-mode/admin-main-move-people-mode.component';
+import { AdminMainReservationComponent } from './admin/admin-main/admin-main-reservation/admin-main-reservation.component';
 import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mode/admin-main-bus/admin-main-bus.component';
 
 
@@ -84,6 +85,7 @@ import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mod
         AdminMainMovePeopleModeComponent,
         AdminMainBusMoveComponent,
         AdminMainBusComponent,
+        AdminMainReservationComponent
     ],
     imports: [
         BrowserModule,
