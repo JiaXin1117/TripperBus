@@ -1,0 +1,63 @@
+<div class="text-center header-div">
+    <div class="container col-lg-12" style="margin: 30px">
+        <div class="col-sm-6">
+            <a class="btn btn-info" routerLink="/driverlist">Click for driver sheet</a>
+        </div>
+<!--        <div class="col-sm-4 form-inline">
+            <label for="list_order_display">Order Of Display:</label>
+            <select class="form-control">
+                <option>Last, First Name</option>
+                <option>First Name</option>
+                <option>Last Name</option>
+                <option>Reservation Number</option>
+                <option>Email Address</option>
+                <option>Travel Date</option>
+                <option>Date/Time Made</option>
+                <option>Seats</option>
+                <option>Payment Method</option>
+            </select>
+        </div>-->
+        <div class="col-sm-6">
+            <ss-multiselect-dropdown class="text-left" [options]="fieldOptions"
+                [texts]="fieldTexts" [settings]="fieldSettings" [(ngModel)]="showField" (ngModelChange)="onShowFieldChange($event)"></ss-multiselect-dropdown>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default" *ngIf="leaving_buses">
+    <div>
+        <h4><span class="label label-success">
+            Bus from {{ leaving_buses[outbound_bus_groupId].times[outbound_timeId].stop_area }} on {{ headerLeave.date}}
+                at: {{leaving_buses[outbound_bus_groupId].times[outbound_timeId].time}}. Stop Total: {{leaving_buses[outbound_bus_groupId].times[outbound_timeId].reservation_cnt}}
+        </span></h4>
+    </div>
+    <div style="overflow-x:scroll">
+        <table class="table table-striped table-bordered" [mfData]="reservations" #mf="mfDataTable" [mfRowsOnPage]="10000" (mfSelectedEntities)="setSelectedEntities($event)">
+            <thead>
+                <tr>
+                    <th><mfRowSelectorHead></mfRowSelectorHead></th>
+                    <th><mfDefaultSorter by="First Name">First Name</mfDefaultSorter></th>
+                    <th><mfDefaultSorter by="Last Name">Last Name</mfDefaultSorter></th>
+                    <th><mfDefaultSorter by="Phone">Phone</mfDefaultSorter></th>
+                    <th><mfDefaultSorter by="Email">Email</mfDefaultSorter></th>
+                    <th><mfDefaultSorter by="Seats">Seats</mfDefaultSorter></th>
+                    <th *ngFor="let field of showField">
+                        <mfDefaultSorter by="{{fieldOptions[field - 1].name}}">{{fieldOptions[field - 1].name}}</mfDefaultSorter>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of mf.data; let ndx = index">
+                    <td><mfRowSelector [entity]="item" [checkboxId]="ndx"></mfRowSelector></td>
+                    <td>{{item['First Name']}}</td>
+                    <td>{{item['Last Name']}}</td>
+                    <td>{{item['Phone']}}</td>
+                    <td>{{item['Email']}}</td>
+                    <td>{{item['Seats']}}</td>
+                    <td *ngFor="let field of showField">
+                        {{item[fieldOptions[field - 1].name]}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

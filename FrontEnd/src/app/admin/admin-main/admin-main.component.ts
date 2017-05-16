@@ -45,13 +45,13 @@ export class AdminMainComponent implements OnInit {
             { 
                 let selectedDate = new Date(dateStr); 
                 jQuery("#return_date").datepicker("option",{ minDate: selectedDate});
-                me.outbound_date = moment(dateStr).format("YYYY-MM-DD"); 
+                me.outbound_date = moment(selectedDate).format("YYYY-MM-DD"); 
             }
         });
         
         jQuery( "#return_date" ).datepicker({
             onSelect: function(dateStr) {
-                me.return_date = moment(dateStr).format("YYYY-MM-DD"); 
+                me.return_date = moment(new Date(dateStr)).format("YYYY-MM-DD"); 
             }
         });
     }

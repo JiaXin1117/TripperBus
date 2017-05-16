@@ -2,6 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+
+import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
+import { DataTableModule } from "ng2-data-table";
+
 import { AppRoutingModule }   from './app-routing/app-routing.module';
 
 import { AppComponent } from './app.component';
@@ -91,7 +95,9 @@ import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mod
         BrowserModule,
         FormsModule,
         HttpModule,
-        AppRoutingModule
+        AppRoutingModule,
+        MultiselectDropdownModule,
+        DataTableModule
     ],
     providers: [
         HttpService,
