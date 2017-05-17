@@ -1132,7 +1132,7 @@ class Configuration
      */
     public function getUpdateCheck()
     {
-        return isset($this->updateCheck) ? $this->updateCheck : Checker::NEVER;
+        return isset($this->updateCheck) ? $this->updateCheck : Checker::WEEKLY;
     }
 
     /**
