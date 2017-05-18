@@ -31,7 +31,7 @@ class MainController extends Controller
         if ($cnt > 0) {
             $result = \App\Models\Res_Reservations::where('date', $param_outbound_date)
                 ->where('outbound_area_id',  $param_outbound_area_id)
-                ->get(); 
+                ->get(['created_at AS Date Made', 'res_reservations.*']); 
 
             return response()->json([
                 'state' => 'success',

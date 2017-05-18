@@ -5,7 +5,7 @@ import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from 'ang
 import { MainService} from "../../../services/main_service/main.service";
 import { ScheduleService} from "../../../services/schedule_service/schedule.service";
 import { HttpService} from "../../../services/http_service/http.service";
-import { Bus, Reservation } from '../../../model';
+import { Bus, Reservation, Time } from '../../../model';
 import * as moment from "moment";
 declare var jQuery:any;
 
@@ -101,12 +101,13 @@ export class AdminMainReservationComponent implements OnInit {
     public returning_buses: Bus[];
     public errorMessage: string = "";
     public successMessage: string = "";
-    public outbound_bus_groupId: number = 0;
-    public outbound_timeId: number = 0;
+    public outbound_bus: Bus = null;
+    public outbound_time: Time = null;
     public outbound_price: number = 0;
     public returning_timeId: number = 0;
     public returning_price: number = 0;
-    public reservations: Reservation[];
+    public reservations: Reservation[] = [];
+    public reservations_from_time: Reservation[][] = [];
 
     constructor(public _route: ActivatedRoute, 
                 public _router: Router,
@@ -133,7 +134,11 @@ export class AdminMainReservationComponent implements OnInit {
                     this.leaving_buses = data.data_1;
                     this.returning_buses = data.data_2;
                     this._mainService.schedule_default_price = data.default_price;
-                    console.log(this.leaving_buses);
+                    this.outbound_bus = Bus.getBusFromGroupId(this.leaving_buses, this.inputParams.outbound_bus_groupId);
+                    if (this.outbound_bus) {
+                        this.outbound_time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.inputParams.outbound_timeId);
+                    }
+                    console.log(this.outbound_time);
                 }
             });
 
@@ -144,7 +149,13 @@ export class AdminMainReservationComponent implements OnInit {
             data => {
                 if (data.state == "success") {
                     this.reservations = data.data;
+                    for (let i = 0; i < this.reservations.length; i++) {
+                        if (!this.reservations_from_time[this.reservations[i].time_id])
+                            this.reservations_from_time[this.reservations[i].time_id] = [];
+                        this.reservations_from_time[this.reservations[i].time_id].push(this.reservations[i]);
+                    }
                     console.log(this.reservations);
+                    console.log(this.reservations_from_time);
                 }
             });
     }

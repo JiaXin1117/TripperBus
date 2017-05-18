@@ -105,7 +105,7 @@ class BusEditController extends Controller
             $temp['reservation_cnt'] = intval(Res_Reservations::where('time_id', $temp['id'])
                     ->where('date',  $reqData['outbound_date'])
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                    ->select(DB::raw('sum(reserve_count) as reservation_cnt'))
+                    ->select(DB::raw('sum(Seats) as reservation_cnt'))
                     ->first()->reservation_cnt);
 
             $res[$groupHash]['times'][] = $temp;
@@ -181,7 +181,7 @@ class BusEditController extends Controller
                 $temp['reservation_cnt'] = intval(Res_Reservations::where('time_id', $temp['id'])
                         ->where('date',  $reqData['return_date'])
                         ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                        ->select(DB::raw('sum(reserve_count) as reservation_cnt'))
+                        ->select(DB::raw('sum(Seats) as reservation_cnt'))
                         ->first()->reservation_cnt);
 
                 $res1[$groupHash]['times'][] = $temp;
@@ -306,7 +306,7 @@ class BusEditController extends Controller
             $temp['reservation_cnt'] = intval(Res_Reservations::where('time_id', $temp['id'])
                     ->where('date',  $reqData['outbound_date'])
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                    ->select(DB::raw('sum(reserve_count) as reservation_cnt'))
+                    ->select(DB::raw('sum(Seats) as reservation_cnt'))
                     ->first()->reservation_cnt);
             $temp['move'] = 0;
             $temp['note_change'] = 0;
@@ -391,7 +391,7 @@ class BusEditController extends Controller
                 $temp['reservation_cnt'] = intval(Res_Reservations::where('time_id', $temp['id'])
                         ->where('date',  $reqData['return_date'])
                         ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                        ->select(DB::raw('sum(reserve_count) as reservation_cnt'))
+                        ->select(DB::raw('sum(Seats) as reservation_cnt'))
                         ->first()->reservation_cnt);
                 $temp['move'] = 0;
                 $temp['note_change'] = 0;

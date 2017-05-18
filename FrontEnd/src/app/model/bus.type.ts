@@ -1,3 +1,5 @@
+import { Time } from './time.type';
+
 class Price{
     public id: number;
     public group_id: number;
@@ -33,5 +35,24 @@ export class Bus {
     this.price = new Price();
     this.times = [];
     this.destination = "";
+  }
+  
+  public static getBusFromGroupId(buses: Bus[], groupId: number): Bus {
+    for (let i = 0; i < buses.length; i++) {
+      if (buses[i].group_id == groupId)
+        return buses[i];
+    }
+
+    return null;
+  }
+
+  public static getTimeIndexFromTimeId(bus: Bus, timeId: number) {
+    for (let i = 0; i < bus.times.length; i++) {
+      let time = bus.times[i] as Time;
+      if (time.id == timeId)
+        return time;
+    }
+
+    return null;
   }
 }
