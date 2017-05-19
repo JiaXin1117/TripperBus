@@ -44,6 +44,19 @@ class MainController extends Controller
         ]);
     }
 
+    public function addReservation(Request $request){
+        $reservation = $request->only(['reservation']);
+        $reservation = $reservation['reservation'];
+        unset($reservation['Date Made']);
+        Res_Reservations::unguard();
+        $response = Res_Reservations::create($reservation);
+        Res_Reservations::reguard();
+
+        $response['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
+
+        return response()->json($response);
+    }
+
     public function getPriceInfo() {
         $param_group_id = Input::get('group_id');
 

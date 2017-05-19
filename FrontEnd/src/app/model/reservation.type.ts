@@ -6,51 +6,55 @@ export class Reservation {
     public reason: string;
     public 'First Name': string;
     public 'Last Name': string;
-    public 'Phone': number;
+    public 'Phone': string;
     public 'Email': string;
     public 'Seats': number;
-    public 'Groupon Codes': string;
-    public 'Other Codes': string;
+    public 'Groupon Code': string;
+    public 'Campaign Name': string;
     public 'Payment Method': string;
-    public 'Authorize.net Link': number;
-    public 'IP Adresses': string;
+    public 'Authorize net Link': number;
+    public 'IP Address': string;
     public 'Date Made': string;
     public 'Made By': string;
-    public 'Notes': string;
+    public 'Note': string;
     public 'App Scanned': string;
     public 'Leg Price': number;
     public 'Transaction Amount': number;
-    public 'Under an Account': string;
+    public 'Under Account': string;
     public 'Points Used': number;
     public 'Points Earned': number;
-    public 'Action Records': string;
+    public 'Action Record': string;
     public 'Other Leg': string;
     constructor() {
+        this.init();
+    }
+
+    public init() {
         this['id'] = 0;
         this['time_id'] = 0;
         this['outbound_area_id'] = 0;
-        this['valid'] = 0;
+        this['valid'] = 1;
         this['reason'] = '';
         this['First Name'] = '';
         this['Last Name'] = '';
-        this['Phone'] = 0;
+        this['Phone'] = "";
         this['Email'] = '';
         this['Seats'] = 0;
-        this['Groupon Codes'] = '';
-        this['Other Codes'] = '';
-        this['Payment Method'] = '';
-        this['Authorize.net Link'] = 0;
-        this['IP Adresses'] = '';
+        this['Groupon Code'] = '';
+        this['Campaign Name'] = '';
+        this['Payment Method'] = 'Credit Card';
+        this['Authorize net Link'] = 0;
+        this['IP Address'] = '';
         this['Date Made'] = '';
         this['Made By'] = '';
-        this['Notes'] = '';
+        this['Note'] = '';
         this['App Scanned'] = '';
         this['Leg Price'] = 0;
         this['Transaction Amount'] = 0;
-        this['Under an Account'] = '';
+        this['Under Account'] = '';
         this['Points Used'] = 0;
         this['Points Earned'] = 0;
-        this['Action Records'] = '';
+        this['Action Record'] = '';
         this['Other Leg'] = '';
-    }
+   }
 }

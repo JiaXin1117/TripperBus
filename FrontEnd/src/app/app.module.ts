@@ -7,6 +7,7 @@ import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 import { DataTableModule } from "ng2-data-table";
 
 import { AppRoutingModule }   from './app-routing/app-routing.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -97,7 +98,8 @@ import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mod
         HttpModule,
         AppRoutingModule,
         MultiselectDropdownModule,
-        DataTableModule
+        DataTableModule,
+        ModalModule.forRoot()
     ],
     providers: [
         HttpService,
