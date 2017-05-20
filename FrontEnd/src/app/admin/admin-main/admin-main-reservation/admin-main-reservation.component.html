@@ -95,7 +95,6 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content col-xs-12">
             <div class="modal-header" style="border-bottom: none">
-                <h4 class="modal-title pull-left">Add Reservation</h4>
                 <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal()">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -150,7 +149,7 @@
                             <label for="reservation_notes">Note</label>
                             <input type="text" class="form-control" id="reservation_notes" [(ngModel)]="newReservation['Note']">
                         </div>
-                        <div class="form-group pull-right">
+                        <div class="form-group pull-right" style="margin-top: 20px; margin-bottom: 20px">
                             <button type="submit" class="btn btn-primary" (click)="addReservation()">Add Reservation</button>
                         </div>
                     </div>
