@@ -126,7 +126,7 @@ export class AdminMainRegularModeComponent implements OnInit {
         if(me.headerReturn.date != '' && me.returning_timeId == 0)
             return;
 
-        let link = ['/admin/main/reservation_mode', me.inputParams.outbound_date, me.inputParams.leaving_from, me.inputParams.return_date, me.outbound_bus_groupId, me.outbound_timeId]; 
+        let link = ['/admin/main/reservation_mode', me.inputParams.outbound_date, me.inputParams.leaving_from, me.inputParams.return_date, me.outbound_bus_groupId, me.outbound_timeId, me.outbound_price]; 
         me._router.navigate(link);
     }
 }

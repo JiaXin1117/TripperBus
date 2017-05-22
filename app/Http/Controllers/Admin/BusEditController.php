@@ -37,6 +37,7 @@ class BusEditController extends Controller
         }
         //Leaving
         $default_price = Settings::where('key', 'DEFAULT_PRICE')->first()->value;
+        $reservation_fee = Settings::where('key', 'RESERVATION_FEE')->first()->value;
         $result = Res_Times::where('area_id', $reqData['leaving_from'])
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                     ->where(function($query) use($reqData)
@@ -192,6 +193,7 @@ class BusEditController extends Controller
             'data_1' => $res,
             'data_2' => $res1,
             'default_price' => $default_price,
+            'reservation_fee' => $reservation_fee
         ]);
     }
 

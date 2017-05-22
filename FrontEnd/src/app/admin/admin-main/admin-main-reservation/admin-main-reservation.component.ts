@@ -8,6 +8,8 @@ import { HttpService} from "../../../services/http_service/http.service";
 import { Bus, Reservation, Time } from '../../../model';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 
+import { PaymentMethod } from '../../../common';
+
 import * as moment from "moment";
 declare var jQuery:any;
 
@@ -19,13 +21,38 @@ declare var jQuery:any;
 export class AdminMainReservationComponent implements OnInit {
     @ViewChild('childModal') public childModal: ModalDirective;
 
-    public showChildModal(): void {
-        this.childModal.show();
-    }
+    public headerLeave: any = {
+        city: "",
+        date: "",
+    };
+    
+    public headerReturn: any = {
+        city: "",
+        date: "",
+    };
+    
+    public inputParams: any = {
+        outbound_date: "",
+        leaving_from: "",
+        return_date: "",
+        outbound_bus_groupId: 0,
+        outbound_timeId: 0,
+        outbound_price: 0
+    };
 
-    public hideChildModal(): void {
-        this.childModal.hide();
-    }
+    public newReservation = new Reservation;
+    public paymentMethod = PaymentMethod;
+
+    public leaving_buses: Bus[];
+    public returning_buses: Bus[];
+    public errorMessage: string = "";
+    public successMessage: string = "";
+    public outbound_bus: Bus = null;
+    public outbound_time: Time = null;
+    public returning_timeId: number = 0;
+    public returning_price: number = 0;
+    public reservations: Reservation[] = Array();
+    public reservations_from_time: Reservation[][] = Array();
 
     // Default selection
     showField: number[] = [];
@@ -74,7 +101,15 @@ export class AdminMainReservationComponent implements OnInit {
         { id: 15, name: 'Action Record' },
         { id: 16, name: 'Other Leg' }
     ];
-    
+
+    public showChildModal(): void {
+        this.childModal.show();
+    }
+
+    public hideChildModal(): void {
+        this.childModal.hide();
+    }
+
     onShowFieldChange($event) {
         this.showField.sort((a, b) => (a-b));
         console.log(this.showField);
@@ -87,40 +122,6 @@ export class AdminMainReservationComponent implements OnInit {
     public setSelectedEntities($event: any) {
         this.selectedEntities = $event;
     }
-
-
-
-    public headerLeave: any = {
-        city: "",
-        date: "",
-    };
-    
-    public headerReturn: any = {
-        city: "",
-        date: "",
-    };
-    
-    public inputParams: any = {
-        outbound_date: "",
-        leaving_from: "",
-        return_date: "",
-        outbound_bus_groupId: 0,
-        outbound_timeId: 0
-    };
-
-    public newReservation = new Reservation;
-    
-    public leaving_buses: Bus[];
-    public returning_buses: Bus[];
-    public errorMessage: string = "";
-    public successMessage: string = "";
-    public outbound_bus: Bus = null;
-    public outbound_time: Time = null;
-    public outbound_price: number = 0;
-    public returning_timeId: number = 0;
-    public returning_price: number = 0;
-    public reservations: Reservation[] = Array();
-    public reservations_from_time: Reservation[][] = Array();
 
     constructor(public _route: ActivatedRoute, 
                 public _router: Router,
@@ -138,7 +139,9 @@ export class AdminMainReservationComponent implements OnInit {
         me.structHeaderLeaving();
         me.structHeaderReturn();
 
-        this.refreshData();
+        me.refreshData();
+
+        me.newReservation['Seats'] = 1;
     }
 
     public refreshData(){
@@ -151,11 +154,15 @@ export class AdminMainReservationComponent implements OnInit {
                     this.leaving_buses = data.data_1;
                     this.returning_buses = data.data_2;
                     this._mainService.schedule_default_price = data.default_price;
+                    this._mainService.reservation_fee = parseFloat(data.reservation_fee);
                     this.outbound_bus = Bus.getBusFromGroupId(this.leaving_buses, this.inputParams.outbound_bus_groupId);
                     if (this.outbound_bus) {
                         this.outbound_time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.inputParams.outbound_timeId);
                     }
-                    console.log(this.outbound_time);
+                    
+                    this.newReservation['Transaction Amount'] = this.newReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.reservation_fee;
+                    
+                    console.log (data);
                 }
             });
 
@@ -185,6 +192,8 @@ export class AdminMainReservationComponent implements OnInit {
             me.inputParams.return_date = me._route.snapshot.params['return_date']; 
             me.inputParams.outbound_bus_groupId = me._route.snapshot.params['outbound_bus_groupId']; 
             me.inputParams.outbound_timeId = me._route.snapshot.params['outbound_timeId']; 
+            me.inputParams.outbound_price = parseFloat(me._route.snapshot.params['outbound_price']);
+            console.log(me.inputParams.outbound_price);
     }
     
     public structHeaderLeaving() {
@@ -246,5 +255,22 @@ export class AdminMainReservationComponent implements OnInit {
                 console.log(this.errorMessage);
                 alert(this.errorMessage);
             });
+    }
+
+    public onPaymentMethodChange(evt) {
+        this.autoTransactionAmount();
+    }
+
+    public onSeatsChange(evt) {
+        this.autoTransactionAmount();
+    }
+
+    public autoTransactionAmount() {
+        if (this.newReservation['Payment Method'] == PaymentMethod[0]) {
+            this.newReservation['Transaction Amount'] = this.newReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.reservation_fee;
+        }
+        else {
+            this.newReservation['Transaction Amount'] = 0;
+        }
     }
 }

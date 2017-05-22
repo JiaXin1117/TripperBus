@@ -24,6 +24,7 @@ export class MainService {
     };
 
     schedule_default_price: number = 25;
+    reservation_fee: number = 0;
 
     constructor() { }
 
