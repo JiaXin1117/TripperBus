@@ -43,7 +43,14 @@
                     <td>{{item['Email']}}</td>
                     <td>{{item['Seats']}}</td>
                     <td *ngFor="let field of showField">
-                        {{item[fieldOptions[field - 1].name]}}
+                        <ng-template [ngIf]='fieldOptions[field - 1].name !== "Authorize net Link"'>
+                            {{item[fieldOptions[field - 1].name]}}
+                        </ng-template>
+                        <ng-template [ngIf]='fieldOptions[field - 1].name === "Authorize net Link"'>
+                            <a href="{{authorize_net_url + item[fieldOptions[field - 1].name]}}" target="_blank">
+                                {{item[fieldOptions[field - 1].name]}}
+                            </a>
+                        </ng-template>
                     </td>
                 </tr>
             </tbody>
@@ -82,7 +89,14 @@
                             <td>{{item['Email']}}</td>
                             <td>{{item['Seats']}}</td>
                             <td *ngFor="let field of showField">
-                                {{item[fieldOptions[field - 1].name]}}
+                                <ng-template [ngIf]='fieldOptions[field - 1].name !== "Authorize net Link"'>
+                                    {{item[fieldOptions[field - 1].name]}}
+                                </ng-template>
+                                <ng-template [ngIf]='fieldOptions[field - 1].name === "Authorize net Link"'>
+                                    <a href="{{authorize_net_url + item[fieldOptions[field - 1].name]}}" target="_blank">
+                                        {{item[fieldOptions[field - 1].name]}}
+                                    </a>
+                                </ng-template>
                             </td>
                         </tr>
                     </tbody>
@@ -146,7 +160,7 @@
                     </div>
                     <div class="col-xs-12" *ngIf="newReservation && newReservation['Payment Method'] === paymentMethod[0]">
                         <div class="form-group well">
-                            <p>Price Breakdown: From New York City: ${{inputParams.outbound_price}} per person. (Also included in total is $0.75 per person WDC Facility each way and ${{_mainService.reservation_fee}} reservation fee) </p>
+                            <p>Price Breakdown: From New York City: ${{inputParams.outbound_price.toFixed(2)}} per person. Plus ${{_mainService.reservation_fee.toFixed(2)}} reservation fee</p>
                         </div>
                     </div>
                     <div class="col-xs-12">

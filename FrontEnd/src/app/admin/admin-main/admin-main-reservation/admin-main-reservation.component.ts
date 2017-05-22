@@ -8,7 +8,7 @@ import { HttpService} from "../../../services/http_service/http.service";
 import { Bus, Reservation, Time } from '../../../model';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 
-import { PaymentMethod } from '../../../common';
+import { PaymentMethod, Autorize_net_url } from '../../../common';
 
 import * as moment from "moment";
 declare var jQuery:any;
@@ -42,6 +42,7 @@ export class AdminMainReservationComponent implements OnInit {
 
     public newReservation = new Reservation;
     public paymentMethod = PaymentMethod;
+    public authorize_net_url = Autorize_net_url;
 
     public leaving_buses: Bus[];
     public returning_buses: Bus[];
@@ -160,7 +161,7 @@ export class AdminMainReservationComponent implements OnInit {
                         this.outbound_time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.inputParams.outbound_timeId);
                     }
                     
-                    this.newReservation['Transaction Amount'] = this.newReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.reservation_fee;
+                    this.autoTransactionAmount();
                     
                     console.log (data);
                 }
@@ -272,5 +273,6 @@ export class AdminMainReservationComponent implements OnInit {
         else {
             this.newReservation['Transaction Amount'] = 0;
         }
+        this.newReservation['Transaction Amount'] = this.newReservation['Transaction Amount'].toFixed(2);
     }
 }

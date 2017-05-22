@@ -19,7 +19,7 @@ export class Reservation {
     public 'Note': string;
     public 'App Scanned': string;
     public 'Leg Price': number;
-    public 'Transaction Amount': number;
+    public 'Transaction Amount': any;
     public 'Under Account': string;
     public 'Points Used': number;
     public 'Points Earned': number;

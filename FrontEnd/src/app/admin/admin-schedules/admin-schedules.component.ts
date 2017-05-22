@@ -78,7 +78,7 @@ export class AdminSchedulesComponent implements OnInit {
         
             if(firstDay.getDate() == 1) {
                 let dow = firstDay.getDay(); 
-                
+
                 me.month_firstday_dow = [];
                 for (let i=0; i<dow; i++) {
                     me.month_firstday_dow[i] = i;
@@ -92,7 +92,7 @@ export class AdminSchedulesComponent implements OnInit {
                 .subscribe(
                     data => { 
                         let response = data; 
-                        
+
                         if (areaType == me._scheduleService.areaType.TYPE_NEWYORK) {
                             me.dayinfos_in_month_newyork = [];
                         } else {
@@ -101,7 +101,8 @@ export class AdminSchedulesComponent implements OnInit {
                         
                         if (response['state'] == 'success') { 
                             while(firstDay <= lastDay) { 
-                                let firstDay_converted = moment(me.convertDate(firstDay)).utc().format("YYYY-MM-DD"); 
+                                let firstDay_converted = me.convertDate(firstDay); 
+/*                                let firstDay_converted = moment(me.convertDate(firstDay)).utc().format("YYYY-MM-DD"); */
 
                                 let items_for_this_date = [];
                                 for (let i=0; i<Object.keys(response['data']).length; i++) {
@@ -152,7 +153,7 @@ export class AdminSchedulesComponent implements OnInit {
                                     }
                                     
                                     // Get latest date for weekly schedule.
-                                    let latest_date = me._scheduleService.getLatestWeeklyDate(temp_dates); 
+                                    let latest_date = me._scheduleService.getLatestWeeklyDate(temp_dates);
                                     
                                     grouped_items = [];
                                     for (let i=0;  i<Object.keys(group_ids).length; i++) {
@@ -224,8 +225,9 @@ export class AdminSchedulesComponent implements OnInit {
             }
             
             me.selected_date = me.calendarInfo.cur_year + "-" + cur_month_temp + "-" + selected_date; 
-            let url = this.urls.retrieve_schedule_by_date_url + "?date=" + moment(me.selected_date).utc().format("YYYY-MM-DD"); 
-            
+            let url = this.urls.retrieve_schedule_by_date_url + "?date=" + me.selected_date; 
+/*            let url = this.urls.retrieve_schedule_by_date_url + "?date=" + moment(me.selected_date).utc().format("YYYY-MM-DD"); 
+*/            
             this._httpService.sendGetRequestWithParams(url)
                 .subscribe(
                     data => { 

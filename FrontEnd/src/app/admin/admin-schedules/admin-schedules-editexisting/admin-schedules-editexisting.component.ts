@@ -112,7 +112,8 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
     
     public showHeaderInfos() {
             let me = this;
-            let url = this.urls.retrieve_schedule_by_date_url + "?date=" + moment(me.inputParams.date).utc().format("YYYY-MM-DD"); 
+/*            let url = this.urls.retrieve_schedule_by_date_url + "?date=" + moment(me.inputParams.date).utc().format("YYYY-MM-DD"); */
+            let url = this.urls.retrieve_schedule_by_date_url + "?date=" + me.inputParams.date; 
             
             this._httpService.sendGetRequestWithParams(url)
                 .subscribe(
@@ -376,13 +377,14 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                     for (let j=0; j<Object.keys(group).length; j++) {
                         let item = group[j];
 
-                        item['date'] = moment(me.inputParams.date).utc().format("YYYY-MM-DD");
+                        // item['date'] = moment(me.inputParams.date).utc().format("YYYY-MM-DD");
+                        item['date'] = me.inputParams.date;
                         item['hour'] = item['time'].substring(0, 2);
                         item['min'] = item['time'].substring(3, 5); 
 
                         if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
                                 item['w_h'] = me._scheduleService.w_hType.TYPE_HOLIDAY;
-                                item['dow'] = moment(me.inputParams.date).utc().day();
+                                item['dow'] = moment(me.inputParams.date).day();
                                 item['area_id'] = me.inputParams.area_id;
                         }
                     }
@@ -432,16 +434,16 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                         temp['date'] = me._scheduleService.convertDateToUTC(me.inputParams.date);
                     } else {
                         if (me.latest_date == "" || me.latest_date == undefined) {
-                            temp['date'] = moment(me.inputParams.date).utc().format("YYYY-MM-DD");
+                            temp['date'] = me.inputParams.date;
                         } else {
-                            temp['date'] = moment(me.latest_date).utc().format("YYYY-MM-DD");
+                            temp['date'] = me.latest_date;
                         }
                     }
                 } else {
-                    temp['date'] = moment(me.inputParams.date).utc().format("YYYY-MM-DD");
+                    temp['date'] = me.inputParams.date;
                 } 
                 
-                temp['dow'] = moment(me.inputParams.date).utc().day();
+                temp['dow'] = moment(me.inputParams.date).day();
                 temp['area_id'] = me.inputParams.area_id;
                 
                 if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {

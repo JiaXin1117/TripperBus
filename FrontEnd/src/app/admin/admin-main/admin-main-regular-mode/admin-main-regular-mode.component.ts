@@ -113,12 +113,12 @@ export class AdminMainRegularModeComponent implements OnInit {
     public outboundTimeSelected(data){
         this.outbound_bus_groupId = data.outbound_bus_groupId;
         this.outbound_timeId = data.timeId;
-        this.outbound_price = data.price;
+        this.outbound_price = parseFloat(data.price);
     }
 
     public returningTimeSelected(data){
         this.returning_timeId = data.timeId;
-        this.returning_price = data.price;
+        this.returning_price = parseFloat(data.price);
     }
 
     public gotoNextStep(){

@@ -52,9 +52,9 @@
             <!--<span aria-hidden="true">×</span>-->
         </button>
         <p>
-            Outbound Choice: ${{outbound_price}} . <span *ngIf = "returning_timeId != 0">Return Choice: ${{returning_price}}.</span>
+            Outbound Choice: ${{outbound_price.toFixed(2)}} . <span *ngIf = "returning_timeId != 0">Return Choice: ${{returning_price.toFixed(2)}}.</span>
         </p>
-        <p>Total Per Seat: ${{outbound_price + returning_price}}</p>
+        <p>Total Per Seat: ${{(+outbound_price + returning_price).toFixed(2)}}</p>
     </div>
     <button type="button" class="btn btn-primary" (click) = "gotoNextStep();">Next Step</button>
 </div>

@@ -6,3 +6,5 @@ export var PaymentMethod = {
     4: "Cust. Already Paid",
     5: "Re-Scheduled Old Trip",
 };
+
+export var Autorize_net_url = "https://account.authorize.net/UI/themes/hitechmerchants/transaction/transactiondetail.aspx?transID=";
