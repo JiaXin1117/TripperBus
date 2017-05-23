@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Res_Stops;
+use App\Models\Res_Areas;
 use App\Models\Res_Groups;
 use App\Models\Res_Groups_DestStops;
 use App\Models\Res_Times;
@@ -98,6 +99,7 @@ class BusEditController extends Controller
             $temp['time'] = date("g:i A", strtotime($bus_time['time']));
             $temp['id'] = $bus_time['id'];
             $temp['stop_area'] = Res_Stops::find($bus_time['stop_id'])->short;
+            $temp['area_name'] = Res_Areas::find($bus_time['area_id'])->area_name;
             $temp['w_h'] = $bus_time['w_h'];
             $temp['dow'] = $bus_time['day_of_week'];
             $temp['time_id'] = $bus_time['id'];
@@ -174,6 +176,7 @@ class BusEditController extends Controller
                 $temp['time'] = date("g:i A", strtotime($bus_time['time']));
                 $temp['id'] = $bus_time['id'];
                 $temp['stop_area'] = Res_Stops::find($bus_time['stop_id'])->short;
+                $temp['area_name'] = Res_Areas::find($bus_time['area_id'])->area_name;
                 $temp['w_h'] = $bus_time['w_h'];
                 $temp['dow'] = $bus_time['day_of_week'];
                 $temp['time_id'] = $bus_time['id'];
@@ -239,6 +242,9 @@ class BusEditController extends Controller
                     ->join('res_stops', function($join){
                             $join->on('res_times.stop_id', '=', 'res_stops.id');
                       })
+                    ->join('res_areas', function($join){
+                            $join->on('res_times.area_id', '=', 'res_areas.id');
+                      })
                     ->where('res_times.area_id', $reqData['leaving_from'])
                     ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                     ->where(function($query) use($reqData)
@@ -301,6 +307,7 @@ class BusEditController extends Controller
             $temp['time'] = $bus_time->time;
             $temp['id'] = $bus_time->id;
             $temp['stop_area'] = $bus_time->short;
+            $temp['area_name'] = $bus_time->area_name;
             $temp['w_h'] = $bus_time->w_h;
             $temp['dow'] = $bus_time->day_of_week;
             $temp['time_id'] = $bus_time->id;
@@ -324,6 +331,9 @@ class BusEditController extends Controller
             $result2 = DB::table('res_times')
                     ->join('res_stops', function($join){
                             $join->on('res_times.stop_id', '=', 'res_stops.id');
+                      })
+                    ->join('res_areas', function($join){
+                            $join->on('res_times.area_id', '=', 'res_areas.id');
                       })
                     ->where('res_times.area_id', '<>', $reqData['leaving_from'])
                     ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
@@ -386,6 +396,7 @@ class BusEditController extends Controller
                 $temp['time'] = $bus_time->time;
                 $temp['id'] = $bus_time->id;
                 $temp['stop_area'] = $bus_time->short;
+                $temp['area_name'] = $bus_time->area_name;
                 $temp['w_h'] = $bus_time->w_h;
                 $temp['dow'] = $bus_time->day_of_week;
                 $temp['time_id'] = $bus_time->id;

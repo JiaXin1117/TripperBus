@@ -57,6 +57,6 @@ export class AdminMainBusComponent implements OnInit {
     }
 
     timeSelected(timeId){
-        this.onTimeSelected.emit({outbound_bus_groupId: this._bus.group_id, timeId: timeId, price: this.price});
+        this.onTimeSelected.emit({groupId: this._bus.group_id, timeId: timeId, price: this.price});
     }
 }

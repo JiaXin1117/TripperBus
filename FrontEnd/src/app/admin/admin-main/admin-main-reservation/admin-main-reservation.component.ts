@@ -37,12 +37,17 @@ export class AdminMainReservationComponent implements OnInit {
         return_date: "",
         outbound_bus_groupId: 0,
         outbound_timeId: 0,
-        outbound_price: 0
+        outbound_price: 0,
+        returning_bus_groupId: 0,
+        returning_timeId: 0,
+        returning_price: 0
     };
 
     public newReservation = new Reservation;
     public paymentMethod = PaymentMethod;
     public authorize_net_url = Autorize_net_url;
+    public newReservation_LeavingAreaName = "";
+    public newReservation_ReturningAreaName ="";
 
     public leaving_buses: Bus[];
     public returning_buses: Bus[];
@@ -50,7 +55,8 @@ export class AdminMainReservationComponent implements OnInit {
     public successMessage: string = "";
     public outbound_bus: Bus = null;
     public outbound_time: Time = null;
-    public returning_timeId: number = 0;
+    public returning_bus: Bus = null;
+    public returning_time: Time = null;
     public returning_price: number = 0;
     public reservations: Reservation[] = Array();
     public reservations_from_time: Reservation[][] = Array();
@@ -156,9 +162,19 @@ export class AdminMainReservationComponent implements OnInit {
                     this.returning_buses = data.data_2;
                     this._mainService.schedule_default_price = data.default_price;
                     this._mainService.reservation_fee = parseFloat(data.reservation_fee);
+
                     this.outbound_bus = Bus.getBusFromGroupId(this.leaving_buses, this.inputParams.outbound_bus_groupId);
                     if (this.outbound_bus) {
                         this.outbound_time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.inputParams.outbound_timeId);
+                        
+                        this.newReservation_LeavingAreaName = this.outbound_time['area_name'];
+                    }
+
+                    this.returning_bus = Bus.getBusFromGroupId(this.returning_buses, this.inputParams.returning_bus_groupId);
+                    if(this.returning_bus) {
+                        this.returning_time = Bus.getTimeIndexFromTimeId(this.returning_bus, this.inputParams.returning_timeId);
+
+                        this.newReservation_ReturningAreaName = this.returning_time['area_name'];
                     }
                     
                     this.autoTransactionAmount();
@@ -194,6 +210,9 @@ export class AdminMainReservationComponent implements OnInit {
             me.inputParams.outbound_bus_groupId = me._route.snapshot.params['outbound_bus_groupId']; 
             me.inputParams.outbound_timeId = me._route.snapshot.params['outbound_timeId']; 
             me.inputParams.outbound_price = parseFloat(me._route.snapshot.params['outbound_price']);
+            me.inputParams.returning_bus_groupId = me._route.snapshot.params['returning_bus_groupId']; 
+            me.inputParams.returning_timeId = me._route.snapshot.params['returning_timeId']; 
+            me.inputParams.returning_price = parseFloat(me._route.snapshot.params['returning_price']);
             console.log(me.inputParams.outbound_price);
     }
     
@@ -215,12 +234,6 @@ export class AdminMainReservationComponent implements OnInit {
             }
             
             me.headerReturn.date = me._scheduleService.getDateAsLongFormat(me.inputParams.return_date);
-    }
-
-    public gotoNextStep(){
-        if(this.headerReturn.date != '' && this.returning_timeId == 0)
-            return;
-        
     }
 
     public addReservation() {
@@ -267,8 +280,12 @@ export class AdminMainReservationComponent implements OnInit {
     }
 
     public autoTransactionAmount() {
-        if (this.newReservation['Payment Method'] == PaymentMethod[0]) {
+        if (this.newReservation['Payment Method'] == PaymentMethod[0] && this.newReservation['Seats'] > 0) {
             this.newReservation['Transaction Amount'] = this.newReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.reservation_fee;
+
+            if (this.headerReturn.date != '') {
+                this.newReservation['Transaction Amount'] += this.newReservation['Seats'] * this.inputParams['returning_price']
+            }
         }
         else {
             this.newReservation['Transaction Amount'] = 0;

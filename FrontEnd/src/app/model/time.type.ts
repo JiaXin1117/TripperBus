@@ -7,6 +7,7 @@ export class Time {
   public time: string;
   public date: string;
   public short: string;
+  public area_name: string;
   constructor(){
     this.id = 0;
     this.group_id = 0;
@@ -16,5 +17,6 @@ export class Time {
     this.time = "";
     this.date = "";
     this.short = "";
+    this.area_name = "";
   }
 }

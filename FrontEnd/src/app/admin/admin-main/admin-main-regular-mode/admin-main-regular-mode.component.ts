@@ -38,6 +38,7 @@ export class AdminMainRegularModeComponent implements OnInit {
     public outbound_bus_groupId: number = 0;
     public outbound_timeId: number = 0;
     public outbound_price: number = 0;
+    public returning_bus_groupId: number = 0;
     public returning_timeId: number = 0;
     public returning_price: number = 0;
     constructor(public _route: ActivatedRoute, 
@@ -111,12 +112,13 @@ export class AdminMainRegularModeComponent implements OnInit {
     }
 
     public outboundTimeSelected(data){
-        this.outbound_bus_groupId = data.outbound_bus_groupId;
+        this.outbound_bus_groupId = data.groupId;
         this.outbound_timeId = data.timeId;
         this.outbound_price = parseFloat(data.price);
     }
 
     public returningTimeSelected(data){
+        this.returning_bus_groupId = data.groupId;
         this.returning_timeId = data.timeId;
         this.returning_price = parseFloat(data.price);
     }
@@ -126,7 +128,10 @@ export class AdminMainRegularModeComponent implements OnInit {
         if(me.headerReturn.date != '' && me.returning_timeId == 0)
             return;
 
-        let link = ['/admin/main/reservation_mode', me.inputParams.outbound_date, me.inputParams.leaving_from, me.inputParams.return_date, me.outbound_bus_groupId, me.outbound_timeId, me.outbound_price]; 
+        let link = ['/admin/main/reservation_mode', 
+        me.inputParams.outbound_date, me.inputParams.leaving_from, me.inputParams.return_date, 
+        me.outbound_bus_groupId, me.outbound_timeId, me.outbound_price, 
+        me.returning_bus_groupId, me.returning_timeId, me.returning_price]; 
         me._router.navigate(link);
     }
 }

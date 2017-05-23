@@ -14,10 +14,16 @@
 </div>
 <div class="panel panel-default" *ngIf="outbound_time">
     <div>
-        <h4><span class="label label-success">
-            Bus from {{ outbound_time.stop_area }} on {{ headerLeave.date }}
-                at: {{outbound_time.time}}. Stop Total: {{outbound_time.reservation_cnt}}
-        </span></h4>
+        <h4>
+            <span class="label label-success">
+                Bus from {{ outbound_time.stop_area }} on {{ headerLeave.date }}
+                at: {{outbound_time.time}}. Stop Total: 
+                <span class="badge">{{outbound_time.reservation_cnt}}</span>
+            </span>
+            <span class="label label-info" *ngIf="headerReturn.date != ''">
+                Returning from {{ headerReturn.city }} on {{ headerReturn.date }} at {{returning_time.time}}.
+            </span>
+        </h4>
     </div>
     <div style="overflow-x:scroll">
         <table *ngIf="reservations_from_time.length" class="table table-striped table-bordered" [mfData]="reservations_from_time[outbound_time.id]" #mf="mfDataTable" [mfRowsOnPage]="10000" (mfSelectedEntities)="setSelectedEntities($event)">
@@ -57,12 +63,13 @@
         </table>
     </div>
 </div>
-<div class="panel" *ngIf="outbound_bus">
+<div class="panel" *ngIf="outbound_bus" style="margin-bottom: 50px;">
     <div *ngFor="let time of outbound_bus.times">
         <ng-template [ngIf]="time.id != outbound_time.id">
             <div>
                 <h4><span class="label label-info">
-                    This bus also picks up from {{ time.stop_area }} at: {{time.time}}. Stop Total: {{time.reservation_cnt}}
+                    This bus also picks up from {{ time.stop_area }} at: {{time.time}}. Stop Total: 
+                    <span class="badge">{{time.reservation_cnt}}</span>
                 </span></h4>
             </div>
             <div style="overflow-x:scroll">
@@ -160,7 +167,12 @@
                     </div>
                     <div class="col-xs-12" *ngIf="newReservation && newReservation['Payment Method'] === paymentMethod[0]">
                         <div class="form-group well">
-                            <p>Price Breakdown: From New York City: ${{inputParams.outbound_price.toFixed(2)}} per person. Plus ${{_mainService.reservation_fee.toFixed(2)}} reservation fee</p>
+                            <p>
+                                Price Breakdown: From <i>{{newReservation_LeavingAreaName}}</i> : <b>${{inputParams.outbound_price.toFixed(2)}}</b> per person. 
+                            <ng-template [ngIf]="headerReturn.date != ''">
+                                From <i>{{newReservation_ReturningAreaName}}</i> : <b>${{inputParams.returning_price.toFixed(2)}}</b> per person. 
+                            </ng-template>
+                            Plus <b>${{_mainService.reservation_fee.toFixed(2)}}</b> reservation fee</p>
                         </div>
                     </div>
                     <div class="col-xs-12">
