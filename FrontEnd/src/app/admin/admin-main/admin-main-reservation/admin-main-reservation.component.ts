@@ -265,7 +265,7 @@ export class AdminMainReservationComponent implements OnInit {
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = "Something went wrong. Please contact administrator.";
+                this.errorMessage = "All the following are necessary for a new reservation: First Name, Last Name & Phone Number.";
                 console.log(this.errorMessage);
                 alert(this.errorMessage);
             });

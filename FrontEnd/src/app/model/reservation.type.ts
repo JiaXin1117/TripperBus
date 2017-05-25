@@ -25,6 +25,11 @@ export class Reservation {
     public 'Points Earned': number;
     public 'Action Record': string;
     public 'Other Leg': string;
+    public 'CC Name': string;
+    public 'CC Number': number;
+    public 'CC Code': number;
+    public 'CC Month': number;
+    public 'CC Year': number;
     constructor() {
         this.init();
     }
@@ -56,5 +61,8 @@ export class Reservation {
         this['Points Earned'] = 0;
         this['Action Record'] = '';
         this['Other Leg'] = '';
+        this['CC Name'] = '';
+        this['CC Month'] = (new Date()).getMonth() + 1;
+        this['CC Year'] = (new Date()).getFullYear();
    }
 }
