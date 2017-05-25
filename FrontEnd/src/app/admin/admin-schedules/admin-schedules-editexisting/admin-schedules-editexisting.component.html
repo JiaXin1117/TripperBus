@@ -66,17 +66,17 @@
                     </tr>
                     <tr>
                         <td>
-                            <select class="form-control" [(ngModel)]="adding_stops[0]">
+                            <select *ngIf="arr_stops.length" class="form-control" [(ngModel)]="adding_stops[0]">
                                 <option *ngFor="let stop of arr_stops" value="{{stop}}">{{stop}}</option>
                             </select>
                         </td>
                         <td>
-                            <select class="form-control" [(ngModel)]="adding_hours[0]">
+                            <select *ngIf="arr_hours.length" class="form-control" [(ngModel)]="adding_hours[0]">
                                 <option *ngFor="let hour of arr_hours" value="{{hour['value']}}">{{hour['text']}}</option>
                             </select>
                         </td>
                         <td>
-                            <select class="form-control" [(ngModel)]="adding_mins[0]">
+                            <select *ngIf="arr_mins.length" class="form-control" [(ngModel)]="adding_mins[0]">
                                 <option *ngFor="let min of arr_mins" value="{{min}}">{{min}}</option>
                             </select>
                         </td>
@@ -89,17 +89,17 @@
                     
                     <tr>
                         <td>
-                            <select class="form-control" [(ngModel)]="adding_stops[1]">
+                            <select *ngIf="arr_stops.length" class="form-control" [(ngModel)]="adding_stops[1]">
                                 <option *ngFor="let stop of arr_stops" value="{{stop}}">{{stop}}</option>
                             </select>
                         </td>
                         <td>
-                            <select class="form-control" [(ngModel)]="adding_hours[1]">
+                            <select *ngIf="arr_hours.length" class="form-control" [(ngModel)]="adding_hours[1]">
                                 <option *ngFor="let hour of arr_hours" value="{{hour['value']}}">{{hour['text']}}</option>
                             </select>
                         </td>
                         <td>
-                            <select class="form-control" [(ngModel)]="adding_mins[1]">
+                            <select *ngIf="arr_mins.length" class="form-control" [(ngModel)]="adding_mins[1]">
                                 <option *ngFor="let min of arr_mins" value="{{min}}">{{min}}</option>
                             </select>
                         </td>
@@ -112,17 +112,17 @@
                     
                     <tr>
                         <td>
-                            <select class="form-control" [(ngModel)]="adding_stops[2]">
+                            <select *ngIf="arr_stops.length" class="form-control" [(ngModel)]="adding_stops[2]">
                                 <option *ngFor="let stop of arr_stops" value="{{stop}}">{{stop}}</option>
                             </select>
                         </td>
                         <td>
-                            <select class="form-control" [(ngModel)]="adding_hours[2]">
+                            <select *ngIf="arr_hours.length" class="form-control" [(ngModel)]="adding_hours[2]">
                                 <option *ngFor="let hour of arr_hours" value="{{hour['value']}}">{{hour['text']}}</option>
                             </select>
                         </td>
                         <td>
-                            <select class="form-control" [(ngModel)]="adding_mins[2]">
+                            <select *ngIf="arr_mins.length" class="form-control" [(ngModel)]="adding_mins[2]">
                                 <option *ngFor="let min of arr_mins" value="{{min}}">{{min}}</option>
                             </select>
                         </td>
