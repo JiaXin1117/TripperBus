@@ -40,19 +40,21 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
     
     public urls: any = {
         retrieve_schedule_by_date_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_by_date",
+        retrieve_group_times_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_group_times",
         retrieve_all_stops_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops",
         save_all_url: BACKEND_SERVER_URL + "api/admin/schedule/saveall_existing_schedule",    
         add_schedule_url: BACKEND_SERVER_URL + "api/admin/schedule/add_existing_schedule",    
         save_groups_additional_info_url: BACKEND_SERVER_URL + "api/admin/schedule/save_groups_additional_infos",
-        get_all_stop_for_area_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops_for_area",    
+//        get_all_stop_for_area_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops_for_area",    
     };
     
-    public groups: any[] = [];
+    public group_times: any[] = [];
     public group_additional_infos: any[] = [];
-    
+    public arr_dest_stops: any[] = [];
+    public groups: any[] = [];
     public latest_date: any;
     
-    public arr_stops: string[] = [];
+    public arr_leaving_stop_shorts: string[] = [];
     public arr_hours: any[] = [];
     public arr_mins: number[] = [];
     public arr_prices: string[] = [];
@@ -71,8 +73,8 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
     ngOnInit() {
             this.structTimeArray();
             this.receiveParamsFromRoute();
-            this.getDefaultStopID();
-            this.getAllStopsInfo();
+//            this.getDefaultStopID();
+//            this.getAllStopsInfo();
             this.showHeaderInfos(); 
     }
     
@@ -84,10 +86,12 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
     }
     
     public popupAddScheduleModal() {
+            this.initAddSchedules();
+
             jQuery("#add_schedule_modal").modal('show');
     }
     
-    // Get default stop id from current area id.
+/*    // Get default stop id from current area id.
     public getDefaultStopID() {
             let me = this;
         
@@ -102,17 +106,73 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                 .subscribe(
                     data => { 
                         if (data['state'] == 'success') {
-                            me.inputParams.default_dest_stop_id = data['data'][0]['id'];
+                            me.arr_dest_stops = data['data'];
+                            me.inputParams.default_dest_stop_id = me.arr_dest_stops[0]['id'];
                         }
                     },
                     error => alert(error),
                     () => {}
                 );
     }
-    
+*/    
+
+    public showHeaderInfos() {
+        let me = this;
+        let url = me.urls.retrieve_group_times_url + "?date=" + me.inputParams.date + "&area_id=" + me.inputParams.area_id + "&schedule_type=" + me.inputParams.schedule_type;
+
+        me._httpService.sendGetRequestWithParams(url)
+        .subscribe(
+            data => {
+                if (data['state'] == 'success') {
+                    let response = data['data'];
+
+                    me.group_times = response['group_times'];
+                    me.groups = response['groups'];
+                    me.latest_date = response['latest_date'];
+                    me.arr_dest_stops = [];
+                    me.arr_leaving_stop_shorts = [];
+
+                    for (let i=0; i<Object.keys(response['stops']).length; i++) {
+                        let item = response['stops'][i];
+                        if (item['area_id'] == me.inputParams.area_id) {
+                            me.arr_leaving_stop_shorts.push(item['short']);
+                        }
+                        else {
+                            me.arr_dest_stops.push(item);
+                        }
+                    }
+
+                    if (me.group_times.length) {
+                        // Page Header.
+                        me.setHeaderInfoForPage(true);
+
+                        // Add Modal Header.
+                        me.setAddModalHeaderInfoForPage(true);
+
+                        if (Object.keys(me.group_times).length) {
+                            me.initiateGroupAdditionalInfosArray(Object.keys(me.group_times).length);
+                        }
+                    }
+                    else {
+                        // Page Header.
+                        me.setHeaderInfoForPage(false);
+
+                        // Add Modal Header.
+                        me.setAddModalHeaderInfoForPage(false);
+                    }
+                } else {
+                    // Page Header.
+                    me.setHeaderInfoForPage(false);
+
+                    // Add Modal Header.
+                    me.setAddModalHeaderInfoForPage(false);
+                }
+            });
+    }
+
+/*    
     public showHeaderInfos() {
             let me = this;
-/*            let url = this.urls.retrieve_schedule_by_date_url + "?date=" + moment(me.inputParams.date).utc().format("YYYY-MM-DD"); */
             let url = this.urls.retrieve_schedule_by_date_url + "?date=" + me.inputParams.date; 
             
             this._httpService.sendGetRequestWithParams(url)
@@ -142,7 +202,7 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                             // Add Modal Header.
                             me.setAddModalHeaderInfoForPage(true);
                             
-                            // Collect group ids.
+                            // Collect group_time ids.
                             let group_ids = me._scheduleService.collectGroupIDs(dayInfos);
                             if (Object.keys(group_ids).length == 0) {
                                 return;
@@ -186,8 +246,8 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                                     }
                                 });
                                 
-                                me.groups = grouped_items; 
-                                me.initiateGroupAdditionalInfosArray(Object.keys(me.groups).length);
+                                me.group_times = grouped_items; 
+                                me.initiateGroupAdditionalInfosArray(Object.keys(me.group_times).length);
                             }
                         } else {
                             // Page Header.
@@ -199,6 +259,7 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                     }
                 );
     }
+    */
     
     public initiateGroupAdditionalInfosArray(param_cnt) {
         let me = this;
@@ -266,38 +327,40 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
     
     public setAddModalHeaderInfoForPage(param_isSuccess) {
         let me = this;
-        
+
         if (param_isSuccess == true) {
-                if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
-                    me.addModalHeaderInfos.after_on = "on";
-                } else {
-                    me.addModalHeaderInfos.after_on = "after";
-                }
-
-                if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
-                    me.addModalHeaderInfos.date = me.inputParams.date;
-                } else if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_NEW) {
-                    me.addModalHeaderInfos.date = me.inputParams.date;
-                } else {
-                    if (me.latest_date == "" || me.latest_date == undefined) {
-                        me.addModalHeaderInfos.date = me.inputParams.date;
-                    } else {
-                        me.addModalHeaderInfos.date = me.latest_date;
-                    }
-                }
-
-                me.addModalHeaderInfos.dow = me._scheduleService.convertDayOfWeekFormat(me.getDOW_From_DateString(me.inputParams.date));
-                me.addModalHeaderInfos.city = me._scheduleService.getCityName(me.inputParams.area_id);
-        } else {
+            if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
+                me.addModalHeaderInfos.after_on = "on";
+            }
+            else {
                 me.addModalHeaderInfos.after_on = "after";
+            }
+
+            if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL || me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_NEW) {
                 me.addModalHeaderInfos.date = me.inputParams.date;
-                me.addModalHeaderInfos.dow = me._scheduleService.convertDayOfWeekFormat(me.getDOW_From_DateString(me.inputParams.date));
-                me.addModalHeaderInfos.city = me._scheduleService.getCityName(me.inputParams.area_id);
+            }
+            else {
+                if (me.latest_date == "" || me.latest_date == undefined) {
+                    me.addModalHeaderInfos.date = me.inputParams.date;
+                }
+                else {
+                    me.addModalHeaderInfos.date = me.latest_date;
+                }
+            }
+
+            me.addModalHeaderInfos.dow = me._scheduleService.convertDayOfWeekFormat(me.getDOW_From_DateString(me.inputParams.date));
+            me.addModalHeaderInfos.city = me._scheduleService.getCityName(me.inputParams.area_id);
+        }
+        else {
+            me.addModalHeaderInfos.after_on = "after";
+            me.addModalHeaderInfos.date = me.inputParams.date;
+            me.addModalHeaderInfos.dow = me._scheduleService.convertDayOfWeekFormat(me.getDOW_From_DateString(me.inputParams.date));
+            me.addModalHeaderInfos.city = me._scheduleService.getCityName(me.inputParams.area_id);
         }
     }
     
     
-    
+/*
     public getAllStopsInfo() {
         let me = this;
         let stops_url = this.urls.retrieve_all_stops_url; 
@@ -306,16 +369,20 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
             .subscribe(
                 data => {
                     let temp = [];
+                    me.arr_dest_stops = [];
                     for (let i=0; i<Object.keys(data['data']).length; i++) {
                         let item = data['data'][i];
                         if (item['area_id'] == me.inputParams.area_id) {
                             temp.push(item['short']);
                         }
+                        else {
+                            me.arr_dest_stops.push(item);
+                        }
                     } 
-                    me.arr_stops = temp; 
+                    me.arr_leaving_stop_shorts = temp; 
                 }
             );
-    }
+    }*/
     
     public structTimeArray() {
         let me = this;
@@ -357,10 +424,15 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
             let temp = i.toFixed(2);
             me.arr_prices.push(temp);
         }
+        
+        this.initAddSchedules();
+    }
+
+    public initAddSchedules() {
         for (let i=0; i<3; i++) {
-            me.adding_stops[i] = "";
-            me.adding_hours[i] = "";
-            me.adding_mins[i] = "";
+            this.adding_stops[i] = "";
+            this.adding_hours[i] = "";
+            this.adding_mins[i] = "";
             //me.adding_prices[i] = "";
         }
     }
@@ -371,11 +443,11 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
         if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_NEW 
             || me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
             
-                for (let i=0; i<Object.keys(me.groups).length; i++) {
-                    let group = me.groups[i];
+                for (let i=0; i<Object.keys(me.group_times).length; i++) {
+                    let group_time = me.group_times[i];
                     
-                    for (let j=0; j<Object.keys(group).length; j++) {
-                        let item = group[j];
+                    for (let j=0; j<Object.keys(group_time).length; j++) {
+                        let item = group_time[j];
 
                         // item['date'] = moment(me.inputParams.date).utc().format("YYYY-MM-DD");
                         item['date'] = me.inputParams.date;
@@ -387,6 +459,7 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                                 item['dow'] = moment(me.inputParams.date).day();
                                 item['area_id'] = me.inputParams.area_id;
                         }
+                        delete item['time_id'];
                     }
                 } 
         } 
@@ -402,8 +475,9 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
         
         // Struct post data for saving all.
         let temp_post_data = {};
-        temp_post_data['group_main_info'] = me.groups;
+        temp_post_data['group_main_info'] = me.group_times;
         temp_post_data['group_additional_info'] = me.group_additional_infos; 
+        console.log(temp_post_data);
         
         me._httpService.sendPostJSON(temp_url, temp_post_data)
             .subscribe(
@@ -454,15 +528,16 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                     temp['w_h'] = me.inputParams.schedule_type;
                 }
                 
-                insert_request[i] = temp;
+                insert_request.push(temp);
             } 
         } 
-        
-        me.groups.push(insert_request);
-        
-        // Add empty array to group_additional_infos array.
-        let temp = {};
-        me.group_additional_infos.push(temp);
+
+        if (insert_request.length) {
+            me.group_times.push(insert_request);
+            
+            // Add empty array to group_additional_infos array.
+            me.group_additional_infos.push({});
+        }
         
         jQuery("#add_schedule_modal").modal('hide');
         
@@ -495,7 +570,7 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
             me._router.navigate(link);
         }
         
-        setTimeout(window.location.reload(), 500);
+        setTimeout(window.location.reload(), 200);
         
     }
     

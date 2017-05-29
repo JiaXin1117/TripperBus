@@ -259,7 +259,7 @@ class BusEditController extends Controller
                                 ->where('day_of_week',  date('w', strtotime($reqData['outbound_date'])));
                             });
                         })
-                    ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short')
+                    ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
                     ->orderBy('res_times.time', 'asc')
                     ->get()->toarray();
         $res = array();
@@ -349,7 +349,7 @@ class BusEditController extends Controller
                                 ->where('day_of_week',  date('w', strtotime($reqData['return_date'])));
                             });
                         })
-                    ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short')
+                    ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
                     ->orderBy('res_times.time', 'asc')
                     ->get()->toarray();
             foreach ($result2 as $bus_time) {

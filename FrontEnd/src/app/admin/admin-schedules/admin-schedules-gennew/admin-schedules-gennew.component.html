@@ -21,7 +21,7 @@
     </header>
     <div class="panel-body">
         <div *ngFor = "let group of groups; let i = index;">
-            <app-admin-schedule-edit-bus [group]="group" [stops]="stops" [group_idx]="i"></app-admin-schedule-edit-bus>
+            <app-admin-schedule-edit-bus [group]="group" [leaving_stop_shorts]="stops" [group_idx]="i"></app-admin-schedule-edit-bus>
         </div>
         
         <div class="row">

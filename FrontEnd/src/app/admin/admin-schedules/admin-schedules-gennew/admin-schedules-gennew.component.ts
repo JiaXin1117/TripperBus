@@ -29,14 +29,14 @@ export class AdminSchedulesGennewComponent implements OnInit {
     };
     
     public groups: any[] = [];
-    public stops: string[] = [];
+    public arr_dest_stops: string[] = [];
     
     public adding_stops: string[] = [];
     public adding_hours: string[] = [];
     public adding_mins: string[] = [];
     public adding_prices: string[] = [];
     
-    public arr_stops: string[] = [];
+    public arr_leaving_stop_shorts: string[] = [];
     public arr_hours: number[] = [];
     public arr_mins: number[] = [];
     public arr_prices: string[] = [];
@@ -106,7 +106,7 @@ export class AdminSchedulesGennewComponent implements OnInit {
         this._httpService.sendGetRequestWithParams(stops_url)
             .subscribe(
                 data => {
-                    me.arr_stops = data['data']; 
+                    me.arr_leaving_stop_shorts = data['data']; 
                 }
             );
     }
@@ -118,7 +118,7 @@ export class AdminSchedulesGennewComponent implements OnInit {
             this._httpService.sendGetRequestWithParams(stops_url)
                 .subscribe(
                     data => {
-                        me.stops = data['data']; 
+                        me.arr_dest_stops = data['data']; 
                         
                         let url = this.urls.retrieve_schedule_by_date_url + "?date=" + me.sel_date; 
                         this._httpService.sendGetRequestWithParams(url)

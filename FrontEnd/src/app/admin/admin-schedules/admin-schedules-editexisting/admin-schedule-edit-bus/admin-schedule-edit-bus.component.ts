@@ -13,11 +13,12 @@ declare var jQuery:any;
   styleUrls: ['./admin-schedule-edit-bus.component.css']
 })
 export class AdminScheduleEditBusComponent implements OnInit {
-    public arr_stops: string[] = [];
+    public arr_leaving_stop_shorts: string[] = [];
     public arr_hours: any[] = [];
     public arr_mins: number[] = [];
     
     public selected_group: any[] = [];
+    public selected_group_time: any[] = [];
     public selected_group_additional_info: any[] = [];
 
     public selected_group_idx: number;
@@ -40,7 +41,7 @@ export class AdminScheduleEditBusComponent implements OnInit {
         disable_url: BACKEND_SERVER_URL + "api/admin/schedule/disable_existing_schedule",
         get_group_info_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_group_info",
         get_stop_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stop_from_id",
-        get_all_stop_for_area_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops_for_area",
+//        get_all_stop_for_area_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops_for_area",
         get_dest_stops_for_group: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_dest_stops_for_group",
     };
     
@@ -55,40 +56,119 @@ export class AdminScheduleEditBusComponent implements OnInit {
         this.checkGroupDisability();
     }
 
-    public getMaxCapOfGroup() {
+    public getGroupInfo() {
         let me = this;
 
         // Get group_id.
-        let groupId = me.selected_group[0]['group_id'];
+        let groupId = me.selected_group_time[0]['group_id'];
 
         if (groupId == undefined) {
-                me.selected_group_max_capacity = me._scheduleService.groupMaxCapacity;
-                me.selected_group_additional_info['max_capacity'] = me.selected_group_max_capacity; 
-        } else {
-                let groupURL = me.urls.get_group_info_url + "?group_id=" + groupId; 
-                
-                me._httpService.sendGetRequestWithParams(groupURL)
-                    .subscribe(
-                        data => {
-                            if (data['state'] == 'success') {
-                                let groupInfo = data['data']; 
+            me.selected_group_max_capacity = me._scheduleService.groupMaxCapacity;
+            me.selected_group_additional_info['max_capacity'] = me.selected_group_max_capacity;
 
-                                me.selected_group_max_capacity = groupInfo['max_cap'];
-                                me.selected_group_additional_info['max_capacity'] = me.selected_group_max_capacity; 
+            for (let i = 0; i < Object.keys(me.selected_group_available_dest_stops).length; i++) {
+                let temp = {};
+                let item = me.selected_group_available_dest_stops[i];
+
+                temp['stop_id'] = item['id'];
+                temp['stop_short'] = item['short'];
+
+                if (item['default_dropoff'] == me._scheduleService.stopDropOffType.TYPE_DROPOFF) {
+                    temp['is_dest_stop'] = 'yes';
+                } else {
+                    temp['is_dest_stop'] = 'no';
+                }
+
+                me.selected_group_dest_stops.push(temp);
+            }
+
+            me.extract_DestStopInfos();
+        } else {
+/*            let groupURL = me.urls.get_group_info_url + "?group_id=" + groupId;
+
+            me._httpService.sendGetRequestWithParams(groupURL)
+                .subscribe(
+                data => {
+                    if (data['state'] == 'success') {
+                        let groupInfo = data['data'];*/
+                        let groupInfo = me.selected_group;
+
+                        me.selected_group_max_capacity = groupInfo['max_cap'];
+                        me.selected_group_additional_info['max_capacity'] = me.selected_group_max_capacity;
+                        
+                        let destStops = groupInfo['dest_stops'];
+                        for (let i = 0; i < Object.keys(destStops).length; i++) {
+                            let item = destStops[i];
+
+                            let temp = {};
+                            temp['stop_id'] = item['dest_stop_id'];
+                            temp['stop_short'] = me.get_StopInfo_From_StopID(item['dest_stop_id'])['short'];
+                            temp['is_dest_stop'] = 'yes';
+
+                            me.selected_group_dest_stops.push(temp);
+                        }
+
+                        for (let i = 0; i < Object.keys(me.selected_group_available_dest_stops).length; i++) {
+                            let item = me.selected_group_available_dest_stops[i];
+
+                            let isExisting = 0;
+                            for (let j = 0; j < Object.keys(destStops).length; j++) {
+                                if (item['id'] == destStops[j]['dest_stop_id']) {
+                                    isExisting = 1;
+                                    break;
+                                }
                             }
-                        },
-                        error => alert(error),
-                        () => {}
-                    );
+
+                            if (isExisting == 0) {
+                                let temp = {};
+
+                                temp['stop_id'] = item['id'];
+                                temp['stop_short'] = item['short'];
+
+                                if (item['default_dropoff'] == me._scheduleService.stopDropOffType.TYPE_DROPOFF) {
+                                    temp['is_dest_stop'] = 'yes';
+                                } else {
+                                    temp['is_dest_stop'] = 'no';
+                                }
+
+                                me.selected_group_dest_stops.push(temp);
+                            }
+                        }
+
+                        me.extract_DestStopInfos();
+/*
+                    } else {
+                        for (let i = 0; i < Object.keys(me.selected_group_available_dest_stops).length; i++) {
+                            let item = me.selected_group_available_dest_stops[i];
+                            let temp = {};
+
+                            temp['stop_id'] = item['id'];
+                            temp['stop_short'] = item['short'];
+
+                            if (item['default_dropoff'] == me._scheduleService.stopDropOffType.TYPE_DROPOFF) {
+                                temp['is_dest_stop'] = 'yes';
+                            } else {
+                                temp['is_dest_stop'] = 'no';
+                            }
+
+                            me.selected_group_dest_stops.push(temp);
+
+                        }
+
+                        me.extract_DestStopInfos();
+                    }
+                },
+                error => alert(error),
+                () => { }
+                );*/
         }
-        
     }
     
     // Get destination stops for this group. 
     public getDestStopsForGroup() {
         let me = this; 
         
-        let url;
+/*        let url;
         if (me.selected_group_area_id == me._scheduleService.areaType.TYPE_NEWYORK) {
             url = me.urls.get_all_stop_for_area_url + "?area_id=" + me._scheduleService.areaType.TYPE_BA;
         } else {
@@ -100,10 +180,10 @@ export class AdminScheduleEditBusComponent implements OnInit {
             .subscribe(
                 data => { 
                     if (data['state'] == 'success') {
-                        me.selected_group_available_dest_stops = data['data']; 
+                        me.selected_group_available_dest_stops = data['data']; */
 
                         // Get group_id.
-                        let groupId = me.selected_group[0]['group_id']; 
+                        let groupId = me.selected_group_time[0]['group_id']; 
                         
                         // Get dest stop id.
                         if (groupId == undefined) { // If newly added group
@@ -199,12 +279,12 @@ export class AdminScheduleEditBusComponent implements OnInit {
                                         error => alert(error),
                                         () => {}
                                     );
-                        }
+                        }/*
                     }
                 },
                 error => alert(error),
                 () => {}
-            );
+            );*/
         
     }
 
@@ -245,7 +325,7 @@ export class AdminScheduleEditBusComponent implements OnInit {
     }
     
     public getClass() {
-        if(this.selected_group_disabled) {
+        if(this.selected_group_additional_info['Disabled']) {
             return "alert-disabled";
         } else {
             return "alert-enabled";
@@ -255,10 +335,12 @@ export class AdminScheduleEditBusComponent implements OnInit {
     public checkGroupDisability() {
         let me = this;
         
-        if (me.selected_group[0]['open'] == me._scheduleService.scheduleDisabilty.TYPE_DISABLED) {
-            me.selected_group_disabled = true;
+        if (me.selected_group_time[0]['open'] == me._scheduleService.scheduleDisabilty.TYPE_DISABLED) {
+            me.selected_group_additional_info['Disabled'] = 1;
+//            me.selected_group_disabled = true;
         } else {
-            me.selected_group_disabled = false;
+            me.selected_group_additional_info['Disabled'] = 0;
+//            me.selected_group_disabled = false;
         } 
     }
     
@@ -307,29 +389,34 @@ export class AdminScheduleEditBusComponent implements OnInit {
         me.selected_group_max_capacity = me._scheduleService.groupMaxCapacity;
         me.selected_group_additional_info['max_capacity'] = me.selected_group_max_capacity;
         
-        for (let i=0; i<Object.keys(me.selected_group).length; i++) {
-            let item = me.selected_group[i]; 
+        for (let i=0; i<Object.keys(me.selected_group_time).length; i++) {
+            let item = me.selected_group_time[i]; 
             me.selected_stops[i] = item['stop_area'];
             me.selected_hours[i] = item['time'].substring(0, 2);
             me.selected_mins[i] = item['time'].substring(3, 5); 
         } 
 
         // Get destination stops of this group.        
-        me.getDestStopsForGroup(); 
+//        me.getDestStopsForGroup(); 
 
         // Get max cap of this group.
-        me.getMaxCapOfGroup();
+        me.getGroupInfo();
         
     }
 
     @Input()
-    set stops(param_stops: string[]) {
-        this.arr_stops = param_stops; 
+    set leaving_stop_shorts(param_leaving_stop_shorts: string[]) {
+        this.arr_leaving_stop_shorts = param_leaving_stop_shorts; 
     }
     
     @Input()
     set group(param_group: any[]) {
         this.selected_group = param_group; 
+    }
+    
+    @Input()
+    set group_time(param_group_time: any[]) {
+        this.selected_group_time = param_group_time; 
     }
     
     @Input()
@@ -346,23 +433,33 @@ export class AdminScheduleEditBusComponent implements OnInit {
     set group_additional_info(param_additional_info: any[]) {
         let me = this;
         
-        me.selected_group_additional_info = param_additional_info; 
-        me.selected_group_additional_info['group_id'] = me.selected_group[0]['group_id']; 
+        me.selected_group_additional_info = param_additional_info;
+        me.selected_group_additional_info['group_id'] = me.selected_group_time[0]['group_id']; 
+        me.selected_group_additional_info['Disabled'] = 0;
+        me.selected_group_additional_info['Removed'] = 0;
+    }
+
+    @Input()
+    set group_available_dest_stops(param_group_available_dest_stops: any[]) {
+        this.selected_group_available_dest_stops = param_group_available_dest_stops;
     }
     
     public onRemove() {
         let me = this;
         
         let remove_request = [];
-        for (let i=0; i<Object.keys(me.selected_group).length; i++) {
-            let group_item = me.selected_group[i];
+        for (let i=0; i<Object.keys(me.selected_group_time).length; i++) {
+            let group_item = me.selected_group_time[i];
             
             let temp = {};
             temp['time_id'] = group_item['time_id'];
             
             remove_request[i] = temp;
         } 
+
+        me.selected_group_additional_info['Removed'] = 1;
         
+        /*
         this._httpService.sendPostJSON(me.urls.remove_url, remove_request)
             .subscribe(
                 data => {
@@ -371,21 +468,25 @@ export class AdminScheduleEditBusComponent implements OnInit {
                 error => alert(error),
                 () => {}
             );
+        */
     }
     
     public onDisable() {
         let me = this;
         
         let disable_request = []; 
-        for (let i=0; i<Object.keys(me.selected_group).length; i++) {
-            let group_item = me.selected_group[i];
+        for (let i=0; i<Object.keys(me.selected_group_time).length; i++) {
+            let group_item = me.selected_group_time[i];
             
             let temp = {};
             temp['time_id'] = group_item['time_id'];
             
             disable_request[i] = temp;
         } 
+
+        me.selected_group_additional_info['Disabled'] = 1;
         
+        /*
         this._httpService.sendPostJSON(me.urls.disable_url, disable_request)
             .subscribe(
                 data => {
@@ -395,15 +496,15 @@ export class AdminScheduleEditBusComponent implements OnInit {
                 error => alert(error),
                 () => {}
             );
-        
+        */
     }
     
     public onReenable() {
         let me = this;
         
         let reenable_request = []; 
-        for (let i=0; i<Object.keys(me.selected_group).length; i++) {
-            let group_item = me.selected_group[i];
+        for (let i=0; i<Object.keys(me.selected_group_time).length; i++) {
+            let group_item = me.selected_group_time[i];
             
             let temp = {};
             temp['time_id'] = group_item['time_id'];
@@ -411,7 +512,11 @@ export class AdminScheduleEditBusComponent implements OnInit {
             
             reenable_request[i] = temp;
         } 
+
+        me.selected_group_additional_info['Disabled'] = 0;
+
         
+        /*
         this._httpService.sendPostJSON(me.urls.disable_url, reenable_request)
             .subscribe(
                 data => {
@@ -421,29 +526,30 @@ export class AdminScheduleEditBusComponent implements OnInit {
                 error => alert(error),
                 () => {}
             );
+        */
     }
     
     public onChangeStopsSelect($event, idx) {
         let me = this;
-        me.selected_group[idx]['stop_area'] = $event;
+        me.selected_group_time[idx]['stop_area'] = $event;
     }
     
     public onChangeHoursSelect($event, idx) {
         let me = this;
         
         let temp;
-        temp = $event + ":" + me.selected_group[idx]['time'].substring(3);
+        temp = $event + ":" + me.selected_group_time[idx]['time'].substring(3);
         
-        me.selected_group[idx]['time'] = temp;
+        me.selected_group_time[idx]['time'] = temp;
     }
     
     public onChangeMinsSelect($event, idx) {
         let me = this;
         
         let temp;
-        temp = me.selected_group[idx]['time'].substring(0, 2) + ":" + $event + ":" + me.selected_group[idx]['time'].substring(6);
+        temp = me.selected_group_time[idx]['time'].substring(0, 2) + ":" + $event + ":" + me.selected_group_time[idx]['time'].substring(6);
         
-        me.selected_group[idx]['time'] = temp;
+        me.selected_group_time[idx]['time'] = temp;
     }
     
     public onChangeMaxCapacity($event) {

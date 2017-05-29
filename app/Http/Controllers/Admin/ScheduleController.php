@@ -200,13 +200,138 @@ class ScheduleController extends Controller
             
     }
     
+    // Retrieve GroupTimes.
+    public function getRetriveGroupTimes() { 
+        $date = Input::get('date');
+        $area_id = Input::get('area_id');
+        $schedule_type = Input::get('schedule_type');
+
+        $cur_date = date_create($date); 
+        $response = array();
+        $times = array();
+        
+        if ($schedule_type == config('config.TYPE_SCHEDULE_HOLIDAY')) {
+            // Get Holiday Schedule First.
+            $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                ->where('date', $cur_date)
+                // ->where('day_of_week',  date('w', $cur_date->getTimestamp()))
+                ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                ->where('area_id', $area_id)
+                ->count(); 
+            
+            if ($cnt > 0) {
+                $result = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                    ->where('date', $cur_date)
+                    //->where('day_of_week',  date('w', $cur_date->getTimestamp()))
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('area_id', $area_id)
+                    ->get();
+                
+                foreach ($result as $time) {
+                    $temp = array();
+                    $temp['time'] = $time->time;
+                    $temp['stop_area'] = Res_Stops::find($time->stop_id)->short;
+                    $temp['max_cap'] = Res_Groups::find($time->group_id)->max_cap;
+                    $temp['group_id'] = $time->group_id;
+                    $temp['w_h'] = $time->w_h;
+                    $temp['date'] = $time->date;
+                    $temp['dow'] = $time->day_of_week;
+                    $temp['time_id'] = $time->id;
+                    $temp['open'] = $time->open;
+                    $temp['area_id'] = $time->area_id;
+
+                    $times[] = $temp;
+                }
+            } 
+        } 
+        else {
+            // Get weekly schedule
+            $latest_date = \App\Models\Res_Times::where('date', '<=',  $cur_date)
+                ->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                ->where('day_of_week',  date('w', strtotime($date)))
+                ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                ->where('area_id', $area_id)
+                ->max('date');
+
+            $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                ->where('date', $latest_date)
+                ->where('day_of_week',  date('w', strtotime($date)))
+                ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                ->where('area_id', $area_id)
+                ->count();
+            
+            if ($cnt > 0) {
+                $result = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                    ->where('date', $latest_date)
+                    ->where('day_of_week',  date('w', strtotime($date)))
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('area_id', $area_id)
+                    ->get();
+
+                foreach ($result as $time) {
+                    $temp = array();
+                    $temp['time'] = $time->time;
+                    $temp['stop_area'] = Res_Stops::find($time->stop_id)->short;
+                    $temp['max_cap'] = Res_Groups::find($time->group_id)->max_cap;
+                    $temp['group_id'] = $time->group_id;
+                    $temp['w_h'] = $time->w_h;
+                    $temp['date'] = $time->date;
+                    $temp['dow'] = $time->day_of_week;
+                    $temp['time_id'] = $time->id;
+                    $temp['open'] = $time->open;
+                    $temp['area_id'] = $time->area_id;
+
+                    $times[] = $temp;
+                }
+            }
+            
+            $response['latest_date'] = $latest_date;
+        }
+
+        $group_times = array();
+        $groups = array();
+
+        if (count($times) > 0) {
+            usort($times, function($a, $b) { return ($a['time'] - $b['time']); });
+
+            $grouped = array();
+            foreach($times as $item) {
+                $grouped[$item['group_id']][] = $item;
+            }
+
+            foreach($grouped as $item) {
+                $group_times[] = $item;
+
+                $group = Res_Groups::find($item[0]['group_id']);
+                $group['dest_stops'] = Res_Groups_DestStops::where('group_id', $item[0]['group_id'])->get();
+                $groups[] = $group;
+            }
+        }
+
+        $response['group_times'] = $group_times;
+        $response['groups'] = $groups;
+        $response['stops'] = Res_Stops::all()->toarray();
+
+        return response()->json([
+            'state' => 'success',
+            'data' => $response
+        ]);
+/*        
+        return response()->json([
+            'state' => 'fail',
+            'data' => 'Cannot find reservation for this date.'
+        ]);*/
+    }
+
     public function getRetrieveStops() {
         $stops = Res_Stops::all();
-        
+
+        $response = $stops->toarray();
+/*        
         $response = array();
         foreach ($stops as $stop) {
             $response[] = $stop;
-        }
+        }*/
         
         return response()->json([
             'state' => 'success',
@@ -279,6 +404,8 @@ class ScheduleController extends Controller
         for ($i=0; $i<count($group_main_info); $i++) { 
             $one_group = $group_main_info[$i]; 
             $isNewGroup = 0;
+            $isRemoved = (isset($group_additional_info[$i]['Removed']) && $group_additional_info[$i]['Removed']);
+            $isDisabled = (isset($group_additional_info[$i]['Disabled']) && $group_additional_info[$i]['Disabled']);
             
             // ********* Update infos on res_times. 
             for ($j=0; $j<count($one_group); $j++) { 
@@ -292,6 +419,8 @@ class ScheduleController extends Controller
                     $stop_id = Res_Stops::where('short', $item['stop_area'])
                             ->first()->id; 
                     $temp->stop_id = $stop_id;
+                    $temp->valid = $isRemoved ? config('config.TYPE_SCHEDULE_REMOVED') : config('config.TYPE_SCHEDULE_UNREMOVED');
+                    $temp->open = $isDisabled ? config('config.TYPE_SCHEDULE_DISABLED') : config('config.TYPE_SCHEDULE_ENABLED');
                     $temp->save(); 
                 } else {
                     $isNewGroup = 1;
@@ -301,6 +430,9 @@ class ScheduleController extends Controller
             // Update infos on res_times. ********* 
             
             if ($isNewGroup === 1) {
+                if ($isRemoved)
+                    continue;
+                    
                 $new_group = new Res_Groups; 
                 $new_group->max_cap = $group_additional_info[$i]['max_capacity'];
                 $new_group->save();
@@ -321,7 +453,7 @@ class ScheduleController extends Controller
                     $new_time->date = $item['date']; 
                     $new_time->w_h = isset($item['w_h']) ? $item['w_h'] : config('config.TYPE_SCHEDULE_WEEKLY');
                     $new_time->valid = isset($item['valid']) ? $item['valid'] : config('config.TYPE_SCHEDULE_UNREMOVED');
-                    $new_time->open = isset($item['open']) ? $item['open'] : config('config.TYPE_SCHEDULE_ENABLED');
+                    $new_time->open = $isDisabled ? config('config.TYPE_SCHEDULE_DISABLED') : config('config.TYPE_SCHEDULE_ENABLED');
                     $new_time->day_of_week = $item['dow']; 
                     $new_time->area_id = $item['area_id']; 
 
@@ -457,6 +589,7 @@ class ScheduleController extends Controller
             $param_groupId = Input::get('group_id');
             
             $group = Res_Groups::find($param_groupId);
+            $group['dest_stops'] = Res_Groups_DestStops::where('group_id', $param_groupId)->get();
             if (isset($group)) {
                 return response()->json([
                     'state' => 'success',

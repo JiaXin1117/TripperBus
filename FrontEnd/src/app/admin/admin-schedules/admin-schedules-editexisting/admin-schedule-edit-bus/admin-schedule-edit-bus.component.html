@@ -16,19 +16,19 @@
             </div>
             
             <div id='detailed_info'>
-                <div class="row" *ngFor = "let group_item of selected_group; let i = index;" >
+                <div class="row" *ngFor = "let group_time_item of selected_group_time; let i = index;" >
                     <div class="col-sm-5">
-                        <select class="form-control" [(ngModel)]="selected_stops[i]" (ngModelChange)="onChangeStopsSelect($event, i)" [disabled]="isDisabled">
-                            <option *ngFor="let stop of arr_stops;">{{stop}}</option>
+                        <select class="form-control" [(ngModel)]="selected_stops[i]" (ngModelChange)="onChangeStopsSelect($event, i)" [disabled]="selected_group_additional_info['Disabled']">
+                            <option *ngFor="let stop of arr_leaving_stop_shorts;">{{stop}}</option>
                         </select>
                     </div>
                     <div class="col-sm-4">
-                        <select class="form-control " [(ngModel)]="selected_hours[i]" (ngModelChange)="onChangeHoursSelect($event, i)" [disabled]="isDisabled">
+                        <select class="form-control " [(ngModel)]="selected_hours[i]" (ngModelChange)="onChangeHoursSelect($event, i)" [disabled]="selected_group_additional_info['Disabled']">
                             <option *ngFor="let hour of arr_hours" value="{{hour['value']}}">{{hour['text']}}</option>
                         </select>
                     </div>
                     <div class="col-sm-3">
-                        <select class="form-control" [(ngModel)]="selected_mins[i]" (ngModelChange)="onChangeMinsSelect($event, i)" [disabled]="isDisabled">
+                        <select class="form-control" [(ngModel)]="selected_mins[i]" (ngModelChange)="onChangeMinsSelect($event, i)" [disabled]="selected_group_additional_info['Disabled']">
                             <option *ngFor="let min of arr_mins;">{{min}}</option>
                         </select>
                     </div>
@@ -41,10 +41,10 @@
                     <div class="row div-stops-area">
                         <div class="col-sm-4 col-sm-4-custom" *ngFor="let dest_stop of selected_group_dest_stops; let i=index;">
                             <label class="checkbox-inline" *ngIf="dest_stop['is_dest_stop'] == 'yes'">
-                                <input type="checkbox" checked (change)="onChangeDestinationCheckBox($event)" value="{{ dest_stop['stop_id'] }}">{{ dest_stop['stop_short'] }}
+                                <input type="checkbox" checked (change)="onChangeDestinationCheckBox($event)" value="{{ dest_stop['stop_id'] }}" [disabled]="selected_group_additional_info['Disabled']">{{ dest_stop['stop_short'] }}
                             </label>
                             <label class="checkbox-inline" *ngIf="dest_stop['is_dest_stop'] == 'no'">
-                                <input type="checkbox" value="{{ dest_stop['stop_id'] }}" (change)="onChangeDestinationCheckBox($event)">{{ dest_stop['stop_short'] }}
+                                <input type="checkbox" value="{{ dest_stop['stop_id'] }}" (change)="onChangeDestinationCheckBox($event)" [disabled]="selected_group_additional_info['Disabled']">{{ dest_stop['stop_short'] }}
                             </label>
                         </div>
                     </div>
@@ -60,15 +60,15 @@
                     <h5 style="text-align: right;">Max Capacity: </h5>
                 </div>
                 <div class="col-sm-6">
-                    <input class="form-control input-max-capacity" name="input_max_capacity" type="text" [(ngModel)]="selected_group_max_capacity" (ngModelChange)="onChangeMaxCapacity($event)">
+                    <input class="form-control input-max-capacity" name="input_max_capacity" type="text" [(ngModel)]="selected_group_max_capacity" (ngModelChange)="onChangeMaxCapacity($event)" [disabled]="selected_group_additional_info['Disabled']">
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-xs-12 text-center" style='padding-top: 15px;'>
                     <button class="btn btn-sm btn-danger" (click)="onRemove()">Remove</button>
-                    <button *ngIf="!selected_group_disabled" class="btn btn-sm btn-warning" (click)="onDisable()">Disable</button>
-                    <button *ngIf="selected_group_disabled" class="btn btn-sm btn-warning" style="background-color: green;" (click)="onReenable()">Re-enable</button>
+                    <button *ngIf="!selected_group_additional_info['Disabled']" class="btn btn-sm btn-warning" (click)="onDisable()">Disable</button>
+                    <button *ngIf="selected_group_additional_info['Disabled']" class="btn btn-sm btn-warning" style="background-color: green;" (click)="onReenable()">Enable</button>
                 </div>
             </div>
     </div>

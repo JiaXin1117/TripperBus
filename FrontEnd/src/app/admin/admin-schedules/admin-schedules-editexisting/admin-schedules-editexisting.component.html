@@ -21,8 +21,8 @@
         </h3>
     </header>
     <div class="panel-body">
-        <div *ngFor = "let group of groups; let i = index;">
-            <app-admin-schedule-edit-bus [group]="group" [stops]="arr_stops" [group_idx]="i" [outbound_area_id]="inputParams.area_id" [group_additional_info]="group_additional_infos[i]"></app-admin-schedule-edit-bus>
+        <div *ngFor = "let group_time of group_times; let i = index;">
+            <app-admin-schedule-edit-bus *ngIf="!group_additional_infos[i]['Removed']" [group_time]="group_time" [leaving_stop_shorts]="arr_leaving_stop_shorts" [group_idx]="i" [outbound_area_id]="inputParams.area_id" [group_additional_info]="group_additional_infos[i]" [group_available_dest_stops]="arr_dest_stops" [group]="groups[i]"></app-admin-schedule-edit-bus>
         </div>
         
         <div class="row">
@@ -66,8 +66,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <select *ngIf="arr_stops.length" class="form-control" [(ngModel)]="adding_stops[0]">
-                                <option *ngFor="let stop of arr_stops" value="{{stop}}">{{stop}}</option>
+                            <select *ngIf="arr_leaving_stop_shorts.length" class="form-control" [(ngModel)]="adding_stops[0]">
+                                <option *ngFor="let stop of arr_leaving_stop_shorts" value="{{stop}}">{{stop}}</option>
                             </select>
                         </td>
                         <td>
@@ -89,8 +89,8 @@
                     
                     <tr>
                         <td>
-                            <select *ngIf="arr_stops.length" class="form-control" [(ngModel)]="adding_stops[1]">
-                                <option *ngFor="let stop of arr_stops" value="{{stop}}">{{stop}}</option>
+                            <select *ngIf="arr_leaving_stop_shorts.length" class="form-control" [(ngModel)]="adding_stops[1]">
+                                <option *ngFor="let stop of arr_leaving_stop_shorts" value="{{stop}}">{{stop}}</option>
                             </select>
                         </td>
                         <td>
@@ -112,8 +112,8 @@
                     
                     <tr>
                         <td>
-                            <select *ngIf="arr_stops.length" class="form-control" [(ngModel)]="adding_stops[2]">
-                                <option *ngFor="let stop of arr_stops" value="{{stop}}">{{stop}}</option>
+                            <select *ngIf="arr_leaving_stop_shorts.length" class="form-control" [(ngModel)]="adding_stops[2]">
+                                <option *ngFor="let stop of arr_leaving_stop_shorts" value="{{stop}}">{{stop}}</option>
                             </select>
                         </td>
                         <td>

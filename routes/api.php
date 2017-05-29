@@ -30,6 +30,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.schedule.retrieve_by_month',
             'uses' => 'ScheduleController@getRetrieveSchedulesByMonth',
         ]);
+        Route::get('/retrieve_group_times', [
+            'as' => 'admin.schedule.retrieve_group_times',
+            'uses' => 'ScheduleController@getRetriveGroupTimes',
+        ]);
         Route::get('/retrieve_stops', [
             'as' => 'admin.schedule.retrieve_stops',
             'uses' => 'ScheduleController@getRetrieveStops',
