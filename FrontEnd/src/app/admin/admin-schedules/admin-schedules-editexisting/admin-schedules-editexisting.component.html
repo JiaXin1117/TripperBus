@@ -27,7 +27,7 @@
         
         <div class="row">
             <div class="col-sm-12 text-center form-group">
-                <button class="btn btn-success btn-lg" (click)="onSaveAll()"><span class="fa fa-check"></span> Save All </button>
+                <button class="btn btn-success btn-lg" (click)="onSaveAll()" [disabled]="nowSaving"><span class="fa fa-check"></span> Save All </button>
             </div>
         </div>
     </div>
@@ -145,29 +145,21 @@
   </div>
 </div>
 
-
-<div id="confirm_saveall_modal" class="modal fade" role="dialog">
+<div bsModal #confirm_saveall_modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHidden)="refreshCurrentPage(this.inputParams.button_type);">
     <div class="modal-dialog">
 
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Confirmations</h4>
             </div>
             <div class="modal-body">
                 <p>Successfully saved all bus reservations.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-dismiss="modal" (click)="refreshCurrentPage(inputParams.button_type)">OK</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal" (click)="hideConfirmSaveAllModal()">OK</button>
             </div>
         </div>
 
     </div>
 </div>
-
-
-
-
-
-

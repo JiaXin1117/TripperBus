@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {ScheduleService} from "../../../services/schedule_service/schedule.service";
-import {HttpService} from "../../../services/http_service/http.service";
+import 'rxjs/add/operator/switchMap';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ScheduleService } from "../../../services/schedule_service/schedule.service";
+import { HttpService } from "../../../services/http_service/http.service";
 import { BACKEND_SERVER_URL } from '../../../config/config';
-import { Router }   from '@angular/router';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { Observable } from 'rxjs/Observable';
 
 import * as moment from "moment";
 declare var jQuery:any;
@@ -14,6 +16,7 @@ declare var jQuery:any;
   styleUrls: ['./admin-schedules-editexisting.component.css']
 })
 export class AdminSchedulesEditexistingComponent implements OnInit {
+    @ViewChild('confirm_saveall_modal') public confirm_saveall_modal: ModalDirective;
 
     public inputParams: any = {
         date: "",
@@ -63,6 +66,8 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
     public adding_hours: string[] = [];
     public adding_mins: string[] = [];
     //public adding_prices: string[] = [];
+
+    public nowSaving = false;
     
     constructor(public _route: ActivatedRoute, 
                 public _scheduleService: ScheduleService, 
@@ -71,18 +76,34 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
     }
 
     ngOnInit() {
-            this.structTimeArray();
-            this.receiveParamsFromRoute();
-//            this.getDefaultStopID();
-//            this.getAllStopsInfo();
-            this.showHeaderInfos(); 
+        this.structTimeArray();
+        this.initThis();
+    }
+
+    public initThis() {
+        this.receiveParamsFromRoute()
+        .subscribe(schedule_type => this.showHeaderInfos());
+
+        //this.showHeaderInfos());
+//      this.getDefaultStopID();
+//      this.getAllStopsInfo();
+//      this.showHeaderInfos(); 
     }
     
     public receiveParamsFromRoute() {
-            this.inputParams.date = this._route.snapshot.params['sel_date']; 
+/*            this.inputParams.date = this._route.snapshot.params['sel_date']; 
             this.inputParams.button_type = this._route.snapshot.params['button_type']; 
             this.inputParams.area_id = this._route.snapshot.params['area_id']; 
-            this.inputParams.schedule_type = this._route.snapshot.params['schedule_type']; 
+            this.inputParams.schedule_type = this._route.snapshot.params['schedule_type']; */
+            
+            return this._route.params
+            .switchMap((params: Params) => {
+                this.inputParams.date = params['sel_date'];
+                this.inputParams.button_type = params['button_type'];
+                this.inputParams.area_id = params['area_id'];
+                this.inputParams.schedule_type = params['schedule_type'];
+                return this.inputParams.schedule_type;
+            });
     }
     
     public popupAddScheduleModal() {
@@ -439,12 +460,18 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
     
     public onSaveAll() { 
         let me = this; 
-        
+
+        if (this.nowSaving) {
+            return;
+        }
+        this.nowSaving = true;
+
         if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_NEW 
             || me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL) {
             
                 for (let i=0; i<Object.keys(me.group_times).length; i++) {
                     let group_time = me.group_times[i];
+                    me.group_additional_infos[i]['New'] = 1;
                     
                     for (let j=0; j<Object.keys(group_time).length; j++) {
                         let item = group_time[j];
@@ -459,7 +486,6 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                                 item['dow'] = moment(me.inputParams.date).day();
                                 item['area_id'] = me.inputParams.area_id;
                         }
-                        delete item['time_id'];
                     }
                 } 
         } 
@@ -482,7 +508,9 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
         me._httpService.sendPostJSON(temp_url, temp_post_data)
             .subscribe(
                 data => {
-                    jQuery("#confirm_saveall_modal").modal('show');
+                    this.showConfirmSaveAllModal();
+//                    jQuery("#confirm_saveall_modal").modal('show');
+//                    jQuery("#confirm_saveall_modal").on('hidden.bs.modal', alert("abc"));
                 },
                 error => alert(error),
                 () => {}
@@ -554,7 +582,6 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
     public refreshCurrentPage(param_btnType) {
         let link;
         let me = this;
-        
         if (param_btnType == me._scheduleService.buttonType.TYPE_EDIT_EXISTING) {
             link = ['/admin/schedules_edit', me.inputParams.date, me._scheduleService.buttonType.TYPE_EDIT_EXISTING
                         , me.inputParams.area_id, me.inputParams.schedule_type]; 
@@ -570,8 +597,18 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
             me._router.navigate(link);
         }
         
-        setTimeout(window.location.reload(), 200);
-        
+//        setTimeout(window.location.reload(), 200);
+        this.initThis();
+
+        this.nowSaving = false;
     }
-    
+
+    public showConfirmSaveAllModal(): void {
+        this.confirm_saveall_modal.show();
+    }
+
+    public hideConfirmSaveAllModal(): void {
+        this.confirm_saveall_modal.hide();
+    }
+
 }

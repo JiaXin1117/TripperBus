@@ -402,18 +402,25 @@ class ScheduleController extends Controller
         $group_additional_info = $data['group_additional_info'];
         
         for ($i=0; $i<count($group_main_info); $i++) { 
-            $one_group = $group_main_info[$i]; 
+            $one_group = $group_main_info[$i];
+            
             $isNewGroup = 0;
             $isRemoved = (isset($group_additional_info[$i]['Removed']) && $group_additional_info[$i]['Removed']);
             $isDisabled = (isset($group_additional_info[$i]['Disabled']) && $group_additional_info[$i]['Disabled']);
+            $isNew = (isset($group_additional_info[$i]['New']) && $group_additional_info[$i]['New']);
             
             // ********* Update infos on res_times. 
             for ($j=0; $j<count($one_group); $j++) { 
                 $item = $one_group[$j]; 
                 
-                if (isset($item['time_id'])) {
+                 if (isset($item['time_id'])) {
                     $time_id = (int)$item['time_id']; 
-                    $temp = Res_Times::find($time_id); 
+                    $temp = Res_Times::find($time_id);
+
+                    if ($isNew && ($temp->date != $item['date'])) {
+                        $isNewGroup = 1;
+                        break;
+                    }
                  
                     $temp->time = $item['time']; 
                     $stop_id = Res_Stops::where('short', $item['stop_area'])
@@ -421,6 +428,7 @@ class ScheduleController extends Controller
                     $temp->stop_id = $stop_id;
                     $temp->valid = $isRemoved ? config('config.TYPE_SCHEDULE_REMOVED') : config('config.TYPE_SCHEDULE_UNREMOVED');
                     $temp->open = $isDisabled ? config('config.TYPE_SCHEDULE_DISABLED') : config('config.TYPE_SCHEDULE_ENABLED');
+                    $temp->w_h = isset($item['w_h']) ? $item['w_h'] : config('config.TYPE_SCHEDULE_WEEKLY');
                     $temp->save(); 
                 } else {
                     $isNewGroup = 1;
@@ -429,7 +437,7 @@ class ScheduleController extends Controller
             }
             // Update infos on res_times. ********* 
             
-            if ($isNewGroup === 1) {
+            if ($isNewGroup) {
                 if ($isRemoved)
                     continue;
                     
