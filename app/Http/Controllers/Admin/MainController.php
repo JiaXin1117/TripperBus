@@ -10,6 +10,7 @@ use App\Models\Res_Groups_DestStops;
 use App\Models\Res_Times;
 use App\Models\Res_Reservations;
 use Illuminate\Support\Facades\Input;
+use DB;
 
 class MainController extends Controller
 {
@@ -23,24 +24,19 @@ class MainController extends Controller
     public function getRetrieveReservations() {
         $param_outbound_date = Input::get('outbound_date');
         $param_outbound_area_id = Input::get('leaving_from');
-              
-        $cnt = \App\Models\Res_Reservations::where('date', $param_outbound_date)
-                ->where('outbound_area_id',  $param_outbound_area_id)
-                ->count(); 
-        
-        if ($cnt > 0) {
-            $result = \App\Models\Res_Reservations::where('date', $param_outbound_date)
-                ->where('outbound_area_id',  $param_outbound_area_id)
-                ->get(['created_at AS Date Made', 'res_reservations.*']); 
 
-            return response()->json([
-                'state' => 'success',
-                'data' => $result
-            ]);
-        }
+        $result = \App\Models\Res_Reservations::where('res_reservations.date', $param_outbound_date)
+        ->join('res_times', function($join){
+            $join->on('res_times.id', '=', 'res_reservations.time_id')
+            ->where('res_times.valid', config('config.TYPE_SCHEDULE_UNREMOVED'));
+        })
+        ->where('outbound_area_id',  $param_outbound_area_id)
+//        ->select(DB::raw('res_reservations.*'))
+        ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*']); 
 
         return response()->json([
-            'state' => 'fail'
+            'state' => 'success',
+            'data' => $result
         ]);
     }
 

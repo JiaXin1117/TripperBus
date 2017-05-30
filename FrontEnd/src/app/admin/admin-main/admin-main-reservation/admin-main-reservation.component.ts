@@ -58,8 +58,8 @@ export class AdminMainReservationComponent implements OnInit {
     public returning_bus: Bus = null;
     public returning_time: Time = null;
     public returning_price: number = 0;
-    public reservations: Reservation[] = Array();
-    public reservations_from_time: Reservation[][] = Array();
+    public reservations: Reservation[];
+    public reservations_from_time: Reservation[][];
 
     // Default selection
     showField: number[] = [];
@@ -148,10 +148,14 @@ export class AdminMainReservationComponent implements OnInit {
 
         me.refreshData();
 
-        me.newReservation['Seats'] = 1;
     }
 
     public refreshData(){
+        this.reservations = Array();
+        this.reservations_from_time = Array();
+        this.newReservation.init();
+        this.newReservation['Seats'] = 1;
+
         let url = this._mainService.URLS.get_buses_for_edit + "?outbound_date=" + this.inputParams.outbound_date + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date;
 
         this._httpService.sendGetRequestWithParams(url)
@@ -213,7 +217,6 @@ export class AdminMainReservationComponent implements OnInit {
             me.inputParams.returning_bus_groupId = me._route.snapshot.params['returning_bus_groupId']; 
             me.inputParams.returning_timeId = me._route.snapshot.params['returning_timeId']; 
             me.inputParams.returning_price = parseFloat(me._route.snapshot.params['returning_price']);
-            console.log(me.inputParams.outbound_price);
     }
     
     public structHeaderLeaving() {
@@ -260,8 +263,14 @@ export class AdminMainReservationComponent implements OnInit {
                 if (!this.reservations_from_time[this.inputParams.outbound_timeId])
                     this.reservations_from_time[this.inputParams.outbound_timeId] = Array();
                 this.reservations_from_time[this.inputParams.outbound_timeId].push(createdReservation);
+
                 this.hideChildModal();
+
+//                this.refreshData();
+                
+                this.outbound_time['reservation_cnt'] += this.newReservation['Seats'];
                 this.newReservation.init();
+                this.newReservation['Seats'] = 1;
             },
             error => {
                 this.successMessage = "";
