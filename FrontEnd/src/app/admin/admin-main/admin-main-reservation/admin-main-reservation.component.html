@@ -8,7 +8,7 @@
                 [texts]="fieldTexts" [settings]="fieldSettings" [(ngModel)]="showField" (ngModelChange)="onShowFieldChange($event)"></ss-multiselect-dropdown>
         </div>
         <div class="col-sm-4 form-inline">
-            <a class="btn btn-info" (click)="showChildModal()">Add Reservation</a>
+            <a class="btn btn-info" (click)="showAddReservationModal()">Add Reservation</a>
         </div>
     </div>
 </div>
@@ -26,7 +26,7 @@
         </h4>
     </div>
     <div style="overflow-x:scroll">
-        <table *ngIf="reservations_from_time.length" class="table table-striped table-bordered" [mfData]="reservations_from_time[outbound_time.id]" #mf="mfDataTable" [mfRowsOnPage]="10000" (mfSelectedEntities)="setSelectedEntities($event)">
+        <table *ngIf="reservations_from_time.length && reservations_from_time[outbound_time.id]" class="table table-striped table-bordered" [mfData]="reservations_from_time[outbound_time.id]" #mf="mfDataTable" [mfRowsOnPage]="10000" (mfSelectedEntities)="setSelectedEntities($event)">
             <thead>
                 <tr>
                     <th><mfRowSelectorHead></mfRowSelectorHead></th>
@@ -43,8 +43,8 @@
             <tbody>
                 <tr *ngFor="let item of mf.data; let ndx = index">
                     <td><mfRowSelector [entity]="item" [checkboxId]="ndx"></mfRowSelector></td>
-                    <td>{{item['First Name']}}</td>
-                    <td>{{item['Last Name']}}</td>
+                    <td><a (click)="editReservation(item);">{{item['First Name']}}</a></td>
+                    <td><a (click)="editReservation(item);">{{item['Last Name']}}</a></td>
                     <td>{{item['Phone']}}</td>
                     <td>{{item['Email']}}</td>
                     <td>{{item['Seats']}}</td>
@@ -90,8 +90,8 @@
                     <tbody>
                         <tr *ngFor="let item of mf.data; let ndx = index">
                             <td><mfRowSelector [entity]="item" [checkboxId]="ndx"></mfRowSelector></td>
-                            <td>{{item['First Name']}}</td>
-                            <td>{{item['Last Name']}}</td>
+                            <td><a (click)="editReservation(item);">{{item['First Name']}}</a></td>
+                            <td><a (click)="editReservation(item);">{{item['Last Name']}}</a></td>
                             <td>{{item['Phone']}}</td>
                             <td>{{item['Email']}}</td>
                             <td>{{item['Seats']}}</td>
@@ -112,43 +112,45 @@
         </ng-template>
     </div>
 </div>
-<div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+
+<!-- Reservation Modal -->
+<div bsModal #reservationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content col-xs-12">
             <div class="modal-header" style="border-bottom: none">
-                <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal()">
+                <button type="button" class="close pull-right" aria-label="Close" (click)="hideReservationModal()">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div *ngIf="myReservation" class="modal-body">
                     <div>
                         <div class="form-group col-xs-6" display="inline-block">
                             <label for="reservation_first_name">First Name</label>
-                            <input type="name" class="form-control" id="reservation_first_name" [(ngModel)]="newReservation['First Name']">
+                            <input type="name" class="form-control" id="reservation_first_name" [(ngModel)]="myReservation['First Name']">
                         </div>
                         <div class="form-group col-xs-6" display="inline-block">
                             <label for="reservation_last_name">Last Name</label>
-                            <input type="name" class="form-control" id="reservation_last_name" [(ngModel)]="newReservation['Last Name']">
+                            <input type="name" class="form-control" id="reservation_last_name" [(ngModel)]="myReservation['Last Name']">
                         </div>
                     </div>
                     <div>
                         <div class="form-group col-xs-6" display="inline-block">
                             <label for="reservation_phone">Phone</label>
-                            <input type="text" class="form-control" id="reservation_phone" [(ngModel)]="newReservation['Phone']">
+                            <input type="text" class="form-control" id="reservation_phone" [(ngModel)]="myReservation['Phone']">
                         </div>
                         <div class="form-group col-xs-6" display="inline-block">
                             <label for="reservation_email">Email</label>
-                            <input type="email" class="form-control" id="reservation_email" [(ngModel)]="newReservation['Email']">
+                            <input type="email" class="form-control" id="reservation_email" [(ngModel)]="myReservation['Email']">
                         </div>
                     </div>
                     <div>
                         <div class="form-group col-xs-4" display="inline-block">
                             <label for="reservation_seats">Seats</label>
-                            <input type="number" min="0" class="form-control" id="reservation_seats" [(ngModel)]="newReservation['Seats']" (ngModelChange)="onSeatsChange($event)">
+                            <input type="number" min="0" class="form-control" id="reservation_seats" [(ngModel)]="myReservation['Seats']" (ngModelChange)="onSeatsChange($event)">
                         </div>
                         <div class="form-group col-xs-4" display="inline-block">
                             <label for="reservation_payment_method">Payment Method</label>
-                            <select id="reservation_payment_method" class="form-control" [(ngModel)]="newReservation['Payment Method']" (ngModelChange)="onPaymentMethodChange($event)">
+                            <select id="reservation_payment_method" class="form-control" [(ngModel)]="myReservation['Payment Method']" (ngModelChange)="onPaymentMethodChange($event)">
                                 <option value="Credit Card">Credit Card</option>
                                 <option value="Ivy Media">Ivy Media</option>
                                 <option value="Coupons/Points">Coupons/Points</option>
@@ -161,11 +163,11 @@
                             <label for="reservation_transaction_amount">Transaction Amount</label>
                             <div class="input-group">
                                 <div class="input-group-addon">$</div>
-                                <input type="text" class="form-control" id="reservation_transaction_amount" [(ngModel)]="newReservation['Transaction Amount']">
+                                <input type="text" class="form-control" id="reservation_transaction_amount" [(ngModel)]="myReservation['Transaction Amount']">
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="newReservation && newReservation['Payment Method'] === paymentMethod[0]">
+                    <div *ngIf="myReservation && myReservation['Payment Method'] === paymentMethod[0]">
                         <div class="col-xs-12">
                             <div class="col-xs-12 form-group well">
                                 <p>
@@ -178,22 +180,22 @@
                         </div>
                         <div class="form-group col-xs-12">
                             <label for="reservation_cc_name">CC Name: <i>if different than above</i></label>
-                            <input type="text" class="form-control" id="reservation_cc_name" [(ngModel)]="newReservation['CC Name']">
+                            <input type="text" class="form-control" id="reservation_cc_name" [(ngModel)]="myReservation['CC Name']">
                         </div>
                         <div>
                             <div class="form-group col-xs-8" display="inline-block">
                                 <label for="reservation_cc_number">CC #</label>
-                                <input type="text" class="form-control" id="reservation_cc_number" [(ngModel)]="newReservation['CC Number']">
+                                <input type="text" class="form-control" id="reservation_cc_number" [(ngModel)]="myReservation['CC Number']">
                             </div>
                             <div class="form-group col-xs-4" display="inline-block">
                                 <label for="reservation_cc_code">Code:</label>
-                                <input type="text" class="form-control" id="reservation_cc_code" [(ngModel)]="newReservation['CC Code']">
+                                <input type="text" class="form-control" id="reservation_cc_code" [(ngModel)]="myReservation['CC Code']">
                             </div>
                         </div>
                         <div>
                             <div class="form-group col-xs-6" display="inline-block">
                                 <label for="reservation_cc_exp_month">CC Exp. Month</label>
-                                <select id="reservation_cc_exp_month" class="form-control" [(ngModel)]="newReservation['CC Month']">
+                                <select id="reservation_cc_exp_month" class="form-control" [(ngModel)]="myReservation['CC Month']">
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -210,7 +212,7 @@
                             </div>
                             <div class="form-group col-xs-6" display="inline-block">
                                 <label for="reservation_cc_exp_year" style="visibility:none">CC Exp. Year</label>
-                                <select id="reservation_cc_exp_year" class="form-control" [(ngModel)]="newReservation['CC Year']">
+                                <select id="reservation_cc_exp_year" class="form-control" [(ngModel)]="myReservation['CC Year']">
                                     <option value="2017">2017</option>
                                     <option value="2018">2018</option>
                                     <option value="2019">2019</option>
@@ -229,10 +231,18 @@
                     <div class="col-xs-12">
                         <div class="form-group">
                             <label for="reservation_notes">Note</label>
-                            <input type="text" class="form-control" id="reservation_notes" [(ngModel)]="newReservation['Note']">
+                            <input type="text" class="form-control" id="reservation_notes" [(ngModel)]="myReservation['Note']">
                         </div>
                         <div class="form-group pull-right" style="margin-top: 20px; margin-bottom: 20px">
-                            <button type="submit" class="btn btn-primary" (click)="addReservation()">Add Reservation</button>
+                            <div *ngIf="myReservation['id']; then EditReservation else NewReservation">
+                            </div>
+                            <ng-template #NewReservation>
+                            <button type="submit" class="btn btn-success" (click)="addReservation()">Add Reservation</button>
+                            </ng-template>
+                            <ng-template #EditReservation>
+                            <button type="submit" class="btn btn-primary" (click)="updateReservation()">Update</button>
+                            <button type="submit" class="btn btn-danger" (click)="deleteReservation()">Delete</button>
+                            </ng-template>
                         </div>
                     </div>
             </div>

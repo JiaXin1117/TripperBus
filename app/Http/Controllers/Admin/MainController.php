@@ -41,14 +41,57 @@ class MainController extends Controller
     }
 
     public function addReservation(Request $request){
-        $reservation = $request->only(['reservation']);
-        $reservation = $reservation['reservation'];
+        $input = $request->only(['reservation']);
+        $reservation = $input['reservation'];
+
+        if ($reservation['Payment Method'] == 'Credit Card') {
+/*            if ($trans_id = addAuthorizeNetLink($reservation)) {
+                $reservation['Authorize net Link'] = $trans_id;
+            }*/
+        }
+
         unset($reservation['Date Made']);
         Res_Reservations::unguard();
         $response = Res_Reservations::create($reservation);
         Res_Reservations::reguard();
 
         $response['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
+
+        return response()->json($response);
+    }
+
+    public function updateReservation(Request $request){
+        $input = $request->only(['reservation']);
+        $reservation = $input['reservation'];
+
+        if ($reservation['Payment Method'] == 'Credit Card') {
+/*            if ($trans_id = addAuthorizeNetLink($reservation)) {
+                $reservation['Authorize net Link'] = $trans_id;
+            }*/
+        }
+
+        unset($reservation['Date Made']);
+        Res_Reservations::unguard();
+        $res = Res_Reservations::find($reservation['id'])->update($reservation);
+//        $response = $reservation->save();
+        Res_Reservations::reguard();
+
+        $response = array();
+        if ($res) {
+            $response = Res_Reservations::find($reservation['id']);
+            $response['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
+        }
+
+        return response()->json($response);
+    }
+
+    public function deleteReservation(Request $request){
+        $input = $request->only(['id']);
+        $id = $input['id'];
+
+        Res_Reservations::unguard();
+        $response = Res_Reservations::find($id)->forceDelete();
+        Res_Reservations::reguard();
 
         return response()->json($response);
     }

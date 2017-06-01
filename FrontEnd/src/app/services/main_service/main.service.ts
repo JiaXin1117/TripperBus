@@ -13,7 +13,11 @@ export class MainService {
     URLS: any = {
         retrieve_schedules_by_date_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_by_date",
         retrieve_reservations_by_date_url: BACKEND_SERVER_URL + "api/admin/main/retrieve_reservations_by_date",
+
         add_reservation: BACKEND_SERVER_URL + "api/admin/main/add_reservation",
+        delete_reservation: BACKEND_SERVER_URL + "api/admin/main/delete_reservation",
+        update_reservation: BACKEND_SERVER_URL + "api/admin/main/update_reservation",
+
         retrieve_group_additional_info_url: BACKEND_SERVER_URL + "api/admin/main/retrieve_group_additional_info",
         retrieve_all_stops_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops",
         get_price_for_bus_url: BACKEND_SERVER_URL + "api/admin/main/get_price_for_bus",

@@ -12,7 +12,7 @@ export class Reservation {
     public 'Groupon Code': string;
     public 'Campaign Name': string;
     public 'Payment Method': string;
-    public 'Authorize net Link': number;
+    public 'Authorize net Link': string;
     public 'IP Address': string;
     public 'Date Made': string;
     public 'Made By': string;
@@ -26,8 +26,8 @@ export class Reservation {
     public 'Action Record': string;
     public 'Other Leg': string;
     public 'CC Name': string;
-    public 'CC Number': number;
-    public 'CC Code': number;
+    public 'CC Number': string;
+    public 'CC Code': string;
     public 'CC Month': number;
     public 'CC Year': number;
     constructor() {
@@ -48,7 +48,7 @@ export class Reservation {
         this['Groupon Code'] = '';
         this['Campaign Name'] = '';
         this['Payment Method'] = 'Credit Card';
-        this['Authorize net Link'] = 0;
+        this['Authorize net Link'] = '';
         this['IP Address'] = '';
         this['Date Made'] = '';
         this['Made By'] = '';
@@ -62,7 +62,15 @@ export class Reservation {
         this['Action Record'] = '';
         this['Other Leg'] = '';
         this['CC Name'] = '';
+        this['CC Number'] = '';
+        this['CC Code'] = '';
         this['CC Month'] = (new Date()).getMonth() + 1;
         this['CC Year'] = (new Date()).getFullYear();
+   }
+
+   public copy(src: Reservation) {
+       Object.keys(src).forEach(key => {
+           this[key] = src[key];
+       });
    }
 }

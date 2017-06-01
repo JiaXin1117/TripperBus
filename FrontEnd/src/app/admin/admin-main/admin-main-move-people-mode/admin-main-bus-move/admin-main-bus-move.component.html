@@ -10,7 +10,9 @@
                       <p>
                           <select name="time_move" [(ngModel)] = "time.move" style="width: 100%;" [disabled] = "time.reservation_cnt == 0">
                               <option value="0">Move all these {{ time.time }} people to ...</option>
-                              <option value="{{_time.id}}" *ngFor = "let _time of _times" [class.hidden] = "_time.id == time.id">  ... to the {{ _time.time }} bus from {{ _time.short }} (TIME ID: {{_time.id}})</option>
+                              <ng-template ngFor let-_time [ngForOf]="_times">
+                              <option *ngIf="_time.id != time.id" value="{{_time.id}}">  ... to the {{ _time.time }} bus from {{ _time.short }} (TIME ID: {{_time.id}})</option>
+                              </ng-template>
                           </select>
                       </p>
                       <p>
