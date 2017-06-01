@@ -283,11 +283,10 @@ export class AdminMainReservationComponent implements OnInit {
                     this.reservations_from_time[this.inputParams.outbound_timeId] = Array();
                 this.reservations_from_time[this.inputParams.outbound_timeId].push(createdReservation);
 
-                this.hideReservationModal();
-
-                this.initData();
-                
                 this.outbound_time['reservation_cnt'] += this.newReservation['Seats'];
+
+                this.hideReservationModal();
+                this.initData();
             },
             error => {
                 this.successMessage = "";
