@@ -339,8 +339,9 @@ export class AdminMainReservationComponent implements OnInit {
                 if (!updatedReservation)
                     return;
 
+                let oldReservation = this.reservations.find(item => (item['id'] == deleteId));
                 let update_Time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.myReservation['time_id']);
-                update_Time['reservation_cnt'] += updatedReservation['Seats'] - this.newReservation['Seats'];
+                update_Time['reservation_cnt'] += updatedReservation['Seats'] - oldReservation['Seats'];
 
                 this.updateReservationFromArray(this.reservations, updatedReservation);
 //                this.updateReservationFromArray(this.reservations_from_time[this.myReservation['time_id']], updatedReservation);
