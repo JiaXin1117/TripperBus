@@ -97,6 +97,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.main.update_reservation',
             'uses' => 'MainController@updateReservation',
         ]);
+        Route::post('/delete_soft_reservation', [
+            'as' => 'admin.main.delete_soft_reservation',
+            'uses' => 'MainController@deleteSoftReservation',
+        ]);
         Route::post('/delete_reservation', [
             'as' => 'admin.main.delete_reservation',
             'uses' => 'MainController@deleteReservation',

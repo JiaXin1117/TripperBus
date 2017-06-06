@@ -42,7 +42,6 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
     };
     
     public urls: any = {
-        retrieve_schedule_by_date_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_by_date",
         retrieve_group_times_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_group_times",
         retrieve_all_stops_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops",
         save_all_url: BACKEND_SERVER_URL + "api/admin/schedule/saveall_existing_schedule",    

@@ -123,6 +123,7 @@ export class AdminMainReservationComponent implements OnInit {
 
     public showAddReservationModal(): void {
         this.myReservation.copy(this.newReservation);
+        this.refreshData();
         this.showReservationModal();
     }
 
@@ -163,8 +164,7 @@ export class AdminMainReservationComponent implements OnInit {
         this.reservations = [];
         this.reservations_from_time = [];
 
-        me.initData();
-        me.refreshData();
+        me.refreshData(true);
 
     }
 
@@ -173,54 +173,60 @@ export class AdminMainReservationComponent implements OnInit {
         this.newReservation['Seats'] = 1;
     }
 
-    public refreshData() {
-        let url = this._mainService.URLS.get_buses_for_edit + "?outbound_date=" + this.inputParams.outbound_date + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date;
+    public refreshData(reload = false) {
+        this.initData();
 
-        this._httpService.sendGetRequestWithParams(url)
-            .subscribe(
-            data => {
-                if (data.state == "success") {
-                    this.leaving_buses = data.data_1;
-                    this.returning_buses = data.data_2;
-                    this._mainService.schedule_default_price = data.default_price;
-                    this._mainService.reservation_fee = parseFloat(data.reservation_fee);
+        if (reload) {
+            let url = this._mainService.URLS.get_buses_for_edit + "?outbound_date=" + this.inputParams.outbound_date + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date;
 
-                    this.outbound_bus = Bus.getBusFromGroupId(this.leaving_buses, this.inputParams.outbound_bus_groupId);
-                    if (this.outbound_bus) {
-                        this.outbound_time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.inputParams.outbound_timeId);
+            this._httpService.sendGetRequestWithParams(url)
+                .subscribe(
+                data => {
+                    if (data.state == "success") {
+                        this.leaving_buses = data.data_1;
+                        this.returning_buses = data.data_2;
+                        this._mainService.schedule_default_price = data.default_price;
+                        this._mainService.reservation_fee = parseFloat(data.reservation_fee);
+
+                        this.outbound_bus = Bus.getBusFromGroupId(this.leaving_buses, this.inputParams.outbound_bus_groupId);
+                        if (this.outbound_bus) {
+                            this.outbound_time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.inputParams.outbound_timeId);
+                            
+                            this.newReservation_LeavingAreaName = this.outbound_time['area_name'];
+                        }
+
+                        this.returning_bus = Bus.getBusFromGroupId(this.returning_buses, this.inputParams.returning_bus_groupId);
+                        if(this.returning_bus) {
+                            this.returning_time = Bus.getTimeIndexFromTimeId(this.returning_bus, this.inputParams.returning_timeId);
+
+                            this.newReservation_ReturningAreaName = this.returning_time['area_name'];
+                        }
                         
-                        this.newReservation_LeavingAreaName = this.outbound_time['area_name'];
+                        this.autoTransactionAmount();
+                        
+                        console.log (data);
                     }
+                });
 
-                    this.returning_bus = Bus.getBusFromGroupId(this.returning_buses, this.inputParams.returning_bus_groupId);
-                    if(this.returning_bus) {
-                        this.returning_time = Bus.getTimeIndexFromTimeId(this.returning_bus, this.inputParams.returning_timeId);
+            url = this._mainService.URLS.retrieve_reservations_by_date_url + "?outbound_date=" + this.inputParams.outbound_date + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date;
 
-                        this.newReservation_ReturningAreaName = this.returning_time['area_name'];
+            this._httpService.sendGetRequestWithParams(url)
+                .subscribe(
+                data => {
+                    if (data.state == "success") {
+                        this.reservations = data.data;
+                        for (let i = 0; i < this.reservations.length; i++) {
+                            if (!this.reservations_from_time[this.reservations[i].time_id])
+                                this.reservations_from_time[this.reservations[i].time_id] = [];
+                            this.reservations_from_time[this.reservations[i].time_id].push(this.reservations[i]);
+                        }
+                        console.log(this.reservations);
+                        console.log(this.reservations_from_time);
                     }
-                    
-                    this.autoTransactionAmount();
-                    
-                    console.log (data);
-                }
-            });
-
-        url = this._mainService.URLS.retrieve_reservations_by_date_url + "?outbound_date=" + this.inputParams.outbound_date + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date;
-
-        this._httpService.sendGetRequestWithParams(url)
-            .subscribe(
-            data => {
-                if (data.state == "success") {
-                    this.reservations = data.data;
-                    for (let i = 0; i < this.reservations.length; i++) {
-                        if (!this.reservations_from_time[this.reservations[i].time_id])
-                            this.reservations_from_time[this.reservations[i].time_id] = [];
-                        this.reservations_from_time[this.reservations[i].time_id].push(this.reservations[i]);
-                    }
-                    console.log(this.reservations);
-                    console.log(this.reservations_from_time);
-                }
-            });
+                });
+        } else {
+            this.autoTransactionAmount();
+        }
     }
     
     public receiveInputParams() {
@@ -286,7 +292,7 @@ export class AdminMainReservationComponent implements OnInit {
                 this.outbound_time['reservation_cnt'] += this.newReservation['Seats'];
 
                 this.hideReservationModal();
-                this.initData();
+                this.refreshData();
             },
             error => {
                 this.successMessage = "";
@@ -324,7 +330,7 @@ export class AdminMainReservationComponent implements OnInit {
     
     public updateReservation() {
         let url = this._mainService.URLS.update_reservation;
-        let deleteId = this.myReservation['id'];
+        let updateId = this.myReservation['id'];
 
         console.log (this.myReservation);
 
@@ -338,16 +344,14 @@ export class AdminMainReservationComponent implements OnInit {
                 if (!updatedReservation)
                     return;
 
-                let oldReservation = this.reservations.find(item => (item['id'] == deleteId));
+                let oldReservation = this.reservations.find(item => (item['id'] == updateId));
                 let update_Time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.myReservation['time_id']);
                 update_Time['reservation_cnt'] += updatedReservation['Seats'] - oldReservation['Seats'];
 
                 this.updateReservationFromArray(this.reservations, updatedReservation);
-//                this.updateReservationFromArray(this.reservations_from_time[this.myReservation['time_id']], updatedReservation);
 
                 this.hideReservationModal();
-
-                this.initData();
+                this.refreshData();
             },
             error => {
                 this.successMessage = "";
@@ -367,6 +371,39 @@ export class AdminMainReservationComponent implements OnInit {
             reservations.splice(index, 1);
         }
         return index;
+    }
+
+    public deleteSoftReservation() {
+        let url = this._mainService.URLS.delete_soft_reservation;
+        let deleteId = this.myReservation['id'];
+
+        console.log (this.myReservation);
+
+        this._httpService.sendPostJSON(url, {reservation: this.myReservation})
+        .subscribe(
+            data => {
+                this.successMessage = "Reservation#" + this.myReservation['id'] + " is (softly) deleted.";
+                this.errorMessage = "";
+                console.log(this.successMessage);
+                let updatedReservation = data.json() as Reservation;
+                if (!updatedReservation)
+                    return;
+
+                let oldReservation = this.reservations.find(item => (item['id'] == deleteId));
+                let update_Time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.myReservation['time_id']);
+                update_Time['reservation_cnt'] += updatedReservation['Seats'] - oldReservation['Seats'];
+
+                this.updateReservationFromArray(this.reservations, updatedReservation);
+
+                this.hideReservationModal();
+                this.refreshData();
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = "All the following are necessary for a new reservation: First Name, Last Name & Phone Number.";
+                console.log(this.errorMessage);
+                alert(this.errorMessage);
+            });
     }
 
     public deleteReservation() {

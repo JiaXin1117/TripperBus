@@ -86,7 +86,7 @@ export class AdminSchedulesComponent implements OnInit {
             }
 
             let url_month = this.calendarInfo.cur_month + 1;
-            let url = this.urls.retrieve_schedule_by_month_url + "?year=" + this.calendarInfo.cur_year + "&month=" + url_month; 
+            let url = this.urls.retrieve_schedule_by_month_url + "?year=" + this.calendarInfo.cur_year + "&month=" + url_month + "&area_id=" + areaType; 
 
             this._httpService.sendGetRequestWithParams(url)
                 .subscribe(
@@ -225,7 +225,7 @@ export class AdminSchedulesComponent implements OnInit {
             }
             
             me.selected_date = me.calendarInfo.cur_year + "-" + cur_month_temp + "-" + selected_date; 
-            let url = this.urls.retrieve_schedule_by_date_url + "?date=" + me.selected_date; 
+            let url = this.urls.retrieve_schedule_by_date_url + "?date=" + me.selected_date + "&area_id=" + areaType; 
 /*            let url = this.urls.retrieve_schedule_by_date_url + "?date=" + moment(me.selected_date).utc().format("YYYY-MM-DD"); 
 */            
             this._httpService.sendGetRequestWithParams(url)

@@ -18,12 +18,12 @@
                       <p>
                           Note change in each reservation's notes 
                           <select name="note_change" [(ngModel)] = "time.note_change">
-                            <option value="0">YES</option>
-                            <option value="1">NO</option>
+                            <option value="1">YES</option>
+                            <option value="0">NO</option>
                           </select>
                       </p>
                       <p>
-                          Reason for Change: <input name="reason" [(ngModel)] = "time.reason">
+                          Reason for Change: <input name="Note" [(ngModel)] = "time.Note" [disabled]="time.note_change == 0">
                       </p>
                       <p>
                           Email the people & give them above reason: 

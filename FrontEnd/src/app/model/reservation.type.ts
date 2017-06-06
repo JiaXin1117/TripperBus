@@ -3,7 +3,6 @@ export class Reservation {
     public time_id: number;
     public outbound_area_id: number;
     public valid: number;
-    public reason: string;
     public 'First Name': string;
     public 'Last Name': string;
     public 'Phone': string;
@@ -39,7 +38,6 @@ export class Reservation {
         this['time_id'] = 0;
         this['outbound_area_id'] = 0;
         this['valid'] = 1;
-        this['reason'] = '';
         this['First Name'] = '';
         this['Last Name'] = '';
         this['Phone'] = "";

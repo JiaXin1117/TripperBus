@@ -11,6 +11,7 @@ use App\Models\Res_Times;
 use App\Models\Res_Reservations;
 use Illuminate\Support\Facades\Input;
 use DB;
+use Carbon\Carbon;
 
 class MainController extends Controller
 {
@@ -73,7 +74,35 @@ class MainController extends Controller
         unset($reservation['Date Made']);
         Res_Reservations::unguard();
         $res = Res_Reservations::find($reservation['id'])->update($reservation);
-//        $response = $reservation->save();
+        Res_Reservations::reguard();
+
+        $response = array();
+        if ($res) {
+            $response = Res_Reservations::find($reservation['id']);
+            $response['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
+        }
+
+        return response()->json($response);
+    }
+
+    public function deleteSoftReservation(Request $request){
+        $input = $request->only(['reservation']);
+        $reservation = $input['reservation'];
+
+        $reservation['Seats'] = 0;
+        $reservation['Transaction Amount'] = 0;
+        $username = 'Administrator'; // Temp
+        $reservation['Note'] .= "\n" . $username . ' deleted this reservation on ' . Carbon::now() . '.';
+
+        if ($reservation['Payment Method'] == 'Credit Card') {
+/*            if ($trans_id = addAuthorizeNetLink($reservation)) {
+                $reservation['Authorize net Link'] = $trans_id;
+            }*/
+        }
+
+        unset($reservation['Date Made']);
+        Res_Reservations::unguard();
+        $res = Res_Reservations::find($reservation['id'])->update($reservation);
         Res_Reservations::reguard();
 
         $response = array();

@@ -16,6 +16,7 @@ use App\Models\Settings;
 use Illuminate\Support\Facades\Input;
 use DB;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class BusEditController extends Controller
 {
@@ -36,10 +37,41 @@ class BusEditController extends Controller
             $res['message'] = "The data is not correct.";
             return response()->json($res);
         }
-        //Leaving
+        
+        // ------------------ Leaving ----------------------
         $default_price = Settings::where('key', 'DEFAULT_PRICE')->first()->value;
         $reservation_fee = Settings::where('key', 'RESERVATION_FEE')->first()->value;
-        $result = Res_Times::where('area_id', $reqData['leaving_from'])
+
+        $count = Res_Times::where('area_id', $reqData['leaving_from'])
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                    ->where('date',  $reqData['outbound_date'])
+                    ->count();
+        if ($count > 0) {
+            $result = Res_Times::where('area_id', $reqData['leaving_from'])
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                    ->where('date',  $reqData['outbound_date'])
+                    ->orderBy('time', 'asc')
+                    ->get()->toarray();
+        } else {
+            $latest_date = Res_Times::where('area_id', $reqData['leaving_from'])
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                    ->where('date', '<=',  $reqData['outbound_date'])
+                    ->where('day_of_week',  date('w', strtotime($reqData['outbound_date'])))
+                    ->max('date');
+
+            $result = Res_Times::where('area_id', $reqData['leaving_from'])
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                    ->where('date', $latest_date)
+                    ->where('day_of_week',  date('w', strtotime($reqData['outbound_date'])))
+                    ->orderBy('time', 'asc')
+                    ->get()->toarray();
+        }
+
+/*        $result = Res_Times::where('area_id', $reqData['leaving_from'])
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                     ->where(function($query) use($reqData)
                         {
@@ -54,7 +86,8 @@ class BusEditController extends Controller
                             });
                         })
                     ->orderBy('time', 'asc')
-                    ->get()->toarray();
+                    ->get()->toarray();*/
+
         $res = array();
         foreach ($result as $bus_time) {
             $groupId = $bus_time['group_id'];
@@ -114,10 +147,41 @@ class BusEditController extends Controller
             $res[$groupHash]['times'][] = $temp;
         }
 
-        //Returning
+
+        // -------------------------- Returning ----------------------
         $res1 = array();
         if($reqData['return_date'] != null && $reqData['return_date'] != ""){
-            $result = Res_Times::where('area_id', '<>', $reqData['leaving_from'])
+
+            $count = Res_Times::where('area_id', '<>', $reqData['leaving_from'])
+                        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                        ->where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                        ->where('date',  $reqData['return_date'])
+                        ->count();
+            if ($count > 0) {
+                $result = Res_Times::where('area_id', '<>', $reqData['leaving_from'])
+                        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                        ->where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                        ->where('date',  $reqData['return_date'])
+                        ->orderBy('time', 'asc')
+                        ->get()->toarray();
+            } else {
+                $latest_date = Res_Times::where('area_id', '<>', $reqData['leaving_from'])
+                        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                        ->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                        ->where('date', '<=',  $reqData['return_date'])
+                        ->where('day_of_week',  date('w', strtotime($reqData['return_date'])))
+                        ->max('date');
+
+                $result = Res_Times::where('area_id', '<>', $reqData['leaving_from'])
+                        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                        ->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                        ->where('date', $latest_date)
+                        ->where('day_of_week',  date('w', strtotime($reqData['return_date'])))
+                        ->orderBy('time', 'asc')
+                        ->get()->toarray();
+            }
+
+            /*$result = Res_Times::where('area_id', '<>', $reqData['leaving_from'])
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                     ->where(function($query) use($reqData)
                         {
@@ -132,7 +196,8 @@ class BusEditController extends Controller
                             });
                         })
                     ->orderBy('time', 'asc')
-                    ->get()->toarray();
+                    ->get()->toarray();*/
+
             foreach ($result as $bus_time) {
                 $groupId = $bus_time['group_id'];
                 $groupHash = 0;
@@ -236,9 +301,72 @@ class BusEditController extends Controller
             $res['message'] = "The data is not correct.";
             return response()->json($res);
         }
-        //Leaving
+
+        // -------------------------------- Leaving ----------------------------------
         $default_price = Settings::where('key', 'DEFAULT_PRICE')->first()->value;
-        $result1 = DB::table('res_times')
+
+        $count = DB::table('res_times')
+                    ->join('res_stops', function($join){
+                            $join->on('res_times.stop_id', '=', 'res_stops.id');
+                      })
+                    ->join('res_areas', function($join){
+                            $join->on('res_times.area_id', '=', 'res_areas.id');
+                      })
+                    ->where('res_times.area_id', $reqData['leaving_from'])
+                    ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                    ->where('date',  $reqData['outbound_date'])
+                    ->count();
+
+        if ($count > 0) {
+
+            $result1 = DB::table('res_times')
+                    ->join('res_stops', function($join){
+                            $join->on('res_times.stop_id', '=', 'res_stops.id');
+                      })
+                    ->join('res_areas', function($join){
+                            $join->on('res_times.area_id', '=', 'res_areas.id');
+                      })
+                    ->where('res_times.area_id', $reqData['leaving_from'])
+                    ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                    ->where('date',  $reqData['outbound_date'])
+                    ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
+                    ->orderBy('res_times.time', 'asc')
+                    ->get()->toarray();
+        } else {
+            $latest_date = DB::table('res_times')
+                    ->join('res_stops', function($join){
+                            $join->on('res_times.stop_id', '=', 'res_stops.id');
+                      })
+                    ->join('res_areas', function($join){
+                            $join->on('res_times.area_id', '=', 'res_areas.id');
+                      })
+                    ->where('res_times.area_id', $reqData['leaving_from'])
+                    ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                    ->where('date', '<=',  $reqData['outbound_date'])
+                    ->where('day_of_week',  date('w', strtotime($reqData['outbound_date'])))
+                    ->max('date');
+
+            $result1 = DB::table('res_times')
+                    ->join('res_stops', function($join){
+                            $join->on('res_times.stop_id', '=', 'res_stops.id');
+                      })
+                    ->join('res_areas', function($join){
+                            $join->on('res_times.area_id', '=', 'res_areas.id');
+                      })
+                    ->where('res_times.area_id', $reqData['leaving_from'])
+                    ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                    ->where('date', $latest_date)
+                    ->where('day_of_week',  date('w', strtotime($reqData['outbound_date'])))
+                    ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
+                    ->orderBy('res_times.time', 'asc')
+                    ->get()->toarray();
+        }
+
+        /*$result1 = DB::table('res_times')
                     ->join('res_stops', function($join){
                             $join->on('res_times.stop_id', '=', 'res_stops.id');
                       })
@@ -261,7 +389,8 @@ class BusEditController extends Controller
                         })
                     ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
                     ->orderBy('res_times.time', 'asc')
-                    ->get()->toarray();
+                    ->get()->toarray();*/
+
         $res = array();
         foreach ($result1 as $bus_time) {
             $bus_time->time = date("g:i A", strtotime($bus_time->time));
@@ -319,16 +448,78 @@ class BusEditController extends Controller
                     ->first()->reservation_cnt);
             $temp['move'] = 0;
             $temp['note_change'] = 0;
-            $temp['reason'] = "";
+            $temp['Note'] = "";
             $temp['email_reason'] = 0;
             $res[$groupHash]['times'][] = $temp;
         }
 
-        //Returning
+        // ---------------------------- Returning -------------------------------
         $res1 = array();
         $result2 = array();
-        if($reqData['return_date'] != null && $reqData['return_date'] != ""){
-            $result2 = DB::table('res_times')
+        if($reqData['return_date'] != null && $reqData['return_date'] != "") {
+
+            $count = DB::table('res_times')
+                    ->join('res_stops', function($join){
+                            $join->on('res_times.stop_id', '=', 'res_stops.id');
+                      })
+                    ->join('res_areas', function($join){
+                            $join->on('res_times.area_id', '=', 'res_areas.id');
+                      })
+                    ->where('res_times.area_id', '<>', $reqData['leaving_from'])
+                    ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                    ->where('date',  $reqData['return_date'])
+                    ->count();
+            
+            if ($count > 0) {
+
+                $result2 = DB::table('res_times')
+                    ->join('res_stops', function($join){
+                            $join->on('res_times.stop_id', '=', 'res_stops.id');
+                      })
+                    ->join('res_areas', function($join){
+                            $join->on('res_times.area_id', '=', 'res_areas.id');
+                      })
+                    ->where('res_times.area_id', '<>', $reqData['leaving_from'])
+                    ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                    ->where('date',  $reqData['return_date'])
+                    ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
+                    ->orderBy('res_times.time', 'asc')
+                    ->get()->toarray();
+            } else {
+                $latest_date = DB::table('res_times')
+                    ->join('res_stops', function($join){
+                            $join->on('res_times.stop_id', '=', 'res_stops.id');
+                      })
+                    ->join('res_areas', function($join){
+                            $join->on('res_times.area_id', '=', 'res_areas.id');
+                      })
+                    ->where('res_times.area_id', '<>', $reqData['leaving_from'])
+                    ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                    ->where('date', '<=',  $reqData['return_date'])
+                    ->where('day_of_week',  date('w', strtotime($reqData['return_date'])))
+                    ->max('date');
+
+                $result2 = DB::table('res_times')
+                    ->join('res_stops', function($join){
+                            $join->on('res_times.stop_id', '=', 'res_stops.id');
+                      })
+                    ->join('res_areas', function($join){
+                            $join->on('res_times.area_id', '=', 'res_areas.id');
+                      })
+                    ->where('res_times.area_id', '<>', $reqData['leaving_from'])
+                    ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                    ->where('date', $latest_date)
+                    ->where('day_of_week',  date('w', strtotime($reqData['return_date'])))
+                    ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
+                    ->orderBy('res_times.time', 'asc')
+                    ->get()->toarray();
+            }
+
+/*            $result2 = DB::table('res_times')
                     ->join('res_stops', function($join){
                             $join->on('res_times.stop_id', '=', 'res_stops.id');
                       })
@@ -351,7 +542,7 @@ class BusEditController extends Controller
                         })
                     ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
                     ->orderBy('res_times.time', 'asc')
-                    ->get()->toarray();
+                    ->get()->toarray();*/
             foreach ($result2 as $bus_time) {
                 $bus_time->time = date("g:i A", strtotime($bus_time->time));
                 $groupId = $bus_time->group_id;
@@ -408,7 +599,7 @@ class BusEditController extends Controller
                         ->first()->reservation_cnt);
                 $temp['move'] = 0;
                 $temp['note_change'] = 0;
-                $temp['reason'] = "";
+                $temp['Note'] = "";
                 $temp['email_reason'] = 0;
                 $res1[$groupHash]['times'][] = $temp;
             }
@@ -426,13 +617,59 @@ class BusEditController extends Controller
     public function moveReservations(Request $request){
         $buses = $request->only(['buses']);
         $buses = $buses['buses'];
-        foreach($buses as $bus){
-            foreach($bus['times'] as $time){
-                if($time['move'] != 0){
+        $user = 'Administrator'; // Temp
+        foreach($buses as $bus) {
+            foreach($bus['times'] as $time) {
+                if($time['move'] != 0) {
+                    $notesAdd = 'Original reservation: ' . $bus['date'] . ' at ' . $time['time']
+                     . ' from ' . $time['stop_area'] . 
+                     '.. Changed by ' . $user . 
+                     ' on ' . Carbon::now() . '.';
+                     if ($time['note_change'] && count($time['Note'])) {
+                         $notesAdd .= ' Reason for change: ' . $time['Note'];
+                     }
+
                     Res_Reservations::where('time_id', $time['id'])
-                        ->where('date',  $bus['date'])
-                        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                        ->update(['reason' => $time['reason'], 'time_id' => $time['move']]);
+                                    ->where('date',  $bus['date'])
+                                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                                    ->where('Note', '<>', '')
+                                    ->update([
+                                        'time_id' => $time['move'],
+                                        'Note' => DB::raw("CONCAT(Note, '\r\n" . $notesAdd . "')")
+                                    ]);
+
+                    Res_Reservations::where('time_id', $time['id'])
+                                    ->where('date',  $bus['date'])
+                                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                                    ->where(function($query) use($time, $notesAdd) {
+                                        $query->whereNull('Note')
+                                        ->orWhere('Note', '=', '');
+                                    })
+                                    ->update([
+                                        'time_id' => $time['move'],
+                                        'Note' => $notesAdd
+                                    ]);
+
+/*                    Res_Reservations::where('time_id', $time['id'])
+                                    ->where('date',  $bus['date'])
+                                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                                    ->where(function($query) use($time, $notesAdd) {
+                                        $query->where(function($squery) use ($time, $notesAdd) {
+                                             return $squery->where('Note', '<>', '')
+                                             ->update([
+                                                 'time_id' => $time['move'],
+                                                 'Note' => DB::raw("CONCAT(Note, '\r\n" . $notesAdd . "')")
+                                            ]);
+                                        })
+                                        ->where(function($squery) use ($time, $notesAdd) {
+                                             return $squery->whereNull('Note')
+                                             ->orWhere('Note', '=', '')
+                                             ->update([
+                                                 'time_id' => $time['move'],
+                                                 'Note' => $notesAdd
+                                            ]);
+                                        });
+                                    });*/
                 }
             }
         }

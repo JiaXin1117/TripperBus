@@ -231,7 +231,8 @@
                     <div class="col-xs-12">
                         <div class="form-group">
                             <label for="reservation_notes">Note</label>
-                            <input type="text" class="form-control" id="reservation_notes" [(ngModel)]="myReservation['Note']">
+                            <textarea class="form-control" rows="3" id="reservation_notes" [(ngModel)]="myReservation['Note']">
+                            </textarea>
                         </div>
                         <div class="form-group pull-right" style="margin-top: 20px; margin-bottom: 20px">
                             <div *ngIf="myReservation['id']; then EditReservation else NewReservation">
@@ -241,7 +242,7 @@
                             </ng-template>
                             <ng-template #EditReservation>
                             <button type="submit" class="btn btn-primary" (click)="updateReservation()">Update</button>
-                            <button type="submit" class="btn btn-danger" (click)="deleteReservation()">Delete</button>
+                            <button type="submit" class="btn btn-danger" (click)="deleteSoftReservation()">Delete</button>
                             </ng-template>
                         </div>
                     </div>
