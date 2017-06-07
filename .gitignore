@@ -12,3 +12,6 @@ Homestead.yaml
 /public/.htaccess
 /vendor
 /FrontEnd/node_modules
+public/css/mail/movePeopleReservation.css
+app/Http/Helper/au1.php
+app/Http/Helper/au2.php

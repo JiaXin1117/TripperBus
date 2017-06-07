@@ -31,6 +31,9 @@ export class MainService {
     schedule_default_price: number = 25;
     reservation_fee: number = 0;
 
+    addReservationErrorMessage = "All the following are necessary for a new reservation: First Name, Last Name, Phone Number & Email.";
+    deleteReservationErrorMessage = "Deleting failed.";
+
     constructor() { }
 
 }

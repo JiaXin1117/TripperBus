@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Input;
 use DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Mail_MovePeopleReservation;
 
 class BusEditController extends Controller
 {
@@ -625,9 +627,17 @@ class BusEditController extends Controller
                      . ' from ' . $time['stop_area'] . 
                      '.. Changed by ' . $user . 
                      ' on ' . Carbon::now() . '.';
+                     $notesReason = "";
                      if ($time['note_change'] && count($time['Note'])) {
-                         $notesAdd .= ' Reason for change: ' . $time['Note'];
+                         $notesReason = "\nReason for change: " . $time['Note'];
                      }
+                     $notesAdd .= $notesReason;
+
+                    $moveReservations = Res_Reservations::join('res_areas', 'res_reservations.outbound_area_id', '=', 'res_areas.id')
+                                    ->where('time_id', $time['id'])
+                                    ->where('date',  $bus['date'])
+                                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                                    ->get()->toarray();
 
                     Res_Reservations::where('time_id', $time['id'])
                                     ->where('date',  $bus['date'])
@@ -650,28 +660,38 @@ class BusEditController extends Controller
                                         'Note' => $notesAdd
                                     ]);
 
-/*                    Res_Reservations::where('time_id', $time['id'])
-                                    ->where('date',  $bus['date'])
-                                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                                    ->where(function($query) use($time, $notesAdd) {
-                                        $query->where(function($squery) use ($time, $notesAdd) {
-                                             return $squery->where('Note', '<>', '')
-                                             ->update([
-                                                 'time_id' => $time['move'],
-                                                 'Note' => DB::raw("CONCAT(Note, '\r\n" . $notesAdd . "')")
-                                            ]);
-                                        })
-                                        ->where(function($squery) use ($time, $notesAdd) {
-                                             return $squery->whereNull('Note')
-                                             ->orWhere('Note', '=', '')
-                                             ->update([
-                                                 'time_id' => $time['move'],
-                                                 'Note' => $notesAdd
-                                            ]);
-                                        });
-                                    });*/
+                    if ($time['email_reason']) {
+                        $this->sendMail_MovePeopleReason($moveReservations, $time['id'], $time['move'], $bus['date'], $notesReason);
+                    }
                 }
             }
         }
+    }
+
+    public function sendMail_MovePeopleReason($reservations, $oldTimeID, $newTimeID, $date, $reason) {
+        $oldTime = Res_Times::find($oldTimeID);
+        $newTime = Res_Times::find($newTimeID);
+        $oldStopID = $oldTime['stop_id'];
+        $newStopID = $newTime['stop_id'];
+        $oldStop = Res_Stops::find($oldStopID);
+        $newStop = Res_Stops::find($newStopID);
+
+        foreach ($reservations as $reservation) {
+            $reservation['oldTime'] = $oldTime['time'];
+            $reservation['newTime'] = $newTime['time'];
+            $reservation['date'] = $date;
+            $reservation['oldStopAddress'] = $oldStop['address'];
+            $reservation['newStopAddress'] = $newStop['address'];
+            $reservation['oldStopDetail'] = $oldStop['details'];
+            $reservation['newStopDetail'] = $newStop['details'];
+            $reservation['reason'] = ($reason == "") ? "" : nl2br($reason."\n");
+            
+            Mail::to($reservation['Email'])->queue(new Mail_MovePeopleReservation($reservation));
+        }
+
+/*        return Mail::send('emails.welcome', $data, function($message) use($to, $subject) {
+            $message->to($to)->subject($subject);
+        });*/
+//        return mail("jonhs@hanayonghe.com", "My Mail", $oldTimeID . ':' . $newTimeID);
     }
 }

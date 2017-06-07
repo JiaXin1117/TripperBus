@@ -36,6 +36,7 @@ export class AdminMainBusMoveComponent implements OnInit {
         this.total_reservation = 0;
         for(let i = 0; i < this._bus.times.length; i++){
             this._bus.times[i]['note_change'] = 1;
+            this._bus.times[i]['email_reason'] = 1;
             if(this._bus.times[i].reservation_cnt == null)
                 this._bus.times[i].reservation_cnt = 0;
             this.total_reservation += this._bus.times[i].reservation_cnt;

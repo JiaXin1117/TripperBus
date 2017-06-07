@@ -296,7 +296,7 @@ export class AdminMainReservationComponent implements OnInit {
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = "All the following are necessary for a new reservation: First Name, Last Name & Phone Number.";
+                this.errorMessage = this._mainService.addReservationErrorMessage;
                 console.log(this.errorMessage);
                 alert(this.errorMessage);
             });
@@ -355,7 +355,7 @@ export class AdminMainReservationComponent implements OnInit {
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = "All the following are necessary for a new reservation: First Name, Last Name & Phone Number.";
+                this.errorMessage = this._mainService.addReservationErrorMessage;
                 console.log(this.errorMessage);
                 alert(this.errorMessage);
             });
@@ -400,7 +400,7 @@ export class AdminMainReservationComponent implements OnInit {
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = "All the following are necessary for a new reservation: First Name, Last Name & Phone Number.";
+                this.errorMessage = this._mainService.deleteReservationErrorMessage;
                 console.log(this.errorMessage);
                 alert(this.errorMessage);
             });
@@ -431,7 +431,7 @@ export class AdminMainReservationComponent implements OnInit {
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = "Deleting failed.";
+                this.errorMessage = this._mainService.deleteReservationErrorMessage;
                 console.log(this.errorMessage);
                 alert(this.errorMessage);
             });
