@@ -15,3 +15,4 @@ Homestead.yaml
 public/css/mail/movePeopleReservation.css
 app/Http/Helper/au1.php
 app/Http/Helper/au2.php
+FrontEnd/src/app/config/config.ts
