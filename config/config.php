@@ -11,5 +11,10 @@ return [
     'TYPE_SCHEDULE_ENABLED' => 1,
     
     'MAX_CAP_BUS' => 57,
+
+    'TYPE_MAIL_RESERVATION_ADD'         => 0,
+    'TYPE_MAIL_RESERVATION_MOVE'        => 1,
+    'TYPE_MAIL_RESERVATION_SOFTDELETE'  => 2,
+    'TYPE_MAIL_RESERVATION_UPDATE'      => 3,
     
 ];

@@ -12,6 +12,8 @@ use App\Models\Res_Reservations;
 use Illuminate\Support\Facades\Input;
 use DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Mail_Reservation;
 
 class MainController extends Controller
 {
@@ -51,12 +53,20 @@ class MainController extends Controller
             }*/
         }
 
+        if (!isset($reservation['Note'])) {
+            $reservation['Note'] = '';
+        }
+
         unset($reservation['Date Made']);
+
         Res_Reservations::unguard();
         $response = Res_Reservations::create($reservation);
         Res_Reservations::reguard();
 
         $response['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
+        
+        $reservation = Res_Reservations::where('id', $response['id'])->get()->toarray()[0];
+        $this->sendMail_Reservation_Add($reservation);
 
         return response()->json($response);
     }
@@ -64,6 +74,8 @@ class MainController extends Controller
     public function updateReservation(Request $request){
         $input = $request->only(['reservation']);
         $reservation = $input['reservation'];
+
+        $oldReservation = Res_Reservations::where('id', $reservation['id'])->get()->toarray()[0];
 
         if ($reservation['Payment Method'] == 'Credit Card') {
 /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
@@ -80,6 +92,9 @@ class MainController extends Controller
         if ($res) {
             $response = Res_Reservations::find($reservation['id']);
             $response['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
+
+            $reservation = Res_Reservations::where('id', $reservation['id'])->get()->toarray()[0];
+            $this->sendMail_Reservation_Update($reservation, $oldReservation);
         }
 
         return response()->json($response);
@@ -109,6 +124,9 @@ class MainController extends Controller
         if ($res) {
             $response = Res_Reservations::find($reservation['id']);
             $response['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
+
+            $reservation = Res_Reservations::where('id', $reservation['id'])->get()->toarray()[0];
+            $this->sendMail_Reservation_SoftDelete($reservation);
         }
 
         return response()->json($response);
@@ -182,6 +200,21 @@ class MainController extends Controller
         ]);
     }
 
-     
+    public function sendMail_Reservation_Add($reservation) {
+        Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_ADD')));
+    }
+
+    public function sendMail_Reservation_SoftDelete($reservation) {
+        Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_SOFTDELETE')));
+    }
+
+    public function sendMail_Reservation_Update($reservation, $oldReservation) {
+        $reservation['old'] = $oldReservation;
+
+        Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_UPDATE')));
+        if ($reservation['Email'] != $oldReservation['Email']) {
+            Mail::to($oldReservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_UPDATE')));
+        }
+    }
     
 }

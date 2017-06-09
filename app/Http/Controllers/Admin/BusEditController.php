@@ -18,7 +18,7 @@ use DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Mail_MovePeopleReservation;
+use App\Mail\Mail_Reservation;
 
 class BusEditController extends Controller
 {
@@ -661,14 +661,14 @@ class BusEditController extends Controller
                                     ]);
 
                     if ($time['email_reason']) {
-                        $this->sendMail_MovePeopleReason($moveReservations, $time['id'], $time['move'], $bus['date'], $notesReason);
+                        $this->sendMail_Reservation_MovePeople($moveReservations, $time['id'], $time['move'], $bus['date'], $notesReason);
                     }
                 }
             }
         }
     }
 
-    public function sendMail_MovePeopleReason($reservations, $oldTimeID, $newTimeID, $date, $reason) {
+    public function sendMail_Reservation_MovePeople($reservations, $oldTimeID, $newTimeID, $date, $reason) {
         $oldTime = Res_Times::find($oldTimeID);
         $newTime = Res_Times::find($newTimeID);
         $oldStopID = $oldTime['stop_id'];
@@ -686,7 +686,7 @@ class BusEditController extends Controller
             $reservation['newStopDetail'] = $newStop['details'];
             $reservation['reason'] = ($reason == "") ? "" : nl2br($reason."\n");
             
-            Mail::to($reservation['Email'])->queue(new Mail_MovePeopleReservation($reservation));
+            Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_MOVE')));
         }
 
 /*        return Mail::send('emails.welcome', $data, function($message) use($to, $subject) {
