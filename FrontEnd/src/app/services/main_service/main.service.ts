@@ -18,18 +18,20 @@ export class MainService {
         update_reservation: BACKEND_SERVER_URL + "api/admin/main/update_reservation",
         delete_reservation: BACKEND_SERVER_URL + "api/admin/main/delete_reservation",
         delete_soft_reservation: BACKEND_SERVER_URL + "api/admin/main/delete_soft_reservation",
+        move_reservations: BACKEND_SERVER_URL + "api/admin/main/move_reservations",
+
+        get_Settings: BACKEND_SERVER_URL + "api/admin/main/get_Settings",
+        set_Settings: BACKEND_SERVER_URL + "api/admin/main/set_Settings",
 
         retrieve_group_additional_info_url: BACKEND_SERVER_URL + "api/admin/main/retrieve_group_additional_info",
         retrieve_all_stops_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops",
         get_price_for_bus_url: BACKEND_SERVER_URL + "api/admin/main/get_price_for_bus",
         get_buses_for_edit: BACKEND_SERVER_URL + "api/admin/main/get_bus_times",
         update_buses_for_edit: BACKEND_SERVER_URL + "api/admin/main/update_buses",
-        move_reservations: BACKEND_SERVER_URL + "api/admin/main/move_reservations",
         get_buses_for_move_people: BACKEND_SERVER_URL + "api/admin/main/get_bus_for_move",
     };
 
-    schedule_default_price: number = 25;
-    reservation_fee: number = 0;
+    settings: any[] = Array();
 
     addReservationErrorMessage = "All the following are necessary for a new reservation: First Name, Last Name, Phone Number & Email.";
     deleteReservationErrorMessage = "Deleting failed.";

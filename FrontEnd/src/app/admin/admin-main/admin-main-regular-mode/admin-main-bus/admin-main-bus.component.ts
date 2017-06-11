@@ -36,7 +36,7 @@ export class AdminMainBusComponent implements OnInit {
         this.total_reservation = 0;
         for(let i = 0; i < this._bus.times.length; i++)
             this.total_reservation += this._bus.times[i].reservation_cnt;
-        this.price = this._mainService.schedule_default_price;;
+        this.price = this._mainService.settings['Default Price'];;
         if(this._bus.price.first_seats > 0 && this._bus.price.first_price > 0 && this.total_reservation <= this._bus.price.first_seats)
             this.price = this._bus.price.first_price;
         else if(this._bus.price.last_price > 0 && this.total_reservation >= this._bus.max_cap - this._bus.price.last_seats)

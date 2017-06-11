@@ -21,7 +21,7 @@
                 </div>
                 <div class="tr">
                     <div class="td likep1">
-                        Phone: {{$phone}} • Toll Free: {{$tollFree}} • Email: {{$email}}<br>
+                        Phone: {{$phone}} • Toll Free: {{$tollFree}} • Email: {{$companyEmail}}<br>
                         <b>
                         <hr>
                         </b><br>
@@ -49,27 +49,33 @@
                         <b>Name:</b> {{$reservation['First Name']}} {{$reservation['Last Name']}}
                         @if ($reservation['old']['First Name'] != $reservation['First Name'] ||
                             $reservation['old']['Last Name'] != $reservation['Last Name'])
-                            (<b>Changed From</b> {{$reservation['old']['First Name']}} {{$reservation['old']['Last Name']}})
+                            (<b>Changed from:</b> {{$reservation['old']['First Name']}} {{$reservation['old']['Last Name']}})
                         @endif
                         <br>
                         @if ($reservation['old']['Phone'] != $reservation['Phone'])
                         <b>Phone:</b> {{$reservation['Phone']}}
-                            (<b>Changed From</b> {{$reservation['old']['Phone']}})
+                            (<b>Changed from:</b> {{$reservation['old']['Phone']}})
                         <br>
                         @endif
                         @if ($reservation['old']['Email'] != $reservation['Email'])
                         <b>Email:</b> {{$reservation['Email']}}
-                            (<b>Changed From</b> {{$reservation['old']['Email']}})
+                            (<b>Changed from:</b> {{$reservation['old']['Email']}})
                         <br>
                         @endif
                         <b>Seats Reserved:</b> {{$reservation['Seats']}}
                         @if ($reservation['old']['Seats'] != $reservation['Seats'])
-                            (<b>Changed From</b> {{$reservation['old']['Seats']}})
+                            (<b>Changed from:</b> {{$reservation['old']['Seats']}})
                         @endif
                         <br>
                         @if ($reservation['old']['Note'] != $reservation['Note'])
                         <b>Note:</b> {{$reservation['Note']}}
-                            (<b>Changed From</b> {{$reservation['old']['Note']}})
+                        @if ($reservation['old']['Note'] == "")
+                            (<b>Newly added</b>)
+                        @elseif ($reservation['Note'] == "")
+                            (<b>Deleted original:</b> {{$reservation['old']['Note']}})
+                        @else
+                            (<b>Changed from:</b> {{$reservation['old']['Note']}})
+                        @endif
                         <br>
                         @endif
                         <b>Reservation Number:</b> {{$reservation['id']}}<br>
@@ -87,24 +93,12 @@
                 </div>
                 <div class="tr">
                     <div class="td likep">
-                        Please be at the bus stop at least 15 minutes before travel time, otherwise your seat may be assigned to another passenger.<br>
-                        <b>Your seat is ONLY GUARANTEED for the pickup location you have specified when booking your ticket.</b><br>
-                        This ticket is non refundable. However, you may reschedule or put your ticket on hold up until 12:00 am midnight prior to travel. Use the Edit My Trip feature on our website to do this. Alternatively, you may contact us at {{$tollFree2}} during business hours or email us at {{$email}}. If you do not change the reservation before that time and don't travel, your ticket will be forfeited.<br>
-                        <br>
-                        <b>Please note</b>: On Saturdays, please call the following number for inquiries only: {{$phone2}}<br>
-                        <br>
-                        Sign-up &amp; become a member of our Rewards Program today! Remember: For every 8 one-way ticket or 4 round trip tickets you purchase under your account, you will receive a free one-way ticket for the next time you travel!<br>
-                        <br>
-                        Please Note: We are not responsible for damaged, lost, or stolen packages during loading or unloading.<br>
-                        <br>
-                        Transportation provided by Q.T. Transport MC#{{$transportMC}}<br>
-                        <br>
-                        From all of us at Washington Deluxe - Have a safe trip!! 
+                        {!!$reservationFooter!!}
                     </div>
                 </div>
                 <div class="tr">
                     <div class="td small" style="font-family: verdana, arial, serif, EmojiFont;"><br>
-                    Our Web System Is Powered By: <a href="http://{{$website}}" target="_blank" rel="noopener noreferrer">{{$website}}</a> 
+                    Our Web System Is Powered By: <a href="http://{{$companySite}}" target="_blank" rel="noopener noreferrer">{{$companySite}}</a> 
                     </div>
                 </div>
             </div>

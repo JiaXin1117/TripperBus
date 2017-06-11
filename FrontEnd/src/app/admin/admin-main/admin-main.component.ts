@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router }   from '@angular/router';
-import {MainService} from "../../services/main_service/main.service";
+import { MainService } from "../../services/main_service/main.service";
+import { HttpService } from "../../services/http_service/http.service";
 import * as moment from "moment";
 
 declare var jQuery:any;
@@ -17,16 +18,36 @@ export class AdminMainComponent implements OnInit {
     public return_date: string;
     public page_mode: number;
 
-    constructor( public _router: Router 
-                , public _mainService: MainService ) {
+    constructor( 
+        public _router: Router, 
+        public _mainService: MainService,
+        public _httpService: HttpService
+        ) 
+    {
     }
 
     ngOnInit() {
         let me = this;
         
+        me.initSettings();
         me.initiateVars();
         me.setDatePickers();
 
+    }
+
+    initSettings() {
+        let url = this._mainService.URLS.get_Settings;
+
+        this._httpService.sendGetRequestWithParams(url)
+            .subscribe(
+            data => {
+                if (data.state == "success") {
+                    console.log(data);
+                    this._mainService.settings = data.settings;
+
+                    this._mainService.settings['Reservation Fee'] = parseFloat(this._mainService.settings['Reservation Fee']);
+                }
+            });
     }
 
     initiateVars() {

@@ -143,7 +143,7 @@
                             <input type="email" class="form-control" id="reservation_email" [(ngModel)]="myReservation['Email']">
                         </div>
                     </div>
-                    <div>
+                    <div *ngIf="!myReservation['id']">
                         <div class="form-group col-xs-4" display="inline-block">
                             <label for="reservation_seats">Seats</label>
                             <input type="number" min="0" class="form-control" id="reservation_seats" [(ngModel)]="myReservation['Seats']" (ngModelChange)="onSeatsChange($event)">
@@ -167,7 +167,7 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="myReservation && myReservation['Payment Method'] === paymentMethod[0]">
+                    <div *ngIf="!myReservation['id'] && myReservation['Payment Method'] === paymentMethod[0]">
                         <div class="col-xs-12">
                             <div class="col-xs-12 form-group well">
                                 <p>
@@ -175,7 +175,7 @@
                                 <ng-template [ngIf]="headerReturn.date != ''">
                                     From <i>{{newReservation_ReturningAreaName}}</i> : <b>${{inputParams.returning_price.toFixed(2)}}</b> per person. 
                                 </ng-template>
-                                Plus <b>${{_mainService.reservation_fee.toFixed(2)}}</b> reservation fee</p>
+                                Plus <b>${{_mainService.settings['Reservation Fee'].toFixed(2)}}</b> reservation fee</p>
                             </div>
                         </div>
                         <div class="form-group col-xs-12">

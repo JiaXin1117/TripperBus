@@ -9,6 +9,7 @@ use App\Models\Res_Groups;
 use App\Models\Res_Groups_DestStops;
 use App\Models\Res_Times;
 use App\Models\Res_Reservations;
+use App\Models\Settings;
 use Illuminate\Support\Facades\Input;
 use DB;
 use Carbon\Carbon;
@@ -141,6 +142,35 @@ class MainController extends Controller
         Res_Reservations::reguard();
 
         return response()->json($response);
+    }
+
+    public function getSettings() {
+        $settings = Settings::get();
+        foreach ($settings as $item) {
+            $result[$item['key']] = $item['value'];
+        }
+
+        return response()->json([
+            'state' => 'success',
+            'settings' => $result
+        ]);
+    }
+
+    public function setSettings(Request $request){
+        $input = $request->only(['settings']);
+        $input = $input['settings'];
+        
+        Settings::unguard();
+        foreach ($input as $key => $value) {
+            $setting = Settings::where('key', $key)->first();
+            if ($setting) {
+                $setting->value = $value;
+                $setting->save();
+            }
+        }
+        Settings::reguard();
+
+        return $this->getSettings();
     }
 
     public function getPriceInfo() {

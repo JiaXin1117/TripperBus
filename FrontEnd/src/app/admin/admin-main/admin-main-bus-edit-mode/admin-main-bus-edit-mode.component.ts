@@ -57,7 +57,6 @@ export class AdminMainBusEditModeComponent implements OnInit {
                         if(data.state == "success"){
                             this.leaving_buses = data.data_1;
                             this.returning_buses = data.data_2;
-                            this._mainService.schedule_default_price = data.default_price;
                         }
                     });
     }

@@ -12,7 +12,6 @@ use App\Models\Res_Times;
 use App\Models\Res_Reservations;
 use App\Models\Res_Schedule_Prices;
 use App\Models\Res_DateSchedule;
-use App\Models\Settings;
 use Illuminate\Support\Facades\Input;
 use DB;
 use Illuminate\Support\Facades\Validator;
@@ -41,8 +40,8 @@ class BusEditController extends Controller
         }
         
         // ------------------ Leaving ----------------------
-        $default_price = Settings::where('key', 'DEFAULT_PRICE')->first()->value;
-        $reservation_fee = Settings::where('key', 'RESERVATION_FEE')->first()->value;
+        $default_price = getSettingsValue('Default Price');
+        $reservation_fee = getSettingsValue('Reservation Fee');
 
         $count = Res_Times::where('area_id', $reqData['leaving_from'])
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
@@ -305,7 +304,7 @@ class BusEditController extends Controller
         }
 
         // -------------------------------- Leaving ----------------------------------
-        $default_price = Settings::where('key', 'DEFAULT_PRICE')->first()->value;
+        $default_price = getSettingsValue('Default Price');
 
         $count = DB::table('res_times')
                     ->join('res_stops', function($join){

@@ -21,7 +21,7 @@
                 </div>
                 <div class="tr">
                     <div class="td likep1">
-                        Phone: {{$phone}} • Toll Free: {{$tollFree}} • Email: {{$email}}<br>
+                        Phone: {{$phone}} • Toll Free: {{$tollFree}} • Email: {{$companyEmail}}<br>
                         <b>
                         <hr>
                         </b><br>
@@ -63,24 +63,12 @@
                 </div>
                 <div class="tr">
                     <div class="td likep">
-                        Please be at the bus stop at least 15 minutes before travel time, otherwise your seat may be assigned to another passenger.<br>
-                        <b>Your seat is ONLY GUARANTEED for the pickup location you have specified when booking your ticket.</b><br>
-                        This ticket is non refundable. However, you may reschedule or put your ticket on hold up until 12:00 am midnight prior to travel. Use the Edit My Trip feature on our website to do this. Alternatively, you may contact us at {{$tollFree2}} during business hours or email us at {{$email}}. If you do not change the reservation before that time and don't travel, your ticket will be forfeited.<br>
-                        <br>
-                        <b>Please note</b>: On Saturdays, please call the following number for inquiries only: {{$phone2}}<br>
-                        <br>
-                        Sign-up &amp; become a member of our Rewards Program today! Remember: For every 8 one-way ticket or 4 round trip tickets you purchase under your account, you will receive a free one-way ticket for the next time you travel!<br>
-                        <br>
-                        Please Note: We are not responsible for damaged, lost, or stolen packages during loading or unloading.<br>
-                        <br>
-                        Transportation provided by Q.T. Transport MC#{{$transportMC}}<br>
-                        <br>
-                        From all of us at Washington Deluxe - Have a safe trip!! 
+                        {!!$reservationFooter!!}
                     </div>
                 </div>
                 <div class="tr">
                     <div class="td small" style="font-family: verdana, arial, serif, EmojiFont;"><br>
-                    Our Web System Is Powered By: <a href="http://{{$website}}" target="_blank" rel="noopener noreferrer">{{$website}}</a> 
+                    Our Web System Is Powered By: <a href="http://{{$companySite}}" target="_blank" rel="noopener noreferrer">{{$companySite}}</a> 
                     </div>
                 </div>
             </div>

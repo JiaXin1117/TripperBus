@@ -13,7 +13,7 @@
     <header class="panel-heading">
         <h3 class="box-title">
             <span class="fa fa-pencil-square"></span> Settings
-            <a href="http://tripperbus.infinixsoft.com/admin/users/create?role=1" class="btn btn-xs btn-primary pull-right"><span class="fa fa-plus"></span> Settings</a>
+<!--            <a href="http://tripperbus.infinixsoft.com/admin/users/create?role=1" class="btn btn-xs btn-primary pull-right"><span class="fa fa-plus"></span> Settings</a>-->
         </h3>
     </header>
     <div class="panel-body">
@@ -23,7 +23,7 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Company Name:</label>
-                        <input type="text" name="company_name" class="form-control" value="Tripper Bus">
+                        <input type="text" name="company_name" class="form-control" [(ngModel)]="settings['Company Name']">
                     </div>
                 </div>
             </div>
@@ -32,7 +32,7 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Company Email:</label>
-                        <input type="text" name="company_email" class="form-control" value="info@tripperbus.com">
+                        <input type="text" name="company_email" class="form-control" [(ngModel)]="settings['Company Email']">
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Email From:</label>
-                        <input type="text" name="email_from" class="form-control" value="Tripper Bus Reservations">
+                        <input type="text" name="email_from" class="form-control" [(ngModel)]="settings['Email From']">
                     </div>
                 </div>
             </div>
@@ -50,18 +50,7 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Reservation Footer:</label>
-                        <textarea name="reservation_footer" class="form-control" rows="20">Please be at the bus stop at least 15 minutes before travel time, otherwise your seat may be assigned to another passenger.
-&lt;b&gt;Your seat is ONLY GUARANTEED for the pickup location you have specified when booking your ticket.&lt;/b&gt;
-This ticket is non refundable. However, you may reschedule or put your  ticket on hold up until 12:00 am midnight prior to travel. Use the Edit My Trip feature on our website to do this. Alternatively, you may contact us at 1-718-834-9214 during business hours or email us at info@tripperbus.com. If you do not change the reservation before that time and don\\\'t travel, your ticket will be forfeited.
-
-&lt;b&gt;Please note&lt;/b&gt;: On Saturdays, please call the following number for inquiries only: 703.339.0333
-
-
-Please Note: We are not responsible for damaged, lost, or stolen packages during loading or unloading.
-
-Transportation provided by Q.T. Transport MC#453103
-
-From all of us at Tripper Bus - Have a safe trip!! </textarea>
+                        <textarea name="reservation_footer" class="form-control" rows="20" [(ngModel)]="settings['Reservation Footer']"></textarea>
                     </div>
                 </div>
             </div>
@@ -70,24 +59,7 @@ From all of us at Tripper Bus - Have a safe trip!! </textarea>
                 <div class="row">
                     <div class="form-group">
                         <label>Email Footer:</label>
-                        <textarea name="email_footers" class="form-control" rows="20">Sincerely,
-
-The Tripper Bus Company. 
-
-_______________________________________________
-
-&lt;b&gt;Please note&lt;/b&gt;: On Saturdays, please call the following number for inquiries only: 703.339.0333
-
-When traveling with us, please be at the bus stop at least 15 minutes before travel time.
-
-Please Note: your seat is ONLY GUARANTEED for the pickup location you have specified when booking your ticket.
-
-To change or cancel any reservation, use the Edit My Trip feature on our website. Alternatively, you may call us toll-free at 1-718-834-9214. One of our reps will gladly help.
-
-Sign-up &amp; become a member of our Rewards Program today!
-Remember : For every 8 one-way ticket or 4 round trip tickets you purchase under your account, you will receive a free one-way ticket next time you book with us!
-
-Please Note: We are not responsible for damaged, lost, or stolen packages during loading or unloading.</textarea>
+                        <textarea name="email_footers" class="form-control" rows="20" [(ngModel)]="settings['Email Footer']"></textarea>
                     </div>
                 </div>
             </div>
@@ -97,7 +69,7 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
                     <div class="form-group">
                         <label>Allowed Advance Days:</label>
                         <div class="text-info">Number of days in advance you allow customers to reserve</div>
-                        <input type="text" name="advance_reserve" class="form-control" value="60" size="3" maxlength="3">
+                        <input type="text" name="advance_reserve" class="form-control" size="3" maxlength="3" [(ngModel)]="settings['Allowed Advance Days']">
                     </div>
                 </div>
             </div>
@@ -107,7 +79,7 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
                     <div class="form-group">
                         <label>Maximum Reserve:</label>
                         <div class="text-info">Maximum seats customers may reserve per each reservation</div>
-                        <input type="text" name="max_reserve" class="form-control" value="49" size="2" maxlength="2">
+                        <input type="text" name="max_reserve" class="form-control" size="2" maxlength="2" [(ngModel)]="settings['Maximum Reserve']">
                     </div>
                 </div>
             </div>
@@ -117,7 +89,7 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
                     <div class="form-group">
                         <label>Default Maximum Capacity:</label>
                         <div class="text-info">When adding new buses, this will be the changeable default</div>
-                        <input type="text" name="default_max_cap" class="form-control" value="57" size="3" maxlength="3">
+                        <input type="text" name="default_max_cap" class="form-control" size="3" maxlength="3" [(ngModel)]="settings['Default Maximum Capacity']">
                     </div>
                 </div>
             </div>
@@ -127,7 +99,7 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
                     <div class="form-group">
                         <label>Customer Reservation Deadline:</label>
                         <div class="text-info">Minutes before a schedule time customers can no longer reserve</div>
-                        <input type="text" name="reserve_deadline" class="form-control" value="30" size="3" maxlength="3">
+                        <input type="text" name="reserve_deadline" class="form-control" size="3" maxlength="3" [(ngModel)]="settings['Customer Reservation Deadline']">
                     </div>
                 </div>
             </div>
@@ -137,9 +109,9 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
                     <div class="form-group">
                         <label>Email customer notes to admin email:</label>
                         <div class="text-info">If selected, notes customers write when they reserve are emailed to admin's email</div>
-                        <select name="email_notes_ta" size="1">
-                            <option selected="" value="1">Yes</option>
-                            <option value="2">No</option>
+                        <select name="email_notes_ta" size="1" [(ngModel)]="settings['Email customer notes to admin email']">
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
                         </select>
                     </div>
                 </div>
@@ -150,7 +122,7 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
                     <div class="form-group">
                         <label>Marquee Scroll:</label>
                         <div class="text-info">The text on top of every page upper right sight that scrolls - (Limit: 500 characters)</div>
-                        <textarea name="marquee" class="form-control" rows="20">Our new website - what do you say to it?</textarea>
+                        <textarea name="marquee" class="form-control" rows="20" [(ngModel)]="settings['Marquee Scroll']"></textarea>
                     </div>
                 </div>
             </div>      
@@ -160,7 +132,7 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
                     <div class="form-group">
                         <label>Special Announcement:</label>
                         <div class="text-info">If this is not empty, it will apear on home page  &amp; first reservation page as special announcement in a red box</div>
-                        <textarea name="special_announcement" class="form-control" rows="20"></textarea>
+                        <textarea name="special_announcement" class="form-control" rows="20" [(ngModel)]="settings['Special Announcement']"></textarea>
                     </div>
                 </div>
             </div>      
@@ -168,9 +140,9 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
             <div class="col-xs-12">
                 <div class="row">
                     <div class="form-group">
-                        <label>Reservation Fee When Booking Reservation:</label>
+                        <label>Reservation Fee:</label>
                         <div class="text-info">This is the reservation fee per seat when booking the reservation initially, both through the website or admin</div>
-                        <input type="text" name="reservation_initial_fee" class="form-control" value="1.25" size="8" maxlength="5">
+                        <input type="text" name="reservation_initial_fee" class="form-control" size="8" maxlength="5" [(ngModel)]="settings['Reservation Fee']">
                     </div>
                 </div>
             </div>   
@@ -180,7 +152,7 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
                     <div class="form-group">
                         <label>Reservation Fee - (Rescheduling):</label>
                         <div class="text-info">This is the reservation fee per whole group when modifying existing reservations both through the website or admin</div>
-                        <input type="text" name="reservation_reschedule_fee" class="form-control" value="1.00" size="8" maxlength="5">
+                        <input type="text" name="reservation_reschedule_fee" class="form-control" size="8" maxlength="5" [(ngModel)]="settings['Reservation Fee - (Rescheduling)']">
                     </div>
                 </div>
             </div>  
@@ -191,7 +163,7 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
                     <div class="form-group">
                         <label>Important Message:</label>
                         <div class="text-info">If this is not empty, it will apear on all reservation pages as special announcement in red lettering</div>
-                        <textarea name="important_message" class="form-control" rows="20"></textarea>
+                        <textarea name="important_message" class="form-control" rows="20" [(ngModel)]="settings['Important Message']"></textarea>
                     </div>
                 </div>
             </div>  
@@ -201,7 +173,7 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
                     <div class="form-group">
                         <label>Error Message:</label>
                         <div class="text-info">If this is not empty, it will apear on all reservation pages as error message in red lettering when something maybe goes wrong. </div>
-                        <textarea name="error_message" class="form-control" rows="20">Something happened on the way of processing this section. Please try again later.</textarea>
+                        <textarea name="error_message" class="form-control" rows="20" [(ngModel)]="settings['Error Message']"></textarea>
                     </div>
                 </div>
             </div> 
@@ -277,7 +249,7 @@ Please Note: We are not responsible for damaged, lost, or stolen packages during
                 </div>
             </div -->  
             <div class="form-group">
-                <button type="submit" class="btn btn-green btn-lg" value="Guardar">Update</button>
+                <button type="submit" class="btn btn-green btn-lg" value="Guardar" (click)="setSettings();">Update</button>
             </div>                  
         </div>
     </div>

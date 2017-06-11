@@ -60,7 +60,6 @@ export class AdminMainMovePeopleModeComponent implements OnInit {
                         this.returning_buses = data.data_2;
                         this.leaving_times = data.time_1;
                         this.returning_times = data.time_2;
-                        this._mainService.schedule_default_price = data.default_price;
                     }
                 });
     }

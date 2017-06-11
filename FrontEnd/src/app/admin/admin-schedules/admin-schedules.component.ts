@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {HttpService} from "../../services/http_service/http.service";
 import {ScheduleService} from "../../services/schedule_service/schedule.service";
 import {AuthService} from "../../services/auth_service/auth.service";
 import { BACKEND_SERVER_URL } from '../../config/config';
 import { Router }   from '@angular/router';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+
 import * as moment from "moment";
 
 declare var jQuery:any;
@@ -14,6 +16,8 @@ declare var jQuery:any;
   styleUrls: ['./admin-schedules.component.css']
 })
 export class AdminSchedulesComponent implements OnInit {
+    @ViewChild('schduleDay_NY_Modal') public schduleDay_NY_Modal: ModalDirective;
+    @ViewChild('schduleDay_BA_Modal') public schduleDay_BA_Modal: ModalDirective;
 
     public urls: any = {
         retrieve_schedule_by_month_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_by_month",
@@ -314,9 +318,9 @@ export class AdminSchedulesComponent implements OnInit {
         let me = this;
         
         if (areaType == me._scheduleService.areaType.TYPE_NEWYORK) {
-            jQuery("#schedule_per_day_modal_NY").modal('show');
+            this.schduleDay_NY_Modal.show();
         } else {
-            jQuery("#schedule_per_day_modal_BA").modal('show');
+            this.schduleDay_BA_Modal.show();
         }
     }
     
@@ -349,8 +353,8 @@ export class AdminSchedulesComponent implements OnInit {
     }
     
     public hideModal() { 
-            jQuery("#schedule_per_day_modal_NY").modal('hide');
-            jQuery("#schedule_per_day_modal_BA").modal('hide');
+            this.schduleDay_NY_Modal.hide();
+            this.schduleDay_BA_Modal.hide();
     }
     
     public addDaysToCalendar() {

@@ -185,8 +185,6 @@ export class AdminMainReservationComponent implements OnInit {
                     if (data.state == "success") {
                         this.leaving_buses = data.data_1;
                         this.returning_buses = data.data_2;
-                        this._mainService.schedule_default_price = data.default_price;
-                        this._mainService.reservation_fee = parseFloat(data.reservation_fee);
 
                         this.outbound_bus = Bus.getBusFromGroupId(this.leaving_buses, this.inputParams.outbound_bus_groupId);
                         if (this.outbound_bus) {
@@ -382,7 +380,7 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservation: this.myReservation})
         .subscribe(
             data => {
-                this.successMessage = "Reservation#" + this.myReservation['id'] + " is (softly) deleted.";
+                this.successMessage = "Reservation#" + this.myReservation['id'] + " is deleted.";
                 this.errorMessage = "";
                 console.log(this.successMessage);
                 let updatedReservation = data.json() as Reservation;
@@ -415,7 +413,7 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, {id: deleteId})
         .subscribe(
             data => {
-                this.successMessage = "Reservation#" + deleteId + " is successfully deleted.";
+                this.successMessage = "Reservation#" + deleteId + " is permanently deleted.";
                 this.errorMessage = "";
                 console.log(this.successMessage);
 
@@ -447,7 +445,7 @@ export class AdminMainReservationComponent implements OnInit {
 
     public autoTransactionAmount() {
         if (this.myReservation['Payment Method'] == PaymentMethod[0] && this.myReservation['Seats'] > 0) {
-            this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.reservation_fee;
+            this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.settings['Reservation Fee'];
 
             if (this.headerReturn.date != '') {
                 this.myReservation['Transaction Amount'] += this.myReservation['Seats'] * this.inputParams['returning_price']

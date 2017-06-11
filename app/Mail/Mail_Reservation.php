@@ -7,7 +7,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Carbon\Carbon;
-use App\Models\Settings;
 use App\Models\Res_Times;
 use App\Models\Res_Stops;
 
@@ -18,17 +17,19 @@ class Mail_Reservation extends Mailable
     public $reservation;
     public $type;
 
-    public $email;
+    public $companyEmail;
     public $phone;
     public $phone2;
     public $tollFree;
     public $tollFree2;
-    public $website;
+    public $companySite;
+    public $reservationFooter;
+    public $emailFooter;
 
     // temp
     // --------------------
     public $destination = "2:15 PM at 202 West 36th St. cor. 7th Ave , NY, NY, - (Between 7th &amp; 8th Avenues, in front of Pig n Whistle Irish Pub)";
-    public $transportMC = "453103";
+//    public $transportMC = "453103";
     // --------------------
 
     public $time, $stop;
@@ -53,12 +54,14 @@ class Mail_Reservation extends Mailable
         $this->reservation = $reservation;
         $this->type = $type;
 
-        $this->email = Settings::where('key', 'EMAIL')->first()->value;
-        $this->phone = Settings::where('key', 'PHONE')->first()->value;
-        $this->phone2 = Settings::where('key', 'PHONE2')->first()->value;
-        $this->tollFree = Settings::where('key', 'TOLLFREE')->first()->value;
-        $this->tollFree2 = Settings::where('key', 'TOLLFREE2')->first()->value;
-        $this->website = Settings::where('key', 'WEBSITE')->first()->value;
+        $this->companyEmail = getSettingsValue('Company Email');
+        $this->phone = getSettingsValue('PHONE');
+        $this->phone2 = getSettingsValue('PHONE2');
+        $this->tollFree = getSettingsValue('TOLLFREE');
+        $this->tollFree2 = getSettingsValue('TOLLFREE2');
+        $this->companySite = getSettingsValue('Company Site');
+        $this->reservationFooter = nl2br(getSettingsValue('Reservation Footer'));
+        $this->emailFooter = nl2br(getSettingsValue('Email Footer'));
 
         $this->time = Res_Times::find($reservation['time_id'])->toarray();
         if ($this->time) {
@@ -73,7 +76,9 @@ class Mail_Reservation extends Mailable
      */
     public function build()
     {
-        $subject = null;
+        $view = null;
+        $from = ['address' => getSettingsValue('Company Email'),
+                 'name'    => getSettingsValue('Email From')];
         
         switch ($this->type) {
 
@@ -101,8 +106,8 @@ class Mail_Reservation extends Mailable
                 break;
         }
 
-        if ($subject) {
-            return $this->subject($subject)->view($view);
+        if ($view) {
+            return $this->from($from['address'], $from['name'])->subject($subject)->view($view);
         }
     }
 }

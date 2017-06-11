@@ -105,6 +105,16 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.main.delete_reservation',
             'uses' => 'MainController@deleteReservation',
         ]);
+
+        Route::get('/get_Settings', [
+            'as' => 'admin.main.get_Settings',
+            'uses' => 'MainController@getSettings',
+        ]);
+        Route::post('/set_Settings', [
+            'as' => 'admin.main.set_Settings',
+            'uses' => 'MainController@setSettings',
+        ]);
+
         Route::get('/get_price_for_bus', [
             'as' => 'admin.main.get_price_for_bus',
             'uses' => 'MainController@getPriceInfo',

@@ -22,6 +22,7 @@
         <p>{{ headerReturn.date }} at: </p>
     </div>
 </div>-->
+<div style="margin-bottom: 50px;">
 <div class="row row-content" >
     <div class="col-sm-6" style="text-align: center;" [class.wide] = "headerReturn.date == ''">
         <div class="header-outbound">
@@ -46,7 +47,7 @@
         </div>
     </div>
 </div>
-<div class="row text-center" style="margin-bottom: 50px;" *ngIf = "outbound_timeId != 0">
+<div class="row text-center" *ngIf = "outbound_timeId != 0">
     <div class="alert alert-success " style="margin: 20px 0px;">
         <button aria-label="Close" class="close" type="button" (click) = "successMessage = ''">
             <!--<span aria-hidden="true">×</span>-->
@@ -57,4 +58,5 @@
         <p>Total Per Seat: ${{(+outbound_price + returning_price).toFixed(2)}}</p>
     </div>
     <button type="button" class="btn btn-primary" (click) = "gotoNextStep();">Next Step</button>
+</div>
 </div>

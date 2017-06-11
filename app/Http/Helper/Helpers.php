@@ -1,16 +1,20 @@
 <?php
 
-$auth_net_url    = "https://certification.authorize.net/gateway/transact.dll";
- #  Uncomment the line ABOVE for shopping cart test accounts or BELOW for live merchant accounts
-// $auth_net_url    = "https://secure2.authorize.net/gateway/transact.dll";
- 
-// include("./au1.php");
-// include("./au2.php");
+use App\Models\Settings;
 
-
+function getSettingsValue($key) {
+    return Settings::where('key', $key)->first()->value;
+}
 
 function addAuthorizeNetLink($reservation) {
+
+    $auth_net_url    = "https://certification.authorize.net/gateway/transact.dll";
+    #  Uncomment the line ABOVE for shopping cart test accounts or BELOW for live merchant accounts
+    // $auth_net_url    = "https://secure2.authorize.net/gateway/transact.dll";
     
+    // include("./au1.php");
+    // include("./au2.php");
+
     $x_l="839K8uarKj3r";
     $x_t="95Ukcc6RZ287Pc7B";
 
