@@ -122,7 +122,7 @@
                     <div class="form-group">
                         <label>Marquee Scroll:</label>
                         <div class="text-info">The text on top of every page upper right sight that scrolls - (Limit: 500 characters)</div>
-                        <textarea name="marquee" class="form-control" rows="20" [(ngModel)]="settings['marquee']"></textarea>
+                        <textarea name="marquee" class="form-control" rows="5" [(ngModel)]="settings['marquee']"></textarea>
                     </div>
                 </div>
             </div>      
@@ -132,7 +132,7 @@
                     <div class="form-group">
                         <label>Special Announcement:</label>
                         <div class="text-info">If this is not empty, it will apear on home page  &amp; first reservation page as special announcement in a red box</div>
-                        <textarea name="special_announcement" class="form-control" rows="20" [(ngModel)]="settings['special_announcement']"></textarea>
+                        <textarea name="special_announcement" class="form-control" rows="5" [(ngModel)]="settings['special_announcement']"></textarea>
                     </div>
                 </div>
             </div>      
@@ -163,7 +163,7 @@
                     <div class="form-group">
                         <label>Important Message:</label>
                         <div class="text-info">If this is not empty, it will apear on all reservation pages as special announcement in red lettering</div>
-                        <textarea name="important_message" class="form-control" rows="20" [(ngModel)]="settings['important_message']"></textarea>
+                        <textarea name="important_message" class="form-control" rows="5" [(ngModel)]="settings['important_message']"></textarea>
                     </div>
                 </div>
             </div>  
@@ -173,7 +173,7 @@
                     <div class="form-group">
                         <label>Error Message:</label>
                         <div class="text-info">If this is not empty, it will apear on all reservation pages as error message in red lettering when something maybe goes wrong. </div>
-                        <textarea name="error_message" class="form-control" rows="20" [(ngModel)]="settings['error_message']"></textarea>
+                        <textarea name="error_message" class="form-control" rows="5" [(ngModel)]="settings['error_message']"></textarea>
                     </div>
                 </div>
             </div> 
@@ -232,22 +232,22 @@
                         </div>
                     </div>
                 </div>
-            </div>  
+            </div -->  
 
 
             <div class="col-xs-12">
                 <div class="row">
-                    <div class="form-group">
+                    <div class="form-group form-inline">
                         <label>Take site offline:</label>
                         <div class="checkbox switch">
-                            <input type="checkbox" name="working_on_site" value="1">
+                            <input type="checkbox" name="working_on_site" [(ngModel)]="settings['working_on_site']">
                             <span class="cs-place">
                                 <span class="cs-handler"></span>
                             </span>
                         </div>
                     </div>
                 </div>
-            </div -->  
+            </div>  
             <div class="form-group">
                 <button type="submit" class="btn btn-green btn-lg" value="Guardar" (click)="setSettings();">Update</button>
             </div>                  
