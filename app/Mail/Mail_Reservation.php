@@ -18,10 +18,9 @@ class Mail_Reservation extends Mailable
     public $type;
 
     public $companyEmail;
+    public $emailFrom;
     public $phone;
-    public $phone2;
     public $tollFree;
-    public $tollFree2;
     public $companySite;
     public $reservationFooter;
     public $emailFooter;
@@ -54,14 +53,13 @@ class Mail_Reservation extends Mailable
         $this->reservation = $reservation;
         $this->type = $type;
 
-        $this->companyEmail = getSettingsValue('Company Email');
-        $this->phone = getSettingsValue('PHONE');
-        $this->phone2 = getSettingsValue('PHONE2');
-        $this->tollFree = getSettingsValue('TOLLFREE');
-        $this->tollFree2 = getSettingsValue('TOLLFREE2');
-        $this->companySite = getSettingsValue('Company Site');
-        $this->reservationFooter = nl2br(getSettingsValue('Reservation Footer'));
-        $this->emailFooter = nl2br(getSettingsValue('Email Footer'));
+        $this->companyEmail = getSettingsValue('company_email');
+        $this->emailFrom = getSettingsValue('email_from');
+        $this->phone = getSettingsValue('company_phone');
+        $this->tollFree = getSettingsValue('toll_free');
+        $this->companySite = getSettingsValue('company_website');
+        $this->reservationFooter = nl2br(getSettingsValue('reservation_footer'));
+        $this->emailFooter = nl2br(getSettingsValue('eamil_footers'));
 
         $this->time = Res_Times::find($reservation['time_id'])->toarray();
         if ($this->time) {
@@ -77,8 +75,6 @@ class Mail_Reservation extends Mailable
     public function build()
     {
         $view = null;
-        $from = ['address' => getSettingsValue('Company Email'),
-                 'name'    => getSettingsValue('Email From')];
         
         switch ($this->type) {
 
@@ -107,7 +103,10 @@ class Mail_Reservation extends Mailable
         }
 
         if ($view) {
-            return $this->from($from['address'], $from['name'])->subject($subject)->view($view);
+            return $this
+            ->from($this->companyEmail, $this->emailFrom)
+            ->subject($subject)
+            ->view($view);
         }
     }
 }

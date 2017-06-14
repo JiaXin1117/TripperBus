@@ -40,8 +40,6 @@ class BusEditController extends Controller
         }
         
         // ------------------ Leaving ----------------------
-        $default_price = getSettingsValue('Default Price');
-        $reservation_fee = getSettingsValue('Reservation Fee');
 
         $count = Res_Times::where('area_id', $reqData['leaving_from'])
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
@@ -261,8 +259,6 @@ class BusEditController extends Controller
             'state' => 'success',
             'data_1' => $res,
             'data_2' => $res1,
-            'default_price' => $default_price,
-            'reservation_fee' => $reservation_fee
         ]);
     }
 
@@ -304,8 +300,6 @@ class BusEditController extends Controller
         }
 
         // -------------------------------- Leaving ----------------------------------
-        $default_price = getSettingsValue('Default Price');
-
         $count = DB::table('res_times')
                     ->join('res_stops', function($join){
                             $join->on('res_times.stop_id', '=', 'res_stops.id');
@@ -611,7 +605,6 @@ class BusEditController extends Controller
             'data_2' => $res1,
             'time_1' => $result1,
             'time_2' => $result2,
-            'default_price' => $default_price,
         ]);
     }
 

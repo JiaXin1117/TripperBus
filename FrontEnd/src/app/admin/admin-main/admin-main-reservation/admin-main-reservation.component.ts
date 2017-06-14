@@ -445,7 +445,7 @@ export class AdminMainReservationComponent implements OnInit {
 
     public autoTransactionAmount() {
         if (this.myReservation['Payment Method'] == PaymentMethod[0] && this.myReservation['Seats'] > 0) {
-            this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.settings['Reservation Fee'];
+            this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.settings['reservation_initial_fee'];
 
             if (this.headerReturn.date != '') {
                 this.myReservation['Transaction Amount'] += this.myReservation['Seats'] * this.inputParams['returning_price']

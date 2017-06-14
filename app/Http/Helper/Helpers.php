@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\Settings;
+use App\Models\Res_Setting;
 
 function getSettingsValue($key) {
-    return Settings::where('key', $key)->first()->value;
+    return Res_Setting::get()->first()[$key];
 }
 
 function addAuthorizeNetLink($reservation) {

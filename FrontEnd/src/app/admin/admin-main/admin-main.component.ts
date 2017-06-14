@@ -45,7 +45,7 @@ export class AdminMainComponent implements OnInit {
                     console.log(data);
                     this._mainService.settings = data.settings;
 
-                    this._mainService.settings['Reservation Fee'] = parseFloat(this._mainService.settings['Reservation Fee']);
+                    this._mainService.settings['reservation_initial_fee'] = parseFloat(this._mainService.settings['reservation_initial_fee']);
                 }
             });
     }

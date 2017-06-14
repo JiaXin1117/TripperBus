@@ -175,7 +175,7 @@
                                 <ng-template [ngIf]="headerReturn.date != ''">
                                     From <i>{{newReservation_ReturningAreaName}}</i> : <b>${{inputParams.returning_price.toFixed(2)}}</b> per person. 
                                 </ng-template>
-                                Plus <b>${{_mainService.settings['Reservation Fee'].toFixed(2)}}</b> reservation fee</p>
+                                Plus <b>${{_mainService.settings['reservation_initial_fee'].toFixed(2)}}</b> reservation fee</p>
                             </div>
                         </div>
                         <div class="form-group col-xs-12">
