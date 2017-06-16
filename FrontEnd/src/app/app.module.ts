@@ -8,6 +8,8 @@ import { DataTableModule } from "ng2-data-table";
 
 import { AppRoutingModule }   from './app-routing/app-routing.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
+
 
 import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -99,13 +101,15 @@ import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mod
         AppRoutingModule,
         MultiselectDropdownModule,
         DataTableModule,
+        SimpleNotificationsModule,
         ModalModule.forRoot()
     ],
     providers: [
         HttpService,
         AuthService,
         ScheduleService,
-        MainService
+        MainService,
+        NotificationsService
     ],
     exports: [
         AdminHeaderComponent,

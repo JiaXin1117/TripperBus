@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MainService } from "../../services/main_service/main.service";
 import { HttpService } from "../../services/http_service/http.service";
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
   selector: 'app-admin-settings',
@@ -11,9 +12,18 @@ export class AdminSettingsComponent implements OnInit {
 
   public settings: any[];
 
+  public notifyOptions = {
+            timeOut: 2000,
+            position: ["top", "right"],
+            showProgressBar: false,
+            pauseOnHover: false,
+            clickToClose: true,
+          }
+
   constructor(
     public _mainService: MainService,
-    public _httpService: HttpService
+    public _httpService: HttpService,
+    private _notificationsService: NotificationsService,
     )
   {
     this.settings = Array();
@@ -49,11 +59,15 @@ export class AdminSettingsComponent implements OnInit {
         let input = data.json();
         this.settings = input['settings'];
         this._mainService.settings = this.settings;
+        
+        this._notificationsService.success('Success', 'Successfully updated.');
+
       },
       error => {
         let errorMessage = "Settings are failed.";
         console.log(errorMessage);
-        alert(errorMessage);
+
+        this._notificationsService.error('Error', 'Update failed.');
       });
   }
 
