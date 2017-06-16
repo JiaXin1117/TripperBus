@@ -153,6 +153,24 @@ class MainController extends Controller
         ]);
     }
 
+    public function searchReservation(Request $request){
+        $searchKey = Input::get('searchKey');
+        $searchVal = Input::get('searchVal');
+
+        Res_Reservations::unguard();
+
+        $result = Res_Reservations::where('valid', 1)
+        ->where($searchKey, 'like', '%'.$searchVal.'%')
+        ->get()->toarray();
+
+        Res_Reservations::reguard();
+
+        return response()->json([
+            'state' => 'success',
+            'data' => $result
+        ]);
+    }
+
     public function setSettings(Request $request){
         $input = $request->only(['settings']);
         $input = $input['settings'];

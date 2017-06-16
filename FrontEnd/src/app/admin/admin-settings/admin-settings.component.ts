@@ -13,12 +13,12 @@ export class AdminSettingsComponent implements OnInit {
   public settings: any[];
 
   public notifyOptions = {
-            timeOut: 2000,
-            position: ["top", "right"],
-            showProgressBar: false,
-            pauseOnHover: false,
-            clickToClose: true,
-          }
+    timeOut: 2000,
+    position: ["bottom", "right"],
+    showProgressBar: false,
+    pauseOnHover: false,
+    clickToClose: true,
+  }
 
   constructor(
     public _mainService: MainService,

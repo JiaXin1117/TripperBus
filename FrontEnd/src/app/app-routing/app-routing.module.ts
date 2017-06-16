@@ -29,6 +29,8 @@ import { AdminMainRegularModeComponent } from '../admin/admin-main/admin-main-re
 import { AdminMainBusEditModeComponent } from '../admin/admin-main/admin-main-bus-edit-mode/admin-main-bus-edit-mode.component';
 import { AdminMainMovePeopleModeComponent } from '../admin/admin-main/admin-main-move-people-mode/admin-main-move-people-mode.component';
 import { AdminMainReservationComponent } from '../admin/admin-main/admin-main-reservation/admin-main-reservation.component';
+import { AdminMainSearchComponent } from '../admin/admin-main/admin-main-search/admin-main-search.component';
+
 //import service.
 import {AuthService} from "../services/auth_service/auth.service";
 
@@ -43,6 +45,7 @@ const routes: Routes = [
             { path: 'main/bus_edit_mode/:outbound_date/:leaving_from/:return_date', component: AdminMainBusEditModeComponent},
             { path: 'main/move_people_mode/:outbound_date/:leaving_from/:return_date', component: AdminMainMovePeopleModeComponent},
             { path: 'main/reservation_mode/:outbound_date/:leaving_from/:return_date/:outbound_bus_groupId/:outbound_timeId/:outbound_price/:returning_bus_groupId/:returning_timeId/:returning_price', component: AdminMainReservationComponent},
+            { path: 'main/search_mode/:searchKey/:searchVal', component: AdminMainSearchComponent},
             
             { path: 'schedules',      component: AdminSchedulesComponent },
             { path: 'schedules_edit/:sel_date/:button_type/:area_id/:schedule_type', component: AdminSchedulesEditexistingComponent },

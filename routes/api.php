@@ -105,6 +105,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.main.delete_reservation',
             'uses' => 'MainController@deleteReservation',
         ]);
+        Route::get('/search_reservation', [
+            'as' => 'admin.main.search_reservation',
+            'uses' => 'MainController@searchReservation',
+        ]);
 
         Route::get('/get_Settings', [
             'as' => 'admin.main.get_Settings',

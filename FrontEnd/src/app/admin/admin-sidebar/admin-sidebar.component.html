@@ -1,7 +1,7 @@
 <aside class="left-side sidebar-offcanvas admin-sidebar-aside admin-sidebar">
     <section class="sidebar">
         <!-- Sidebar user panel -->
-        <div class="user-panel">
+        <div class="user-panel" style="margin: 5px 0px">
             <div class="pull-left image">
                 <img src="./assets/common/img/dummy.png" class="img-circle" alt="User Image">
             </div>
@@ -10,18 +10,46 @@
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
         </div>
-        <!-- search form -->
-        <form action="#" method="get" class="sidebar-form admin-sidebar-form-custom">
-            <div class="input-group">
-                <input type="text" name="q" class="form-control admin-sidebar-search-input" placeholder="Search..." >
-                <span class="input-group-btn">
-                    <button type="submit" name="seach" id="search-btn" class="btn btn-flat admin-sidebar-search-btn"><i class="fa fa-search"></i></button>
-                </span>
-            </div>
-        </form>
+
+
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
-            <li class="sidebar-menu-li">
+            <li class="" style="border-top: 1px solid #595959 !important;">
+                <a href="javascript:void(0);" id="treeview-search">
+                    <i class="fa fa-search"></i> <span>Search</span> 
+                    <i class="fa fa-angle-left pull-right" style="display: none;"></i> 
+                    <i class="fa fa-angle-down pull-right"></i>
+                </a>
+                <div id="admin-sidebar-search-details">
+                    <!-- search form -->
+                    <form action="#" method="get" class="sidebar-form admin-sidebar-form-custom form-horizontal" (submit)="search()">
+                        <div class="input-group" style="margin-bottom: 5px">
+                            <select name="searchKey" class="form-control admin-sidebar-search-input" [(ngModel)]="searchKey">
+                                <option value="First Name">First Name</option>
+                                <option value="Last Name">Last Name</option>
+                                <option value="Phone">Phone Number</option>
+                                <option value="Email">Email Address</option>
+                                <option value="IP Address">IP Address</option>
+                                <option value="Date Made">Date Made</option>
+                                <option value="Note">Note</option>
+                                <option value="id">Reservation ID</option>
+                                <option value="time_id">Reservation Number</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" name="searchVal" class="form-control admin-sidebar-search-input" placeholder="Search..." [(ngModel)]="searchVal">
+                            <span class="input-group-btn">
+                                <button type="submit" name="seach" id="search-btn" class="btn btn-flat admin-sidebar-search-btn">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </li>
+
+        
+            <li class="sidebar-menu-li" style="border-top: 1px solid #595959 !important;">
                 <a routerLink='/admin/main' routerLinkActive="admin-sidebar-router-active">
                     <i class="fa fa-dashboard"></i> <span>Main</span>
                 </a>

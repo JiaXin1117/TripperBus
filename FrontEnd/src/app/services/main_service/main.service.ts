@@ -19,6 +19,7 @@ export class MainService {
         delete_reservation: BACKEND_SERVER_URL + "api/admin/main/delete_reservation",
         delete_soft_reservation: BACKEND_SERVER_URL + "api/admin/main/delete_soft_reservation",
         move_reservations: BACKEND_SERVER_URL + "api/admin/main/move_reservations",
+        search_reservation: BACKEND_SERVER_URL + "api/admin/main/search_reservation",
 
         get_Settings: BACKEND_SERVER_URL + "api/admin/main/get_Settings",
         set_Settings: BACKEND_SERVER_URL + "api/admin/main/set_Settings",

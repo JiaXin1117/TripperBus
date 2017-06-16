@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -54,6 +55,7 @@ import { AdminMainBusEditModeComponent, AdminMainBusEditorComponent } from './ad
 import { AdminMainMovePeopleModeComponent, AdminMainBusMoveComponent } from './admin/admin-main/admin-main-move-people-mode/admin-main-move-people-mode.component';
 import { AdminMainReservationComponent } from './admin/admin-main/admin-main-reservation/admin-main-reservation.component';
 import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mode/admin-main-bus/admin-main-bus.component';
+import { AdminMainSearchComponent } from './admin/admin-main/admin-main-search/admin-main-search.component';
 
 
 @NgModule({
@@ -92,7 +94,8 @@ import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mod
         AdminMainMovePeopleModeComponent,
         AdminMainBusMoveComponent,
         AdminMainBusComponent,
-        AdminMainReservationComponent
+        AdminMainReservationComponent,
+        AdminMainSearchComponent
     ],
     imports: [
         BrowserModule,
@@ -102,6 +105,7 @@ import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mod
         MultiselectDropdownModule,
         DataTableModule,
         SimpleNotificationsModule,
+        BrowserAnimationsModule,
         ModalModule.forRoot()
     ],
     providers: [

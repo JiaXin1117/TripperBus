@@ -1,4 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
+import { Router }   from '@angular/router';
 
 declare var jQuery:any;
 
@@ -9,7 +10,9 @@ declare var jQuery:any;
 })
 export class AdminSidebarComponent implements OnInit {
 
-    constructor() { }
+    constructor(
+        public _router: Router,
+    ) { }
 
     ngOnInit() {
         this.setTreeView();
@@ -18,6 +21,9 @@ export class AdminSidebarComponent implements OnInit {
     @HostListener('window:resize', ['$event'])
     onResize(event) { 
     }
+
+    public searchKey = "First Name";
+    public searchVal = "";
     
     public defaultData = [
         {
@@ -76,6 +82,32 @@ export class AdminSidebarComponent implements OnInit {
             }
         });
         
+        jQuery("#treeview-search").click(function(){
+            if (jQuery("#admin-sidebar-search-details").css("display") == 'none'){ 
+                jQuery("#admin-sidebar-search-details").slideDown();
+                jQuery(".fa-angle-left").css('display', 'none');
+                jQuery(".fa-angle-down").css('display', 'inherit');
+                
+                // Update Sidebar Height.
+                let plus_height = jQuery("#admin-sidebar-search-details-ul").height(); 
+                jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() + plus_height);
+            }
+            else {
+                jQuery("#admin-sidebar-search-details").slideUp();
+                jQuery(".fa-angle-left").css('display', 'inherit');
+                jQuery(".fa-angle-down").css('display', 'none');
+                
+                // Update Sidebar Height.
+                jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() - jQuery("#admin-sidebar-search-details-ul").height());
+            }
+        });
     }
     
+    public search() {
+        if (this.searchVal == '')
+            return;
+            
+        let link = ['/admin/main/search_mode', this.searchKey, this.searchVal];
+        this._router.navigate(link);
+    }
 }
