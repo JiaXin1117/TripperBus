@@ -27,7 +27,7 @@ export class AdminMainSearchComponent implements OnInit {
         searchVal: ""
     };
 
-    public reservations: Reservation[];
+    public reservations = null;
 
     public myReservation = new Reservation;
 
@@ -97,7 +97,6 @@ export class AdminMainSearchComponent implements OnInit {
                 public _location: Location,
                 )
     {
-        this.reservations = Array();
         _router.events.subscribe(evt => {
             let event = evt instanceof NavigationEnd;
             if (!event)
@@ -122,8 +121,6 @@ export class AdminMainSearchComponent implements OnInit {
     }
 
     init() {
-        this.reservations = [];
-        
         this.refreshData();
     }
 

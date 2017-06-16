@@ -1,4 +1,4 @@
-<div *ngIf="!reservations.length" class="panel panel-default">
+<div *ngIf="reservations && !reservations.length" class="panel panel-default">
     <div>
         <h4>
             <span class="label label-danger">Your search for a 
@@ -9,13 +9,13 @@
     </div>
 </div>
 
-<div *ngIf="reservations.length" class="text-center header-div">
+<div *ngIf="reservations && reservations.length" class="text-center header-div">
     <div class="container" style="margin: 30px">
       <ss-multiselect-dropdown class="text-left" [options]="fieldOptions" [texts]="fieldTexts" [settings]="fieldSettings" [(ngModel)]="showField" (ngModelChange)="onShowFieldChange($event)"></ss-multiselect-dropdown>
     </div>
 </div>
 
-<div *ngIf="reservations.length" class="panel panel-default">
+<div *ngIf="reservations && reservations.length" class="panel panel-default">
     <div>
         <h4>
             <span class="label label-success">Your search for a 
