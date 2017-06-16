@@ -103,7 +103,7 @@ export class AdminMainSearchComponent implements OnInit {
             if (!event)
                 return;
             
-            let url = (evt as NavigationEnd).url;
+            let url = decodeURI((evt as NavigationEnd).url);
             let params = url.split('/');
             let searchVal = params.pop();
             let searchKey = params.pop();

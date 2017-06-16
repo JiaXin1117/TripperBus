@@ -1,8 +1,9 @@
 <div *ngIf="!reservations.length" class="panel panel-default">
     <div>
         <h4>
-            <span class="label label-default">
-                Your search for a {{ searchKey }} containing {{ searchVal }} found nothing.
+            <span class="label label-danger">Your search for a 
+              <span class="badge">{{ inputParams.searchKey }}</span> containing 
+              <span class="badge">{{ inputParams.searchVal }}</span> found nothing.
             </span>
         </h4>
     </div>
@@ -10,17 +11,17 @@
 
 <div *ngIf="reservations.length" class="text-center header-div">
     <div class="container" style="margin: 30px">
-            <ss-multiselect-dropdown class="text-left" [options]="fieldOptions"
-                [texts]="fieldTexts" [settings]="fieldSettings" [(ngModel)]="showField" (ngModelChange)="onShowFieldChange($event)"></ss-multiselect-dropdown>
+      <ss-multiselect-dropdown class="text-left" [options]="fieldOptions" [texts]="fieldTexts" [settings]="fieldSettings" [(ngModel)]="showField" (ngModelChange)="onShowFieldChange($event)"></ss-multiselect-dropdown>
     </div>
 </div>
 
 <div *ngIf="reservations.length" class="panel panel-default">
     <div>
         <h4>
-            <span class="label label-success">
-                Your search for a {{ searchKey }} containing {{ searchVal }} found the following 
-                <span class="badge">{{reservations.length}}</span> records:
+            <span class="label label-success">Your search for a 
+              <span class="badge">{{ inputParams.searchKey }}</span> containing 
+              <span class="badge">{{ inputParams.searchVal }}</span> found the following 
+              <span class="badge">{{reservations.length}}</span> records:
             </span>
         </h4>
     </div>
