@@ -23,7 +23,7 @@
                 <div id="admin-sidebar-search-details">
                     <!-- search form -->
                     <form action="#" method="get" class="sidebar-form admin-sidebar-form-custom form-horizontal" (submit)="search()">
-                        <div class="input-group" style="margin-bottom: 5px; width: 100%">
+                        <div class="input-group col-xs-12" style="margin-bottom: 5px">
                             <select name="searchKey" class="form-control admin-sidebar-search-input" [(ngModel)]="searchKey">
                                 <option value="First Name">First Name</option>
                                 <option value="Last Name">Last Name</option>
@@ -35,6 +35,10 @@
                                 <option value="id">Reservation ID</option>
                                 <option value="time_id">Reservation Number</option>
                             </select>
+                        </div>
+                        <div class="input-group col-xs-12" style="margin: 10px 0px; display:inline-flex">
+                            <input type="checkbox" name="caseSensitive" id="caseSensitive" class="admin-sidebar-search-input" [(ngModel)]="caseSensitive">
+                            <label for="caseSensitive" style="margin-left: 5px; margin-top: 2px;">Case Sensitive</label>
                         </div>
                         <div class="input-group">
                             <input type="text" name="searchVal" class="form-control admin-sidebar-search-input" placeholder="Search..." [(ngModel)]="searchVal">

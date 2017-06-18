@@ -24,7 +24,8 @@ export class AdminMainSearchComponent implements OnInit {
 
     public inputParams: any = {
         searchKey: "",
-        searchVal: ""
+        searchVal: "",
+        caseSensitive: false,
     };
 
     public reservations = null;
@@ -104,6 +105,7 @@ export class AdminMainSearchComponent implements OnInit {
             
             let url = decodeURI((evt as NavigationEnd).url);
             let params = url.split('/');
+            let caseSensitive = params.pop();
             let searchVal = params.pop();
             let searchKey = params.pop();
             let mode = params.pop();
@@ -113,6 +115,7 @@ export class AdminMainSearchComponent implements OnInit {
 
             this.inputParams.searchKey = searchKey;
             this.inputParams.searchVal = searchVal;
+            this.inputParams.caseSensitive = caseSensitive;
             this.init();
         });
     }
@@ -125,7 +128,10 @@ export class AdminMainSearchComponent implements OnInit {
     }
 
     public refreshData() {
-        let url = this._mainService.URLS.search_reservation + "?searchKey=" + this.inputParams.searchKey + "&searchVal=" + this.inputParams.searchVal;
+        let url = this._mainService.URLS.search_reservation 
+        + "?searchKey=" + this.inputParams.searchKey 
+        + "&searchVal=" + this.inputParams.searchVal 
+        + "&caseSensitive=" + this.inputParams.caseSensitive;
         
         this._httpService.sendGetRequestWithParams(url).subscribe(
           data => {
@@ -140,6 +146,7 @@ export class AdminMainSearchComponent implements OnInit {
     public receiveInputParams() {
       this.inputParams.searchKey = this._route.snapshot.params['searchKey']; 
       this.inputParams.searchVal = this._route.snapshot.params['searchVal']; 
+      this.inputParams.caseSensitive = this._route.snapshot.params['caseSensitive']; 
     }
 
     public showReservationModal(): void {

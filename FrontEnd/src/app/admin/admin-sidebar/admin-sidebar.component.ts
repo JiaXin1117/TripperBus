@@ -24,6 +24,7 @@ export class AdminSidebarComponent implements OnInit {
 
     public searchKey = "First Name";
     public searchVal = "";
+    public caseSensitive = false;
     
     public defaultData = [
         {
@@ -107,7 +108,7 @@ export class AdminSidebarComponent implements OnInit {
         if (this.searchVal == '')
             return;
             
-        let link = ['/admin/main/search_mode', this.searchKey, this.searchVal];
+        let link = ['/admin/main/search_mode', this.searchKey, this.searchVal, this.caseSensitive ? 1 : 0];
         this._router.navigate(link);
     }
 }

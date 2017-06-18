@@ -156,12 +156,19 @@ class MainController extends Controller
     public function searchReservation(Request $request){
         $searchKey = Input::get('searchKey');
         $searchVal = Input::get('searchVal');
+        $caseSensitive = Input::get('caseSensitive');
 
         Res_Reservations::unguard();
 
-        $result = Res_Reservations::where('valid', 1)
-        ->where($searchKey, 'like', '%'.$searchVal.'%')
-        ->get()->toarray();
+        if ($caseSensitive) {
+            $result = Res_Reservations::where('valid', 1)
+            ->where($searchKey, 'like', '%'.$searchVal.'%')
+            ->get()->toarray();
+        } else {
+            $result = Res_Reservations::where('valid', 1)
+            ->whereRaw('LOWER(`'.$searchKey.'`) like "%'.strtolower($searchVal).'%"')
+            ->get()->toarray();
+        }
 
         Res_Reservations::reguard();
 
