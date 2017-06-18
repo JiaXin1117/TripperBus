@@ -158,16 +158,20 @@ class MainController extends Controller
         $searchVal = Input::get('searchVal');
         $caseSensitive = Input::get('caseSensitive');
 
+        if ($searchKey == 'Date Made') {
+            $searchKey = 'created_at';
+        }
+
         Res_Reservations::unguard();
 
         if ($caseSensitive) {
             $result = Res_Reservations::where('valid', 1)
             ->where($searchKey, 'like', '%'.$searchVal.'%')
-            ->get()->toarray();
+            ->get(['created_at AS Date Made', 'res_reservations.*'])->toarray();
         } else {
             $result = Res_Reservations::where('valid', 1)
             ->whereRaw('LOWER(`'.$searchKey.'`) like "%'.strtolower($searchVal).'%"')
-            ->get()->toarray();
+            ->get(['created_at AS Date Made', 'res_reservations.*'])->toarray();
         }
 
         Res_Reservations::reguard();
