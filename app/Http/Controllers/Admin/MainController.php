@@ -101,6 +101,40 @@ class MainController extends Controller
         return response()->json($response);
     }
 
+    public function updateReservations(Request $request){
+        $input = $request->only(['reservations']);
+        $reservations = $input['reservations'];
+
+        $res_reservations = array();
+
+        foreach ($reservations as $reservation) {
+            $oldReservation = Res_Reservations::where('id', $reservation['id'])->get()->toarray()[0];
+
+            if ($reservation['Payment Method'] == 'Credit Card') {
+    /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
+                    $reservation['Authorize net Link'] = $trans_id;
+                }*/
+            }
+
+            unset($reservation['Date Made']);
+            Res_Reservations::unguard();
+            $res = Res_Reservations::find($reservation['id'])->update($reservation);
+            Res_Reservations::reguard();
+
+            $res_reservation = array();
+            if ($res) {
+                $res_reservation = Res_Reservations::find($reservation['id']);
+                $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
+
+                $res_reservations[] = $res_reservation;
+
+                $this->sendMail_Reservation_Update($res_reservation->toarray(), $oldReservation);
+            }
+        }
+
+        return response()->json($res_reservations);
+    }
+
     public function deleteSoftReservation(Request $request){
         $input = $request->only(['reservation']);
         $reservation = $input['reservation'];
@@ -133,6 +167,43 @@ class MainController extends Controller
         return response()->json($response);
     }
 
+    public function deleteSoftReservations(Request $request){
+        $input = $request->only(['reservations']);
+        $reservations = $input['reservations'];
+
+        $res_reservations = array();
+
+        foreach ($reservations as $reservation) {
+            $reservation['Seats'] = 0;
+            $reservation['Transaction Amount'] = 0;
+            $username = 'Administrator'; // Temp
+            $reservation['Note'] .= "\n" . $username . ' deleted this reservation on ' . Carbon::now() . '.';
+
+            if ($reservation['Payment Method'] == 'Credit Card') {
+    /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
+                    $reservation['Authorize net Link'] = $trans_id;
+                }*/
+            }
+
+            unset($reservation['Date Made']);
+
+            Res_Reservations::unguard();
+            $res = Res_Reservations::find($reservation['id'])->update($reservation);
+            Res_Reservations::reguard();
+
+            $res_reservation = array();
+            if ($res) {
+                $res_reservation = Res_Reservations::find($reservation['id']);
+                $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
+
+                $res_reservations[] = $res_reservation;
+                $this->sendMail_Reservation_SoftDelete($reservation);
+            }
+        }
+
+        return response()->json($res_reservations);
+    }
+
     public function deleteReservation(Request $request){
         $input = $request->only(['id']);
         $id = $input['id'];
@@ -142,15 +213,6 @@ class MainController extends Controller
         Res_Reservations::reguard();
 
         return response()->json($response);
-    }
-
-    public function getSettings() {
-        $settings = Res_Setting::first();
-
-        return response()->json([
-            'state' => 'success',
-            'settings' => $settings
-        ]);
     }
 
     public function searchReservation(Request $request){
@@ -179,6 +241,38 @@ class MainController extends Controller
         return response()->json([
             'state' => 'success',
             'data' => $result
+        ]);
+    }
+
+    public function emailReservations(Request $request){
+        $input = $request->only(['reservations', 'mail']);
+        $reservations = $input['reservations'];
+        $mailContents = $input['mail'];
+
+        $res_reservations = array();
+
+        foreach ($reservations as $reservation) {
+            $username = 'Administrator'; // Temp
+            $res_reservation = array();
+            $res_reservation = Res_Reservations::find($reservation['id']);
+
+            if ($res_reservation) {
+                $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
+
+                $res_reservations[] = $res_reservation;
+                $this->sendMail_Reservation_ReEmail($reservation, $mailContents);
+            }
+        }
+
+        return response()->json($res_reservations);
+    }
+
+    public function getSettings() {
+        $settings = Res_Setting::first();
+
+        return response()->json([
+            'state' => 'success',
+            'settings' => $settings
         ]);
     }
 
@@ -271,6 +365,12 @@ class MainController extends Controller
         if ($reservation['Email'] != $oldReservation['Email']) {
             Mail::to($oldReservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_UPDATE')));
         }
+    }
+
+    public function sendMail_Reservation_ReEmail($reservation, $mailContents) {
+        $reservation['mailContents'] = $mailContents;
+
+        Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_REEMAIL')));
     }
     
 }

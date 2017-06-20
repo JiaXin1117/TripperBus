@@ -97,9 +97,17 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.main.update_reservation',
             'uses' => 'MainController@updateReservation',
         ]);
+        Route::post('/update_reservations', [
+            'as' => 'admin.main.update_reservations',
+            'uses' => 'MainController@updateReservations',
+        ]);
         Route::post('/delete_soft_reservation', [
             'as' => 'admin.main.delete_soft_reservation',
             'uses' => 'MainController@deleteSoftReservation',
+        ]);
+        Route::post('/delete_soft_reservations', [
+            'as' => 'admin.main.delete_soft_reservations',
+            'uses' => 'MainController@deleteSoftReservations',
         ]);
         Route::post('/delete_reservation', [
             'as' => 'admin.main.delete_reservation',
@@ -108,6 +116,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
         Route::get('/search_reservation', [
             'as' => 'admin.main.search_reservation',
             'uses' => 'MainController@searchReservation',
+        ]);
+        Route::post('/email_reservations', [
+            'as' => 'admin.main.email_reservations',
+            'uses' => 'MainController@emailReservations',
         ]);
 
         Route::get('/get_Settings', [

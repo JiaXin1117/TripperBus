@@ -20,6 +20,7 @@ declare var jQuery:any;
 })
 export class AdminMainReservationComponent implements OnInit {
     @ViewChild('reservationModal') public reservationModal: ModalDirective;
+    @ViewChild('selectedModal') public selectedModal: ModalDirective;
 
     public headerLeave: any = {
         city: "",
@@ -113,32 +114,11 @@ export class AdminMainReservationComponent implements OnInit {
         { id: 16, name: 'Other Leg' }
     ];
 
-    public showReservationModal(): void {
-        this.reservationModal.show();
-    }
-
-    public hideReservationModal(): void {
-        this.reservationModal.hide();
-    }
-
-    public showAddReservationModal(): void {
-        this.myReservation.copy(this.newReservation);
-        this.refreshData();
-        this.showReservationModal();
-    }
-
-    onShowFieldChange($event) {
-        this.showField.sort((a, b) => (a-b));
-        console.log(this.showField);
-    }
+    public massAction = "Delete";
+    public massText = "";
 
     // array of currently selected entities in the data table
-    selectedEntities: any[];
-
-    // function to handle data/entities selected/deselected in the table 
-    public setSelectedEntities($event: any) {
-        this.selectedEntities = $event;
-    }
+    selectedReservations: any[];
 
     constructor(public _route: ActivatedRoute, 
                 public _router: Router,
@@ -161,22 +141,26 @@ export class AdminMainReservationComponent implements OnInit {
         me.structHeaderLeaving();
         me.structHeaderReturn();
 
-        this.reservations = [];
-        this.reservations_from_time = [];
-
         me.refreshData(true);
 
     }
 
     public initData() {
+        this.reservations = [];
+        this.reservations_from_time = [];
+
+        this.initNewReservation();
+    }
+
+    public initNewReservation() {
         this.newReservation.init();
         this.newReservation['Seats'] = 1;
     }
 
     public refreshData(reload = false) {
-        this.initData();
-
         if (reload) {
+            this.initData();
+
             let url = this._mainService.URLS.get_buses_for_edit + "?outbound_date=" + this.inputParams.outbound_date + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date;
 
             this._httpService.sendGetRequestWithParams(url)
@@ -223,6 +207,8 @@ export class AdminMainReservationComponent implements OnInit {
                     }
                 });
         } else {
+            this.initNewReservation();
+
             this.autoTransactionAmount();
         }
     }
@@ -259,6 +245,25 @@ export class AdminMainReservationComponent implements OnInit {
             }
             
             me.headerReturn.date = me._scheduleService.getDateAsLongFormat(me.inputParams.return_date);
+    }
+
+    onShowFieldChange($event) {
+        this.showField.sort((a, b) => (a-b));
+//        console.log(this.showField);
+    }
+
+    onPaymentMethodChange(evt) {
+        this.autoTransactionAmount();
+    }
+
+    onSeatsChange(evt) {
+        this.autoTransactionAmount();
+    }
+
+    // function to handle data/entities selected/deselected in the table 
+    onSelectedReservations($event: any) {
+        this.selectedReservations = $event as Reservation[];
+//        console.log (this.selectedReservations);
     }
 
     public addReservation() {
@@ -425,7 +430,7 @@ export class AdminMainReservationComponent implements OnInit {
 
                 this.hideReservationModal();
 
-                this.initData();
+                this.initNewReservation();
             },
             error => {
                 this.successMessage = "";
@@ -435,12 +440,120 @@ export class AdminMainReservationComponent implements OnInit {
             });
     }
 
-    public onPaymentMethodChange(evt) {
-        this.autoTransactionAmount();
+
+    public showReservationModal() {
+        this.reservationModal.show();
     }
 
-    public onSeatsChange(evt) {
-        this.autoTransactionAmount();
+    public hideReservationModal() {
+        this.reservationModal.hide();
+    }
+
+    public showAddReservationModal() {
+        this.myReservation.copy(this.newReservation);
+        this.refreshData();
+        this.showReservationModal();
+    }
+
+    public showSelectedModal() {
+        this.selectedModal.show();
+    }
+
+    public hideSelectedModal() {
+        this.selectedModal.hide();
+    }
+
+    public doMassAction() {
+        if (!this.selectedReservations.length)
+            return;
+
+        switch (this.massAction) {
+            case 'Delete':
+            this.doMassDelete();
+            break;
+
+            case 'Note':
+            this.doMassNote();
+            break;
+
+            case 'Re-Email':
+            this.doMassEmail();
+            break;
+        }
+    }
+
+    public doMassDelete() {
+        console.log (this.selectedReservations);
+
+        let url = this._mainService.URLS.delete_soft_reservations;
+        this._httpService.sendPostJSON(url, {reservations: this.selectedReservations})
+        .subscribe(
+            data => {
+                this.successMessage = "Reservations are successfully deleted.";
+                this.errorMessage = "";
+                console.log(this.successMessage);
+                console.log(data.json());
+
+                this.selectedReservations.forEach (reservation => reservation['Seats'] = 0);
+
+                this.updateBusTimesReservationTotal();
+                this.hideSelectedModal();
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.deleteReservationErrorMessage;
+                console.log(this.errorMessage);
+                alert(this.errorMessage);
+            });
+    }
+
+    public doMassNote() {
+        if (!this.massText.length)
+            return;
+
+        console.log (this.selectedReservations);
+
+        this.selectedReservations.forEach(reservation => reservation['Note'] += "\n" + this.massText);
+
+        let url = this._mainService.URLS.update_reservations;
+        this._httpService.sendPostJSON(url, {reservations: this.selectedReservations})
+        .subscribe(
+            data => {
+                this.successMessage = "Reservation Notes are successfully updated.";
+                this.errorMessage = "";
+                console.log(this.successMessage);
+                console.log(data.json());
+
+                this.hideSelectedModal();
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.updateReservationsErrorMessage;
+                console.log(this.errorMessage);
+                alert(this.errorMessage);
+            });
+    }
+
+    public doMassEmail() {
+        console.log (this.selectedReservations);
+
+        let url = this._mainService.URLS.email_reservations;
+        this._httpService.sendPostJSON(url, {reservations: this.selectedReservations, mail: this.massText})
+        .subscribe(
+            data => {
+                this.successMessage = "Reservations are successfully re-emailed.";
+                this.errorMessage = "";
+                console.log(this.successMessage);
+//                console.log(data.json());
+
+                this.hideSelectedModal();
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.updateReservationsErrorMessage;
+                console.log(this.errorMessage);
+                alert(this.errorMessage);
+            });
     }
 
     public autoTransactionAmount() {
@@ -455,5 +568,17 @@ export class AdminMainReservationComponent implements OnInit {
             this.myReservation['Transaction Amount'] = 0;
         }
         this.myReservation['Transaction Amount'] = this.myReservation['Transaction Amount'].toFixed(2);
+    }
+
+    public updateBusTimesReservationTotal() {
+        this.outbound_bus.times.forEach (time => this.updateTimesReservationTotal(time));
+    }
+
+    public updateTimesReservationTotal(time: Time) {
+        let reservation_cnt = 0;
+
+        this.reservations_from_time[time['id']].forEach (reservation => reservation_cnt += reservation['Seats']);
+
+        time['reservation_cnt'] = reservation_cnt;
     }
 }

@@ -98,6 +98,11 @@ class Mail_Reservation extends Mailable
                 $view = 'emails.Reservation_Update';
                 break;
 
+            case config('config.TYPE_MAIL_RESERVATION_REEMAIL'):
+                $subject = 'Re-Emailing Reservation Information';
+                $view = 'emails.Reservation_Add';
+                break;
+
             default:
                 break;
         }

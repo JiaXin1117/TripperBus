@@ -16,10 +16,13 @@ export class MainService {
 
         add_reservation: BACKEND_SERVER_URL + "api/admin/main/add_reservation",
         update_reservation: BACKEND_SERVER_URL + "api/admin/main/update_reservation",
+        update_reservations: BACKEND_SERVER_URL + "api/admin/main/update_reservations",
         delete_reservation: BACKEND_SERVER_URL + "api/admin/main/delete_reservation",
         delete_soft_reservation: BACKEND_SERVER_URL + "api/admin/main/delete_soft_reservation",
+        delete_soft_reservations: BACKEND_SERVER_URL + "api/admin/main/delete_soft_reservations",
         move_reservations: BACKEND_SERVER_URL + "api/admin/main/move_reservations",
         search_reservation: BACKEND_SERVER_URL + "api/admin/main/search_reservation",
+        email_reservations: BACKEND_SERVER_URL + "api/admin/main/email_reservations",
 
         get_Settings: BACKEND_SERVER_URL + "api/admin/main/get_Settings",
         set_Settings: BACKEND_SERVER_URL + "api/admin/main/set_Settings",
@@ -35,6 +38,7 @@ export class MainService {
     settings: any[] = Array();
 
     addReservationErrorMessage = "All the following are necessary for a new reservation: First Name, Last Name, Phone Number & Email.";
+    updateReservationsErrorMessage = "Updating Failed";
     deleteReservationErrorMessage = "Deleting failed.";
 
     constructor() { }
