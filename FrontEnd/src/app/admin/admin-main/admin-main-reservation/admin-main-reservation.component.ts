@@ -118,7 +118,8 @@ export class AdminMainReservationComponent implements OnInit {
     public massText = "";
 
     // array of currently selected entities in the data table
-    selectedReservations: any[];
+    selectedEntities: Reservation[][];
+    selectedReservations: Reservation[];
 
     constructor(public _route: ActivatedRoute, 
                 public _router: Router,
@@ -129,6 +130,8 @@ export class AdminMainReservationComponent implements OnInit {
     {
         this.reservations = Array();
         this.reservations_from_time = Array();
+        this.selectedEntities = Array();
+        this.selectedReservations = Array();
         this.newReservation_LeavingAreaName = "";
         this.newReservation_ReturningAreaName ="";
     }
@@ -261,8 +264,15 @@ export class AdminMainReservationComponent implements OnInit {
     }
 
     // function to handle data/entities selected/deselected in the table 
-    onSelectedReservations($event: any) {
-        this.selectedReservations = $event as Reservation[];
+    onSelectedReservations($event: any, timeId: number) {
+        this.selectedEntities[timeId] = Array();
+        this.selectedEntities[timeId] = $event as Reservation[];
+        this.selectedReservations = [];
+
+        this.selectedEntities.forEach (subArray => {
+            this.selectedReservations = this.selectedReservations.concat(subArray);
+        });
+
 //        console.log (this.selectedReservations);
     }
 
