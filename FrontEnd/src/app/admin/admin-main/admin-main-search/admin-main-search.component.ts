@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Location } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd }   from '@angular/router';
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from 'angular-2-dropdown-multiselect';
 
@@ -21,6 +20,7 @@ declare var jQuery:any;
 })
 export class AdminMainSearchComponent implements OnInit {
     @ViewChild('reservationModal') public reservationModal: ModalDirective;
+    @ViewChild('selectedModal') public selectedModal: ModalDirective;
 
     public inputParams: any = {
         searchKey: "",
@@ -86,8 +86,11 @@ export class AdminMainSearchComponent implements OnInit {
         { id: 16, name: 'Other Leg' }
     ];
 
+    public massAction = "Delete";
+    public massText = "";
+
     // array of currently selected entities in the data table
-    selectedEntities: any[];
+    selectedReservations: Reservation[];
 
 
     constructor(public _route: ActivatedRoute, 
@@ -95,9 +98,10 @@ export class AdminMainSearchComponent implements OnInit {
                 public _mainService: MainService,
                 public _scheduleService: ScheduleService,
                 public _httpService: HttpService,
-                public _location: Location,
                 )
     {
+        this.selectedReservations = Array();
+
         _router.events.subscribe(evt => {
             let event = evt instanceof NavigationEnd;
             if (!event)
@@ -157,14 +161,28 @@ export class AdminMainSearchComponent implements OnInit {
         this.reservationModal.hide();
     }
 
+    public showSelectedModal() {
+        this.selectedModal.show();
+    }
+
+    public hideSelectedModal() {
+        this.selectedModal.hide();
+    }
+
     onShowFieldChange($event) {
         this.showField.sort((a, b) => (a-b));
         console.log(this.showField);
     }
 
     // function to handle data/entities selected/deselected in the table 
-    public setSelectedEntities($event: any) {
-        this.selectedEntities = $event;
+    onSelectedReservations($event: any) {
+        this.selectedReservations = $event as Reservation[];
+
+        console.log(this.selectedReservations);
+    }
+
+    onSeatsChange(evt) {
+        this.autoTransactionAmount();
     }
 
     public editReservation(reservation: Reservation) {
@@ -285,8 +303,96 @@ export class AdminMainSearchComponent implements OnInit {
             });
     }
 
-    public onSeatsChange(evt) {
-        this.autoTransactionAmount();
+    public doMassAction() {
+        if (!this.selectedReservations.length)
+            return;
+
+        switch (this.massAction) {
+            case 'Delete':
+            this.doMassDelete();
+            break;
+
+            case 'Note':
+            this.doMassNote();
+            break;
+
+            case 'Re-Email':
+            this.doMassEmail();
+            break;
+        }
+    }
+
+    public doMassDelete() {
+        console.log (this.selectedReservations);
+
+        let url = this._mainService.URLS.delete_soft_reservations;
+        this._httpService.sendPostJSON(url, {reservations: this.selectedReservations})
+        .subscribe(
+            data => {
+                this.successMessage = "Reservations are successfully deleted.";
+                this.errorMessage = "";
+                console.log(this.successMessage);
+                console.log(data.json());
+
+                this.selectedReservations.forEach (reservation => reservation['Seats'] = 0);
+
+                this.hideSelectedModal();
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.deleteReservationErrorMessage;
+                console.log(this.errorMessage);
+                alert(this.errorMessage);
+            });
+    }
+
+    public doMassNote() {
+        if (!this.massText.length)
+            return;
+
+        console.log (this.selectedReservations);
+
+        this.selectedReservations.forEach(reservation => reservation['Note'] += "\n" + this.massText);
+
+        let url = this._mainService.URLS.update_reservations;
+        this._httpService.sendPostJSON(url, {reservations: this.selectedReservations})
+        .subscribe(
+            data => {
+                this.successMessage = "Reservation Notes are successfully updated.";
+                this.errorMessage = "";
+                console.log(this.successMessage);
+                console.log(data.json());
+
+                this.hideSelectedModal();
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.updateReservationsErrorMessage;
+                console.log(this.errorMessage);
+                alert(this.errorMessage);
+            });
+    }
+
+    public doMassEmail() {
+        console.log (this.selectedReservations);
+
+        let url = this._mainService.URLS.email_reservations;
+        this._httpService.sendPostJSON(url, {reservations: this.selectedReservations, mail: this.massText})
+        .subscribe(
+            data => {
+                this.successMessage = "Reservations are successfully re-emailed.";
+                this.errorMessage = "";
+                console.log(this.successMessage);
+//                console.log(data.json());
+
+                this.hideSelectedModal();
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.updateReservationsErrorMessage;
+                console.log(this.errorMessage);
+                alert(this.errorMessage);
+            });
     }
 
     public autoTransactionAmount() {

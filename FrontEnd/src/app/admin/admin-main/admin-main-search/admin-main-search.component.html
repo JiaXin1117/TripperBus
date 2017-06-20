@@ -11,7 +11,14 @@
 
 <div *ngIf="reservations && reservations.length" class="text-center header-div">
     <div class="container" style="margin: 30px">
-      <ss-multiselect-dropdown class="text-left" [options]="fieldOptions" [texts]="fieldTexts" [settings]="fieldSettings" [(ngModel)]="showField" (ngModelChange)="onShowFieldChange($event)"></ss-multiselect-dropdown>
+        <div class="col-sm-6">
+            <a class="btn" (click)="showSelectedModal()" [class.disabled]="!selectedReservations || !selectedReservations.length" [class.btn-default]="!selectedReservations || !selectedReservations.length"
+                [class.btn-success]="selectedReservations && selectedReservations.length">Selected Reservations</a>
+        </div>
+        <div class="col-sm-6">
+            <ss-multiselect-dropdown class="text-left" [options]="fieldOptions" [texts]="fieldTexts" [settings]="fieldSettings" [(ngModel)]="showField"
+                (ngModelChange)="onShowFieldChange($event)"></ss-multiselect-dropdown>
+        </div>
     </div>
 </div>
 
@@ -26,7 +33,7 @@
         </h4>
     </div>
     <div style="overflow-x:scroll">
-        <table class="table table-striped table-bordered" [mfData]="reservations" #mf="mfDataTable" [mfRowsOnPage]="10000" (mfSelectedEntities)="setSelectedEntities($event)">
+        <table class="table table-striped table-bordered" [mfData]="reservations" #mf="mfDataTable" [mfRowsOnPage]="10000" (mfSelectedEntities)="onSelectedReservations($event)">
             <thead>
                 <tr>
                     <th><mfRowSelectorHead></mfRowSelectorHead></th>
@@ -108,6 +115,52 @@
                         <button type="submit" class="btn btn-primary" (click)="updateReservation()">Update</button>
                         <button type="submit" class="btn btn-danger" (click)="deleteSoftReservation()">Delete</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Selected Reservations Modal -->
+<div bsModal #selectedModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content col-xs-12">
+            <div class="modal-header" style="border-bottom: none">
+                <button type="button" class="close pull-right" aria-label="Close" (click)="hideSelectedModal()">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div *ngIf="selectedReservations && selectedReservations.length" class="modal-body">
+                <div>
+                    <div class="form-group col-xs-6" display="inline-block">
+                        <label for="selected_mass_action">Mass Action</label>
+                        <select id="selected_mass_action" class="form-control" [(ngModel)]="massAction">
+                            <option value="Delete">Delete</option>
+                            <option value="Note">Note</option>
+                            <option value="Re-Email">Re-Email</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-6" style="margin-top: 23px">
+                        <button type="submit" class="btn col-xs-8 pull-right" (click)="doMassAction()" [class.btn-success]="massAction != 'Delete'" [class.btn-danger]="massAction == 'Delete'" [ngSwitch]="massAction">
+                            <ng-container *ngSwitchCase="'Delete'">
+                                Delete
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'Note'">
+                                Add Note
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'Re-Email'">
+                                Send Mail
+                            </ng-container>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group col-xs-12">
+                    <label for="reservation_mass_text" [ngSwitch]="massAction">
+                        <ng-container *ngSwitchCase="'Note'">Note</ng-container>
+                        <ng-container *ngSwitchCase="'Re-Email'">Email</ng-container>
+                    </label>
+                    <textarea *ngIf="massAction != 'Delete'" class="form-control" rows="5" id="reservation_mass_text" [(ngModel)]="massText">
+                    </textarea>
                 </div>
             </div>
         </div>
