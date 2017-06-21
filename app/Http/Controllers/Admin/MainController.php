@@ -15,6 +15,7 @@ use DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Mail_Reservation;
+use App\Mail\Mail_Bus;
 
 class MainController extends Controller
 {
@@ -48,6 +49,35 @@ class MainController extends Controller
         $input = $request->only(['reservation']);
         $reservation = $input['reservation'];
 
+        $time = Res_Times::find($reservation['time_id']);
+        $max_cap = $time->group->max_cap;
+        $reservationsTotal = BusEditController::getGroup_ReservationsTotal($time->group->id, $reservation['date']);
+        $remain_seats = $max_cap - $reservationsTotal;
+        if ($remain_seats == 0) {
+            $errorMsg = 'Bus is full.';
+            return response()->json([
+                'success' => false,
+                'error' => $errorMsg
+            ]);
+        }
+        else if ($reservation['Seats'] > $remain_seats)
+        {
+            $errorMsg = 'Bus is overflowing. Now ' 
+            . $remain_seats . ' seat' 
+            . ($remain_seats == 1 ? ' is' : 's are') 
+            . ' remaining';
+            return response()->json([
+                'success' => false,
+                'error' => $errorMsg
+            ]);
+        }
+
+        if ($reservation['Seats'] == $remain_seats) {
+            $this->sendMail_Bus_Full($time->group_id);
+        } else if ($reservation['Seats'] == $remain_seats - 5) {
+            $this->sendMail_Bus_5_Remain($time->group_id);
+        }
+
         if ($reservation['Payment Method'] == 'Credit Card') {
 /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
                 $reservation['Authorize net Link'] = $trans_id;
@@ -69,7 +99,10 @@ class MainController extends Controller
         $reservation = Res_Reservations::where('id', $response['id'])->get()->toarray()[0];
         $this->sendMail_Reservation_Add($reservation);
 
-        return response()->json($response);
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
     }
 
     public function updateReservation(Request $request){
@@ -371,6 +404,20 @@ class MainController extends Controller
         $reservation['mailContents'] = $mailContents;
 
         Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_REEMAIL')));
+    }
+
+    public function sendMail_Bus_Full($busId) {
+//        $company_email = 'jiaxin_wp1117@outlook.com';
+        $company_email = getSettingsValue('company_email');
+
+        Mail::to($company_email)->queue(new Mail_Bus(config('config.TYPE_MAIL_BUS_FULL'), $busId));
+    }
+
+    public function sendMail_Bus_5_Remain($busId) {
+//        $company_email = 'jiaxin_wp1117@outlook.com';
+        $company_email = getSettingsValue('company_email');
+
+        Mail::to($company_email)->queue(new Mail_Bus(config('config.TYPE_MAIL_BUS_5_REMAIN'), $busId));
     }
     
 }

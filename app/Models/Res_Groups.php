@@ -10,6 +10,6 @@ class Res_Groups extends Model
     protected $fillable = ['id', 'max_cap'];
     
     public function times() {
-        return $this->hasMany('App\Models\Res_Times');
+        return $this->hasMany('App\Models\Res_Times', 'group_id');
     }
 }

@@ -46,7 +46,7 @@ export class AdminMainSearchComponent implements OnInit {
         pullRight: true,
         enableSearch: false,
         checkedStyle: 'fontawesome',
-        buttonClasses: 'btn btn-default btn-block',
+        buttonClasses: 'btn btn-primary btn-block',
         dynamicTitleMaxItems: 3,
         displayAllSelectedText: true,
         fixedTitle: true,

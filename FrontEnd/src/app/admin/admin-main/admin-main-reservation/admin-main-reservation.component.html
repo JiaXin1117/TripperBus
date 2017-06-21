@@ -4,7 +4,7 @@
             <a class="btn btn-info" routerLink="/driverlist">Click for driver sheet</a>
         </div>
         <div class="col-sm-3 form-inline">
-            <a class="btn btn-primary" (click)="showAddReservationModal()">Add Reservation</a>
+            <a class="btn btn-info" (click)="showAddReservationModal()">Add Reservation</a>
         </div>
         <div class="col-sm-3 form-inline">
             <a class="btn" (click)="showSelectedModal()" [class.disabled]="!selectedReservations || !selectedReservations.length" [class.btn-default]="!selectedReservations || !selectedReservations.length" [class.btn-success]="selectedReservations && selectedReservations.length">Selected Reservations</a>

@@ -17,4 +17,6 @@ return [
     'TYPE_MAIL_RESERVATION_SOFTDELETE'  => 2,
     'TYPE_MAIL_RESERVATION_UPDATE'      => 3,
     'TYPE_MAIL_RESERVATION_REEMAIL'     => 4,
+    'TYPE_MAIL_BUS_FULL'                => 5,
+    'TYPE_MAIL_BUS_5_REMAIN'            => 6,
 ];

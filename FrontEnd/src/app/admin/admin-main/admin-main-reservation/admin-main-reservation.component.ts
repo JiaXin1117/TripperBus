@@ -74,7 +74,7 @@ export class AdminMainReservationComponent implements OnInit {
         pullRight: true,
         enableSearch: false,
         checkedStyle: 'fontawesome',
-        buttonClasses: 'btn btn-default btn-block',
+        buttonClasses: 'btn btn-primary btn-block',
         dynamicTitleMaxItems: 3,
         displayAllSelectedText: true,
         fixedTitle: true,
@@ -291,21 +291,31 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservation: this.newReservation})
         .subscribe(
             data => {
-                this.successMessage = "New reservation is successfully added.";
-                this.errorMessage = "";
-                console.log(this.successMessage);
-                let createdReservation = data.json() as Reservation;
-                if (!createdReservation)
-                    return;
-                this.reservations.push(createdReservation);
-                if (!this.reservations_from_time[this.inputParams.outbound_timeId])
-                    this.reservations_from_time[this.inputParams.outbound_timeId] = Array();
-                this.reservations_from_time[this.inputParams.outbound_timeId].push(createdReservation);
+                let res = data.json();
+                if (res.success) {
+                    this.successMessage = "New reservation is successfully added.";
+                    this.errorMessage = "";
+                    console.log(this.successMessage);
 
-                this.outbound_time['reservation_cnt'] += this.newReservation['Seats'];
+                    let createdReservation = res.data as Reservation;
+                    if (!createdReservation)
+                        return;
 
-                this.hideReservationModal();
-                this.refreshData();
+                    this.reservations.push(createdReservation);
+                    if (!this.reservations_from_time[this.inputParams.outbound_timeId])
+                        this.reservations_from_time[this.inputParams.outbound_timeId] = Array();
+                    this.reservations_from_time[this.inputParams.outbound_timeId].push(createdReservation);
+
+                    this.outbound_time['reservation_cnt'] += this.newReservation['Seats'];
+
+                    this.hideReservationModal();
+                    this.refreshData();
+                } else {
+                    if (res.error) {
+                        alert(res.error);
+                        console.log(res.error);
+                    }
+                }
             },
             error => {
                 this.successMessage = "";
@@ -587,7 +597,9 @@ export class AdminMainReservationComponent implements OnInit {
     public updateTimesReservationTotal(time: Time) {
         let reservation_cnt = 0;
 
-        this.reservations_from_time[time['id']].forEach (reservation => reservation_cnt += reservation['Seats']);
+        if (this.reservations_from_time[time['id']]) {
+            this.reservations_from_time[time['id']].forEach (reservation => reservation_cnt += reservation['Seats']);
+        }
 
         time['reservation_cnt'] = reservation_cnt;
     }

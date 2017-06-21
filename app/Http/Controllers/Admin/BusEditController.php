@@ -137,11 +137,7 @@ class BusEditController extends Controller
             $temp['time_id'] = $bus_time['id'];
             $temp['open'] = $bus_time['open'];
             $temp['area_id'] = $bus_time['area_id'];
-            $temp['reservation_cnt'] = intval(Res_Reservations::where('time_id', $temp['id'])
-                    ->where('date',  $reqData['outbound_date'])
-                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                    ->select(DB::raw('sum(Seats) as reservation_cnt'))
-                    ->first()->reservation_cnt);
+            $temp['reservation_cnt'] = $this->getTime_ReservationsTotal($temp['id'], $reqData['outbound_date']);
 
             $res[$groupHash]['times'][] = $temp;
         }
@@ -246,11 +242,7 @@ class BusEditController extends Controller
                 $temp['time_id'] = $bus_time['id'];
                 $temp['open'] = $bus_time['open'];
                 $temp['area_id'] = $bus_time['area_id'];
-                $temp['reservation_cnt'] = intval(Res_Reservations::where('time_id', $temp['id'])
-                        ->where('date',  $reqData['return_date'])
-                        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                        ->select(DB::raw('sum(Seats) as reservation_cnt'))
-                        ->first()->reservation_cnt);
+                $temp['reservation_cnt'] = $this->getTime_ReservationsTotal($temp['id'], $reqData['return_date']);
 
                 $res1[$groupHash]['times'][] = $temp;
             }
@@ -436,11 +428,7 @@ class BusEditController extends Controller
             $temp['dow'] = $bus_time->day_of_week;
             $temp['time_id'] = $bus_time->id;
             $temp['area_id'] = $bus_time->area_id;
-            $temp['reservation_cnt'] = intval(Res_Reservations::where('time_id', $temp['id'])
-                    ->where('date',  $reqData['outbound_date'])
-                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                    ->select(DB::raw('sum(Seats) as reservation_cnt'))
-                    ->first()->reservation_cnt);
+            $temp['reservation_cnt'] = $this->getTime_ReservationsTotal($temp['id'], $reqData['outbound_date']);
             $temp['move'] = 0;
             $temp['note_change'] = 0;
             $temp['Note'] = "";
@@ -587,11 +575,7 @@ class BusEditController extends Controller
                 $temp['dow'] = $bus_time->day_of_week;
                 $temp['time_id'] = $bus_time->id;
                 $temp['area_id'] = $bus_time->area_id;
-                $temp['reservation_cnt'] = intval(Res_Reservations::where('time_id', $temp['id'])
-                        ->where('date',  $reqData['return_date'])
-                        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                        ->select(DB::raw('sum(Seats) as reservation_cnt'))
-                        ->first()->reservation_cnt);
+                $temp['reservation_cnt'] = $this->getTime_ReservationsTotal($temp['id'], $reqData['return_date']);
                 $temp['move'] = 0;
                 $temp['note_change'] = 0;
                 $temp['Note'] = "";
@@ -680,10 +664,26 @@ class BusEditController extends Controller
             
             Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_MOVE')));
         }
+    }
 
-/*        return Mail::send('emails.welcome', $data, function($message) use($to, $subject) {
-            $message->to($to)->subject($subject);
-        });*/
-//        return mail("jonhs@hanayonghe.com", "My Mail", $oldTimeID . ':' . $newTimeID);
+    public static function getTime_ReservationsTotal($time_id, $date) {
+        $total = intval(Res_Reservations::where('time_id', $time_id)
+        ->where('date',  $date)
+        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+        ->select(DB::raw('sum(Seats) as reservation_cnt'))
+        ->first()->reservation_cnt);
+
+        return $total;
+    }
+
+    public static function getGroup_ReservationsTotal($group_id, $date) {
+        $times = Res_Groups::find($group_id)->times;
+        $total = 0;
+        
+        foreach ($times as $time) {
+            $total += BusEditController::getTime_ReservationsTotal($time['id'], $date);
+        }
+
+        return $total;
     }
 }
