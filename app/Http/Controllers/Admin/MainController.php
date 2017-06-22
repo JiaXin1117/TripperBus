@@ -49,6 +49,18 @@ class MainController extends Controller
         $input = $request->only(['reservation']);
         $reservation = $input['reservation'];
 
+        if ($reservation['First Name'] == '' 
+        || $reservation['Last Name'] == ''
+        || $reservation['Phone'] == ''
+        || $reservation['Email'] == ''
+        ) {
+            $errorMsg = 'All the following are necessary for a new reservation: First Name, Last Name, Phone Number & Email.';
+            return response()->json([
+                'success' => false,
+                'error' => $errorMsg
+            ]);
+        }
+
         $time = Res_Times::find($reservation['time_id']);
         $max_cap = $time->group->max_cap;
         $reservationsTotal = BusEditController::getGroup_ReservationsTotal($time->group->id, $reservation['date']);
@@ -59,9 +71,7 @@ class MainController extends Controller
                 'success' => false,
                 'error' => $errorMsg
             ]);
-        }
-        else if ($reservation['Seats'] > $remain_seats)
-        {
+        } else if ($reservation['Seats'] > $remain_seats) {
             $errorMsg = 'Bus is overflowing. Now ' 
             . $remain_seats . ' seat' 
             . ($remain_seats == 1 ? ' is' : 's are') 
@@ -108,6 +118,18 @@ class MainController extends Controller
     public function updateReservation(Request $request){
         $input = $request->only(['reservation']);
         $reservation = $input['reservation'];
+
+        if ($reservation['First Name'] == '' 
+        || $reservation['Last Name'] == ''
+        || $reservation['Phone'] == ''
+        || $reservation['Email'] == ''
+        ) {
+            $errorMsg = 'All the following are necessary for a new reservation: First Name, Last Name, Phone Number & Email.';
+            return response()->json([
+                'success' => false,
+                'error' => $errorMsg
+            ]);
+        }
 
         $oldReservation = Res_Reservations::where('id', $reservation['id'])->get()->toarray()[0];
 

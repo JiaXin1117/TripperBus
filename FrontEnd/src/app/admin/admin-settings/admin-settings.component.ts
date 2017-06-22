@@ -23,7 +23,7 @@ export class AdminSettingsComponent implements OnInit {
   constructor(
     public _mainService: MainService,
     public _httpService: HttpService,
-    private _notificationsService: NotificationsService,
+    public _notificationsService: NotificationsService,
     )
   {
     this.settings = Array();

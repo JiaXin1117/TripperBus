@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd }   from '@angular/router';
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from 'angular-2-dropdown-multiselect';
-
-import { MainService} from "../../../services/main_service/main.service";
-import { ScheduleService} from "../../../services/schedule_service/schedule.service";
-import { HttpService} from "../../../services/http_service/http.service";
-import { Bus, Reservation, Time } from '../../../model';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 
+import { MainService } from "../../../services/main_service/main.service";
+import { ScheduleService } from "../../../services/schedule_service/schedule.service";
+import { HttpService } from "../../../services/http_service/http.service";
+import { NotificationsService } from 'angular2-notifications';
+
+import { Bus, Reservation, Time } from '../../../model';
 import { PaymentMethod, Autorize_net_url } from '../../../common';
 
 import * as moment from "moment";
@@ -92,12 +93,21 @@ export class AdminMainSearchComponent implements OnInit {
     // array of currently selected entities in the data table
     selectedReservations: Reservation[];
 
+    public notifyOptions = {
+        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+    };
+
 
     constructor(public _route: ActivatedRoute, 
                 public _router: Router,
                 public _mainService: MainService,
                 public _scheduleService: ScheduleService,
                 public _httpService: HttpService,
+                public _notificationsService: NotificationsService,
                 )
     {
         this.selectedReservations = Array();
@@ -221,10 +231,6 @@ export class AdminMainSearchComponent implements OnInit {
             data => {
                 let res = data.json();
                 if (res.success) {
-                    this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
-                    this.errorMessage = "";
-                    console.log(this.successMessage);
-
                     let updatedReservation = res.data as Reservation;
                     if (!updatedReservation)
                         return;
@@ -232,18 +238,20 @@ export class AdminMainSearchComponent implements OnInit {
                     this.updateReservationFromArray(this.reservations, updatedReservation);
 
                     this.hideReservationModal();
+
+                    this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
+                    this.errorMessage = "";
+                    this.successNotification(this.successMessage);
                 } else {
                     if (res.error) {
-                        alert(res.error);
-                        console.log(res.error);
+                        this.failedNotification(res.error);
                     }
                 }
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.addReservationErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -268,9 +276,6 @@ export class AdminMainSearchComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservation: this.myReservation})
         .subscribe(
             data => {
-                this.successMessage = "Reservation#" + this.myReservation['id'] + " is deleted.";
-                this.errorMessage = "";
-                console.log(this.successMessage);
                 let updatedReservation = data.json() as Reservation;
                 if (!updatedReservation)
                     return;
@@ -278,12 +283,15 @@ export class AdminMainSearchComponent implements OnInit {
                 this.updateReservationFromArray(this.reservations, updatedReservation);
 
                 this.hideReservationModal();
+
+                this.successMessage = "Reservation#" + this.myReservation['id'] + " is deleted.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -296,19 +304,18 @@ export class AdminMainSearchComponent implements OnInit {
         this._httpService.sendPostJSON(url, {id: deleteId})
         .subscribe(
             data => {
-                this.successMessage = "Reservation#" + deleteId + " is permanently deleted.";
-                this.errorMessage = "";
-                console.log(this.successMessage);
-
                 this.removeReservationFromArray(this.reservations, this.myReservation);
 
                 this.hideReservationModal();
+
+                this.successMessage = "Reservation#" + deleteId + " is permanently deleted.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -338,20 +345,19 @@ export class AdminMainSearchComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservations: this.selectedReservations})
         .subscribe(
             data => {
-                this.successMessage = "Reservations are successfully deleted.";
-                this.errorMessage = "";
-                console.log(this.successMessage);
-                console.log(data.json());
-
                 this.selectedReservations.forEach (reservation => reservation['Seats'] = 0);
 
                 this.hideSelectedModal();
+
+                this.successMessage = "Reservations are successfully deleted.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+                console.log(data.json());
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -367,18 +373,17 @@ export class AdminMainSearchComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservations: this.selectedReservations})
         .subscribe(
             data => {
+                this.hideSelectedModal();
+
                 this.successMessage = "Reservation Notes are successfully updated.";
                 this.errorMessage = "";
-                console.log(this.successMessage);
+                this.successNotification(this.successMessage);
                 console.log(data.json());
-
-                this.hideSelectedModal();
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.updateReservationsErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -389,18 +394,17 @@ export class AdminMainSearchComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservations: this.selectedReservations, mail: this.massText})
         .subscribe(
             data => {
+                this.hideSelectedModal();
+
                 this.successMessage = "Reservations are successfully re-emailed.";
                 this.errorMessage = "";
-                console.log(this.successMessage);
+                this.successNotification(this.successMessage);
 //                console.log(data.json());
-
-                this.hideSelectedModal();
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.updateReservationsErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -413,4 +417,13 @@ export class AdminMainSearchComponent implements OnInit {
         }
         this.myReservation['Transaction Amount'] = this.myReservation['Transaction Amount'].toFixed(2);
     }
+
+    public successNotification(notifyText: string) {
+        this._notificationsService.success('Success', notifyText);
+    }
+
+    public failedNotification(notifyText: string) {
+        this._notificationsService.error('Failed', notifyText);
+    }
+
 }

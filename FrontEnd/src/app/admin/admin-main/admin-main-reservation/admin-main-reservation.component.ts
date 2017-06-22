@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute }   from '@angular/router';
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from 'angular-2-dropdown-multiselect';
-
-import { MainService} from "../../../services/main_service/main.service";
-import { ScheduleService} from "../../../services/schedule_service/schedule.service";
-import { HttpService} from "../../../services/http_service/http.service";
-import { Bus, Reservation, Time } from '../../../model';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 
+import { MainService } from "../../../services/main_service/main.service";
+import { ScheduleService } from "../../../services/schedule_service/schedule.service";
+import { HttpService } from "../../../services/http_service/http.service";
+import { NotificationsService } from 'angular2-notifications';
+
+import { Bus, Reservation, Time } from '../../../model';
 import { PaymentMethod, Autorize_net_url } from '../../../common';
 
 import * as moment from "moment";
@@ -121,11 +122,21 @@ export class AdminMainReservationComponent implements OnInit {
     selectedEntities: Reservation[][];
     selectedReservations: Reservation[];
 
+    public notifyOptions = {
+        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+    };
+
+
     constructor(public _route: ActivatedRoute, 
                 public _router: Router,
                 public _mainService: MainService,
                 public _scheduleService: ScheduleService,
-                public _httpService: HttpService
+                public _httpService: HttpService,
+                public _notificationsService: NotificationsService,
                 )
     {
         this.reservations = Array();
@@ -293,10 +304,6 @@ export class AdminMainReservationComponent implements OnInit {
             data => {
                 let res = data.json();
                 if (res.success) {
-                    this.successMessage = "New reservation is successfully added.";
-                    this.errorMessage = "";
-                    console.log(this.successMessage);
-
                     let createdReservation = res.data as Reservation;
                     if (!createdReservation)
                         return;
@@ -310,18 +317,20 @@ export class AdminMainReservationComponent implements OnInit {
 
                     this.hideReservationModal();
                     this.refreshData();
+
+                    this.successMessage = "Reservation #" + createdReservation['id'] + " successfully added.";
+                    this.errorMessage = "";
+                    this.successNotification(this.successMessage);
                 } else {
                     if (res.error) {
-                        alert(res.error);
-                        console.log(res.error);
+                        this.failedNotification(res.error);
                     }
                 }
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.addReservationErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -362,10 +371,6 @@ export class AdminMainReservationComponent implements OnInit {
             data => {
                 let res = data.json();
                 if (res.success) {
-                    this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
-                    this.errorMessage = "";
-                    console.log(this.successMessage);
-
                     let updatedReservation = res.data as Reservation;
                     if (!updatedReservation)
                         return;
@@ -378,18 +383,20 @@ export class AdminMainReservationComponent implements OnInit {
 
                     this.hideReservationModal();
                     this.refreshData();
+
+                    this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
+                    this.errorMessage = "";
+                    this.successNotification(this.successMessage);
                 } else {
                     if (res.error) {
-                        alert(res.error);
-                        console.log(res.error);
+                        this.failedNotification(res.error);
                     }
                 }
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.addReservationErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -414,9 +421,6 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservation: this.myReservation})
         .subscribe(
             data => {
-                this.successMessage = "Reservation#" + this.myReservation['id'] + " is deleted.";
-                this.errorMessage = "";
-                console.log(this.successMessage);
                 let updatedReservation = data.json() as Reservation;
                 if (!updatedReservation)
                     return;
@@ -429,12 +433,15 @@ export class AdminMainReservationComponent implements OnInit {
 
                 this.hideReservationModal();
                 this.refreshData();
+
+                this.successMessage = "Reservation#" + this.myReservation['id'] + " is deleted.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -447,25 +454,23 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, {id: deleteId})
         .subscribe(
             data => {
-                this.successMessage = "Reservation#" + deleteId + " is permanently deleted.";
-                this.errorMessage = "";
-                console.log(this.successMessage);
-
-                let delete_Time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.myReservation['time_id']);
-                delete_Time['reservation_cnt'] -= this.myReservation['Seats'];
+                let deleteTime = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.myReservation['time_id']);
+                deleteTime['reservation_cnt'] -= this.myReservation['Seats'];
 
                 this.removeReservationFromArray(this.reservations, this.myReservation);
                 this.removeReservationFromArray(this.reservations_from_time[this.myReservation['time_id']], this.myReservation);
 
                 this.hideReservationModal();
-
                 this.initNewReservation();
+
+                this.successMessage = "Reservation#" + deleteId + " is permanently deleted.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -518,21 +523,20 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservations: this.selectedReservations})
         .subscribe(
             data => {
-                this.successMessage = "Reservations are successfully deleted.";
-                this.errorMessage = "";
-                console.log(this.successMessage);
-                console.log(data.json());
-
                 this.selectedReservations.forEach (reservation => reservation['Seats'] = 0);
 
                 this.updateBusTimesReservationTotal();
                 this.hideSelectedModal();
+
+                this.successMessage = "Reservations are successfully deleted.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+                console.log(data.json());
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -548,18 +552,17 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservations: this.selectedReservations})
         .subscribe(
             data => {
-                this.successMessage = "Reservation Notes are successfully updated.";
-                this.errorMessage = "";
-                console.log(this.successMessage);
-                console.log(data.json());
-
                 this.hideSelectedModal();
+
+                this.successMessage = "Notes are successfully added.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+                console.log(data.json());
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.updateReservationsErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -570,18 +573,17 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservations: this.selectedReservations, mail: this.massText})
         .subscribe(
             data => {
+                this.hideSelectedModal();
+
                 this.successMessage = "Reservations are successfully re-emailed.";
                 this.errorMessage = "";
-                console.log(this.successMessage);
+                this.successNotification(this.successMessage);
 //                console.log(data.json());
-
-                this.hideSelectedModal();
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.updateReservationsErrorMessage;
-                console.log(this.errorMessage);
-                alert(this.errorMessage);
+                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.failedNotification(this.errorMessage);
             });
     }
 
@@ -612,4 +614,13 @@ export class AdminMainReservationComponent implements OnInit {
 
         time['reservation_cnt'] = reservation_cnt;
     }
+
+    public successNotification(notifyText: string) {
+        this._notificationsService.success('Success', notifyText);
+    }
+
+    public failedNotification(notifyText: string) {
+        this._notificationsService.error('Failed', notifyText);
+    }
+
 }

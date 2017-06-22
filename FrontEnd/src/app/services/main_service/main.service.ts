@@ -37,8 +37,8 @@ export class MainService {
 
     settings: any[] = Array();
 
-    addReservationErrorMessage = "All the following are necessary for a new reservation: First Name, Last Name, Phone Number & Email.";
-    updateReservationsErrorMessage = "Updating Failed";
+    addReservationErrorMessage = "Adding Failed.";
+    updateReservationErrorMessage = "Updating Failed.";
     deleteReservationErrorMessage = "Deleting failed.";
 
     constructor() { }
