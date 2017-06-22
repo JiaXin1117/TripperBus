@@ -53,7 +53,7 @@ class MainController extends Controller
         $max_cap = $time->group->max_cap;
         $reservationsTotal = BusEditController::getGroup_ReservationsTotal($time->group->id, $reservation['date']);
         $remain_seats = $max_cap - $reservationsTotal;
-        if ($remain_seats == 0) {
+        if ($remain_seats <= 0) {
             $errorMsg = 'Bus is full.';
             return response()->json([
                 'success' => false,
@@ -111,6 +111,14 @@ class MainController extends Controller
 
         $oldReservation = Res_Reservations::where('id', $reservation['id'])->get()->toarray()[0];
 
+        if ($oldReservation['Seats'] < $reservation['Seats']) {
+            $errorMsg = "Seats can't be changed higher.";
+            return response()->json([
+                'success' => false,
+                'error' => $errorMsg
+            ]);
+        }
+        
         if ($reservation['Payment Method'] == 'Credit Card') {
 /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
                 $reservation['Authorize net Link'] = $trans_id;
@@ -131,7 +139,10 @@ class MainController extends Controller
             $this->sendMail_Reservation_Update($reservation, $oldReservation);
         }
 
-        return response()->json($response);
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
     }
 
     public function updateReservations(Request $request){

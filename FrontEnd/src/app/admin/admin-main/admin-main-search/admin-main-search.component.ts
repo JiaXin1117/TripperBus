@@ -219,16 +219,25 @@ export class AdminMainSearchComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservation: this.myReservation})
         .subscribe(
             data => {
-                this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
-                this.errorMessage = "";
-                console.log(this.successMessage);
-                let updatedReservation = data.json() as Reservation;
-                if (!updatedReservation)
-                    return;
+                let res = data.json();
+                if (res.success) {
+                    this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
+                    this.errorMessage = "";
+                    console.log(this.successMessage);
 
-                this.updateReservationFromArray(this.reservations, updatedReservation);
+                    let updatedReservation = res.data as Reservation;
+                    if (!updatedReservation)
+                        return;
 
-                this.hideReservationModal();
+                    this.updateReservationFromArray(this.reservations, updatedReservation);
+
+                    this.hideReservationModal();
+                } else {
+                    if (res.error) {
+                        alert(res.error);
+                        console.log(res.error);
+                    }
+                }
             },
             error => {
                 this.successMessage = "";

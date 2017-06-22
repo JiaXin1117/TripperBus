@@ -360,21 +360,30 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, {reservation: this.myReservation})
         .subscribe(
             data => {
-                this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
-                this.errorMessage = "";
-                console.log(this.successMessage);
-                let updatedReservation = data.json() as Reservation;
-                if (!updatedReservation)
-                    return;
+                let res = data.json();
+                if (res.success) {
+                    this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
+                    this.errorMessage = "";
+                    console.log(this.successMessage);
 
-                let oldReservation = this.reservations.find(item => (item['id'] == updateId));
-                let update_Time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.myReservation['time_id']);
-                update_Time['reservation_cnt'] += updatedReservation['Seats'] - oldReservation['Seats'];
+                    let updatedReservation = res.data as Reservation;
+                    if (!updatedReservation)
+                        return;
 
-                this.updateReservationFromArray(this.reservations, updatedReservation);
+                    let oldReservation = this.reservations.find(item => (item['id'] == updateId));
+                    let update_Time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.myReservation['time_id']);
+                    update_Time['reservation_cnt'] += updatedReservation['Seats'] - oldReservation['Seats'];
 
-                this.hideReservationModal();
-                this.refreshData();
+                    this.updateReservationFromArray(this.reservations, updatedReservation);
+
+                    this.hideReservationModal();
+                    this.refreshData();
+                } else {
+                    if (res.error) {
+                        alert(res.error);
+                        console.log(res.error);
+                    }
+                }
             },
             error => {
                 this.successMessage = "";
