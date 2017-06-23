@@ -54,8 +54,8 @@ class UserController extends Controller
 
         //check exist
         if (Res_Users::where('username', $user['username'])
-              ->orWhere('email', $user['email'])
-              ->exists()) {
+                    ->orWhere('email', $user['email'])
+                    ->exists()) {
             return response()->json([
                 'success'   => false,
                 'error'     => 'User already exists!',
@@ -74,6 +74,66 @@ class UserController extends Controller
         return response()->json([
             'success'   => $success,
             'data'      => $res,
+        ]);
+    }
+
+    public function updateUser(Request $request) {
+        $user = $request->input('user');
+
+        $validator = $this->user_credential_rules($user);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'    => false,
+                'error'     => $validator->getMessageBag()->first(),
+            ]);
+        }
+
+        //check exist
+        if (Res_Users::where('id', '<>', $user['id'])
+                    ->where(function($query) use($user) {
+                        $query->where('username', $user['username'])
+                              ->orWhere('email', $user['email']);
+                    })
+                    ->exists()) {
+            return response()->json([
+                'success'   => false,
+                'error'     => "User already exists!",
+            ]);
+        }
+
+        unset($user['created_at']);
+        unset($user['updated_at']);
+
+        Res_Users::unguard();
+        $success = Res_Users::find($user['id'])->update($user);
+        Res_Users::reguard();
+
+        $resUser = $success ? Res_Users::find($user['id']) : null;
+        
+        return response()->json([
+            'success'   => $success,
+            'data'      => $resUser,
+        ]);
+    }
+
+    public function deleteUser(Request $request) {
+        $userId = $request->input('userId');
+
+        //check exist
+        $user = Res_Users::find($userId);
+        if (!$user) {
+            return response()->json([
+                'success'   => false,
+                'error'     => "User doesn't exist!",
+            ]);
+        }
+
+        Res_Users::unguard();
+        $success = $user->delete();
+        Res_Users::reguard();
+
+        return response()->json([
+            'success'   => $success
         ]);
     }
 

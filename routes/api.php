@@ -173,6 +173,16 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.user.add_user',
             'uses' => 'UserController@addUser',
         ]);
+
+        Route::post('/update_user', [
+            'as' => 'admin.user.update_user',
+            'uses' => 'UserController@updateUser',
+        ]);
+
+        Route::post('/delete_user', [
+            'as' => 'admin.user.delete_user',
+            'uses' => 'UserController@deleteUser',
+        ]);
     });
 });
 

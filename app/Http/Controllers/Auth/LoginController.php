@@ -16,12 +16,13 @@ class LoginController extends Controller
     
     public function postLogin(Request $request) { 
         $data = $request->all();
-        $email = $data["email"]; 
+        $name = $data["name"]; 
         $password = $data["password"];
         
-        $user = Res_Users::where('email', $email)
-                ->select('username', 'email', 'full_name', 'password', 'created_at')
-                ->first();
+        $user = Res_Users::where('username', $name)
+                        ->orWhere('email', $name)
+                        ->select('username', 'email', 'full_name', 'password', 'created_at')
+                        ->first();
         
         if (!count($user)) {
             return response()->json([

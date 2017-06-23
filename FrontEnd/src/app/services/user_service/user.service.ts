@@ -7,6 +7,8 @@ export class UserService {
   URLS: any = {
     get_users: BACKEND_SERVER_URL + "api/admin/user/get_users",
     add_user: BACKEND_SERVER_URL + "api/admin/user/add_user",
+    update_user: BACKEND_SERVER_URL + "api/admin/user/update_user",
+    delete_user: BACKEND_SERVER_URL + "api/admin/user/delete_user",
   };
 
   addErrorMessage = "Adding Failed.";

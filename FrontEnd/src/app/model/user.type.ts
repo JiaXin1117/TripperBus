@@ -20,4 +20,10 @@ export class User {
         this.created_at = "";
         this.updated_at = "";
     }
+
+    copy(src: User) {
+       Object.keys(src).forEach(key => {
+           this[key] = src[key];
+       });
+   }
 }

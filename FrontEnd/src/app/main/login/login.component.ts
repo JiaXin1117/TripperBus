@@ -15,7 +15,7 @@ declare var jQuery:any;
 })
 export class LoginComponent implements OnInit {
     
-    public email: string = "";
+    public name: string = "";
     public password: string = "";
     public alert_visible: string = "none";
     public errorMsg = "Log in fail!";
@@ -32,11 +32,11 @@ export class LoginComponent implements OnInit {
         let url = BACKEND_SERVER_URL + "api/auth/login";
         
         let formParams = new URLSearchParams();
-        formParams.set('email', this.email);
+        formParams.set('name', this.name);
         formParams.set('password', this.password);
         
         let userInfo = {};
-        userInfo['email'] = this.email;
+        userInfo['name'] = this.name;
         userInfo['password'] = this.password;
         
         this._httpService.sendPostRequestWithParams(url, formParams.toString())

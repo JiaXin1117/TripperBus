@@ -33,11 +33,11 @@
             </thead>
             <tbody class="table" *ngIf="users && users.length">
                 <tr *ngFor="let user of users;">
-                    <td><span class="userName">{{user['id']}}</span></td>
-                    <td><span class="userName">{{user['username']}}</span></td>
-                    <td><span class="userName">{{user['email']}}</span></td>
-                    <td><span class="userName">{{user['password']}}</span></td>
-                    <td><span class="userName">{{user['full_name']}}</span></td>
+                    <td>{{user['id']}}</td>
+                    <td><a (click)="showEditUserModal(user)">{{user['username']}}</a></td>
+                    <td>{{user['email']}}</td>
+                    <td>{{user['password']}}</td>
+                    <td>{{user['full_name']}}</td>
                     <td><span class="label label-success">{{user['created_at']}}</span></td>
                     <td></td>
                 </tr>
@@ -60,15 +60,15 @@
                 <div>
                     <div class="form-group col-xs-6" display="inline-block">
                         <label for="user_name">Name</label>
-                        <input type="name" class="form-control" id="user_name" [(ngModel)]="newUser['username']" required>
+                        <input type="name" class="form-control" id="user_name" [(ngModel)]="user['username']" required>
                     </div>
                     <div class="form-group col-xs-6" display="inline-block">
                         <label for="user_email">Email</label>
-                        <input type="email" class="form-control" id="user_email" [(ngModel)]="newUser['email']" required>
+                        <input type="email" class="form-control" id="user_email" [(ngModel)]="user['email']" required>
                     </div>
                     <div class="form-group col-xs-6" display="inline-block">
                         <label for="user_password">Password</label>
-                        <input type="password" class="form-control" id="user_password" [(ngModel)]="newUser['password']" required>
+                        <input type="password" class="form-control" id="user_password" [(ngModel)]="user['password']" required>
                     </div>
                     <div class="form-group col-xs-6" display="inline-block">
                         <label for="user_password_confirmation">Password Confirmation</label>
@@ -76,12 +76,12 @@
                     </div>
                     <div class="form-group col-xs-12" display="inline-block">
                         <label for="user_fullname">Full Name</label>
-                        <input type="name" class="form-control" id="user_fullname" [(ngModel)]="newUser['full_name']" required>
+                        <input type="name" class="form-control" id="user_fullname" [(ngModel)]="user['full_name']" required>
                     </div>
                 </div>
                 <div class="col-xs-12">
                     <div class="form-group pull-right" style="margin-top: 20px; margin-bottom: 20px">
-                        <div *ngIf="newUser['id']; then EditUser else NewUser">
+                        <div *ngIf="user['id']; then EditUser else NewUser">
                         </div>
                         <ng-template #NewUser>
                         <button type="submit" class="btn btn-success" (click)="addUser()">Add User</button>

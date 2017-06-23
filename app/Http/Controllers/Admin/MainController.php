@@ -89,9 +89,9 @@ class MainController extends Controller
         }
 
         if ($reservation['Payment Method'] == 'Credit Card') {
-/*            if ($trans_id = addAuthorizeNetLink($reservation)) {
+            if ($trans_id = addAuthorizeNetLink($reservation)) {
                 $reservation['Authorize net Link'] = $trans_id;
-            }*/
+            }
         }
 
         if (!isset($reservation['Note'])) {

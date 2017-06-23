@@ -16,7 +16,7 @@ export class AdminUsersComponent implements OnInit {
   @ViewChild('userModal') public userModal: ModalDirective;
 
   public users: User[];
-  public newUser: User;
+  public user: User;
   public confirmPassword: string;
 
   public notifyOptions = {
@@ -33,7 +33,7 @@ export class AdminUsersComponent implements OnInit {
         public _notificationsService: NotificationsService,
   ) {
     this.users = null;
-    this.newUser = new User;
+    this.user = new User;
   }
 
   ngOnInit() {
@@ -53,8 +53,8 @@ export class AdminUsersComponent implements OnInit {
       });
   }
 
-  refreshData() {
-    this.newUser.init();
+  initModalData() {
+    this.user.init();
     this.confirmPassword = "";
   }
 
@@ -67,20 +67,27 @@ export class AdminUsersComponent implements OnInit {
   }
 
   showAddUserModal() {
+    this.initModalData();
     this.showUserModal();
   }
 
+  showEditUserModal(user) {
+    this.user.copy(user);
+    this.user.password = "";
+    this.confirmPassword = "";
+    this.showUserModal();
+  }
+
+
   addUser() {
-    console.log(this.newUser);
+    console.log(this.user);
 
     let url = this._userService.URLS.add_user;
 
-    let errorMsg = this.checkAdd();
-    if (errorMsg != '') {
-      return this.failedNotification(errorMsg);
-    }
+    if(!this.checkUser())
+      return;
 
-    this._httpService.sendPostJSON(url, { user: this.newUser })
+    this._httpService.sendPostJSON(url, { user: this.user })
       .subscribe(
       data => {
         let res = data.json();
@@ -92,7 +99,6 @@ export class AdminUsersComponent implements OnInit {
           this.users.push(createdUser);
 
           this.hideUserModal();
-          this.refreshData();
 
           let successMessage = "User[" + createdUser['username'] + "] successfully added.";
           this.successNotification(successMessage);
@@ -107,29 +113,109 @@ export class AdminUsersComponent implements OnInit {
       });
   }
 
-  public checkAdd() {
-    let user = this.newUser;
+  checkUser() {
+    let user = this.user;
+    let errorMsg = '';
 
     if (user.username == '')
-      return 'Username is empty!';
-    if (user.email == '')
-      return 'Email is empty!';
-    if (user.password == '')
-      return 'Password is empty!';
-    if (user.password != this.confirmPassword)
-      return 'Password confirmation is failed!';
-    if (user.full_name == '')
-      return 'Fullname is empty!';
+      errorMsg = 'Username is empty!';
+    else if (user.email == '')
+      errorMsg = 'Email is empty!';
+    else if (user.password == '')
+      errorMsg = 'Password is empty!';
+    else if (user.password != this.confirmPassword)
+      errorMsg = 'Password confirmation is failed!';
+    else if (user.full_name == '')
+      errorMsg = 'Fullname is empty!';
 
-    return '';
+    if (errorMsg.length) {
+      this.failedNotification(errorMsg);
+    }
+    
+    return !errorMsg.length;
   }
 
+  updateUser() {
+    console.log(this.user);
 
-  public successNotification(notifyText: string) {
+    let url = this._userService.URLS.update_user;
+
+    if(!this.checkUser())
+      return;
+
+    this._httpService.sendPostJSON(url, { user: this.user })
+      .subscribe(
+      data => {
+        let res = data.json();
+        if (res.success) {
+          let resUser = res.data as User;
+          if (!resUser)
+            return;
+
+          this.updateUserFromArray(resUser);
+
+          this.hideUserModal();
+
+          let successMessage = "User[" + resUser['username'] + "] successfully updated.";
+          this.successNotification(successMessage);
+        } else {
+          if (res.error) {
+            this.failedNotification(res.error);
+          }
+        }
+      },
+      error => {
+        this.failedNotification(this._userService.updateErrorMessage);
+      });
+  }
+
+  updateUserFromArray(user: User) {
+    let oldUser = this.users.find(elemUser => (elemUser.id == user.id)) as User;
+    oldUser ? this.copyUser(oldUser, user) : 0;
+  }
+
+  deleteUser() {
+    console.log(this.user);
+
+    let url = this._userService.URLS.delete_user;
+
+    this._httpService.sendPostJSON(url, { userId: this.user.id })
+      .subscribe(
+      data => {
+        let res = data.json();
+        if (res.success) {
+          let successMessage = "User[" + this.user['username'] + "] successfully deleted.";
+          this.deleteUserFromArray(this.user);
+
+          this.hideUserModal();
+          this.successNotification(successMessage);
+        } else {
+          if (res.error) {
+            this.failedNotification(res.error);
+          }
+        }
+      },
+      error => {
+        this.failedNotification(this._userService.deleteErrorMessage);
+      });
+  }
+
+  deleteUserFromArray(user: User) {
+    let index = this.users.findIndex(elemUser => (elemUser.id == user.id));
+    ~index ? this.users.splice(index, 1) : 0;
+  }
+
+  copyUser(dst: User, src: User) {
+       Object.keys(src).forEach(key => {
+           dst[key] = src[key];
+       });
+   }
+
+  successNotification(notifyText: string) {
       this._notificationsService.success('Success', notifyText);
   }
 
-  public failedNotification(notifyText: string) {
+  failedNotification(notifyText: string) {
       this._notificationsService.error('Failed', notifyText);
   }
 
