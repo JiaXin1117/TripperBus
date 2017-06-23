@@ -298,6 +298,7 @@ export class AdminMainReservationComponent implements OnInit {
 
         console.log (this.newReservation);
 
+        this.showWaitingProgress();
         this._httpService.sendPostJSON(url, {reservation: this.newReservation})
         .subscribe(
             data => {
@@ -305,7 +306,7 @@ export class AdminMainReservationComponent implements OnInit {
                 if (res.success) {
                     let createdReservation = res.data as Reservation;
                     if (!createdReservation)
-                        return;
+                        return this.hideWaitingProgress();
 
                     this.reservations.push(createdReservation);
                     if (!this.reservations_from_time[this.inputParams.outbound_timeId])
@@ -325,8 +326,12 @@ export class AdminMainReservationComponent implements OnInit {
                         this.failedNotification(res.error);
                     }
                 }
+
+                this.hideWaitingProgress();
             },
             error => {
+                this.hideWaitingProgress();
+
                 this.successMessage = "";
                 this.errorMessage = this._mainService.addReservationErrorMessage;
                 this.failedNotification(this.errorMessage);
@@ -365,6 +370,7 @@ export class AdminMainReservationComponent implements OnInit {
 
         console.log (this.myReservation);
 
+        this.showWaitingProgress();
         this._httpService.sendPostJSON(url, {reservation: this.myReservation})
         .subscribe(
             data => {
@@ -372,7 +378,7 @@ export class AdminMainReservationComponent implements OnInit {
                 if (res.success) {
                     let updatedReservation = res.data as Reservation;
                     if (!updatedReservation)
-                        return;
+                        return this.hideWaitingProgress();
 
                     let oldReservation = this.reservations.find(item => (item['id'] == updateId));
                     let update_Time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.myReservation['time_id']);
@@ -391,8 +397,12 @@ export class AdminMainReservationComponent implements OnInit {
                         this.failedNotification(res.error);
                     }
                 }
+
+                this.hideWaitingProgress();
             },
             error => {
+                this.hideWaitingProgress();
+
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
                 this.failedNotification(this.errorMessage);
@@ -417,12 +427,13 @@ export class AdminMainReservationComponent implements OnInit {
 
         console.log (this.myReservation);
 
+        this.showWaitingProgress();
         this._httpService.sendPostJSON(url, {reservation: this.myReservation})
         .subscribe(
             data => {
                 let updatedReservation = data.json() as Reservation;
                 if (!updatedReservation)
-                    return;
+                    return this.hideWaitingProgress();
 
                 let oldReservation = this.reservations.find(item => (item['id'] == deleteId));
                 let update_Time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.myReservation['time_id']);
@@ -436,8 +447,12 @@ export class AdminMainReservationComponent implements OnInit {
                 this.successMessage = "Reservation#" + this.myReservation['id'] + " is deleted.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
+
+                this.hideWaitingProgress();
             },
             error => {
+                this.hideWaitingProgress();
+
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
                 this.failedNotification(this.errorMessage);
@@ -450,6 +465,7 @@ export class AdminMainReservationComponent implements OnInit {
 
         console.log (this.myReservation);
 
+        this.showWaitingProgress();
         this._httpService.sendPostJSON(url, {id: deleteId})
         .subscribe(
             data => {
@@ -465,8 +481,12 @@ export class AdminMainReservationComponent implements OnInit {
                 this.successMessage = "Reservation#" + deleteId + " is permanently deleted.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
+
+                this.hideWaitingProgress();
             },
             error => {
+                this.hideWaitingProgress();
+
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
                 this.failedNotification(this.errorMessage);
@@ -518,6 +538,8 @@ export class AdminMainReservationComponent implements OnInit {
     public doMassDelete() {
         console.log (this.selectedReservations);
 
+        this.showWaitingProgress();
+
         let url = this._mainService.URLS.delete_soft_reservations;
         this._httpService.sendPostJSON(url, {reservations: this.selectedReservations})
         .subscribe(
@@ -531,8 +553,12 @@ export class AdminMainReservationComponent implements OnInit {
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
                 console.log(data.json());
+
+                this.hideWaitingProgress();
             },
             error => {
+                this.hideWaitingProgress();
+
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
                 this.failedNotification(this.errorMessage);
@@ -544,6 +570,7 @@ export class AdminMainReservationComponent implements OnInit {
             return;
 
         console.log (this.selectedReservations);
+        this.showWaitingProgress();
 
         this.selectedReservations.forEach(reservation => reservation['Note'] += "\n" + this.massText);
 
@@ -557,8 +584,12 @@ export class AdminMainReservationComponent implements OnInit {
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
                 console.log(data.json());
+
+                this.hideWaitingProgress();
             },
             error => {
+                this.hideWaitingProgress();
+
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
                 this.failedNotification(this.errorMessage);
@@ -567,6 +598,8 @@ export class AdminMainReservationComponent implements OnInit {
 
     public doMassEmail() {
         console.log (this.selectedReservations);
+
+        this.showWaitingProgress();
 
         let url = this._mainService.URLS.email_reservations;
         this._httpService.sendPostJSON(url, {reservations: this.selectedReservations, mail: this.massText})
@@ -578,8 +611,12 @@ export class AdminMainReservationComponent implements OnInit {
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
 //                console.log(data.json());
+
+                this.hideWaitingProgress();
             },
             error => {
+                this.hideWaitingProgress();
+
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
                 this.failedNotification(this.errorMessage);
@@ -620,6 +657,14 @@ export class AdminMainReservationComponent implements OnInit {
 
     public failedNotification(notifyText: string) {
         this._notificationsService.error('Failed', notifyText);
+    }
+
+    showWaitingProgress() {
+        $('#progressDlg').addClass('show');
+    }
+
+    hideWaitingProgress() {
+        $('#progressDlg').removeClass('show');
     }
 
 }
