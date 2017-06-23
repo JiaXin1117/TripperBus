@@ -38,6 +38,7 @@ import {HttpService} from "./services/http_service/http.service";
 import {AuthService} from "./services/auth_service/auth.service";
 import {ScheduleService} from "./services/schedule_service/schedule.service";
 import {MainService} from "./services/main_service/main.service";
+import {UserService} from "./services/user_service/user.service";
 
 import { MainHeaderComponent } from './main/main-header/main-header.component';
 import { MainIndexComponent } from './main/main-index.component';
@@ -113,6 +114,7 @@ import { AdminMainSearchComponent } from './admin/admin-main/admin-main-search/a
         AuthService,
         ScheduleService,
         MainService,
+        UserService,
         NotificationsService
     ],
     exports: [

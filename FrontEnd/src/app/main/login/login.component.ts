@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
     public email: string = "";
     public password: string = "";
     public alert_visible: string = "none";
+    public errorMsg = "Log in fail!";
 
     constructor( public _httpService: HttpService, public _authService: AuthService, public router: Router, 
                 public route: ActivatedRoute ) {
@@ -41,12 +42,13 @@ export class LoginComponent implements OnInit {
         this._httpService.sendPostRequestWithParams(url, formParams.toString())
             .subscribe(
                 data => {
-                    let loginResult = data; 
-                    if (loginResult['state'] == 'success') {
+                    console.log(data);
+                    if (data.success) {
                         this.alert_visible = "none";
-                        localStorage.setItem("currentUser", JSON.stringify(userInfo));
+                        localStorage.setItem("currentUser", JSON.stringify(data.data));
                         this.router.navigate(['/admin/main']);
                     } else {
+                        this.errorMsg = data.error;
                         this.alert_visible = "inherit";
                         localStorage.removeItem("currentUser");
                         this.router.navigate(['/login']);

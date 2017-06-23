@@ -17,20 +17,31 @@ class LoginController extends Controller
     public function postLogin(Request $request) { 
         $data = $request->all();
         $email = $data["email"]; 
-        $password = $data["password"];  
+        $password = $data["password"];
         
-        $count = Res_Users::where('email', $email)
-                ->where('password', $password)
-                ->count(); 
+        $user = Res_Users::where('email', $email)
+                ->select('username', 'email', 'full_name', 'password', 'created_at')
+                ->first();
         
-        if ($count > 0) { 
+        if (!count($user)) {
             return response()->json([
-                'state' => 'success'
-            ]);
-        } else {
-            return response()->json([
-                'state' => 'fail'
+                'success'   => false,
+                'error'     => 'Invalid User',
             ]);
         }
+
+        $user = $user->toarray();
+
+        if (!\Hash::check($password, $user['password'])) {
+            return response()->json([
+                'success'   => false,
+                'error'     => 'Invalid Password!',
+            ]);
+        }
+
+        return response()->json([
+            'success'   => true,
+            'data'      => $user
+        ]);
     }
 }

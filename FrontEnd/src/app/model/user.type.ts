@@ -1,0 +1,23 @@
+export class User {
+    public id: number;
+    public username: string;
+    public email: string;
+    public password: string;
+    public full_name: string;
+    public created_at: string;
+    public updated_at: string;
+
+    constructor() {
+        this.init();
+    }
+
+    init() {
+        this.id = 0;
+        this.username = "";
+        this.email = "";
+        this.password = "";
+        this.full_name = "";
+        this.created_at = "";
+        this.updated_at = "";
+    }
+}

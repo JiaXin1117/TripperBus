@@ -160,8 +160,19 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.main.retrieve_group_additional_info',
             'uses' => 'MainController@postRetrieveGroupInformations',
         ]);
+    });
 
+
+    Route::group(['prefix' => 'user'], function() {
+        Route::get('/get_users', [
+            'as' => 'admin.user.get_users',
+            'uses' => 'UserController@getUsers',
+        ]);
         
+        Route::post('/add_user', [
+            'as' => 'admin.user.add_user',
+            'uses' => 'UserController@addUser',
+        ]);
     });
 });
 

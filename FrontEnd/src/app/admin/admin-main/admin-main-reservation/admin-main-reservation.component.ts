@@ -49,8 +49,7 @@ export class AdminMainReservationComponent implements OnInit {
     public reservations_from_time: Reservation[][];
 
     public newReservation = new Reservation;
-    public curReservation = new Reservation;
-    public myReservation = new Reservation;//this.newReservation;
+    public myReservation = new Reservation;
 
     public paymentMethod = PaymentMethod;
     public authorize_net_url = Autorize_net_url;
