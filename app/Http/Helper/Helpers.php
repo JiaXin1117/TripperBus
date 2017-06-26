@@ -47,7 +47,6 @@ function addAuthorizeNetLink($reservation, &$AuthorizeNetError) {
     curl_setopt($hold_ch, CURLOPT_POSTFIELDS, rtrim( $hold_fields, "& " )); // use HTTP POST to send form data
     curl_setopt($hold_ch, CURLOPT_SSL_VERIFYPEER, FALSE); // uncomment this line if you get no gateway response.
     curl_setopt($hold_ch, CURLOPT_VERBOSE, 1);
-    curl_setopt($hold_ch, CURLOPT_PROXY, "http://10.70.250.242:8080");
     $hold_resp = curl_exec($hold_ch); //execute post and get results
     $AuthorizeNetError = curl_error($hold_ch);
 
