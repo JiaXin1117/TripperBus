@@ -82,15 +82,27 @@ class MainController extends Controller
             ]);
         }
 
-        if ($reservation['Seats'] == $remain_seats) {
-            $this->sendMail_Bus_Full($time->group_id);
-        } else if ($reservation['Seats'] == $remain_seats - 5) {
-            $this->sendMail_Bus_5_Remain($time->group_id);
-        }
-
         if ($reservation['Payment Method'] == 'Credit Card') {
-            if ($trans_id = addAuthorizeNetLink($reservation)) {
+            if ($reservation['Transaction Amount'] == ''
+             || $reservation['CC Number'] == ''
+             || $reservation['CC Code'] == ''
+             || $reservation['CC Year'] == ''
+             || $reservation['CC Month'] == '') {
+                 return response()->json([
+                     'success'  => false,
+                     'error'    => 'If paying by credit card, all the following are necessary: Total Amount, Card Number, Card Code, Month/Year Exp.',
+                 ]);
+            }
+
+            $AuthorizeNetError = '';
+            if ($trans_id = addAuthorizeNetLink($reservation, $AuthorizeNetError)) {
                 $reservation['Authorize net Link'] = $trans_id;
+            } else {
+                $errorMsg = 'There was the following error with the card: ' . $AuthorizeNetError;
+                return response()->json([
+                    'success'   => false,
+                    'error'     => $errorMsg,
+                ]);
             }
         }
 
@@ -108,6 +120,12 @@ class MainController extends Controller
         
         $reservation = Res_Reservations::where('id', $response['id'])->get()->toarray()[0];
         $this->sendMail_Reservation_Add($reservation);
+
+        if ($reservation['Seats'] == $remain_seats) {
+            $this->sendMail_Bus_Full($time->group_id);
+        } else if ($reservation['Seats'] == $remain_seats - 5) {
+            $this->sendMail_Bus_5_Remain($time->group_id);
+        }
 
         return response()->json([
             'success' => true,
