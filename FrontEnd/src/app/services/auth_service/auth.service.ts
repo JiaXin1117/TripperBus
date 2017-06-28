@@ -21,4 +21,8 @@ export class AuthService implements CanActivate {
         }
     }
 
+    getCurrentUser() {
+        return JSON.parse(localStorage.getItem('currentUser'));
+    }
+
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router }   from '@angular/router';
+import { AuthService } from '../../services/auth_service/auth.service';
 
 declare var jQuery:any;
 
@@ -9,13 +10,17 @@ declare var jQuery:any;
     styleUrls: ['./admin-sidebar.component.css']
 })
 export class AdminSidebarComponent implements OnInit {
+    
+    public username = 'Administrator';
 
     constructor(
         public _router: Router,
+        public _authService: AuthService,
     ) { }
 
     ngOnInit() {
         this.setTreeView();
+        this.username = this._authService.getCurrentUser().full_name;
     }
     
     @HostListener('window:resize', ['$event'])
