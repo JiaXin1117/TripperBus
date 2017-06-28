@@ -667,4 +667,122 @@ export class AdminMainReservationComponent implements OnInit {
         $('#progressDlg').removeClass('show');
     }
 
+    showDriverList() {
+        let w = window.open();
+        w.document.title = "TripperBus Reservations";
+
+        let contents = `
+            <style>
+            .bus_top {
+                color: black;
+                font-weight: bold;
+                font-size: 15px;
+                font-family: verdana, arial, helvetica;
+            }
+
+            .table_display_links {
+                color: black;
+                font-size: 13px;
+                font-family: verdana, arial, helvetica;
+            }
+            </style>
+        `;
+
+        contents += `
+            <div align="center">
+            <table bordercolor="black" border="1" cellpadding="5" cellspacing="0">
+            <tbody>
+        `;
+
+        contents += `
+            <tr><td align="center" colspan="4" class="bus_top">
+                <b>Leaving ` + this.headerLeave.date + ` from ` + this.headerLeave.city + `</b>
+            </td></tr>
+            <tr>
+                <td class="bus_top"><b>Name</b></td>
+                <td class="bus_top"><b>Reservation #</b></td>
+                <td class="bus_top"><b>Payment Method</b></td>
+                <td class="bus_top"><b>Seats</b></td>
+            </tr>
+            <tr>
+                <td align="center" colspan="4" class="bus_top"><br></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="bus_top">
+                From ` + this.outbound_time['stop_area'] + `. at ` + this.outbound_time['time'] + `. Stop Total: ` + this.outbound_time['reservation_cnt'] + `
+                </td>
+            </tr>
+        `;
+
+        if (this.reservations_from_time[this.outbound_time['id']]) {
+            this.reservations_from_time[this.outbound_time['id']].forEach (reservation => {
+                contents += `<tr>`;
+                contents += `
+                    <td class="table_display_links">` + 
+                        reservation['First Name'] + ', ' + reservation['Last Name'] + ` 
+                    </td>
+                    <td class="table_display_links">` + reservation['id'] + `</td>
+                    <td class="table_display_links" width="250">` + 
+                        reservation['Payment Method'] + 
+                        ((reservation['Seats'] == 0) ? `<br/>` + reservation['Note'] : '') + `
+                    </td>
+                    <td class="table_display_links">` + reservation['Seats'] + `</td>
+                `;
+                contents += `</tr>`;
+            });
+        }
+
+        let bus_reservation_total = 0;
+
+        if (this.outbound_bus.times) {
+            this.outbound_bus.times.forEach (time => {
+                bus_reservation_total += time['reservation_cnt'];
+
+                if (time.id == this.outbound_time.id)
+                    return;
+
+                contents += `
+                    <tr>
+                        <td align="center" colspan="4" class="bus_top">
+                        ------------------------------------------------------------------------------------------------------
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="bus_top">
+                            From ` + time['stop_area'] + `. at ` + time['time'] + `. Stop Total: ` + time['reservation_cnt'] + `
+                        </td>
+                    </tr>
+                `;
+
+                if (this.reservations_from_time[time['id']]) {
+                    this.reservations_from_time[time['id']].forEach (reservation => {
+                        contents += `<tr>`;
+                        contents += `
+                            <td class="table_display_links">` + 
+                                reservation['First Name'] + ', ' + reservation['Last Name'] + ` 
+                            </td>
+                            <td class="table_display_links">` + reservation['id'] + `</td>
+                            <td class="table_display_links" width="250">` + 
+                                reservation['Payment Method'] + 
+                                ((reservation['Seats'] == 0) ? `<br/>` + reservation['Note'] : '') + `
+                            </td>
+                            <td class="table_display_links">` + reservation['Seats'] + `</td>
+                        `;
+                        contents += `</tr>`;
+                    });
+                }
+            });
+        }
+
+        contents += `
+            <tr>
+                <td colspan="4" align="center" class="bus_top">Bus Total: ` + bus_reservation_total + `</td>
+            </tr>
+            </tbody></table>
+            </div>
+        `;
+
+        $(w.document.body).html(contents);
+    }
+
 }
