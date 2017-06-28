@@ -72,7 +72,7 @@ class MainController extends Controller
                 'error' => $errorMsg
             ]);
         } else if ($reservation['Seats'] > $remain_seats) {
-            $errorMsg = 'Bus is overflowing. Now ' 
+            $errorMsg = 'You are overbooking the bus. Now ' 
             . $remain_seats . ' seat' 
             . ($remain_seats == 1 ? ' is' : 's are') 
             . ' remaining';
@@ -90,7 +90,7 @@ class MainController extends Controller
              || $reservation['CC Month'] == '') {
                  return response()->json([
                      'success'  => false,
-                     'error'    => 'If paying by credit card, all the following are necessary: Total Amount, Card Number, Card Code, Month/Year Exp.',
+                     'error'    => 'If paying by credit card, all the following are necessary: Card Number, Card Code, Month/Year Exp.',
                  ]);
             }
 
