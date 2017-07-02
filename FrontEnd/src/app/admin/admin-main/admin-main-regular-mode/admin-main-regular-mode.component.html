@@ -60,3 +60,27 @@
     <button type="button" class="btn btn-primary" (click) = "gotoNextStep();">Next Step</button>
 </div>
 </div>
+
+
+<!-- Confirmation Modal -->
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content col-xs-12">
+            <div class="modal-body">
+                <div>
+                    <alert type="warning">
+                        <strong>Warning!</strong> This bus is currently closed. Are you sure you want to add reservation to it?
+                    </alert>
+                </div>
+                <div class="form-group pull-right">
+                    <button type="submit" class="btn btn-danger" (click)="confirmNext()">
+                        Proceed
+                    </button>
+                    <button type="submit" class="btn btn-primary" (click)="hideConfirmModal()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

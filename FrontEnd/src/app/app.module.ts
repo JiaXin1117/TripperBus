@@ -10,7 +10,7 @@ import { DataTableModule } from "ng2-data-table";
 import { AppRoutingModule }   from './app-routing/app-routing.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { DatepickerModule } from 'ngx-bootstrap/datepicker';
-import { ButtonsModule } from 'ngx-bootstrap';
+import { AlertModule, ButtonsModule } from 'ngx-bootstrap';
 import { SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
 
 
@@ -115,6 +115,7 @@ import { AdminReportsComponent } from './admin/admin-reports/admin-reports.compo
         ModalModule.forRoot(),
         DatepickerModule.forRoot(),
         ButtonsModule.forRoot(),
+        AlertModule.forRoot(),
     ],
     providers: [
         NotificationsService,

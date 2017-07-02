@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute }   from '@angular/router';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 import { MainService} from "../../../services/main_service/main.service";
 import { ScheduleService} from "../../../services/schedule_service/schedule.service";
@@ -14,6 +15,7 @@ declare var jQuery:any;
     styleUrls: ['./admin-main-regular-mode.component.css']
 })
 export class AdminMainRegularModeComponent implements OnInit {
+    @ViewChild('confirmModal') public confirmModal: ModalDirective;
 
     public headerLeave: any = {
         city: "",
@@ -127,10 +129,43 @@ export class AdminMainRegularModeComponent implements OnInit {
         if(me.headerReturn.date != '' && me.returning_timeId == 0)
             return;
 
+        let leaving_bus = me.leaving_buses.find(bus => (bus.group_id == me.outbound_bus_groupId));
+        if (leaving_bus.price['bus_opened'] == 1) {
+            this.showConfirmModal();
+            return;
+        } else if (me.headerReturn.date != '') {
+            let returning_bus = me.returning_buses.find(bus => (bus.group_id == me.returning_bus_groupId));
+            if (returning_bus.price['bus_opened'] == 1) {
+                this.showConfirmModal();
+                return;
+            }
+        }
+
         let link = ['/admin/main/reservation_mode', 
         me.inputParams.outbound_date, me.inputParams.leaving_from, me.inputParams.return_date, 
         me.outbound_bus_groupId, me.outbound_timeId, me.outbound_price, 
         me.returning_bus_groupId, me.returning_timeId, me.returning_price]; 
         me._router.navigate(link);
     }
+
+    showConfirmModal() {
+        this.confirmModal.show();
+    }
+
+    hideConfirmModal() {
+        this.confirmModal.hide();
+    }
+
+    confirmNext() {
+        this.hideConfirmModal();
+
+        let me = this;
+        let link = ['/admin/main/reservation_mode', 
+        me.inputParams.outbound_date, me.inputParams.leaving_from, me.inputParams.return_date, 
+        me.outbound_bus_groupId, me.outbound_timeId, me.outbound_price, 
+        me.returning_bus_groupId, me.returning_timeId, me.returning_price]; 
+        
+        me._router.navigate(link);
+    }
+
 }

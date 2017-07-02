@@ -105,6 +105,13 @@ class BusEditController extends Controller
                 $max_cap = 0;
                 if($price == null){
                     $price = Res_Schedule_Prices::where('group_id', $groupId)->first();
+                    if ($price == null) {
+                        $price['first_seats'] = 0;
+                        $price['first_price'] = 0;
+                        $price['special_price'] = 0;
+                        $price['last_seats'] = 0;
+                        $price['last_price'] = 0;
+                    }
                     $price['bus_opened'] = 0;
                     $price['bus_note'] = '';
                     $max_cap = Res_Groups::find($groupId)->max_cap;
@@ -210,6 +217,13 @@ class BusEditController extends Controller
                     $max_cap = 0;
                     if($price == null){
                         $price = Res_Schedule_Prices::where('group_id', $groupId)->first();
+                        if ($price == null) {
+                            $price['first_seats'] = 0;
+                            $price['first_price'] = 0;
+                            $price['special_price'] = 0;
+                            $price['last_seats'] = 0;
+                            $price['last_price'] = 0;
+                        }
                         $price['bus_opened'] = 0;
                         $price['bus_note'] = '';
                         $max_cap = Res_Groups::find($groupId)->max_cap;
