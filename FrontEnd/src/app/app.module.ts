@@ -9,6 +9,8 @@ import { DataTableModule } from "ng2-data-table";
 
 import { AppRoutingModule }   from './app-routing/app-routing.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { DatepickerModule } from 'ngx-bootstrap/datepicker';
+import { ButtonsModule } from 'ngx-bootstrap';
 import { SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
 
 
@@ -39,6 +41,7 @@ import {AuthService} from "./services/auth_service/auth.service";
 import {ScheduleService} from "./services/schedule_service/schedule.service";
 import {MainService} from "./services/main_service/main.service";
 import {UserService} from "./services/user_service/user.service";
+import {ReportService} from "./services/report_service/report.service";
 
 import { MainHeaderComponent } from './main/main-header/main-header.component';
 import { MainIndexComponent } from './main/main-index.component';
@@ -57,6 +60,7 @@ import { AdminMainMovePeopleModeComponent, AdminMainBusMoveComponent } from './a
 import { AdminMainReservationComponent } from './admin/admin-main/admin-main-reservation/admin-main-reservation.component';
 import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mode/admin-main-bus/admin-main-bus.component';
 import { AdminMainSearchComponent } from './admin/admin-main/admin-main-search/admin-main-search.component';
+import { AdminReportsComponent } from './admin/admin-reports/admin-reports.component';
 
 
 @NgModule({
@@ -96,7 +100,8 @@ import { AdminMainSearchComponent } from './admin/admin-main/admin-main-search/a
         AdminMainBusMoveComponent,
         AdminMainBusComponent,
         AdminMainReservationComponent,
-        AdminMainSearchComponent
+        AdminMainSearchComponent,
+        AdminReportsComponent,
     ],
     imports: [
         BrowserModule,
@@ -107,15 +112,18 @@ import { AdminMainSearchComponent } from './admin/admin-main/admin-main-search/a
         DataTableModule,
         SimpleNotificationsModule,
         BrowserAnimationsModule,
-        ModalModule.forRoot()
+        ModalModule.forRoot(),
+        DatepickerModule.forRoot(),
+        ButtonsModule.forRoot(),
     ],
     providers: [
+        NotificationsService,
         HttpService,
         AuthService,
         ScheduleService,
         MainService,
         UserService,
-        NotificationsService
+        ReportService,
     ],
     exports: [
         AdminHeaderComponent,

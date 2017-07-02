@@ -184,6 +184,14 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'uses' => 'UserController@deleteUser',
         ]);
     });
+
+
+    Route::group(['prefix' => 'report'], function() {
+        Route::get('/get_reports', [
+            'as' => 'admin.report.get_reports',
+            'uses' => 'MainController@getReports',
+        ]);
+    });
 });
 
 Route::group(['namespace' => 'Test', 'prefix' => 'test'], function() {

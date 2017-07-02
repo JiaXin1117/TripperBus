@@ -470,5 +470,103 @@ class MainController extends Controller
 
         Mail::to($company_email)->queue(new Mail_Bus(config('config.TYPE_MAIL_BUS_5_REMAIN'), $busId));
     }
-    
+
+
+    public function getReports() {
+        $dateType = Input::get('dateType');
+        $dateStr1 = Input::get('date1');
+        $dateStr2 = Input::get('date2');
+
+        $result = array();
+        if ($dateType == 'Booking') {
+            $dateFieldStr = 'created_at';
+        } else if ($dateType == 'Travel') {
+            $dateFieldStr = 'date';
+        } else {
+            return response()->json([
+                'success' => false,
+                'error' => 'Date type is invalid.',
+            ]);
+        }
+
+        $date1 = date('Y-m-d', strtotime($dateStr1));
+        $date2 = date('Y-m-d', strtotime($dateStr2));
+        // print_r($dateType . ":" . $date1 . ":" . $date2 . "\n");
+
+        $reservations[0] = \App\Models\Res_Reservations::
+        join('res_times', 'res_reservations.time_id', '=', 'res_times.id')
+        ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
+        ->where('res_reservations.valid', 1)
+        ->where('res_reservations.'.$dateFieldStr, '>=', $date1)
+        ->where('res_reservations.'.$dateFieldStr, '<=', $date2)
+        ->select('res_reservations.*', 'res_stops.short')
+        ->where('res_reservations.outbound_area_id', 1)
+        ->get();
+
+        $reservations[1] = \App\Models\Res_Reservations::
+        join('res_times', 'res_reservations.time_id', '=', 'res_times.id')
+        ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
+        ->where('res_reservations.valid', 1)
+        ->where('res_reservations.'.$dateFieldStr, '>=', $date1)
+        ->where('res_reservations.'.$dateFieldStr, '<=', $date2)
+        ->select('res_reservations.*', 'res_stops.short')
+        ->where('res_reservations.outbound_area_id', 2)
+        ->get();
+
+
+        $totalCount[0] = count($reservations[0]);
+        $totalCount[1] = count($reservations[1]);
+
+        $totalAmount[0] = \App\Models\Res_Reservations::
+        join('res_times', 'res_reservations.time_id', '=', 'res_times.id')
+        ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
+        ->where('res_reservations.valid', 1)
+        ->where('res_reservations.'.$dateFieldStr, '>=', $date1)
+        ->where('res_reservations.'.$dateFieldStr, '<=', $date2)
+        ->where('res_reservations.outbound_area_id', 1)
+        ->sum('Transaction Amount') ?: "0.00";
+
+        $totalAmount[1] = \App\Models\Res_Reservations::
+        join('res_times', 'res_reservations.time_id', '=', 'res_times.id')
+        ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
+        ->where('res_reservations.valid', 1)
+        ->where('res_reservations.'.$dateFieldStr, '>=', $date1)
+        ->where('res_reservations.'.$dateFieldStr, '<=', $date2)
+        ->where('res_reservations.outbound_area_id', 2)
+        ->sum('Transaction Amount') ?: "0.00";
+
+        $result[0] = array();
+        $tempResult = array();
+        foreach ($reservations[0] as $reservation) {
+            $stop = $reservation['short'];
+            $tempResult[$stop][] = $reservation;
+        }
+        foreach ($tempResult as $key => $value) {
+            $item = array();
+            $item['stop'] = $key;
+            $item['count'] = count($value);
+            $result[0][] = $item;
+        }
+
+        $result[1] = array();
+        $tempResult = array();
+
+        foreach ($reservations[1] as $reservation) {
+            $stop = $reservation['short'];
+            $tempResult[$stop][] = $reservation;
+        }
+        foreach ($tempResult as $key => $value) {
+            $item = array();
+            $item['stop'] = $key;
+            $item['count'] = count($value);
+            $result[1][] = $item;
+        }
+
+        return response()->json([
+            'success'       => true,
+            'reports'       => $result,
+            'totalCount'    => $totalCount,
+            'totalAmount'   => $totalAmount,
+        ]);
+    }
 }

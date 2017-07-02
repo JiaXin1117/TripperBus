@@ -11,6 +11,7 @@ import { AdminUsersComponent } from '../admin/admin-users/admin-users.component'
 import { AdminCustomersComponent } from '../admin/admin-customers/admin-customers.component';
 import { AdminPagesComponent } from '../admin/admin-pages/admin-pages.component';
 import { AdminSettingsComponent } from '../admin/admin-settings/admin-settings.component';
+import { AdminReportsComponent } from '../admin/admin-reports/admin-reports.component';
 import { AdminCouponsComponent } from '../admin/admin-coupons/admin-coupons.component';
 import { AdminCouponsCampaignsComponent } from '../admin/admin-coupons-campaigns/admin-coupons-campaigns.component';
 import { AdminCouponsCompaniesComponent } from '../admin/admin-coupons-companies/admin-coupons-companies.component';
@@ -59,6 +60,7 @@ const routes: Routes = [
             { path: 'customers',  component: AdminCustomersComponent },
             { path: 'pages',      component: AdminPagesComponent },
             { path: 'settings',   component: AdminSettingsComponent },
+            { path: 'reports',    component: AdminReportsComponent },
             { path: 'coupons',    component: AdminCouponsComponent },
             { path: 'coupons-campaigns',      component: AdminCouponsCampaignsComponent },
             { path: 'coupons-companies',      component: AdminCouponsCompaniesComponent },

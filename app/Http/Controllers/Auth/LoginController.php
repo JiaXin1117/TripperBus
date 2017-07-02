@@ -27,7 +27,7 @@ class LoginController extends Controller
         if (!count($user)) {
             return response()->json([
                 'success'   => false,
-                'error'     => 'Invalid User',
+                'error'     => 'Invalid User!',
             ]);
         }
 
