@@ -39,6 +39,9 @@
                     <th><mfRowSelectorHead></mfRowSelectorHead></th>
                     <th><mfDefaultSorter by="First Name">First Name</mfDefaultSorter></th>
                     <th><mfDefaultSorter by="Last Name">Last Name</mfDefaultSorter></th>
+                    <th><mfDefaultSorter by="date">Date</mfDefaultSorter></th>
+                    <th><mfDefaultSorter by="time">Time</mfDefaultSorter></th>
+                    <th><mfDefaultSorter by="stop">Stop</mfDefaultSorter></th>
                     <th><mfDefaultSorter by="Phone">Phone</mfDefaultSorter></th>
                     <th><mfDefaultSorter by="Email">Email</mfDefaultSorter></th>
                     <th><mfDefaultSorter by="Seats">Seats</mfDefaultSorter></th>
@@ -52,6 +55,9 @@
                     <td><mfRowSelector [entity]="item" [checkboxId]="ndx"></mfRowSelector></td>
                     <td><a (click)="editReservation(item);">{{item['First Name']}}</a></td>
                     <td><a (click)="editReservation(item);">{{item['Last Name']}}</a></td>
+                    <td>{{item['date']}}</td>
+                    <td>{{item['time']}}</td>
+                    <td>{{item['stop']}}</td>
                     <td>{{item['Phone']}}</td>
                     <td>{{item['Email']}}</td>
                     <td>{{item['Seats']}}</td>

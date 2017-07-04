@@ -311,13 +311,19 @@ class MainController extends Controller
         Res_Reservations::unguard();
 
         if ($caseSensitive) {
-            $result = Res_Reservations::where('valid', 1)
-            ->where($searchKey, 'like', '%'.$searchVal.'%')
-            ->get(['created_at AS Date Made', 'res_reservations.*'])->toarray();
+            $result = Res_Reservations::join('res_times', 'time_id', '=', 'res_times.id')
+            ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
+            ->where('res_reservations.valid', 1)
+            ->where('res_reservations.'.$searchKey, 'like', '%'.$searchVal.'%')
+            ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*', 'res_times.time', 'res_stops.short AS stop'])
+            ->toarray();
         } else {
-            $result = Res_Reservations::where('valid', 1)
-            ->whereRaw('LOWER(`'.$searchKey.'`) like "%'.strtolower($searchVal).'%"')
-            ->get(['created_at AS Date Made', 'res_reservations.*'])->toarray();
+            $result = Res_Reservations::join('res_times', 'time_id', '=', 'res_times.id')
+            ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
+            ->where('res_reservations.valid', 1)
+            ->whereRaw('LOWER(res_reservations.`'.$searchKey.'`) like "%'.strtolower($searchVal).'%"')
+            ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*', 'res_times.time', 'res_stops.short AS stop'])
+            ->toarray();
         }
 
         Res_Reservations::reguard();
