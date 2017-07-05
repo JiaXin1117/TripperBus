@@ -1,3 +1,7 @@
+:not(.fa) {
+  font-family: verdana, arial, helvetica !important;
+}
+
 .wide{
     width: 100% !important;
 }

@@ -6,7 +6,7 @@
               <tr *ngFor="let time of _bus.times; let i = index;">
                   <td class="td-left">
                     <span>
-                        TIME ID: {{ time.id }}
+                        <!--TIME ID: {{ time.id }}-->
                         <input type="radio" [name]="_busType == 0? 'outboundTime':'returnTime'" class="form-control radio-btn" (click) = "timeSelected(time.id);">
                         {{ time.time }}</span> from <span>{{ time.stop_area }}
                     </span> 
@@ -26,14 +26,14 @@
           </h5>
           <table class="group-additional-info-table">
               
-              <tr>
+<!--              <tr>
                   <td class="td-left">
                       TravelZoo Booked: 
                   </td>  
                   <td class="td-right">
                       {{_bus.travel_zoo_booked}}
                   </td>
-              </tr>
+              </tr>-->
               <tr>
                   <td class="td-left">
                       Coupons Allowed: 

@@ -5,13 +5,13 @@
           <table class="schedules-table" *ngFor="let time of _bus.times; let i = index;">
               <tr >
                   <td class="td-left">
-                      <h5 class="total-h5 text-center">TIME ID: {{ time.id }}</h5>
+                      <!--<h5 class="total-h5 text-center">TIME ID: {{ time.id }}</h5>-->
                       <h5 class="total-h5 text-center">{{ time.time }} from {{ time.stop_area }}</h5>
                       <p>
                           <select name="time_move" [(ngModel)] = "time.move" style="width: 100%;" [disabled] = "time.reservation_cnt == 0">
                               <option value="0">Move all these {{ time.time }} people to ...</option>
                               <ng-template ngFor let-_time [ngForOf]="_times">
-                              <option *ngIf="_time.id != time.id" value="{{_time.id}}">  ... to the {{ _time.time }} bus from {{ _time.short }} (TIME ID: {{_time.id}})</option>
+                              <option *ngIf="_time.id != time.id" value="{{_time.id}}">  ... to the {{ _time.time }} bus from {{ _time.short }}<!-- (TIME ID: {{_time.id}})--></option>
                               </ng-template>
                           </select>
                       </p>
@@ -48,14 +48,14 @@
           </h5>
           <table class="group-additional-info-table">
               
-              <tr>
+<!--              <tr>
                   <td class="td-left">
                       TravelZoo Booked: 
                   </td>  
                   <td class="td-right">
                       {{_bus.travel_zoo_booked}}
                   </td>
-              </tr>
+              </tr>-->
               <tr>
                   <td class="td-left">
                       Coupons Allowed: 
