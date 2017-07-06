@@ -25,8 +25,8 @@
 <div class="row row-content" >
     <div class="col-sm-6" style="text-align: center;" [class.wide] = "headerReturn.date == ''">
         <div class="header-outbound">
-                <h2>Leaving from {{ headerLeave.city }} on </h2>
-                <h4>{{ headerLeave.date}} at:</h4>
+                <h3><b>Leaving from {{ headerLeave.city }} on </b></h3>
+                <p><b>{{ headerLeave.date}} at:</b></p>
         </div>
         <div class="content-outbound">
                 <div *ngFor="let bus of leaving_buses; let i = index;"> 
@@ -36,8 +36,8 @@
     </div>
     <div class="col-sm-6" style="text-align: center;" *ngIf = "headerReturn.date != ''">
         <div class="header-return">
-                <h2>Returning from {{ headerReturn.city }} on </h2>
-                <h4>{{ headerReturn.date }} at: </h4>
+                <h3><b>Returning from {{ headerReturn.city }} on </b></h3>
+                <p><b>{{ headerReturn.date }} at: </b></p>
         </div>
         <div class="content-outbound">
                 <div *ngFor="let bus of returning_buses; let i = index;"> 
