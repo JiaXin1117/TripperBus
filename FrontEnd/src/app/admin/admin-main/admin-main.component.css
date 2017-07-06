@@ -1,3 +1,7 @@
+:not(.fa) {
+  font-family: verdana, arial, helvetica !important;
+}
+
 .admin-main-panel {
     border-top: 3px solid #3c8dbc;
 }

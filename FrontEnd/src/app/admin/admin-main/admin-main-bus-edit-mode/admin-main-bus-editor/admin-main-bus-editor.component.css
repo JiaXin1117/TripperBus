@@ -1,3 +1,7 @@
+:not(.fa) {
+  font-family: verdana, arial, helvetica !important;
+}
+
 .bus-root-div {
     border: 1px solid black;
     padding-right: 5px;

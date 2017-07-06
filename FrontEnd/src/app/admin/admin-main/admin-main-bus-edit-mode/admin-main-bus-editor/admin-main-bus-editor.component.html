@@ -5,7 +5,7 @@
           <table class="schedules-table">
               <tr *ngFor="let time of _bus.times; let i = index;">
                   <td class="td-left">
-                      <span><!--TIME ID: {{ time.id }}--> {{ time.time }}</span> from <span>{{ time.stop_area }}</span> 
+                      <b><span><!--TIME ID: {{ time.id }}--> {{ time.time }}</span> from <span>{{ time.stop_area }}</span></b> 
                   </td>
                   <td class="td-right">
                       <span>{{ time.reservation_cnt }}</span>
