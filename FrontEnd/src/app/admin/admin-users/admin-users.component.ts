@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 
-import { UserService } from "../../services/user_service/user.service";
+import { AuthService } from "../../services/auth_service/auth.service";
 import { HttpService } from "../../services/http_service/http.service";
 import { NotificationsService } from 'angular2-notifications';
 
@@ -28,7 +28,7 @@ export class AdminUsersComponent implements OnInit {
   };
 
   constructor(
-        public _userService: UserService,
+        public _authService: AuthService,
         public _httpService: HttpService,
         public _notificationsService: NotificationsService,
   ) {
@@ -41,7 +41,7 @@ export class AdminUsersComponent implements OnInit {
   }
 
   init () {
-    let url = this._userService.URLS.get_users;
+    let url = this._authService.URLS.get_users;
 
     this._httpService.sendGetRequestWithParams(url)
       .subscribe(
@@ -82,7 +82,7 @@ export class AdminUsersComponent implements OnInit {
   addUser() {
     console.log(this.user);
 
-    let url = this._userService.URLS.add_user;
+    let url = this._authService.URLS.add_user;
 
     if(!this.checkUser())
       return;
@@ -100,7 +100,7 @@ export class AdminUsersComponent implements OnInit {
 
           this.hideUserModal();
 
-          let successMessage = "User[" + createdUser['username'] + "] successfully added.";
+          let successMessage = "User[" + createdUser['name'] + "] successfully added.";
           this.successNotification(successMessage);
         } else {
           if (res.error) {
@@ -109,7 +109,7 @@ export class AdminUsersComponent implements OnInit {
         }
       },
       error => {
-        this.failedNotification(this._userService.addErrorMessage);
+        this.failedNotification(this._authService.addErrorMessage);
       });
   }
 
@@ -117,7 +117,7 @@ export class AdminUsersComponent implements OnInit {
     let user = this.user;
     let errorMsg = '';
 
-    if (user.username == '')
+    if (user.name == '')
       errorMsg = 'Username is empty!';
     else if (user.email == '')
       errorMsg = 'Email is empty!';
@@ -138,7 +138,7 @@ export class AdminUsersComponent implements OnInit {
   updateUser() {
     console.log(this.user);
 
-    let url = this._userService.URLS.update_user;
+    let url = this._authService.URLS.update_user;
 
     if(!this.checkUser())
       return;
@@ -156,7 +156,7 @@ export class AdminUsersComponent implements OnInit {
 
           this.hideUserModal();
 
-          let successMessage = "User[" + resUser['username'] + "] successfully updated.";
+          let successMessage = "User[" + resUser['name'] + "] successfully updated.";
           this.successNotification(successMessage);
         } else {
           if (res.error) {
@@ -165,7 +165,7 @@ export class AdminUsersComponent implements OnInit {
         }
       },
       error => {
-        this.failedNotification(this._userService.updateErrorMessage);
+        this.failedNotification(this._authService.updateErrorMessage);
       });
   }
 
@@ -177,14 +177,14 @@ export class AdminUsersComponent implements OnInit {
   deleteUser() {
     console.log(this.user);
 
-    let url = this._userService.URLS.delete_user;
+    let url = this._authService.URLS.delete_user;
 
     this._httpService.sendPostJSON(url, { userId: this.user.id })
       .subscribe(
       data => {
         let res = data.json();
         if (res.success) {
-          let successMessage = "User[" + this.user['username'] + "] successfully deleted.";
+          let successMessage = "User[" + this.user['name'] + "] successfully deleted.";
           this.deleteUserFromArray(this.user);
 
           this.hideUserModal();
@@ -196,7 +196,7 @@ export class AdminUsersComponent implements OnInit {
         }
       },
       error => {
-        this.failedNotification(this._userService.deleteErrorMessage);
+        this.failedNotification(this._authService.deleteErrorMessage);
       });
   }
 

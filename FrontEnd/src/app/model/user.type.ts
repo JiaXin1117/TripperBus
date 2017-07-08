@@ -1,6 +1,6 @@
 export class User {
     public id: number;
-    public username: string;
+    public name: string;
     public email: string;
     public password: string;
     public full_name: string;
@@ -13,7 +13,7 @@ export class User {
 
     init() {
         this.id = 0;
-        this.username = "";
+        this.name = "";
         this.email = "";
         this.password = "";
         this.full_name = "";

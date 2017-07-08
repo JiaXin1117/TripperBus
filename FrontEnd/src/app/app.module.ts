@@ -40,7 +40,6 @@ import {HttpService} from "./services/http_service/http.service";
 import {AuthService} from "./services/auth_service/auth.service";
 import {ScheduleService} from "./services/schedule_service/schedule.service";
 import {MainService} from "./services/main_service/main.service";
-import {UserService} from "./services/user_service/user.service";
 import {ReportService} from "./services/report_service/report.service";
 
 import { MainHeaderComponent } from './main/main-header/main-header.component';
@@ -123,7 +122,6 @@ import { AdminReportsComponent } from './admin/admin-reports/admin-reports.compo
         AuthService,
         ScheduleService,
         MainService,
-        UserService,
         ReportService,
     ],
     exports: [

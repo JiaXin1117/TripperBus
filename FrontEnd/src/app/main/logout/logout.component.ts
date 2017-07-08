@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthService} from "../../services/auth_service/auth.service";
+import { AuthService } from "../../services/auth_service/auth.service";
 import { Router, ActivatedRoute } from '@angular/router';
+import { BACKEND_SERVER_URL } from '../../config/config';
+import { HttpService } from "../../services/http_service/http.service";
 
 @Component({
   selector: 'app-logout',
@@ -9,11 +11,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class LogoutComponent implements OnInit {
 
-    public _options: any = {
-        logInPath: "/login"
-    };
-
-    constructor( public _authService: AuthService, public _router: Router ) {
+    constructor(
+        public _authService: AuthService,
+        public _httpService: HttpService,
+        public _router: Router,
+    ) {
         this.logout();
     }
 
@@ -21,8 +23,15 @@ export class LogoutComponent implements OnInit {
     }
     
     logout() {
-        localStorage.removeItem('currentUser');
-        this._router.navigate([this._options.logInPath]);
+        let url = this._authService.URLS.logout;
+        
+        this._httpService._http.get(url)
+        .subscribe(() =>
+            {
+                this._authService.removeCurrentUser();
+                this._router.navigate([this._authService.ROUTES.login]);
+            }
+        );
     }
 
 }

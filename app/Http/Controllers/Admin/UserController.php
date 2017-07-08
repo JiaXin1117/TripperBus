@@ -5,23 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Res_Users;
-// use App\Models\Res_Groups;
-// use App\Models\Res_Groups_DestStops;
-// use App\Models\Res_Times;
-// use App\Models\Res_Reservations;
-// use App\Models\Res_Setting;
-// use Illuminate\Support\Facades\Input;
-// use DB;
-// use Carbon\Carbon;
-// use Illuminate\Support\Facades\Mail;
-// use App\Mail\Mail_Reservation;
-// use App\Mail\Mail_Bus;
 
 
 class UserController extends Controller
 {
-    
     public function __construct()
     {
         
@@ -41,19 +30,33 @@ class UserController extends Controller
         ]);
     }
 
+    public function getCurrentUser() {
+        if (Auth::check()) {
+            return response()->json([
+                'success'   => true,
+                'user'      => Auth::user(),
+            ]);
+        }
+
+        return  response()->json([
+            'success'   => false,
+            'error'     => 'Not logged in!',
+        ]);
+    }
+
     public function addUser(Request $request) {
         $user = $request->input('user');
 
         $validator = $this->user_credential_rules($user);
         if ($validator->fails()) {
             return response()->json([
-                'status'    => false,
+                'success'    => false,
                 'error'     => $validator->getMessageBag()->first(),
             ]);
         }
 
         //check exist
-        if (Res_Users::where('username', $user['username'])
+        if (Res_Users::where('name', $user['name'])
                     ->orWhere('email', $user['email'])
                     ->exists()) {
             return response()->json([
@@ -91,7 +94,7 @@ class UserController extends Controller
         //check exist
         if (Res_Users::where('id', '<>', $user['id'])
                     ->where(function($query) use($user) {
-                        $query->where('username', $user['username'])
+                        $query->where('name', $user['name'])
                               ->orWhere('email', $user['email']);
                     })
                     ->exists()) {

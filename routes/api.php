@@ -13,14 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function() {
-    Route::post('/login', [
-        'as' => 'login.post',
-        'uses' => 'LoginController@postLogin',
-    ]);
-});
-
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth']], function() {
     Route::group(['prefix' => 'schedule'], function() {
         Route::get('/retrieve_by_date', [
             'as' => 'admin.schedule.retrieve_by_date',
@@ -183,6 +176,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'as' => 'admin.user.delete_user',
             'uses' => 'UserController@deleteUser',
         ]);
+
+        Route::get('/get_current_user', [
+            'as' => 'admin.user.get_current_user',
+            'uses' => 'UserController@getCurrentUser',
+        ]);
     });
 
 
@@ -192,6 +190,17 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             'uses' => 'MainController@getReports',
         ]);
     });
+});
+
+Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function() {
+    Route::post('/login', [
+        'as' => 'auth.login',
+        'uses' => 'LoginController@postLogin'
+    ]);
+    Route::get('/logout', [
+        'as' => 'auth.logout',
+        'uses' => 'LoginController@getLogout'
+    ]);
 });
 
 Route::group(['namespace' => 'Test', 'prefix' => 'test'], function() {

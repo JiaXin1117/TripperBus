@@ -4,7 +4,7 @@ import {AuthService} from "../../services/auth_service/auth.service";
 import { Router, ActivatedRoute } from '@angular/router';
 import { AdminComponent } from '../../admin';
 import { BACKEND_SERVER_URL } from '../../config/config';
-import { URLSearchParams } from '@angular/http';
+import { URLSearchParams, RequestOptions } from '@angular/http';
 
 declare var jQuery:any;
 
@@ -20,8 +20,11 @@ export class LoginComponent implements OnInit {
     public alert_visible: string = "none";
     public errorMsg = "Log in fail!";
 
-    constructor( public _httpService: HttpService, public _authService: AuthService, public router: Router, 
-                public route: ActivatedRoute ) {
+    constructor(public _httpService: HttpService, 
+                public _authService: AuthService,
+                public router: Router, 
+                public route: ActivatedRoute
+    ) {
         
     }
 
@@ -29,34 +32,29 @@ export class LoginComponent implements OnInit {
     }
     
     onPostLogin() { 
-        let url = BACKEND_SERVER_URL + "api/auth/login";
+        let url = this._authService.URLS.login;
         
         let formParams = new URLSearchParams();
-        formParams.set('name', this.name);
+        formParams.set('email', this.name);
         formParams.set('password', this.password);
         
-        let userInfo = {};
-        userInfo['name'] = this.name;
-        userInfo['password'] = this.password;
-        
-        this._httpService.sendPostRequestWithParams(url, formParams.toString())
-            .subscribe(
-                data => {
-                    console.log(data);
-                    if (data.success) {
-                        this.alert_visible = "none";
-                        localStorage.setItem("currentUser", JSON.stringify(data.data));
-                        this.router.navigate(['/admin/main']);
-                    } else {
-                        this.errorMsg = data.error;
-                        this.alert_visible = "inherit";
-                        localStorage.removeItem("currentUser");
-                        this.router.navigate(['/login']);
-                    }
-                },
-                error => alert(error),
-                () => console.log('Finished')
-            );
+        this._authService.removeCurrentUser();
+        this._httpService.sendPostRequestWithParams(url, formParams)
+        .subscribe(
+            data => {
+                console.log(data);
+                if (data.success) {
+                    this._authService.validateLogin();
+                } else {
+                    this.errorMsg = data.error;
+                    this.alert_visible = "inherit";
+                }
+            }, 
+            error => {
+                this.errorMsg = "Authentication failed!";
+                this.alert_visible = "inherit";
+            }
+        );
     }
 
 }
