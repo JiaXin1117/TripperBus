@@ -53,18 +53,18 @@ const routes: Routes = [
             /*{ path: 'schedules_gennew/:sel_date',      component: AdminSchedulesGennewComponent },
             { path: 'schedules_genspecial/:sel_date',      component: AdminSchedulesGenspecialComponent },*/
             
-            { path: 'stops',      component: AdminStopsComponent },
+/*            { path: 'stops',      component: AdminStopsComponent },
             { path: 'rates',      component: AdminRatesComponent },
-            { path: 'areas',      component: AdminAreasComponent },
+            { path: 'areas',      component: AdminAreasComponent },*/
             { path: 'users',      component: AdminUsersComponent },
             { path: 'customers',  component: AdminCustomersComponent },
-            { path: 'pages',      component: AdminPagesComponent },
+/*            { path: 'pages',      component: AdminPagesComponent },*/
             { path: 'settings',   component: AdminSettingsComponent },
             { path: 'reports',    component: AdminReportsComponent },
-            { path: 'coupons',    component: AdminCouponsComponent },
+/*            { path: 'coupons',    component: AdminCouponsComponent },
             { path: 'coupons-campaigns',      component: AdminCouponsCampaignsComponent },
             { path: 'coupons-companies',      component: AdminCouponsCompaniesComponent },
-            { path: 'coupons-types',      component: AdminCouponsTypesComponent },
+            { path: 'coupons-types',      component: AdminCouponsTypesComponent },*/
             { path: '**', redirectTo: 'login' }
         ]
     },
