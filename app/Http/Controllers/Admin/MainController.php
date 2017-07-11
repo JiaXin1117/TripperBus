@@ -166,6 +166,9 @@ class MainController extends Controller
         }
 
         unset($reservation['Date Made']);
+        unset($reservation['time']);
+        unset($reservation['stop']);
+
         Res_Reservations::unguard();
         $res = Res_Reservations::find($reservation['id'])->update($reservation);
         Res_Reservations::reguard();
@@ -235,6 +238,9 @@ class MainController extends Controller
         }
 
         unset($reservation['Date Made']);
+        unset($reservation['time']);
+        unset($reservation['stop']);
+
         Res_Reservations::unguard();
         $res = Res_Reservations::find($reservation['id'])->update($reservation);
         Res_Reservations::reguard();
