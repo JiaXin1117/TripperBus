@@ -23,8 +23,6 @@ import { MainFooterComponent } from '../main/main-footer/main-footer.component';
 import { LogoutComponent } from '../main/logout/logout.component';
 
 import { AdminSchedulesEditexistingComponent } from '../admin/admin-schedules/admin-schedules-editexisting/admin-schedules-editexisting.component';
-import { AdminSchedulesGennewComponent } from '../admin/admin-schedules/admin-schedules-gennew/admin-schedules-gennew.component';
-import { AdminSchedulesGenspecialComponent } from '../admin/admin-schedules/admin-schedules-genspecial/admin-schedules-genspecial.component';
 
 import { AdminMainRegularModeComponent } from '../admin/admin-main/admin-main-regular-mode/admin-main-regular-mode.component';
 import { AdminMainBusEditModeComponent } from '../admin/admin-main/admin-main-bus-edit-mode/admin-main-bus-edit-mode.component';

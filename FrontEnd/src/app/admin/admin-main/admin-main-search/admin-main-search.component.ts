@@ -148,13 +148,17 @@ export class AdminMainSearchComponent implements OnInit {
         + "&caseSensitive=" + this.inputParams.caseSensitive;
         
         this._httpService.sendGetRequestWithParams(url).subscribe(
-          data => {
-            if (data.state == "success") {
-              this.reservations = data.data;
-              
-              console.log (data);
+            data => {
+                if (data.state == "success") {
+                this.reservations = data.data;
+                
+                console.log (data);
+                }
+            },
+            error => {
+                this.failedNotification(error);
             }
-        });
+        );
     }
     
     public receiveInputParams() {
@@ -256,7 +260,7 @@ export class AdminMainSearchComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 
@@ -301,7 +305,7 @@ export class AdminMainSearchComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 
@@ -330,7 +334,7 @@ export class AdminMainSearchComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 
@@ -377,7 +381,7 @@ export class AdminMainSearchComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 
@@ -408,7 +412,7 @@ export class AdminMainSearchComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 
@@ -434,7 +438,7 @@ export class AdminMainSearchComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 

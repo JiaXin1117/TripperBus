@@ -3,6 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ScheduleService } from "../../../services/schedule_service/schedule.service";
 import { HttpService } from "../../../services/http_service/http.service";
+import { NotificationsService } from 'angular2-notifications';
+
 import { BACKEND_SERVER_URL } from '../../../config/config';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Observable } from 'rxjs/Observable';
@@ -70,9 +72,19 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
 
     public holidayName = "";
     
+    public notifyOptions = {
+        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+    };
+
+
     constructor(public _route: ActivatedRoute, 
                 public _scheduleService: ScheduleService, 
                 public _router: Router,
+                public _notificationsService: NotificationsService,
                 public _httpService: HttpService ) { 
     }
 
@@ -192,7 +204,11 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                     // Add Modal Header.
                     me.setAddModalHeaderInfoForPage(false);
                 }
-            });
+            },
+            error => {
+                this.failedNotification(error);
+            }
+        );
     }
 
 /*    
@@ -528,7 +544,9 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                         alert(res.error);
                     }
                 },
-                error => alert(error),
+                error => {
+                    this.failedNotification(error);
+                },
                 () => {}
             );
     }
@@ -625,6 +643,14 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
 
     public hideConfirmSaveAllModal(): void {
         this.confirm_saveall_modal.hide();
+    }
+
+    successNotification(notifyText: string) {
+        this._notificationsService.success('Success', notifyText);
+    }
+
+    failedNotification(notifyText: string) {
+        this._notificationsService.error('Failed', notifyText);
     }
 
 }

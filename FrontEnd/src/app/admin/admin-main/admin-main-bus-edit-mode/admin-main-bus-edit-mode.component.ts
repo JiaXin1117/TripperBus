@@ -3,6 +3,7 @@ import { Router, ActivatedRoute }   from '@angular/router';
 import { MainService} from "../../../services/main_service/main.service";
 import { ScheduleService} from "../../../services/schedule_service/schedule.service";
 import { HttpService} from "../../../services/http_service/http.service";
+import { NotificationsService } from 'angular2-notifications';
 import { Bus } from '../../../model/bus.type';
 import * as moment from "moment";
 export { AdminMainBusEditorComponent } from './admin-main-bus-editor/admin-main-bus-editor.component';
@@ -34,10 +35,21 @@ export class AdminMainBusEditModeComponent implements OnInit {
     public returning_buses: Bus[];
     public errorMessage: string = "";
     public successMessage: string = "";
+
+    public notifyOptions = {
+        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+    };
+
+
     constructor(public _route: ActivatedRoute, 
                 public _router: Router,
                 public _mainService: MainService,
                 public _scheduleService: ScheduleService,
+                public _notificationsService: NotificationsService,
                 public _httpService: HttpService
                 ) {
     }
@@ -58,7 +70,11 @@ export class AdminMainBusEditModeComponent implements OnInit {
                             this.leaving_buses = data.data_1;
                             this.returning_buses = data.data_2;
                         }
-                    });
+                    },
+                    error => {
+                        this.failedNotification(error);
+                    }
+                );
     }
     
     public receiveInputParams() {
@@ -111,10 +127,21 @@ export class AdminMainBusEditModeComponent implements OnInit {
                 data => {
                     this.successMessage = "The buses are successfully updated.";
                     this.errorMessage = "";
+                    this.successNotification(this.successMessage);
                 },
                 error => {
                     this.successMessage = "";
                     this.errorMessage = "Something went wrong. Please contact administrator.";
-                });
+                    this.failedNotification(error);
+                }
+            );
+    }
+
+    successNotification(notifyText: string) {
+        this._notificationsService.success('Success', notifyText);
+    }
+
+    failedNotification(notifyText: string) {
+        this._notificationsService.error('Failed', notifyText);
     }
 }

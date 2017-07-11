@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import {HttpService} from "../../../../services/http_service/http.service";
-import {ScheduleService} from "../../../../services/schedule_service/schedule.service";
+import { HttpService} from "../../../../services/http_service/http.service";
+import { ScheduleService} from "../../../../services/schedule_service/schedule.service";
+import { NotificationsService } from 'angular2-notifications';
 
 import { BACKEND_SERVER_URL } from '../../../../config/config';
 
@@ -12,6 +13,7 @@ declare var jQuery:any;
   templateUrl: './admin-schedule-edit-bus.component.html',
   styleUrls: ['./admin-schedule-edit-bus.component.css']
 })
+
 export class AdminScheduleEditBusComponent implements OnInit {
     public arr_leaving_stop_shorts: string[] = [];
     public arr_hours: any[] = [];
@@ -45,7 +47,17 @@ export class AdminScheduleEditBusComponent implements OnInit {
         get_dest_stops_for_group: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_dest_stops_for_group",
     };
     
+    public notifyOptions = {
+        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+    };
+
+
     constructor(public _httpService: HttpService,
+                public _notificationsService: NotificationsService,
                 public _scheduleService: ScheduleService
                 ) { 
     }
@@ -276,7 +288,9 @@ export class AdminScheduleEditBusComponent implements OnInit {
                                                 me.extract_DestStopInfos();
                                             }
                                         },
-                                        error => alert(error),
+                                        error => {
+                                            this.failedNotification(error);
+                                        },
                                         () => {}
                                     );
                         }/*
@@ -576,6 +590,14 @@ export class AdminScheduleEditBusComponent implements OnInit {
         }
 
         me.extract_DestStopInfos(); 
+    }
+
+    successNotification(notifyText: string) {
+        this._notificationsService.success('Success', notifyText);
+    }
+
+    failedNotification(notifyText: string) {
+        this._notificationsService.error('Failed', notifyText);
     }
 
 }

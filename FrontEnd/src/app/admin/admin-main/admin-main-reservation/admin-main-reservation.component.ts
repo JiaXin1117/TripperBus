@@ -201,7 +201,11 @@ export class AdminMainReservationComponent implements OnInit {
                         
                         console.log (data);
                     }
-                });
+                },
+                error => {
+                    this.failedNotification(error);
+                }
+            );
 
             url = this._mainService.URLS.retrieve_reservations_by_date_url + "?outbound_date=" + this.inputParams.outbound_date + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date;
 
@@ -218,7 +222,11 @@ export class AdminMainReservationComponent implements OnInit {
                         console.log(this.reservations);
                         console.log(this.reservations_from_time);
                     }
-                });
+                },
+                error => {
+                    this.failedNotification(error);
+                }
+            );
         } else {
             this.initNewReservation();
 
@@ -334,7 +342,7 @@ export class AdminMainReservationComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.addReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 
@@ -405,7 +413,7 @@ export class AdminMainReservationComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 
@@ -455,7 +463,7 @@ export class AdminMainReservationComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 
@@ -489,7 +497,7 @@ export class AdminMainReservationComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 
@@ -561,7 +569,7 @@ export class AdminMainReservationComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 
@@ -592,7 +600,7 @@ export class AdminMainReservationComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 
@@ -619,7 +627,7 @@ export class AdminMainReservationComponent implements OnInit {
 
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
-                this.failedNotification(this.errorMessage);
+                this.failedNotification(error);
             });
     }
 

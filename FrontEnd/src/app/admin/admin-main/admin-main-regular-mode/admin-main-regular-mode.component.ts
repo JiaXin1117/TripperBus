@@ -5,7 +5,9 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MainService} from "../../../services/main_service/main.service";
 import { ScheduleService} from "../../../services/schedule_service/schedule.service";
 import { HttpService} from "../../../services/http_service/http.service";
+import { NotificationsService } from 'angular2-notifications';
 import { Bus } from '../../../model/bus.type';
+
 import * as moment from "moment";
 declare var jQuery:any;
 
@@ -43,10 +45,21 @@ export class AdminMainRegularModeComponent implements OnInit {
     public returning_bus_groupId: number = 0;
     public returning_timeId: number = 0;
     public returning_price: number = 0;
+
+    public notifyOptions = {
+        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+    };
+
+
     constructor(public _route: ActivatedRoute, 
                 public _router: Router,
                 public _mainService: MainService,
                 public _scheduleService: ScheduleService,
+                public _notificationsService: NotificationsService,
                 public _httpService: HttpService
                 ) {
     }
@@ -67,7 +80,11 @@ export class AdminMainRegularModeComponent implements OnInit {
                             this.leaving_buses = data.data_1;
                             this.returning_buses = data.data_2;
                         }
-                    });
+                    },
+                    error => {
+                        this.failedNotification(error);
+                    }
+                );
     }
     
     public receiveInputParams() {
@@ -166,6 +183,14 @@ export class AdminMainRegularModeComponent implements OnInit {
         me.returning_bus_groupId, me.returning_timeId, me.returning_price]; 
         
         me._router.navigate(link);
+    }
+
+    successNotification(notifyText: string) {
+        this._notificationsService.success('Success', notifyText);
+    }
+
+    failedNotification(notifyText: string) {
+        this._notificationsService.error('Failed', notifyText);
     }
 
 }

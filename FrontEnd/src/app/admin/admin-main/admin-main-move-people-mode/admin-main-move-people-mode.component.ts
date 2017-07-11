@@ -4,13 +4,17 @@ import { MainService} from "../../../services/main_service/main.service";
 import { ScheduleService} from "../../../services/schedule_service/schedule.service";
 import { HttpService} from "../../../services/http_service/http.service";
 import { Bus, Time } from '../../../model';
+import { NotificationsService } from 'angular2-notifications';
+
 export * from './admin-main-bus-move/admin-main-bus-move.component';
 import * as moment from "moment";
+
 @Component({
   selector: 'app-admin-main-move-people-mode',
   templateUrl: './admin-main-move-people-mode.component.html',
   styleUrls: ['./admin-main-move-people-mode.component.css']
 })
+
 export class AdminMainMovePeopleModeComponent implements OnInit {
 
     public headerLeave: any = {
@@ -35,10 +39,21 @@ export class AdminMainMovePeopleModeComponent implements OnInit {
     public returning_times: Time[];
     public errorMessage: string = "";
     public successMessage: string = "";
+
+    public notifyOptions = {
+        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+    };
+
+
     constructor(public _route: ActivatedRoute, 
                 public _router: Router,
                 public _mainService: MainService,
                 public _scheduleService: ScheduleService,
+                public _notificationsService: NotificationsService,
                 public _httpService: HttpService
                 ) {
     }
@@ -61,7 +76,11 @@ export class AdminMainMovePeopleModeComponent implements OnInit {
                         this.leaving_times = data.time_1;
                         this.returning_times = data.time_2;
                     }
-                });
+                },
+                error => {
+                    this.failedNotification(error);
+                }
+            );
     }
 
     public receiveInputParams() {
@@ -114,12 +133,24 @@ export class AdminMainMovePeopleModeComponent implements OnInit {
                 data => {
                     this.successMessage = "The reservations are successfully updated.";
                     this.errorMessage = "";
+                    this.successNotification(this.successMessage);
                     this.refreshData();
+                    this.successNotification(this.successMessage);
                 },
                 error => {
                     this.successMessage = "";
                     this.errorMessage = "Something went wrong. Please contact administrator.";
+                    this.failedNotification(error);
                 });
         
     }
+
+    successNotification(notifyText: string) {
+        this._notificationsService.success('Success', notifyText);
+    }
+
+    failedNotification(notifyText: string) {
+        this._notificationsService.error('Failed', notifyText);
+    }
+
 }

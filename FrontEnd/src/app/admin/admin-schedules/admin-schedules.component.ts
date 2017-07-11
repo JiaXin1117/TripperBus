@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {HttpService} from "../../services/http_service/http.service";
-import {ScheduleService} from "../../services/schedule_service/schedule.service";
-import {AuthService} from "../../services/auth_service/auth.service";
+import { HttpService} from "../../services/http_service/http.service";
+import { ScheduleService} from "../../services/schedule_service/schedule.service";
+import { AuthService} from "../../services/auth_service/auth.service";
+import { NotificationsService } from 'angular2-notifications';
+
 import { BACKEND_SERVER_URL } from '../../config/config';
 import { Router }   from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -15,6 +17,7 @@ declare var jQuery:any;
   templateUrl: './admin-schedules.component.html',
   styleUrls: ['./admin-schedules.component.css']
 })
+
 export class AdminSchedulesComponent implements OnInit {
     @ViewChild('schduleDay_NY_Modal') public schduleDay_NY_Modal: ModalDirective;
     @ViewChild('schduleDay_BA_Modal') public schduleDay_BA_Modal: ModalDirective;
@@ -42,8 +45,18 @@ export class AdminSchedulesComponent implements OnInit {
 
     public holidays: any[][] = [];
     
+    public notifyOptions = {
+        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+    };
+
+
     constructor( public _httpService: HttpService, 
                 public _router: Router, 
+                public _notificationsService: NotificationsService,
                 public _scheduleService: ScheduleService ) {
             
     }
@@ -96,7 +109,7 @@ export class AdminSchedulesComponent implements OnInit {
 
             this._httpService.sendGetRequestWithParams(url)
                 .subscribe(
-                    data => { 
+                    data => {
                         let response = data; 
                         this.holidays[areaType] = data['holidays'];
 
@@ -198,6 +211,9 @@ export class AdminSchedulesComponent implements OnInit {
                             } 
                         } 
                         
+                    },
+                    error => {
+                        this.failedNotification(error);
                     }
                 );
     }
@@ -237,7 +253,7 @@ export class AdminSchedulesComponent implements OnInit {
 */            
             this._httpService.sendGetRequestWithParams(url)
                 .subscribe(
-                    data => { 
+                    data => {
                         let response = data; 
                         if (response['state'] == 'success') { 
                             
@@ -313,6 +329,9 @@ export class AdminSchedulesComponent implements OnInit {
                         } else {
                             me.showModalForDate(areaType);
                         }
+                    },
+                    error => {
+                        this.failedNotification(error);
                     }
                 );
     }
@@ -410,6 +429,14 @@ export class AdminSchedulesComponent implements OnInit {
             firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1); 
             lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0); 
             this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_BA);
+    }
+
+    successNotification(notifyText: string) {
+        this._notificationsService.success('Success', notifyText);
+    }
+
+    failedNotification(notifyText: string) {
+        this._notificationsService.error('Failed', notifyText);
     }
     
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router }   from '@angular/router';
 import { MainService } from "../../services/main_service/main.service";
 import { HttpService } from "../../services/http_service/http.service";
+import { NotificationsService } from 'angular2-notifications';
 import * as moment from "moment";
 
 declare var jQuery:any;
@@ -18,9 +19,19 @@ export class AdminMainComponent implements OnInit {
     public return_date: string;
     public page_mode: number;
 
+    public notifyOptions = {
+        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+    };
+
+
     constructor( 
         public _router: Router, 
         public _mainService: MainService,
+        public _notificationsService: NotificationsService,
         public _httpService: HttpService
         ) 
     {
@@ -47,7 +58,11 @@ export class AdminMainComponent implements OnInit {
 
                     this._mainService.settings['reservation_initial_fee'] = parseFloat(this._mainService.settings['reservation_initial_fee']);
                 }
-            });
+            },
+            error => {
+                this.failedNotification(error);
+            }
+        );
     }
 
     initiateVars() {
@@ -100,6 +115,14 @@ export class AdminMainComponent implements OnInit {
             let link = ['/admin/main/move_people_mode', me.outbound_date, me.leaving_city, me.return_date]; 
             me._router.navigate(link);
         }
+    }
+
+    successNotification(notifyText: string) {
+        this._notificationsService.success('Success', notifyText);
+    }
+
+    failedNotification(notifyText: string) {
+        this._notificationsService.error('Failed', notifyText);
     }
 
 }

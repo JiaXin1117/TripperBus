@@ -28,7 +28,7 @@
                     <th>Password</th>
                     <th>Full Name</th>
                     <th>Created</th>
-                    <th width="200">&nbsp;</th>
+                    <th>Permission</th>
                 </tr>
             </thead>
             <tbody class="table" *ngIf="users && users.length">
@@ -36,10 +36,10 @@
                     <td>{{user['id']}}</td>
                     <td><a (click)="showEditUserModal(user)">{{user['name']}}</a></td>
                     <td>{{user['email']}}</td>
-                    <td>{{user['password']}}</td>
+                    <td>{{user['password'] | slice:0:10}}...</td>
                     <td>{{user['full_name']}}</td>
                     <td><span class="label label-success">{{user['created_at']}}</span></td>
-                    <td></td>
+                    <td><a (click)="editPermission(user)"><span class="fa fa-pencil"></span></a></td>
                 </tr>
             </tbody>
         </table>

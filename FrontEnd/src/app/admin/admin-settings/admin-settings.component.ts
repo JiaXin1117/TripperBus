@@ -38,13 +38,17 @@ export class AdminSettingsComponent implements OnInit {
 
     this._httpService.sendGetRequestWithParams(url)
       .subscribe(
-      data => {
-        if (data.state == "success") {
-          console.log(data);
-          this._mainService.settings = data.settings;
-          this.settings = data.settings;
+        data => {
+          if (data.state == "success") {
+            console.log(data);
+            this._mainService.settings = data.settings;
+            this.settings = data.settings;
+          }
+        },
+        error => {
+          this.failedNotification(error);
         }
-      });
+      );
   }
 
   setSettings() {
@@ -60,15 +64,23 @@ export class AdminSettingsComponent implements OnInit {
         this.settings = input['settings'];
         this._mainService.settings = this.settings;
         
-        this._notificationsService.success('Success', 'Successfully updated.');
+        this.successNotification('Successfully updated.');
 
       },
       error => {
         let errorMessage = "Settings are failed.";
         console.log(errorMessage);
 
-        this._notificationsService.error('Error', 'Update failed.');
+        this.failedNotification(error);
       });
+  }
+
+  successNotification(notifyText: string) {
+    this._notificationsService.success('Success', notifyText);
+  }
+
+  failedNotification(notifyText: string) {
+    this._notificationsService.error('Failed', notifyText);
   }
 
 }

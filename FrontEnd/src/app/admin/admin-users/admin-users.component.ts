@@ -45,12 +45,16 @@ export class AdminUsersComponent implements OnInit {
 
     this._httpService.sendGetRequestWithParams(url)
       .subscribe(
-      data => {
-        if (data.success) {
-          this.users = data.users;
-          console.log(data);
+        data => {
+          if (data.success) {
+            this.users = data.users;
+            console.log(data);
+          }
+        },
+        error => {
+            this.failedNotification(error);
         }
-      });
+    );
   }
 
   initModalData() {
@@ -109,7 +113,7 @@ export class AdminUsersComponent implements OnInit {
         }
       },
       error => {
-        this.failedNotification(this._authService.addErrorMessage);
+        this.failedNotification(error);
       });
   }
 
@@ -165,7 +169,7 @@ export class AdminUsersComponent implements OnInit {
         }
       },
       error => {
-        this.failedNotification(this._authService.updateErrorMessage);
+        this.failedNotification(error);
       });
   }
 
@@ -196,7 +200,7 @@ export class AdminUsersComponent implements OnInit {
         }
       },
       error => {
-        this.failedNotification(this._authService.deleteErrorMessage);
+        this.failedNotification(error);
       });
   }
 
@@ -206,17 +210,21 @@ export class AdminUsersComponent implements OnInit {
   }
 
   copyUser(dst: User, src: User) {
-       Object.keys(src).forEach(key => {
-           dst[key] = src[key];
-       });
-   }
+    Object.keys(src).forEach(key => {
+      dst[key] = src[key];
+    });
+  }
 
+  editPermission(user) {
+    alert(user['name']);
+  }
+  
   successNotification(notifyText: string) {
-      this._notificationsService.success('Success', notifyText);
+    this._notificationsService.success('Success', notifyText);
   }
 
   failedNotification(notifyText: string) {
-      this._notificationsService.error('Failed', notifyText);
+    this._notificationsService.error('Failed', notifyText);
   }
 
 }

@@ -47,8 +47,6 @@ import { MainIndexComponent } from './main/main-index.component';
 import { MainFooterComponent } from './main/main-footer/main-footer.component';
 
 import { AdminSchedulesEditexistingComponent } from './admin/admin-schedules/admin-schedules-editexisting/admin-schedules-editexisting.component';
-import { AdminSchedulesGennewComponent } from './admin/admin-schedules/admin-schedules-gennew/admin-schedules-gennew.component';
-import { AdminSchedulesGenspecialComponent } from './admin/admin-schedules/admin-schedules-genspecial/admin-schedules-genspecial.component';
 import { AdminScheduleEditBusComponent } from './admin/admin-schedules/admin-schedules-editexisting/admin-schedule-edit-bus/admin-schedule-edit-bus.component';
 
 import { LogoutComponent } from './main/logout/logout.component';
@@ -88,8 +86,6 @@ import { AdminReportsComponent } from './admin/admin-reports/admin-reports.compo
         MainIndexComponent,
         MainFooterComponent,
         AdminSchedulesEditexistingComponent,
-        AdminSchedulesGennewComponent,
-        AdminSchedulesGenspecialComponent,
         LogoutComponent,
         AdminScheduleEditBusComponent,
         AdminMainRegularModeComponent,
@@ -146,8 +142,6 @@ import { AdminReportsComponent } from './admin/admin-reports/admin-reports.compo
         MainIndexComponent,
         MainFooterComponent,
         AdminSchedulesEditexistingComponent,
-        AdminSchedulesGennewComponent,
-        AdminSchedulesGenspecialComponent,
         LogoutComponent,
         AdminScheduleEditBusComponent,
         AdminMainRegularModeComponent,
