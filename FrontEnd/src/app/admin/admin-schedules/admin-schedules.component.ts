@@ -39,6 +39,8 @@ export class AdminSchedulesComponent implements OnInit {
     
     public dayinfos_in_month_newyork: any[] = [];
     public dayinfos_in_month_ba: any[] = [];
+
+    public holidays: any[][] = [];
     
     constructor( public _httpService: HttpService, 
                 public _router: Router, 
@@ -96,6 +98,7 @@ export class AdminSchedulesComponent implements OnInit {
                 .subscribe(
                     data => { 
                         let response = data; 
+                        this.holidays[areaType] = data['holidays'];
 
                         if (areaType == me._scheduleService.areaType.TYPE_NEWYORK) {
                             me.dayinfos_in_month_newyork = [];

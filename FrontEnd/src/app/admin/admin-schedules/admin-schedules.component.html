@@ -58,33 +58,27 @@
                         
                         <div *ngFor="let item of dayinfos_in_month_newyork; let i=index;" class='col-md-1 fix-height'>
                             <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_HOLIDAY">
-                                <div *ngIf="item['bus_cnt'] == 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_HOLIDAY)" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} bus</p>
-                                </div>
-                                <div *ngIf="item['bus_cnt'] > 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_HOLIDAY)" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} buses</p>
+                                <div>
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_HOLIDAY)" class='calendar_day_holiday'>{{i+1}}</h3>
+                                    <p *ngIf="item['bus_cnt'] == 1" class='calendar_day_holiday' style="margin-bottom: 0px">{{item['bus_cnt']}} bus</p>
+                                    <p *ngIf="item['bus_cnt'] > 1" class='calendar_day_holiday' style="margin-bottom: 0px">{{item['bus_cnt']}} buses</p>
+                                    <label class="label label-danger" *ngIf="holidays[_scheduleService.areaType.TYPE_NEWYORK][i] && holidays[_scheduleService.areaType.TYPE_NEWYORK][i]['name'].length">
+                                    {{ holidays[_scheduleService.areaType.TYPE_NEWYORK][i]['name'] }}
+                                    </label>
                                 </div>
                             </div>
                             <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY">
-                                <div *ngIf="item['bus_cnt'] == 0">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>0 bus</p>
-                                </div>
-                                <div *ngIf="item['bus_cnt'] > 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>{{item['bus_cnt']}} buses</p>
-                                </div>
-                                <div *ngIf="item['bus_cnt'] == 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>{{item['bus_cnt']}} bus</p>
+                                <div>
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3>
+                                    <p *ngIf="item['bus_cnt'] > 1" style="margin-bottom: 0px">{{item['bus_cnt']}} buses</p>
+                                    <p *ngIf="item['bus_cnt'] <= 1" style="margin-bottom: 0px">{{item['bus_cnt']}} bus</p>
                                 </div>
                             </div>
                             <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY_NEW">
-                                <div *ngIf="item['bus_cnt'] == 0">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)"  class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>0 bus</p>
-                                </div>
-                                <div *ngIf="item['bus_cnt'] > 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} buses</p>
-                                </div>
-                                <div *ngIf="item['bus_cnt'] == 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} bus</p>
+                                <div>
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_NEWYORK, _scheduleService.w_hType.TYPE_WEEKLY)" class='calendar_day_new_schedule'>{{i+1}}</h3>
+                                    <p *ngIf="item['bus_cnt'] > 1" class='calendar_day_new_schedule' style="margin-bottom: 0px">{{item['bus_cnt']}} buses</p>
+                                    <p *ngIf="item['bus_cnt'] <= 1" class='calendar_day_new_schedule' style="margin-bottom: 0px">{{item['bus_cnt']}} bus</p>
                                 </div>
                             </div>
                         </div>
@@ -127,33 +121,27 @@
 
                         <div *ngFor="let item of dayinfos_in_month_ba; let i=index;" class='col-md-1 fix-height'>
                             <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_HOLIDAY">
-                                <div *ngIf="item['bus_cnt'] == 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_HOLIDAY)" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} bus</p>
-                                </div>
-                                <div *ngIf="item['bus_cnt'] > 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_HOLIDAY)" class='calendar_day_holiday'>{{i+1}}</h3><p class='calendar_day_holiday'>{{item['bus_cnt']}} buses</p>
+                                <div>
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_HOLIDAY)" class='calendar_day_holiday'>{{i+1}}</h3>
+                                    <p *ngIf="item['bus_cnt'] == 1" class='calendar_day_holiday' style="margin-bottom: 0px">{{item['bus_cnt']}} bus</p>
+                                    <p *ngIf="item['bus_cnt'] > 1" class='calendar_day_holiday' style="margin-bottom: 0px">{{item['bus_cnt']}} buses</p>
+                                    <label class="label label-danger" *ngIf="holidays[_scheduleService.areaType.TYPE_BA][i] && holidays[_scheduleService.areaType.TYPE_BA][i]['name'].length">
+                                    {{ holidays[_scheduleService.areaType.TYPE_BA][i]['name'] }}
+                                    </label>
                                 </div>
                             </div>
                             <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY">
-                                <div *ngIf="item['bus_cnt'] == 0">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>0 bus</p>
-                                </div>
-                                <div *ngIf="item['bus_cnt'] > 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>{{item['bus_cnt']}} buses</p>
-                                </div>
-                                <div *ngIf="item['bus_cnt'] == 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3><p>{{item['bus_cnt']}} bus</p>
+                                <div>
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)" >{{i+1}}</h3>
+                                    <p *ngIf="item['bus_cnt'] > 1" style="margin-bottom: 0px">{{item['bus_cnt']}} buses</p>
+                                    <p *ngIf="item['bus_cnt'] <= 1" style="margin-bottom: 0px">{{item['bus_cnt']}} bus</p>
                                 </div>
                             </div>
                             <div *ngIf="item['isHoliday'] == _scheduleService.w_hType.TYPE_WEEKLY_NEW">
-                                <div *ngIf="item['bus_cnt'] == 0">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)"  class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>0 bus</p>
-                                </div>
-                                <div *ngIf="item['bus_cnt'] > 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} buses</p>
-                                </div>
-                                <div *ngIf="item['bus_cnt'] == 1">
-                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)" class='calendar_day_new_schedule'>{{i+1}}</h3><p class='calendar_day_new_schedule'>{{item['bus_cnt']}} bus</p>
+                                <div>
+                                    <h3 (click)="onClickEachDate($event.target.innerText, _scheduleService.areaType.TYPE_BA, _scheduleService.w_hType.TYPE_WEEKLY)"  class='calendar_day_new_schedule'>{{i+1}}</h3>
+                                    <p *ngIf="item['bus_cnt'] > 1" class='calendar_day_new_schedule' style="margin-bottom: 0px">{{item['bus_cnt']}} buses</p>
+                                    <p *ngIf="item['bus_cnt'] <= 1" class='calendar_day_new_schedule' style="margin-bottom: 0px">{{item['bus_cnt']}} bus</p>
                                 </div>
                             </div>
                         </div>

@@ -8,6 +8,7 @@ use App\Models\Res_Stops;
 use App\Models\Res_Groups;
 use App\Models\Res_Groups_DestStops;
 use App\Models\Res_Times;
+use App\Models\Res_Holidays;
 use Illuminate\Support\Facades\Input;
 
 class ScheduleController extends Controller
@@ -124,9 +125,11 @@ class ScheduleController extends Controller
             $date_timestamp = mktime(0, 0, 0, $month, 1, $year);
             
             $response = array();
+            $holidays = array();
             
             for ($i = mktime(0, 0, 0, $month, 1, $year); $i <= mktime(0, 0, 0, $month, cal_days_in_month(CAL_GREGORIAN,$month,$year)); $i += 24 * 60 *60) {
                 $cur_date = date("Y-m-d", $i); 
+                $holiday = null;
                 
                 // Get holiday schedule first for this date.
                 $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
@@ -160,7 +163,10 @@ class ScheduleController extends Controller
                             $response[] = $temp;
                             //$isHoliday = 1;
                         }
-                    } 
+                    }
+
+                    $holiday = Res_Holidays::where('date', $cur_date)
+                                ->first();
                 } else {
                     
                     // Get weekly schedule.
@@ -195,12 +201,15 @@ class ScheduleController extends Controller
                         }
                     }
                 }
+
+                $holidays[] = $holiday;
             }
-            
+
             if (count($response) > 0) {
                 return response()->json([
                     'state' => 'success',
-                    'data' => $response
+                    'data' => $response,
+                    'holidays'   => $holidays,
                 ]);
             }
 
@@ -220,6 +229,7 @@ class ScheduleController extends Controller
         $cur_date = date_create($date); 
         $response = array();
         $times = array();
+        $holiday = array();
         
         if ($schedule_type == config('config.TYPE_SCHEDULE_HOLIDAY')) {
             // Get Holiday Schedule First.
@@ -253,7 +263,11 @@ class ScheduleController extends Controller
 
                     $times[] = $temp;
                 }
-            } 
+
+                $holiday = Res_Holidays::where('date', $cur_date)
+                                    ->where('area_id', $area_id)
+                                    ->first();
+            }
         } 
         else {
             // Get weekly schedule
@@ -322,6 +336,9 @@ class ScheduleController extends Controller
         $response['group_times'] = $group_times;
         $response['groups'] = $groups;
         $response['stops'] = Res_Stops::all()->toarray();
+        if ($holiday) {
+            $response['holiday'] = $holiday;
+        }
 
         return response()->json([
             'state' => 'success',
@@ -411,6 +428,7 @@ class ScheduleController extends Controller
         
         $group_main_info = $data['group_main_info'];
         $group_additional_info = $data['group_additional_info'];
+        $holiday = isset($data['holiday']) ? $data['holiday'] : null;
         
         for ($i=0; $i<count($group_main_info); $i++) { 
             $one_group = $group_main_info[$i];
@@ -506,6 +524,14 @@ class ScheduleController extends Controller
                 // Update infos about dest_stops. *********
             }
         }
+
+        if ($holiday) {
+            $this->setHoliday($holiday);
+        }
+
+        return response()->json([
+            'success'   => true,
+        ]);
     }
     
     public function postSaveGroupsAdditionalInfo(Request $request) {
@@ -639,4 +665,27 @@ class ScheduleController extends Controller
             ]);
     }
     
+    public function setHoliday($holiday) {
+        if(!isset($holiday['pricing'])) {
+            $holiday['pricing'] = 0;
+        }
+        Res_Holidays::updateOrCreate(
+            ['date' => $holiday['date'], 'area_id' => $holiday['area_id']],
+            ['name' => $holiday['name'], 'pricing' => $holiday['pricing']]
+        );
+    }
+
+    public function unsetHoliday($holiday) {
+        $exist = Res_Holidays::where('date', $holiday['date'])
+                    ->where('name', $holiday['name'])
+                    ->where('id', $holiday['id'])
+                    ->first();
+        if (!$exist) {
+            return "Holiday doesn't exist";
+        }
+
+        Res_Holidays::delete($holiday);
+
+        return '';
+    }
 }

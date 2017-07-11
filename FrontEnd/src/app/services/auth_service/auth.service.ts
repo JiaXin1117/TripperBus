@@ -72,7 +72,6 @@ export class AuthService implements CanActivate {
             .subscribe(
                 data => {
                     this.isValidating = false;
-                    console.log('validate!');
                     console.log(data);
                     if (data.success && data.user) {
                         this.setCurrentUser(data.user);

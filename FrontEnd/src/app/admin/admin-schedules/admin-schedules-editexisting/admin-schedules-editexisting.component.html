@@ -19,6 +19,11 @@
             <span id="box_title_span" *ngIf="inputParams.schedule_type == _scheduleService.w_hType.TYPE_HOLIDAY">This date has special holiday schedule</span>
             <a href="javascript:void(0)" class="btn btn-xs btn-primary pull-right open-modal" (click)="popupAddScheduleModal()"><span class="fa fa-plus"></span> Schedule</a>
         </h3>
+        <div *ngIf="inputParams.schedule_type == _scheduleService.w_hType.TYPE_HOLIDAY || 
+        inputParams.button_type == _scheduleService.buttonType.TYPE_GENERATE_SPECIAL">
+            <label for="input_holiday_name">Optional Holiday Name: </label>
+            <input type="text" id="input_holiday_name" [(ngModel)]="holidayName">
+        </div>
     </header>
     <div class="panel-body">
         <div *ngFor = "let group_time of group_times; let i = index;">

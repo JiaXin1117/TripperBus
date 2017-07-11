@@ -67,6 +67,8 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
     //public adding_prices: string[] = [];
 
     public nowSaving = false;
+
+    public holidayName = "";
     
     constructor(public _route: ActivatedRoute, 
                 public _scheduleService: ScheduleService, 
@@ -151,6 +153,9 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
                     me.latest_date = response['latest_date'];
                     me.arr_dest_stops = [];
                     me.arr_leaving_stop_shorts = [];
+                    if (response['holiday']) {
+                        me.holidayName = response['holiday']['name'];
+                    }
 
                     for (let i=0; i<Object.keys(response['stops']).length; i++) {
                         let item = response['stops'][i];
@@ -502,14 +507,26 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
         let temp_post_data = {};
         temp_post_data['group_main_info'] = me.group_times;
         temp_post_data['group_additional_info'] = me.group_additional_infos; 
+
+        let holiday = {};
+        if (me.inputParams.button_type == me._scheduleService.buttonType.TYPE_GENERATE_SPECIAL ||
+        me.inputParams.schedule_type == me._scheduleService.w_hType.TYPE_HOLIDAY) {
+            holiday['name'] = this.holidayName;
+            holiday['date'] = me.inputParams.date;
+            holiday['area_id'] = me.inputParams.area_id;
+            temp_post_data['holiday'] = holiday;
+        }
         console.log(temp_post_data);
         
         me._httpService.sendPostJSON(temp_url, temp_post_data)
             .subscribe(
                 data => {
-                    this.showConfirmSaveAllModal();
-//                    jQuery("#confirm_saveall_modal").modal('show');
-//                    jQuery("#confirm_saveall_modal").on('hidden.bs.modal', alert("abc"));
+                    let res = data.json();
+                    if (res.success) {
+                        this.showConfirmSaveAllModal();
+                    } else {
+                        alert(res.error);
+                    }
                 },
                 error => alert(error),
                 () => {}
