@@ -12,6 +12,7 @@ use App\Models\Res_Times;
 use App\Models\Res_Reservations;
 use App\Models\Res_Schedule_Prices;
 use App\Models\Res_DateSchedule;
+use App\Models\Res_Holidays;
 use Illuminate\Support\Facades\Input;
 use DB;
 use Illuminate\Support\Facades\Validator;
@@ -38,6 +39,9 @@ class BusEditController extends Controller
             $res['message'] = "The data is not correct.";
             return response()->json($res);
         }
+
+        $holidayName1 = '';
+        $holidayName2 = '';
         
         // ------------------ Leaving ----------------------
 
@@ -53,6 +57,13 @@ class BusEditController extends Controller
                     ->where('date',  $reqData['outbound_date'])
                     ->orderBy('time', 'asc')
                     ->get()->toarray();
+
+            $holiday = Res_Holidays::where('area_id', $reqData['leaving_from'])
+                    ->where('date', $reqData['outbound_date'])
+                    ->first();
+            if ($holiday) {
+                $holidayName1 = $holiday['name'];
+            }
         } else {
             $latest_date = Res_Times::where('area_id', $reqData['leaving_from'])
                     ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
@@ -166,6 +177,12 @@ class BusEditController extends Controller
                         ->where('date',  $reqData['return_date'])
                         ->orderBy('time', 'asc')
                         ->get()->toarray();
+                $holiday = Res_Holidays::where('area_id', '<>', $reqData['leaving_from'])
+                        ->where('date', $reqData['return_date'])
+                        ->first();
+                if ($holiday) {
+                    $holidayName2 = $holiday['name'];
+                }
             } else {
                 $latest_date = Res_Times::where('area_id', '<>', $reqData['leaving_from'])
                         ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
@@ -262,9 +279,11 @@ class BusEditController extends Controller
             }
         }
         return response()->json([
-            'state' => 'success',
-            'data_1' => $res,
-            'data_2' => $res1,
+            'state'         => 'success',
+            'data_1'        => $res,
+            'data_2'        => $res1,
+            'holidayName1'  => $holidayName1,
+            'holidayName2'  => $holidayName2,
         ]);
     }
 
@@ -309,6 +328,8 @@ class BusEditController extends Controller
             return response()->json($res);
         }
 
+        $holidayName1 = '';
+        $holidayName2 = '';
         // -------------------------------- Leaving ----------------------------------
         $count = DB::table('res_times')
                     ->join('res_stops', function($join){
@@ -339,6 +360,13 @@ class BusEditController extends Controller
                     ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
                     ->orderBy('res_times.time', 'asc')
                     ->get()->toarray();
+
+                    $holiday = Res_Holidays::where('area_id', $reqData['leaving_from'])
+                            ->where('date', $reqData['outbound_date'])
+                            ->first();
+                    if ($holiday) {
+                        $holidayName1 = $holiday['name'];
+                    }
         } else {
             $latest_date = DB::table('res_times')
                     ->join('res_stops', function($join){
@@ -488,6 +516,13 @@ class BusEditController extends Controller
                     ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
                     ->orderBy('res_times.time', 'asc')
                     ->get()->toarray();
+
+                    $holiday = Res_Holidays::where('area_id', '<>', $reqData['leaving_from'])
+                            ->where('date', $reqData['return_date'])
+                            ->first();
+                    if ($holiday) {
+                        $holidayName2 = $holiday['name'];
+                    }
             } else {
                 $latest_date = DB::table('res_times')
                     ->join('res_stops', function($join){
@@ -602,11 +637,13 @@ class BusEditController extends Controller
             }
         }
         return response()->json([
-            'state' => 'success',
-            'data_1' => $res,
-            'data_2' => $res1,
-            'time_1' => $result1,
-            'time_2' => $result2,
+            'state'         => 'success',
+            'data_1'        => $res,
+            'data_2'        => $res1,
+            'time_1'        => $result1,
+            'time_2'        => $result2,
+            'holidayName1'  => $holidayName1,
+            'holidayName2'  => $holidayName2,
         ]);
     }
 

@@ -43,7 +43,7 @@ export class HttpService {
         if (jError == 'Unauthenticated.') {
             alert("You are not unauthenticated. Please login correctly!");
             this._router.navigate(['login']);
-            return;// Observable.throw("You are not unauthenticated. Please login correctly!");
+            return;
         }
 
         return Observable.throw(error.json() || 'Server error'); // Observable.throw() is undefined at runtime using Webpack

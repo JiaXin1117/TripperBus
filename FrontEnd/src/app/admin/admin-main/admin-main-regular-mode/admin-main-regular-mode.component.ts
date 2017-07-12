@@ -48,6 +48,8 @@ export class AdminMainRegularModeComponent implements OnInit {
     public returning_bus_groupId: number = 0;
     public returning_timeId: number = 0;
     public returning_price: number = 0;
+    public leaving_holidayName = '';
+    public returning_holidayName = '';
 
     public notifyOptions = {
         timeOut: 3000,
@@ -82,6 +84,15 @@ export class AdminMainRegularModeComponent implements OnInit {
                 if (data.state == "success") {
                     this.leaving_buses = data.data_1;
                     this.returning_buses = data.data_2;
+                    this.leaving_holidayName = data.holidayName1;
+                    this.returning_holidayName = data.holidayName2;
+
+                    if (this.leaving_holidayName.length) {
+                        this.leaving_holidayName += ', ';
+                    }
+                    if (this.returning_holidayName.length) {
+                        this.returning_holidayName += ', ';
+                    }
                 }
             },
             error => {

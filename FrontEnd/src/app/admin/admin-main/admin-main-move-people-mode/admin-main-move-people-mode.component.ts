@@ -38,6 +38,9 @@ export class AdminMainMovePeopleModeComponent implements OnInit {
     public leaving_times: Time[];
     public returning_buses: Bus[];
     public returning_times: Time[];
+    public leaving_holidayName = '';
+    public returning_holidayName = '';
+
     public errorMessage: string = "";
     public successMessage: string = "";
 
@@ -76,6 +79,15 @@ export class AdminMainMovePeopleModeComponent implements OnInit {
                     this.returning_buses = data.data_2;
                     this.leaving_times = data.time_1;
                     this.returning_times = data.time_2;
+                    this.leaving_holidayName = data.holidayName1;
+                    this.returning_holidayName = data.holidayName2;
+
+                    if (this.leaving_holidayName.length) {
+                        this.leaving_holidayName += ', ';
+                    }
+                    if (this.returning_holidayName.length) {
+                        this.returning_holidayName += ', ';
+                    }
                 }
             },
             error => {
