@@ -19,12 +19,12 @@
     <div>
         <h4>
             <span class="label label-success">
-                Bus from {{ outbound_time.stop_area }} on {{ headerLeave.date }}
+                Bus from {{ outbound_time.stop_area }} on {{leaving_holidayName}}{{ headerLeave.date }}
                 at: {{outbound_time.time}}. Stop Total: 
                 <span class="badge">{{outbound_time.reservation_cnt}}</span>
             </span>
             <span class="label label-info" *ngIf="headerReturn.date != ''">
-                Returning from {{ headerReturn.city }} on {{ headerReturn.date }} at {{returning_time.time}}.
+                Returning from {{ headerReturn.city }} on {{returning_holidayName}}{{ headerReturn.date }} at {{returning_time.time}}.
             </span>
         </h4>
     </div>
