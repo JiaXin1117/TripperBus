@@ -98,9 +98,6 @@ export class AdminReportsComponent implements OnInit {
       },
       error => {
         this.failedNotification(error);
-      },
-      () => {
-        this.failedNotification(this._reportService.getErrorMessage);
       });
   }
 

@@ -497,7 +497,7 @@ class MainController extends Controller
         } else {
             return response()->json([
                 'success' => false,
-                'error' => 'Date type is invalid.',
+                'error' => 'Date is invalid.',
             ]);
         }
 
