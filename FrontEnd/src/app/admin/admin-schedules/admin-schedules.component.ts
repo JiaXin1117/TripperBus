@@ -92,11 +92,14 @@ export class AdminSchedulesComponent implements OnInit {
             this._router.navigate(link);
     }
     
-    public addDaysInDateRange(firstDay, lastDay, areaType) { 
+    public addDaysInDateRange(paramFirstDay, paramLastDay) {
             let me = this; 
+
+            let first_area_id = me._scheduleService.areaType.TYPE_NEWYORK;
+            let last_area_id = me._scheduleService.areaType.TYPE_BA
         
-            if(firstDay.getDate() == 1) {
-                let dow = firstDay.getDay(); 
+            if(paramFirstDay.getDate() == 1) {
+                let dow = paramFirstDay.getDay(); 
 
                 me.month_firstday_dow = [];
                 for (let i=0; i<dow; i++) {
@@ -105,112 +108,115 @@ export class AdminSchedulesComponent implements OnInit {
             }
 
             let url_month = this.calendarInfo.cur_month + 1;
-            let url = this.urls.retrieve_schedule_by_month_url + "?year=" + this.calendarInfo.cur_year + "&month=" + url_month + "&area_id=" + areaType; 
+            let url = this.urls.retrieve_schedule_by_month_url + "?year=" + this.calendarInfo.cur_year + "&month=" + url_month; 
 
             this._httpService.sendGetRequestWithParams(url)
                 .subscribe(
                     data => {
-                        let response = data; 
-                        this.holidays[areaType] = data['holidays'];
-
-                        if (areaType == me._scheduleService.areaType.TYPE_NEWYORK) {
-                            me.dayinfos_in_month_newyork = [];
-                        } else {
-                            me.dayinfos_in_month_ba = [];
+                        if (!data['success']) {
+                            this.failedNotification(data.error);
+                            return;
                         }
-                        
-                        if (response['state'] == 'success') { 
-                            while(firstDay <= lastDay) { 
-                                let firstDay_converted = me.convertDate(firstDay); 
-/*                                let firstDay_converted = moment(me.convertDate(firstDay)).utc().format("YYYY-MM-DD"); */
 
+                        for (let areaId = first_area_id; areaId <= last_area_id; areaId ++) 
+                        {
+                            let firstDay = new Date(paramFirstDay), lastDay = new Date(paramLastDay);
+                            
+                            if (areaId == me._scheduleService.areaType.TYPE_NEWYORK) {
+                                me.dayinfos_in_month_newyork = [];
+                            } else {
+                                me.dayinfos_in_month_ba = [];
+                            }
+                            this.holidays[areaId] = data['holidays'][areaId];
+
+                            while (firstDay <= lastDay) {
+                                let firstDay_converted = me.convertDate(firstDay);
                                 let items_for_this_date = [];
-                                for (let i=0; i<Object.keys(response['data']).length; i++) {
-                                    let item = response['data'][i]; 
-                                    if (item['date'] == firstDay_converted && item['area_id'] == areaType ) {
-                                        items_for_this_date.push(item); 
+                                for (let i = 0; i < Object.keys(data['data'][areaId]).length; i++) {
+                                    let item = data['data'][areaId][i];
+                                    if (item['date'] == firstDay_converted && item['area_id'] == areaId) {
+                                        items_for_this_date.push(item);
                                     }
-                                } 
+                                }
                                 if (Object.keys(items_for_this_date).length == 0) {
-                                    me.setDayInfo(areaType, me._scheduleService.w_hType.TYPE_WEEKLY, 0);
-                                    
+                                    me.setDayInfo(areaId, me._scheduleService.w_hType.TYPE_WEEKLY, 0);
+
                                     let newDate = firstDay.setDate(firstDay.getDate() + 1);
-                                    firstDay = new Date(newDate); 
+                                    firstDay = new Date(newDate);
                                     continue;
-                                } 
-                                
+                                }
+
                                 // Collect group ids.
                                 let group_ids = me._scheduleService.collectGroupIDs(items_for_this_date);
 
-                                //********************** Get grouped holiday items. *********************************
+                                //********************** Get grouped holiday items **********************/
                                 let grouped_items = [];
-                                for (let i=0;  i<Object.keys(group_ids).length; i++) {
+                                for (let i = 0; i < Object.keys(group_ids).length; i++) {
                                     let temp = [];
-                                    for (let j=0; j<Object.keys(items_for_this_date).length; j++) {
-                                        let item = items_for_this_date[j]; 
+                                    for (let j = 0; j < Object.keys(items_for_this_date).length; j++) {
+                                        let item = items_for_this_date[j];
                                         if (group_ids[i] == item['group_id'] && item['w_h'] == me._scheduleService.w_hType.TYPE_HOLIDAY
-                                            && item['date'] == firstDay_converted) { 
+                                            && item['date'] == firstDay_converted) {
                                             temp.push(item);
                                         }
-                                    } 
-                                    
-                                    if (Object.keys(temp).length != 0) { 
+                                    }
+
+                                    if (Object.keys(temp).length != 0) {
                                         grouped_items.push(temp);
                                     }
-                                } 
-                                if (Object.keys(grouped_items).length != 0) { 
-                                    me.setDayInfo(areaType, me._scheduleService.w_hType.TYPE_HOLIDAY, Object.keys(grouped_items).length);
+                                }
+                                if (Object.keys(grouped_items).length != 0) {
+                                    me.setDayInfo(areaId, me._scheduleService.w_hType.TYPE_HOLIDAY, Object.keys(grouped_items).length);
                                 } else {
-                                    //**************** Get grouped weekly items. **************************************
-                                                                         
+                                    //**************** Get grouped weekly items *************************/
+
                                     // Collect weekly dates for this date.
                                     let temp_dates = [];
-                                    for (let j=0; j<Object.keys(items_for_this_date).length; j++) {
-                                        let item = items_for_this_date[j]; 
+                                    for (let j = 0; j < Object.keys(items_for_this_date).length; j++) {
+                                        let item = items_for_this_date[j];
                                         if (item['w_h'] == me._scheduleService.w_hType.TYPE_WEEKLY) {
                                             temp_dates.push(item['schedule_date']);
                                         }
                                     }
-                                    
+
                                     // Get latest date for weekly schedule.
                                     let latest_date = me._scheduleService.getLatestWeeklyDate(temp_dates);
-                                    
+
                                     grouped_items = [];
-                                    for (let i=0;  i<Object.keys(group_ids).length; i++) {
+                                    for (let i = 0; i < Object.keys(group_ids).length; i++) {
                                         let temp = [];
-                                        for (let j=0; j<Object.keys(items_for_this_date).length; j++) {
-                                            let item = items_for_this_date[j]; 
+                                        for (let j = 0; j < Object.keys(items_for_this_date).length; j++) {
+                                            let item = items_for_this_date[j];
                                             if (group_ids[i] == item['group_id'] && item['w_h'] == me._scheduleService.w_hType.TYPE_WEEKLY
-                                                && item['schedule_date'] == latest_date ) {
+                                                && item['schedule_date'] == latest_date) {
                                                 temp.push(item);
                                             }
                                         }
-                                        
-                                        if (Object.keys(temp).length != 0) { 
+
+                                        if (Object.keys(temp).length != 0) {
                                             grouped_items.push(temp);
                                         }
                                     }
                                     if (Object.keys(grouped_items).length == 0) {
-                                        me.setDayInfo(areaType, me._scheduleService.w_hType.TYPE_WEEKLY, 0);
-                                    
+                                        me.setDayInfo(areaId, me._scheduleService.w_hType.TYPE_WEEKLY, 0);
+
                                         let newDate = firstDay.setDate(firstDay.getDate() + 1);
-                                        firstDay = new Date(newDate); 
+                                        firstDay = new Date(newDate);
                                         continue;
                                     } else {
                                         if (firstDay_converted == latest_date) { // if new schedule date
-                                            me.setDayInfo(areaType, me._scheduleService.w_hType.TYPE_WEEKLY_NEW, Object.keys(grouped_items).length);
+                                            me.setDayInfo(areaId, me._scheduleService.w_hType.TYPE_WEEKLY_NEW, Object.keys(grouped_items).length);
                                         } else {
-                                            me.setDayInfo(areaType, me._scheduleService.w_hType.TYPE_WEEKLY, Object.keys(grouped_items).length);
+                                            me.setDayInfo(areaId, me._scheduleService.w_hType.TYPE_WEEKLY, Object.keys(grouped_items).length);
                                         }
-                                        
+
                                     }
                                 }
-                                
+
                                 let newDate = firstDay.setDate(firstDay.getDate() + 1);
-                                firstDay = new Date(newDate); 
+                                firstDay = new Date(newDate);
                             } 
-                        } 
-                        
+                        }
                     },
                     error => {
                         this.failedNotification(error);
@@ -384,11 +390,7 @@ export class AdminSchedulesComponent implements OnInit {
         
             let firstDay = new Date(me.calendarInfo.cur_year, me.calendarInfo.cur_month, 1); 
             let lastDay = new Date(me.calendarInfo.cur_year, me.calendarInfo.cur_month + 1, 0); 
-            this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_NEWYORK); 
-            
-            firstDay = new Date(me.calendarInfo.cur_year, me.calendarInfo.cur_month, 1); 
-            lastDay = new Date(me.calendarInfo.cur_year, me.calendarInfo.cur_month + 1, 0);
-            this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_BA); 
+            this.addDaysInDateRange(firstDay, lastDay);
     }
     
     public prevMonth() {
@@ -404,11 +406,7 @@ export class AdminSchedulesComponent implements OnInit {
         
             let firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1); 
             let lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0); 
-            this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_NEWYORK);
-            
-            firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1); 
-            lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0); 
-            this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_BA);
+            this.addDaysInDateRange(firstDay, lastDay);
     }
     
     public nextMonth() {
@@ -424,11 +422,7 @@ export class AdminSchedulesComponent implements OnInit {
         
             let firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1); 
             let lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0); 
-            this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_NEWYORK);
-            
-            firstDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month, 1); 
-            lastDay = new Date(this.calendarInfo.cur_year, this.calendarInfo.cur_month + 1, 0); 
-            this.addDaysInDateRange(firstDay, lastDay, me._scheduleService.areaType.TYPE_BA);
+            this.addDaysInDateRange(firstDay, lastDay);
     }
 
     successNotification(notifyText: string) {

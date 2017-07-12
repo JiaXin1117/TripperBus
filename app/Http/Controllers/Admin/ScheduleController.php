@@ -9,6 +9,7 @@ use App\Models\Res_Groups;
 use App\Models\Res_Groups_DestStops;
 use App\Models\Res_Times;
 use App\Models\Res_Holidays;
+use App\Models\Res_Areas;
 use Illuminate\Support\Facades\Input;
 
 class ScheduleController extends Controller
@@ -119,105 +120,125 @@ class ScheduleController extends Controller
     }
     
     public function getRetrieveSchedulesByMonth() {
-            $year = Input::get('year');
-            $month = Input::get('month');
-            $area_id = Input::get('area_id');
-            $date_timestamp = mktime(0, 0, 0, $month, 1, $year);
-            
-            $response = array();
-            $holidays = array();
-            
-            for ($i = mktime(0, 0, 0, $month, 1, $year); $i <= mktime(0, 0, 0, $month, cal_days_in_month(CAL_GREGORIAN,$month,$year)); $i += 24 * 60 *60) {
-                $cur_date = date("Y-m-d", $i); 
-                $holiday = null;
-                
-                // Get holiday schedule first for this date.
-                $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
-                    ->where('date', $cur_date)
-                    // ->where('day_of_week',  date('w', $i))
-                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                    ->where('area_id', $area_id)
-                    ->count(); 
-                
-                //$isHoliday = 0;
-                if ($cnt > 0) {
-                    $result = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
-                            ->where('date', $cur_date)
-                            // ->where('day_of_week',  date('w', $i))
-                            ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                            ->where('area_id', $area_id)
-                            ->get();
-                    
-                    foreach ($result as $reservation) {
-                        if (date_create($reservation->date)->getTimestamp() == date_create($cur_date)->getTimestamp()) { 
-                            $temp = array();
-                            $temp['time'] = $reservation->time;
-                            $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
-                            $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
-                            $temp['group_id'] = $reservation->group_id;
-                            $temp['w_h'] = $reservation->w_h;
-                            $temp['date'] = $cur_date;
-                            $temp['area_id'] = $reservation->area_id;
-                            $temp['schedule_date'] = $reservation->date;
+        $year = Input::get('year');
+        $month = Input::get('month');
 
-                            $response[] = $temp;
-                            //$isHoliday = 1;
-                        }
-                    }
+        $res_schedules = array();
 
-                    $holiday = Res_Holidays::where('date', $cur_date)
-                                ->first();
-                } else {
-                    
-                    // Get weekly schedule.
-                    $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
-                        ->where('date', '<=',  $cur_date)
-                        ->where('day_of_week',  date('w', $i))
+        $areas = Res_Areas::get(['id'])->toarray();
+
+        foreach($areas as $area) {
+            $id = $area['id'];
+            $resFromArea = $this->getRetrieveSchedulesByMonthFromArea($year, $month, $id);
+
+            if (!$resFromArea)
+                continue;
+
+            $res_schedules['data'][$id] = $resFromArea['data'];
+            $res_schedules['holidays'][$id] = $resFromArea['holidays'];
+        }
+
+        if (count($res_schedules) > 0) {
+            $res_schedules['success'] = true;
+            return response()->json($res_schedules);
+        }
+
+        return response()->json([
+            'success' => false,
+            'error' => 'Cannot find reservation for this date.'
+        ]);
+    }
+
+    public function getRetrieveSchedulesByMonthFromArea($year, $month, $area_id) {
+        $date_timestamp = mktime(0, 0, 0, $month, 1, $year);
+        
+        $response = array();
+        $holidays = array();
+        
+        for ($i = mktime(0, 0, 0, $month, 1, $year); $i <= mktime(0, 0, 0, $month, cal_days_in_month(CAL_GREGORIAN,$month,$year)); $i += 24 * 60 *60) {
+            $cur_date = date("Y-m-d", $i); 
+            $holiday = null;
+            
+            // Get holiday schedule first for this date.
+            $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                ->where('date', $cur_date)
+                // ->where('day_of_week',  date('w', $i))
+                ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                ->where('area_id', $area_id)
+                ->count(); 
+            
+            //$isHoliday = 0;
+            if ($cnt > 0) {
+                $result = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
+                        ->where('date', $cur_date)
+                        // ->where('day_of_week',  date('w', $i))
                         ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
                         ->where('area_id', $area_id)
-                        ->count();
+                        ->get();
+                
+                foreach ($result as $reservation) {
+                    if (date_create($reservation->date)->getTimestamp() == date_create($cur_date)->getTimestamp()) { 
+                        $temp = array();
+                        $temp['time'] = $reservation->time;
+                        $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
+                        $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
+                        $temp['group_id'] = $reservation->group_id;
+                        $temp['w_h'] = $reservation->w_h;
+                        $temp['date'] = $cur_date;
+                        $temp['area_id'] = $reservation->area_id;
+                        $temp['schedule_date'] = $reservation->date;
 
-                    if ($cnt > 0) {
-                        $result = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
-                                ->where('date', '<=',  $cur_date)
-                                ->where('day_of_week',  date('w', $i))
-                                ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                                ->where('area_id', $area_id)
-                                ->get();
-
-                        foreach ($result as $reservation) {
-                            $temp = array();
-                            
-                            $temp['time'] = $reservation->time;
-                            $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
-                            $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
-                            $temp['group_id'] = $reservation->group_id;
-                            $temp['w_h'] = $reservation->w_h;
-                            $temp['date'] = $cur_date;
-                            $temp['area_id'] = $reservation->area_id;
-                            $temp['schedule_date'] = $reservation->date;
-
-                            $response[] = $temp;
-                        }
+                        $response[] = $temp;
+                        //$isHoliday = 1;
                     }
                 }
 
-                $holidays[] = $holiday;
+                $holiday = Res_Holidays::where('date', $cur_date)
+                            ->where('area_id', $area_id)
+                            ->first();
+            } else {
+                
+                // Get weekly schedule.
+                $cnt = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                    ->where('date', '<=',  $cur_date)
+                    ->where('day_of_week',  date('w', $i))
+                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                    ->where('area_id', $area_id)
+                    ->count();
+
+                if ($cnt > 0) {
+                    $result = \App\Models\Res_Times::where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
+                            ->where('date', '<=',  $cur_date)
+                            ->where('day_of_week',  date('w', $i))
+                            ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                            ->where('area_id', $area_id)
+                            ->get();
+
+                    foreach ($result as $reservation) {
+                        $temp = array();
+                        
+                        $temp['time'] = $reservation->time;
+                        $temp['stop_area'] = Res_Stops::find($reservation->stop_id)->short;
+                        $temp['max_cap'] = Res_Groups::find($reservation->group_id)->max_cap;
+                        $temp['group_id'] = $reservation->group_id;
+                        $temp['w_h'] = $reservation->w_h;
+                        $temp['date'] = $cur_date;
+                        $temp['area_id'] = $reservation->area_id;
+                        $temp['schedule_date'] = $reservation->date;
+
+                        $response[] = $temp;
+                    }
+                }
             }
 
-            if (count($response) > 0) {
-                return response()->json([
-                    'state' => 'success',
-                    'data' => $response,
-                    'holidays'   => $holidays,
-                ]);
-            }
+            $holidays[] = $holiday;
+        }
 
-            return response()->json([
-                'state' => 'fail',
-                'data' => 'Cannot find reservation for this date.'
-            ]);
-            
+        if (count($response) > 0) {
+            return array('data' => $response, 'holidays' => $holidays);
+        }
+
+        return null;
     }
     
     // Retrieve GroupTimes.
