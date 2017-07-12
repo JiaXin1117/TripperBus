@@ -1,17 +1,20 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Router }   from '@angular/router';
+import { Router } from '@angular/router';
+
 import { AuthService } from '../../services/auth_service/auth.service';
 
-declare var jQuery:any;
+declare var jQuery: any;
 
 @Component({
     selector: 'app-admin-sidebar',
     templateUrl: './admin-sidebar.component.html',
     styleUrls: ['./admin-sidebar.component.css']
 })
+
 export class AdminSidebarComponent implements OnInit {
-    
+
     public username = 'Administrator';
+
 
     constructor(
         public _router: Router,
@@ -22,15 +25,15 @@ export class AdminSidebarComponent implements OnInit {
         this.setTreeView();
         this.username = this._authService.getCurrentUser().full_name;
     }
-    
+
     @HostListener('window:resize', ['$event'])
-    onResize(event) { 
+    onResize(event) {
     }
 
     public searchKey = "First Name";
     public searchVal = "";
     public caseSensitive = false;
-    
+
     public defaultData = [
         {
             text: 'Coupons',
@@ -65,54 +68,54 @@ export class AdminSidebarComponent implements OnInit {
             ]
         }
     ];
-    
+
     public setTreeView() {
         let me = this;
-        jQuery("#treeview-coupons").click(function(){
-            if (jQuery("#admin-sidebar-coupons-details").css("display") == 'none'){ 
+        jQuery("#treeview-coupons").click(function () {
+            if (jQuery("#admin-sidebar-coupons-details").css("display") == 'none') {
                 jQuery("#admin-sidebar-coupons-details").slideDown();
                 jQuery(".fa-angle-left").css('display', 'none');
                 jQuery(".fa-angle-down").css('display', 'inherit');
-                
+
                 // Update Sidebar Height.
-                let plus_height = jQuery("#admin-sidebar-coupons-details-ul").height(); 
+                let plus_height = jQuery("#admin-sidebar-coupons-details-ul").height();
                 jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() + plus_height);
             }
             else {
                 jQuery("#admin-sidebar-coupons-details").slideUp();
                 jQuery(".fa-angle-left").css('display', 'inherit');
                 jQuery(".fa-angle-down").css('display', 'none');
-                
+
                 // Update Sidebar Height.
                 jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() - jQuery("#admin-sidebar-coupons-details-ul").height());
             }
         });
-        
-        jQuery("#treeview-search").click(function(){
-            if (jQuery("#admin-sidebar-search-details").css("display") == 'none'){ 
+
+        jQuery("#treeview-search").click(function () {
+            if (jQuery("#admin-sidebar-search-details").css("display") == 'none') {
                 jQuery("#admin-sidebar-search-details").slideDown();
                 jQuery(".fa-angle-left").css('display', 'none');
                 jQuery(".fa-angle-down").css('display', 'inherit');
-                
+
                 // Update Sidebar Height.
-                let plus_height = jQuery("#admin-sidebar-search-details-ul").height(); 
+                let plus_height = jQuery("#admin-sidebar-search-details-ul").height();
                 jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() + plus_height);
             }
             else {
                 jQuery("#admin-sidebar-search-details").slideUp();
                 jQuery(".fa-angle-left").css('display', 'inherit');
                 jQuery(".fa-angle-down").css('display', 'none');
-                
+
                 // Update Sidebar Height.
                 jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() - jQuery("#admin-sidebar-search-details-ul").height());
             }
         });
     }
-    
+
     public search() {
         if (this.searchVal == '')
             return;
-            
+
         let link = ['/admin/main/search_mode', this.searchKey, this.searchVal, this.caseSensitive ? 1 : 0];
         this._router.navigate(link);
     }

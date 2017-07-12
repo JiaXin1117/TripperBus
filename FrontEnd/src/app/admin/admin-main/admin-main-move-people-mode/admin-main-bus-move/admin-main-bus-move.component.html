@@ -1,53 +1,53 @@
 <div class="col-xs-12 bus-root-div">
-      <h3 class="text-center bus-header-h3">BUS #{{ group_idx + 1 }}</h3>
-      
-      <div class="group-main-info">
-          <table class="schedules-table" *ngFor="let time of _bus.times; let i = index;">
-              <tr >
-                  <td class="td-left">
-                      <!--<h5 class="total-h5 text-center">TIME ID: {{ time.id }}</h5>-->
-                      <h5 class="total-h5 text-center">{{ time.time }} from {{ time.stop_area }}</h5>
-                      <p>
-                          <select name="time_move" [(ngModel)] = "time.move" style="width: 100%;" [disabled] = "time.reservation_cnt == 0">
+    <h3 class="text-center bus-header-h3">BUS #{{ group_idx + 1 }}</h3>
+
+    <div class="group-main-info">
+        <table class="schedules-table" *ngFor="let time of _bus.times; let i = index;">
+            <tr>
+                <td class="td-left">
+                    <!--<h5 class="total-h5 text-center">TIME ID: {{ time.id }}</h5>-->
+                    <h5 class="total-h5 text-center">{{ time.time }} from {{ time.stop_area }}</h5>
+                    <p>
+                        <select name="time_move" [(ngModel)]="time.move" style="width: 100%;" [disabled]="time.reservation_cnt == 0">
                               <option value="0">Move all these {{ time.time }} people to ...</option>
                               <ng-template ngFor let-_time [ngForOf]="_times">
                               <option *ngIf="_time.id != time.id" value="{{_time.id}}">  ... to the {{ _time.time }} bus from {{ _time.short }}<!-- (TIME ID: {{_time.id}})--></option>
                               </ng-template>
                           </select>
-                      </p>
-                      <p>
-                          Note change in each reservation's notes 
-                          <select name="note_change" [(ngModel)] = "time.note_change">
+                    </p>
+                    <p>
+                        Note change in each reservation's notes
+                        <select name="note_change" [(ngModel)]="time.note_change">
                             <option value="1">YES</option>
                             <option value="0">NO</option>
                           </select>
-                      </p>
-                      <p>
-                          Reason for Change: <input name="Note" [(ngModel)] = "time.Note" [disabled]="time.note_change == 0">
-                      </p>
-                      <p>
-                          Email the people & give them above reason: 
-                          <select name="email_reason" [(ngModel)] = "time.email_reason">
+                    </p>
+                    <p>
+                        Reason for Change: <input name="Note" [(ngModel)]="time.Note" [disabled]="time.note_change == 0">
+                    </p>
+                    <p>
+                        Email the people & give them above reason:
+                        <select name="email_reason" [(ngModel)]="time.email_reason">
                             <option value="1">YES</option>
                             <option value="0">NO</option>
                           </select>
-                      </p>
-                  </td>
-                  <td class="td-right" style="width: 7%;">
-                      <span>{{ time.reservation_cnt }}</span>
-                  </td>
-              </tr>
-          </table>
-          <p >
-              
-          </p>
-      </div>
-      <div class="group-additional-info">
-          <h5 class="total-h5">
-              Total: {{ total_reservation }}.  Max Capacity: {{_bus.max_cap}}
-          </h5>
-          <table class="group-additional-info-table">
-              
+                    </p>
+                </td>
+                <td class="td-right" style="width: 7%;">
+                    <span>{{ time.reservation_cnt }}</span>
+                </td>
+            </tr>
+        </table>
+        <p>
+
+        </p>
+    </div>
+    <div class="group-additional-info">
+        <h5 class="total-h5">
+            Total: {{ total_reservation }}. Max Capacity: {{_bus.max_cap}}
+        </h5>
+        <table class="group-additional-info-table">
+
 <!--              <tr>
                   <td class="td-left">
                       TravelZoo Booked: 
@@ -56,38 +56,38 @@
                       {{_bus.travel_zoo_booked}}
                   </td>
               </tr>-->
-              <tr>
-                  <td class="td-left">
-                      Coupons Allowed: 
-                  </td>  
-                  <td class="td-right">
-                      
-                  </td>
-              </tr>
-              <tr>
-                  <td class="td-left">
-                      Price: 
-                  </td>  
-                  <td class="td-right">
-                      ${{price}}
-                  </td>
-              </tr>
-              <tr>
-                  <td class="td-left">
-                      Destinations: 
-                  </td>  
-                  <td class="td-right">
-                      {{_bus.destination}}
-                  </td>
-              </tr>
-              <tr>
-                  <td class="td-left">
-                      Bus is: 
-                  </td>  
-                  <td class="td-right">
-                      {{_bus.price.bus_opened==0?'Open':'Closed'}}
-                  </td>
-              </tr>
-          </table>
-      </div>
+            <tr>
+                <td class="td-left">
+                    Coupons Allowed:
+                </td>
+                <td class="td-right">
+
+                </td>
+            </tr>
+            <tr>
+                <td class="td-left">
+                    Price:
+                </td>
+                <td class="td-right">
+                    ${{price}}
+                </td>
+            </tr>
+            <tr>
+                <td class="td-left">
+                    Destinations:
+                </td>
+                <td class="td-right">
+                    {{_bus.destination}}
+                </td>
+            </tr>
+            <tr>
+                <td class="td-left">
+                    Bus is:
+                </td>
+                <td class="td-right">
+                    {{_bus.price.bus_opened==0?'Open':'Closed'}}
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>

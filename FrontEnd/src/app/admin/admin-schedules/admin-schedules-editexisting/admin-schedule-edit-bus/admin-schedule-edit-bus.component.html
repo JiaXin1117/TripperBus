@@ -1,76 +1,76 @@
 <div class="col-sm-6 col-md-4" [hidden]="isHidden">
-    
     <div class="alert" [ngClass]="getClass()">
-            <h3 class="text-center">BUS #{{selected_group_idx + 1}}</h3>
+        <h3 class="text-center">BUS #{{selected_group_idx + 1}}</h3>
 
-            <div class="row">
-                <div class="col-sm-5">
-                    <h5 class="text-center">Stop</h5>
-                </div>
-                <div class="col-sm-4">
-                    <h5 class="text-center">Hour</h5>
-                </div>
-                <div class="col-sm-3">
-                    <h5 class="text-center">Min</h5>
-                </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <h5 class="text-center">Stop</h5>
             </div>
-            
-            <div id='detailed_info'>
-                <div class="row" *ngFor = "let group_time_item of selected_group_time; let i = index;" >
-                    <div class="col-sm-5">
-                        <select class="form-control" [(ngModel)]="selected_stops[i]" (ngModelChange)="onChangeStopsSelect($event, i)" [disabled]="selected_group_additional_info['Disabled']">
+            <div class="col-sm-4">
+                <h5 class="text-center">Hour</h5>
+            </div>
+            <div class="col-sm-3">
+                <h5 class="text-center">Min</h5>
+            </div>
+        </div>
+
+        <div id='detailed_info'>
+            <div class="row" *ngFor="let group_time_item of selected_group_time; let i = index;">
+                <div class="col-sm-5">
+                    <select class="form-control" [(ngModel)]="selected_stops[i]" (ngModelChange)="onChangeStopsSelect($event, i)" [disabled]="selected_group_additional_info['Disabled']">
                             <option *ngFor="let stop of arr_leaving_stop_shorts;">{{stop}}</option>
                         </select>
-                    </div>
-                    <div class="col-sm-4">
-                        <select class="form-control " [(ngModel)]="selected_hours[i]" (ngModelChange)="onChangeHoursSelect($event, i)" [disabled]="selected_group_additional_info['Disabled']">
+                </div>
+                <div class="col-sm-4">
+                    <select class="form-control " [(ngModel)]="selected_hours[i]" (ngModelChange)="onChangeHoursSelect($event, i)" [disabled]="selected_group_additional_info['Disabled']">
                             <option *ngFor="let hour of arr_hours" value="{{hour['value']}}">{{hour['text']}}</option>
                         </select>
-                    </div>
-                    <div class="col-sm-3">
-                        <select class="form-control" [(ngModel)]="selected_mins[i]" (ngModelChange)="onChangeMinsSelect($event, i)" [disabled]="selected_group_additional_info['Disabled']">
+                </div>
+                <div class="col-sm-3">
+                    <select class="form-control" [(ngModel)]="selected_mins[i]" (ngModelChange)="onChangeMinsSelect($event, i)" [disabled]="selected_group_additional_info['Disabled']">
                             <option *ngFor="let min of arr_mins;">{{min}}</option>
                         </select>
-                    </div>
                 </div>
             </div>
-            
-            <div class="destination-div">
-                    <h5 style="text-align: center;">Destination: </h5>
-                    
-                    <div class="row div-stops-area">
-                        <div class="col-sm-4 col-sm-4-custom" *ngFor="let dest_stop of selected_group_dest_stops; let i=index;">
-                            <label class="checkbox-inline" *ngIf="dest_stop['is_dest_stop'] == 'yes'">
+        </div>
+
+        <div class="destination-div">
+            <h5 style="text-align: center;">Destination: </h5>
+
+            <div class="row div-stops-area">
+                <div class="col-sm-4 col-sm-4-custom" *ngFor="let dest_stop of selected_group_dest_stops; let i=index;">
+                    <label class="checkbox-inline" *ngIf="dest_stop['is_dest_stop'] == 'yes'">
                                 <input type="checkbox" checked (change)="onChangeDestinationCheckBox($event)" value="{{ dest_stop['stop_id'] }}" [disabled]="selected_group_additional_info['Disabled']">{{ dest_stop['stop_short'] }}
                             </label>
-                            <label class="checkbox-inline" *ngIf="dest_stop['is_dest_stop'] == 'no'">
+                    <label class="checkbox-inline" *ngIf="dest_stop['is_dest_stop'] == 'no'">
                                 <input type="checkbox" value="{{ dest_stop['stop_id'] }}" (change)="onChangeDestinationCheckBox($event)" [disabled]="selected_group_additional_info['Disabled']">{{ dest_stop['stop_short'] }}
                             </label>
-                        </div>
-                    </div>
-                    
-                    
-                    <!--select class="form-control" (ngModelChange)="onChangeDestStop($event)" [(ngModel)]="selected_group_dest_stop_info.id">
-                        <option *ngFor="let dest_stop of selected_group_available_dest_stops; let i=index;" value="{{ dest_stop['id'] }}">{{ dest_stop['short'] }}</option>
-                    </select-->
-            </div>
-            
-            <div class="max-capacity-div row">
-                <div class="col-sm-6">
-                    <h5 style="text-align: right;">Max Capacity: </h5>
-                </div>
-                <div class="col-sm-6">
-                    <input class="form-control input-max-capacity" name="input_max_capacity" type="text" [(ngModel)]="selected_group_max_capacity" (ngModelChange)="onChangeMaxCapacity($event)" [disabled]="selected_group_additional_info['Disabled']">
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-xs-12 text-center" style='padding-top: 15px;'>
-                    <button class="btn btn-sm btn-danger" (click)="onRemove()">Remove</button>
-                    <button *ngIf="!selected_group_additional_info['Disabled']" class="btn btn-sm btn-warning" (click)="onDisable()">Disable</button>
-                    <button *ngIf="selected_group_additional_info['Disabled']" class="btn btn-sm btn-warning" style="background-color: green;" (click)="onReenable()">Enable</button>
-                </div>
+            <!--select class="form-control" (ngModelChange)="onChangeDestStop($event)" [(ngModel)]="selected_group_dest_stop_info.id">
+                        <option *ngFor="let dest_stop of selected_group_available_dest_stops; let i=index;" value="{{ dest_stop['id'] }}">{{ dest_stop['short'] }}</option>
+                    </select-->
+        </div>
+
+        <div class="max-capacity-div row">
+            <div class="col-sm-6">
+                <h5 style="text-align: right;">Max Capacity: </h5>
             </div>
+            <div class="col-sm-6">
+                <input class="form-control input-max-capacity" name="input_max_capacity" type="text" [(ngModel)]="selected_group_max_capacity"
+                    (ngModelChange)="onChangeMaxCapacity($event)" [disabled]="selected_group_additional_info['Disabled']">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 text-center" style='padding-top: 15px;'>
+                <button class="btn btn-sm btn-danger" (click)="onRemove()">Remove</button>
+                <button *ngIf="!selected_group_additional_info['Disabled']" class="btn btn-sm btn-warning" (click)="onDisable()">Disable</button>
+                <button *ngIf="selected_group_additional_info['Disabled']" class="btn btn-sm btn-warning" style="background-color: green;"
+                    (click)="onReenable()">Enable</button>
+            </div>
+        </div>
     </div>
 </div>
 

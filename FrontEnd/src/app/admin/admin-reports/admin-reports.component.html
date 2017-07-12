@@ -35,36 +35,38 @@
           <datepicker [(ngModel)]="date2" [showWeeks]="false" [minMode]="dateMode" [datepickerMode]="dateMode" [minDate]="date1"></datepicker>
         </div>
       </div>
-      
-    <button type="button" class="btn btn-danger btn-lg" (click)="show()"> Show Reports </button>
+
+      <button type="button" class="btn btn-danger btn-lg" (click)="show()"> Show Reports </button>
     </div>
     <hr />
 
     <div *ngIf="reports.length" align="center">
-    <table bordercolor="black" border="2" cellpadding="20" cellspacing="0" style="font-size: 20px; text-align: center">
-    <thead><tr>
-      <td>From <b>New York</b></td>
-      <td>From <b>Washington DC</b></td>
-    </tr></thead>
-    <tbody>
-      <tr>
-        <td>
-          <p *ngFor="let report of reports[0];">
-            {{report['stop']}} : {{report['count']}}
-          </p>
-        </td>
-        <td>
-          <p *ngFor="let report of reports[1];">
-            {{report['stop']}} : {{report['count']}}
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td><b>{{reports['totalCount'][0]}}</b> / <b>${{reports['totalAmount'][0]}}</b></td>
-        <td><b>{{reports['totalCount'][1]}}</b> / <b>${{reports['totalAmount'][1]}}</b></td>
-      </tr>
-    </tbody>
-    </table>
+      <table bordercolor="black" border="2" cellpadding="20" cellspacing="0" style="font-size: 20px; text-align: center">
+        <thead>
+          <tr>
+            <td>From <b>New York</b></td>
+            <td>From <b>Washington DC</b></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <p *ngFor="let report of reports[0];">
+                {{report['stop']}} : {{report['count']}}
+              </p>
+            </td>
+            <td>
+              <p *ngFor="let report of reports[1];">
+                {{report['stop']}} : {{report['count']}}
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td><b>{{reports['totalCount'][0]}}</b> / <b>${{reports['totalAmount'][0]}}</b></td>
+            <td><b>{{reports['totalCount'][1]}}</b> / <b>${{reports['totalAmount'][1]}}</b></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

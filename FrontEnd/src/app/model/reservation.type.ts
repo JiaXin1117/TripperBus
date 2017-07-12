@@ -64,11 +64,11 @@ export class Reservation {
         this['CC Code'] = '';
         this['CC Month'] = (new Date()).getMonth() + 1;
         this['CC Year'] = (new Date()).getFullYear();
-   }
+    }
 
-   public copy(src: Reservation) {
-       Object.keys(src).forEach(key => {
-           this[key] = src[key];
-       });
-   }
+    public copy(src: Reservation) {
+        Object.keys(src).forEach(key => {
+            this[key] = src[key];
+        });
+    }
 }

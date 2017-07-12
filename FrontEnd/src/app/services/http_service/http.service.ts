@@ -10,17 +10,16 @@ export class HttpService {
     constructor(
         public _http: Http,
         public _router: Router
-        ) 
-    {
+    ) {
     }
 
     public sendPostRequestWithParams(url, params) {
         let headers = new Headers();
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
-        return this._http.post(url, params, {headers: headers})
-        .map(res => res.json())
-        .catch(this.handleServerError.bind(this));
+        return this._http.post(url, params, { headers: headers })
+            .map(res => res.json())
+            .catch(this.handleServerError.bind(this));
     }
 
     public sendGetRequestWithParams(url) {
@@ -33,6 +32,7 @@ export class HttpService {
         let headers = new Headers({
             'Content-Type': 'application/json'
         });
+
         return this._http.post(url, JSON.stringify(json_data), { headers: headers });
     }
 
@@ -43,6 +43,7 @@ export class HttpService {
             this._router.navigate(['login']);
             return;// Observable.throw("You are not unauthenticated. Please login correctly!");
         }
+
         return Observable.throw(error.json() || 'Server error'); // Observable.throw() is undefined at runtime using Webpack
     }
 

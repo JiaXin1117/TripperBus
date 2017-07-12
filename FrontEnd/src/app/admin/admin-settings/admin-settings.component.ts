@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { MainService } from "../../services/main_service/main.service";
 import { HttpService } from "../../services/http_service/http.service";
 import { NotificationsService } from 'angular2-notifications';
@@ -8,6 +9,7 @@ import { NotificationsService } from 'angular2-notifications';
   templateUrl: './admin-settings.component.html',
   styleUrls: ['./admin-settings.component.css']
 })
+
 export class AdminSettingsComponent implements OnInit {
 
   public settings: any[];
@@ -20,12 +22,12 @@ export class AdminSettingsComponent implements OnInit {
     clickToClose: true,
   }
 
+
   constructor(
     public _mainService: MainService,
     public _httpService: HttpService,
     public _notificationsService: NotificationsService,
-    )
-  {
+  ) {
     this.settings = Array();
   }
 
@@ -38,16 +40,16 @@ export class AdminSettingsComponent implements OnInit {
 
     this._httpService.sendGetRequestWithParams(url)
       .subscribe(
-        data => {
-          if (data.state == "success") {
-            console.log(data);
-            this._mainService.settings = data.settings;
-            this.settings = data.settings;
-          }
-        },
-        error => {
-          this.failedNotification(error);
+      data => {
+        if (data.state == "success") {
+          console.log(data);
+          this._mainService.settings = data.settings;
+          this.settings = data.settings;
         }
+      },
+      error => {
+        this.failedNotification(error);
+      }
       );
   }
 
@@ -63,7 +65,7 @@ export class AdminSettingsComponent implements OnInit {
         let input = data.json();
         this.settings = input['settings'];
         this._mainService.settings = this.settings;
-        
+
         this.successNotification('Successfully updated.');
 
       },

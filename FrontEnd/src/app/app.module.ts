@@ -6,16 +6,21 @@ import { HttpModule } from '@angular/http';
 
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 import { DataTableModule } from "ng2-data-table";
-
-import { AppRoutingModule }   from './app-routing/app-routing.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { DatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AlertModule, ButtonsModule } from 'ngx-bootstrap';
 import { SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
 
+import { AppRoutingModule } from './app-routing/app-routing.module';
 
 import { AppComponent } from './app.component';
+import { LoginComponent } from './main/login/login.component';
+import { LogoutComponent } from './main/logout/logout.component';
+import { MainHeaderComponent } from './main/main-header/main-header.component';
+import { MainIndexComponent } from './main/main-index.component';
+import { MainFooterComponent } from './main/main-footer/main-footer.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+
 import { AdminComponent } from './admin';
 import { AdminHeaderComponent } from './admin/admin-header/admin-header.component';
 import { AdminSidebarComponent } from './admin/admin-sidebar/admin-sidebar.component';
@@ -33,24 +38,8 @@ import { AdminCouponsCampaignsComponent } from './admin/admin-coupons-campaigns/
 import { AdminCouponsCompaniesComponent } from './admin/admin-coupons-companies/admin-coupons-companies.component';
 import { AdminCouponsTypesComponent } from './admin/admin-coupons-types/admin-coupons-types.component';
 import { AdminFooterComponent } from './admin/admin-footer/admin-footer.component';
-import { LoginComponent } from './main/login/login.component';
-
-// Services Imports
-import {HttpService} from "./services/http_service/http.service";
-import {AuthService} from "./services/auth_service/auth.service";
-import {ScheduleService} from "./services/schedule_service/schedule.service";
-import {MainService} from "./services/main_service/main.service";
-import {ReportService} from "./services/report_service/report.service";
-
-import { MainHeaderComponent } from './main/main-header/main-header.component';
-import { MainIndexComponent } from './main/main-index.component';
-import { MainFooterComponent } from './main/main-footer/main-footer.component';
-
 import { AdminSchedulesEditexistingComponent } from './admin/admin-schedules/admin-schedules-editexisting/admin-schedules-editexisting.component';
 import { AdminScheduleEditBusComponent } from './admin/admin-schedules/admin-schedules-editexisting/admin-schedule-edit-bus/admin-schedule-edit-bus.component';
-
-import { LogoutComponent } from './main/logout/logout.component';
-
 import { AdminMainRegularModeComponent } from './admin/admin-main/admin-main-regular-mode/admin-main-regular-mode.component';
 import { AdminMainBusEditModeComponent, AdminMainBusEditorComponent } from './admin/admin-main/admin-main-bus-edit-mode/admin-main-bus-edit-mode.component';
 import { AdminMainMovePeopleModeComponent, AdminMainBusMoveComponent } from './admin/admin-main/admin-main-move-people-mode/admin-main-move-people-mode.component';
@@ -58,6 +47,13 @@ import { AdminMainReservationComponent } from './admin/admin-main/admin-main-res
 import { AdminMainBusComponent } from './admin/admin-main/admin-main-regular-mode/admin-main-bus/admin-main-bus.component';
 import { AdminMainSearchComponent } from './admin/admin-main/admin-main-search/admin-main-search.component';
 import { AdminReportsComponent } from './admin/admin-reports/admin-reports.component';
+
+// Services Imports
+import { HttpService } from "./services/http_service/http.service";
+import { AuthService } from "./services/auth_service/auth.service";
+import { ScheduleService } from "./services/schedule_service/schedule.service";
+import { MainService } from "./services/main_service/main.service";
+import { ReportService } from "./services/report_service/report.service";
 
 
 @NgModule({

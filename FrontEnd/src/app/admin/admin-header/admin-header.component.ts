@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth_service/auth.service';
   templateUrl: './admin-header.component.html',
   styleUrls: ['./admin-header.component.css']
 })
+
 export class AdminHeaderComponent implements OnInit {
 
   public username = 'Administrator';
@@ -17,6 +18,5 @@ export class AdminHeaderComponent implements OnInit {
   ngOnInit() {
     this.username = this._authService.getCurrentUser().full_name;
   }
-  
 
 }

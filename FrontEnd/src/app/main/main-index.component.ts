@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './main-index.component.html',
   styleUrls: ['./main-index.component.css']
 })
+
 export class MainIndexComponent implements OnInit {
 
   constructor() { }

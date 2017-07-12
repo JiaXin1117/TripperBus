@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
 import { PageNotFoundComponent } from '../page-not-found/page-not-found.component';
 import { AdminComponent } from '../admin';
 import { AdminMainComponent } from '../admin/admin-main/admin-main.component';
@@ -31,7 +32,7 @@ import { AdminMainReservationComponent } from '../admin/admin-main/admin-main-re
 import { AdminMainSearchComponent } from '../admin/admin-main/admin-main-search/admin-main-search.component';
 
 //import service.
-import {AuthService} from "../services/auth_service/auth.service";
+import { AuthService } from "../services/auth_service/auth.service";
 
 const routes: Routes = [
     {
@@ -40,26 +41,26 @@ const routes: Routes = [
         canActivate: [AuthService],
         children: [
             { path: 'main', component: AdminMainComponent },
-            { path: 'main/regular_mode/:outbound_date/:leaving_from/:return_date', component: AdminMainRegularModeComponent},
-            { path: 'main/bus_edit_mode/:outbound_date/:leaving_from/:return_date', component: AdminMainBusEditModeComponent},
-            { path: 'main/move_people_mode/:outbound_date/:leaving_from/:return_date', component: AdminMainMovePeopleModeComponent},
-            { path: 'main/reservation_mode/:outbound_date/:leaving_from/:return_date/:outbound_bus_groupId/:outbound_timeId/:outbound_price/:returning_bus_groupId/:returning_timeId/:returning_price', component: AdminMainReservationComponent},
-            { path: 'main/search_mode/:searchKey/:searchVal/:caseSensitive', component: AdminMainSearchComponent},
-            
-            { path: 'schedules',      component: AdminSchedulesComponent },
+            { path: 'main/regular_mode/:outbound_date/:leaving_from/:return_date', component: AdminMainRegularModeComponent },
+            { path: 'main/bus_edit_mode/:outbound_date/:leaving_from/:return_date', component: AdminMainBusEditModeComponent },
+            { path: 'main/move_people_mode/:outbound_date/:leaving_from/:return_date', component: AdminMainMovePeopleModeComponent },
+            { path: 'main/reservation_mode/:outbound_date/:leaving_from/:return_date/:outbound_bus_groupId/:outbound_timeId/:outbound_price/:returning_bus_groupId/:returning_timeId/:returning_price', component: AdminMainReservationComponent },
+            { path: 'main/search_mode/:searchKey/:searchVal/:caseSensitive', component: AdminMainSearchComponent },
+
+            { path: 'schedules', component: AdminSchedulesComponent },
             { path: 'schedules_edit/:sel_date/:button_type/:area_id/:schedule_type', component: AdminSchedulesEditexistingComponent },
-            /*{ path: 'schedules_gennew/:sel_date',      component: AdminSchedulesGennewComponent },
-            { path: 'schedules_genspecial/:sel_date',      component: AdminSchedulesGenspecialComponent },*/
-            
-/*            { path: 'stops',      component: AdminStopsComponent },
+/*            { path: 'schedules_gennew/:sel_date',      component: AdminSchedulesGennewComponent },
+            { path: 'schedules_genspecial/:sel_date',      component: AdminSchedulesGenspecialComponent },
+
+            { path: 'stops',      component: AdminStopsComponent },
             { path: 'rates',      component: AdminRatesComponent },
             { path: 'areas',      component: AdminAreasComponent },*/
-            { path: 'users',      component: AdminUsersComponent },
-            { path: 'customers',  component: AdminCustomersComponent },
-/*            { path: 'pages',      component: AdminPagesComponent },*/
-            { path: 'settings',   component: AdminSettingsComponent },
-            { path: 'reports',    component: AdminReportsComponent },
-/*            { path: 'coupons',    component: AdminCouponsComponent },
+            { path: 'users', component: AdminUsersComponent },
+            { path: 'customers', component: AdminCustomersComponent },
+            { path: 'settings', component: AdminSettingsComponent },
+            { path: 'reports', component: AdminReportsComponent },
+/*            { path: 'pages',      component: AdminPagesComponent },
+            { path: 'coupons',    component: AdminCouponsComponent },
             { path: 'coupons-campaigns',      component: AdminCouponsCampaignsComponent },
             { path: 'coupons-companies',      component: AdminCouponsCompaniesComponent },
             { path: 'coupons-types',      component: AdminCouponsTypesComponent },*/
@@ -84,4 +85,5 @@ const routes: Routes = [
     ],
     exports: [RouterModule],
 })
+
 export class AppRoutingModule { }

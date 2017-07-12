@@ -1,16 +1,14 @@
-
-
 <section class="panel login-panel-custom">
     <header class="panel-heading login-panel-heading-custom">
         <h3 class="login-panel-heading-h3">Login to TripperBus</h3>
     </header>
     <div class="panel-body">
         <div class="form-inline">
-            
-            <div class="alert alert-block alert-danger" [style.display] = "alert_visible">
+
+            <div class="alert alert-block alert-danger" [style.display]="alert_visible">
                 <strong>{{errorMsg}}</strong> Please try again.
             </div>
-            
+
             <div class="login-form-firstline">
                 <div class="form-group login-form-group-custom">
                     <label class="sr-only" for="exampleInputEmail2">Email address</label>
@@ -35,6 +33,6 @@
                 <button (click)="onPostLogin()" class="btn btn-success login-btn" style="float: right;">LOG ME IN</button>
             </div>
         </div>
-        
+
     </div>
 </section>

@@ -22,8 +22,8 @@ export class User {
     }
 
     copy(src: User) {
-       Object.keys(src).forEach(key => {
-           this[key] = src[key];
-       });
-   }
+        Object.keys(src).forEach(key => {
+            this[key] = src[key];
+        });
+    }
 }
