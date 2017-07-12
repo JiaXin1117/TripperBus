@@ -389,11 +389,12 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
         me._httpService.sendPostJSON(temp_url, temp_post_data)
             .subscribe(
             data => {
-                let res = data.json();
-                if (res.success) {
+                if (data.success) {
                     this.showConfirmSaveAllModal();
                 } else {
-                    alert(res.error);
+                    if (data.error) {
+                        this.failedNotification(data.error);
+                    }
                 }
             },
             error => {

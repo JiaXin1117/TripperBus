@@ -132,11 +132,16 @@ export class AdminMainMovePeopleModeComponent implements OnInit {
         this._httpService.sendPostJSON(url, { buses: data })
             .subscribe(
             data => {
-                this.successMessage = "The reservations are successfully updated.";
-                this.errorMessage = "";
-                this.successNotification(this.successMessage);
-                this.refreshData();
-                this.successNotification(this.successMessage);
+                if (data.success) {
+                    this.successMessage = "The reservations are successfully updated.";
+                    this.errorMessage = "";
+                    this.successNotification(this.successMessage);
+                    this.refreshData();
+                } else if (data.error) {
+                    this.successMessage = "";
+                    this.errorMessage = data.error;
+                    this.failedNotification(data.error);    
+                }
             },
             error => {
                 this.successMessage = "";

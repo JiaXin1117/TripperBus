@@ -33,7 +33,9 @@ export class HttpService {
             'Content-Type': 'application/json'
         });
 
-        return this._http.post(url, JSON.stringify(json_data), { headers: headers });
+        return this._http.post(url, JSON.stringify(json_data), { headers: headers })
+            .map(res => res.json())
+            .catch(this.handleServerError.bind(this));
     }
 
     public handleServerError(error: Response) {

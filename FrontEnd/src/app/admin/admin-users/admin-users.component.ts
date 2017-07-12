@@ -94,21 +94,21 @@ export class AdminUsersComponent implements OnInit {
     this._httpService.sendPostJSON(url, { user: this.user })
       .subscribe(
       data => {
-        let res = data.json();
-        if (res.success) {
-          let createdUser = res.data as User;
-          if (!createdUser)
+        if (data.success) {
+          let createdUser = data.data as User;
+          if (!createdUser) {
+            this.hideUserModal();
             return;
+          }
 
           this.users.push(createdUser);
-
           this.hideUserModal();
 
           let successMessage = "User[" + createdUser['name'] + "] successfully added.";
           this.successNotification(successMessage);
         } else {
-          if (res.error) {
-            this.failedNotification(res.error);
+          if (data.error) {
+            this.failedNotification(data.error);
           }
         }
       },
@@ -150,21 +150,21 @@ export class AdminUsersComponent implements OnInit {
     this._httpService.sendPostJSON(url, { user: this.user })
       .subscribe(
       data => {
-        let res = data.json();
-        if (res.success) {
-          let resUser = res.data as User;
-          if (!resUser)
+        if (data.success) {
+          let resUser = data.data as User;
+          if (!resUser) {
+            this.hideUserModal();
             return;
+          }
 
           this.updateUserFromArray(resUser);
-
           this.hideUserModal();
 
           let successMessage = "User[" + resUser['name'] + "] successfully updated.";
           this.successNotification(successMessage);
         } else {
-          if (res.error) {
-            this.failedNotification(res.error);
+          if (data.error) {
+            this.failedNotification(data.error);
           }
         }
       },
@@ -186,16 +186,15 @@ export class AdminUsersComponent implements OnInit {
     this._httpService.sendPostJSON(url, { userId: this.user.id })
       .subscribe(
       data => {
-        let res = data.json();
-        if (res.success) {
+        if (data.success) {
           let successMessage = "User[" + this.user['name'] + "] successfully deleted.";
           this.deleteUserFromArray(this.user);
 
           this.hideUserModal();
           this.successNotification(successMessage);
         } else {
-          if (res.error) {
-            this.failedNotification(res.error);
+          if (data.error) {
+            this.failedNotification(data.error);
           }
         }
       },

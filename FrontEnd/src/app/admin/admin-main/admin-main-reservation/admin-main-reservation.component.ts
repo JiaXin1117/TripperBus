@@ -309,9 +309,8 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, { reservation: this.newReservation })
             .subscribe(
             data => {
-                let res = data.json();
-                if (res.success) {
-                    let createdReservation = res.data as Reservation;
+                if (data.success) {
+                    let createdReservation = data.data as Reservation;
                     if (!createdReservation)
                         return this.hideWaitingProgress();
 
@@ -329,8 +328,8 @@ export class AdminMainReservationComponent implements OnInit {
                     this.errorMessage = "";
                     this.successNotification(this.successMessage);
                 } else {
-                    if (res.error) {
-                        this.failedNotification(res.error);
+                    if (data.error) {
+                        this.failedNotification(data.error);
                     }
                 }
 
@@ -380,9 +379,8 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, { reservation: this.myReservation })
             .subscribe(
             data => {
-                let res = data.json();
-                if (res.success) {
-                    let updatedReservation = res.data as Reservation;
+                if (data.success) {
+                    let updatedReservation = data.data as Reservation;
                     if (!updatedReservation)
                         return this.hideWaitingProgress();
 
@@ -399,8 +397,8 @@ export class AdminMainReservationComponent implements OnInit {
                     this.errorMessage = "";
                     this.successNotification(this.successMessage);
                 } else {
-                    if (res.error) {
-                        this.failedNotification(res.error);
+                    if (data.error) {
+                        this.failedNotification(data.error);
                     }
                 }
 
@@ -437,7 +435,7 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, { reservation: this.myReservation })
             .subscribe(
             data => {
-                let updatedReservation = data.json() as Reservation;
+                let updatedReservation = data as Reservation;
                 if (!updatedReservation)
                     return this.hideWaitingProgress();
 
@@ -453,15 +451,13 @@ export class AdminMainReservationComponent implements OnInit {
                 this.successMessage = "Reservation#" + this.myReservation['id'] + " is deleted.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
-
                 this.hideWaitingProgress();
             },
             error => {
-                this.hideWaitingProgress();
-
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
                 this.failedNotification(error);
+                this.hideWaitingProgress();
             });
     }
 
@@ -558,16 +554,13 @@ export class AdminMainReservationComponent implements OnInit {
                 this.successMessage = "Reservations are successfully deleted.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
-                console.log(data.json());
-
                 this.hideWaitingProgress();
             },
             error => {
-                this.hideWaitingProgress();
-
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
                 this.failedNotification(error);
+                this.hideWaitingProgress();
             });
     }
 
@@ -589,16 +582,13 @@ export class AdminMainReservationComponent implements OnInit {
                 this.successMessage = "Notes are successfully added.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
-                console.log(data.json());
-
                 this.hideWaitingProgress();
             },
             error => {
-                this.hideWaitingProgress();
-
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
                 this.failedNotification(error);
+                this.hideWaitingProgress();
             });
     }
 
@@ -616,14 +606,12 @@ export class AdminMainReservationComponent implements OnInit {
                 this.successMessage = "Reservations are successfully re-emailed.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
-
                 this.hideWaitingProgress();
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
                 this.failedNotification(error);
-
                 this.hideWaitingProgress();
             });
     }

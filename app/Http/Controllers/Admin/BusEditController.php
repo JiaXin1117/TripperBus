@@ -291,6 +291,10 @@ class BusEditController extends Controller
             $price->max_cap = $bus['max_cap'];
             $price->save();
         }
+        
+        return response()->json([
+            'success'   => true,
+        ]);
     }
 
     public function getBusForMove(Request $request){
@@ -656,6 +660,10 @@ class BusEditController extends Controller
                 }
             }
         }
+
+        return response()->json([
+            'success'   => true,
+        ]);
     }
 
     public function sendMail_Reservation_MovePeople($reservations, $oldTimeID, $newTimeID, $date, $reason) {

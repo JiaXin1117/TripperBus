@@ -56,21 +56,17 @@ export class AdminSettingsComponent implements OnInit {
   setSettings() {
     let url = this._mainService.URLS.set_Settings;
 
-    console.log(this.settings);
-
     this._httpService.sendPostJSON(url, { settings: this.settings })
       .subscribe(
       data => {
-        console.log("Settings successfully updated.");
-        let input = data.json();
-        this.settings = input['settings'];
+        this.settings = data['settings'];
         this._mainService.settings = this.settings;
 
         this.successNotification('Successfully updated.');
 
       },
       error => {
-        let errorMessage = "Settings are failed.";
+        let errorMessage = "Settings updated failed.";
         console.log(errorMessage);
 
         this.failedNotification(error);

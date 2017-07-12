@@ -452,17 +452,6 @@ export class AdminScheduleEditBusComponent implements OnInit {
         }
 
         me.selected_group_additional_info['Removed'] = 1;
-
-        /*
-        this._httpService.sendPostJSON(me.urls.remove_url, remove_request)
-            .subscribe(
-                data => {
-                    me.isHidden = true; 
-                },
-                error => alert(error),
-                () => {}
-            );
-        */
     }
 
     public onDisable() {
@@ -479,18 +468,6 @@ export class AdminScheduleEditBusComponent implements OnInit {
         }
 
         me.selected_group_additional_info['Disabled'] = 1;
-
-        /*
-        this._httpService.sendPostJSON(me.urls.disable_url, disable_request)
-            .subscribe(
-                data => {
-                    me.isDisabled = true;
-                    me.selected_group_disabled = true;
-                },
-                error => alert(error),
-                () => {}
-            );
-        */
     }
 
     public onReenable() {
@@ -508,19 +485,6 @@ export class AdminScheduleEditBusComponent implements OnInit {
         }
 
         me.selected_group_additional_info['Disabled'] = 0;
-
-
-        /*
-        this._httpService.sendPostJSON(me.urls.disable_url, reenable_request)
-            .subscribe(
-                data => {
-                    me.isDisabled = false;
-                    me.selected_group_disabled = false;
-                },
-                error => alert(error),
-                () => {}
-            );
-        */
     }
 
     public onChangeStopsSelect($event, idx) {

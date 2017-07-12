@@ -127,9 +127,15 @@ export class AdminMainBusEditModeComponent implements OnInit {
         this._httpService.sendPostJSON(url, { buses: data })
             .subscribe(
             data => {
-                this.successMessage = "The buses are successfully updated.";
-                this.errorMessage = "";
-                this.successNotification(this.successMessage);
+                if (data.success) {
+                    this.successMessage = "The buses are successfully updated.";
+                    this.errorMessage = "";
+                    this.successNotification(this.successMessage);
+                } else if (data.error) {
+                    this.successMessage = "";
+                    this.errorMessage = data.error;
+                    this.failedNotification(data.error);
+                }
             },
             error => {
                 this.successMessage = "";
