@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth']], function() {
-    Route::group(['prefix' => 'schedule'], function() {
+    Route::group(['prefix' => 'schedule', 'middleware' => ['permission:Schedules']], function() {
         Route::get('/retrieve_by_date', [
             'as' => 'admin.schedule.retrieve_by_date',
             'uses' => 'ScheduleController@getRetriveScheduleByDate',
@@ -77,7 +77,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     });
 
 
-    Route::group(['prefix' => 'main'], function() {
+    Route::group(['prefix' => 'main', 'middleware' => ['permission:Main']], function() {
         Route::get('/retrieve_reservations_by_date', [
             'as' => 'admin.main.retrieve_reservations_by_date',
             'uses' => 'MainController@getRetrieveReservations',
@@ -119,10 +119,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
             'as' => 'admin.main.get_Settings',
             'uses' => 'MainController@getSettings',
         ]);
+
         Route::post('/set_Settings', [
             'as' => 'admin.main.set_Settings',
             'uses' => 'MainController@setSettings',
-        ]);
+        ])->middleware('permission:Settings');;
+
 
         Route::get('/get_price_for_bus', [
             'as' => 'admin.main.get_price_for_bus',
@@ -155,13 +157,19 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         ]);
     });
 
-
     Route::group(['prefix' => 'user'], function() {
+        Route::get('/get_current_user', [
+            'as' => 'admin.user.get_current_user',
+            'uses' => 'UserController@getCurrentUser',
+        ]);
+    });
+
+    Route::group(['prefix' => 'user', 'middleware' => ['permission:Users']], function() {
         Route::get('/get_users', [
             'as' => 'admin.user.get_users',
             'uses' => 'UserController@getUsers',
         ]);
-        
+
         Route::post('/add_user', [
             'as' => 'admin.user.add_user',
             'uses' => 'UserController@addUser',
@@ -177,11 +185,6 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
             'uses' => 'UserController@deleteUser',
         ]);
 
-        Route::get('/get_current_user', [
-            'as' => 'admin.user.get_current_user',
-            'uses' => 'UserController@getCurrentUser',
-        ]);
-
         Route::post('/set_permission', [
             'as' => 'admin.user.set_permission',
             'uses' => 'UserController@setPermission',
@@ -189,7 +192,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     });
 
 
-    Route::group(['prefix' => 'report'], function() {
+    Route::group(['prefix' => 'report', 'middleware' => ['permission:Reports']], function() {
         Route::get('/get_reports', [
             'as' => 'admin.report.get_reports',
             'uses' => 'MainController@getReports',

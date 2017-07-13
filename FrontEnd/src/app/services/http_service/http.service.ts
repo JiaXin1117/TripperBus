@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 
@@ -9,7 +10,8 @@ export class HttpService {
 
     constructor(
         public _http: Http,
-        public _router: Router
+        public _router: Router,
+        public _location: Location,
     ) {
     }
 
@@ -43,6 +45,10 @@ export class HttpService {
         if (jError == 'Unauthenticated.') {
             alert("You are not unauthenticated. Please login correctly!");
             this._router.navigate(['login']);
+            return;
+        } else if (jError == "You don't have permission!") {
+            alert("You don't have permission!");
+            this._location.back();
             return;
         }
 
