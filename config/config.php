@@ -19,4 +19,6 @@ return [
     'TYPE_MAIL_RESERVATION_REEMAIL'     => 4,
     'TYPE_MAIL_BUS_FULL'                => 5,
     'TYPE_MAIL_BUS_5_REMAIN'            => 6,
+
+    'DEFAULT_USER_PERMISSION'           => [1],
 ];

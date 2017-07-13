@@ -39,7 +39,7 @@
                     <td>{{user['password'] | slice:0:10}}...</td>
                     <td>{{user['full_name']}}</td>
                     <td><span class="label label-success">{{user['created_at']}}</span></td>
-                    <td><a (click)="editPermission(user)"><span class="fa fa-pencil"></span></a></td>
+                    <td><a (click)="showPermissionModal(user)"><span class="fa fa-pencil"></span></a></td>
                 </tr>
             </tbody>
         </table>
@@ -90,6 +90,33 @@
                         <button type="submit" class="btn btn-primary" (click)="updateUser()">Update</button>
                         <button type="submit" class="btn btn-danger" (click)="deleteUser()">Delete</button>
                         </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Permission Modal -->
+<div bsModal #permissionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content col-xs-12">
+            <div class="modal-header" style="border-bottom: none">
+                <button type="button" class="close pull-right" aria-label="Close" (click)="hidePermissionModal()">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="checkbox col-xs-3" *ngFor="let item of userPermissionEnum" style="margin-bottom: 15px;">
+                        <label>
+                            <input type="checkbox" [(ngModel)]="selectedPermission[item['id']]"> {{ item['name'] }}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group pull-right" style="margin-top: 20px; margin-bottom: 20px">
+                        <button type="submit" class="btn btn-success" (click)="savePermission()"> Save </button>
                     </div>
                 </div>
             </div>

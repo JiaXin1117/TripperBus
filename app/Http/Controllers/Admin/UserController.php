@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Res_Users;
+use App\Models\UserToPermission;
 
 
 class UserController extends Controller
@@ -24,17 +25,42 @@ class UserController extends Controller
             ]);
         }
 
+        $permissions = array();
+        foreach ($users as $user) {
+            $tPermission = UserToPermission::where('user_id', $user['id'])
+                    ->select('permission_id')
+                    ->get()
+                    ->toarray();
+            foreach($tPermission as $permission) {
+                $permissions[$user['id']][] = $permission['permission_id'];
+            }
+        }
+
         return response()->json([
-            'success'   => true,
-            'users'     => $users,
+            'success'       => true,
+            'users'         => $users,
+            'permissions'   => $permissions,
         ]);
     }
 
     public function getCurrentUser() {
         if (Auth::check()) {
+            $user = Auth::user();
+            $permissions1 = UserToPermission::where('user_id', $user['id'])
+                ->select('permission_id')
+                ->get()
+                ->toarray();
+
+            $permissions = array();
+            foreach($permissions1 as $permission) {
+                $permissions[] = $permission['permission_id'];
+            }
+
+            $user['permission'] = $permissions;
+
             return response()->json([
                 'success'   => true,
-                'user'      => Auth::user(),
+                'user'      => $user,
             ]);
         }
 
@@ -69,14 +95,20 @@ class UserController extends Controller
         unset($user['updated_at']);
 
         Res_Users::unguard();
-        $res = Res_Users::create($user);
+        $resUser = Res_Users::create($user);
         Res_Users::reguard();
 
-        $success = ($res != null);
+        $success = ($resUser != null);
+
+        $permission = array();
+        if ($success) {
+            $permission = $this->setDefaultPermission($resUser['id']);
+        }
 
         return response()->json([
             'success'   => $success,
-            'data'      => $res,
+            'data'      => $resUser,
+            'data2'     => $permission,
         ]);
     }
 
@@ -135,9 +167,45 @@ class UserController extends Controller
         $success = $user->delete();
         Res_Users::reguard();
 
+        if ($success) {
+            UserToPermission::where('user_id', $userId)->delete();
+        }
+        
         return response()->json([
             'success'   => $success
         ]);
+    }
+
+    public function setPermission(Request $request) {
+        $userId = $request->input('userId');
+        $permissions = $request->input('permission');
+
+        UserToPermission::where('user_id', $userId)->delete();
+
+        foreach ($permissions as $permission) {
+            UserToPermission::create([
+                'user_id'       => $userId,
+                'permission_id' => $permission
+            ]);
+        }
+
+        return response()->json([
+            'success'   => true,
+        ]);
+    }
+
+    public function setDefaultPermission($userId) {
+        UserToPermission::where('user_id', $userId)->delete();
+
+        $permissions = CONFIG('config.DEFAULT_USER_PERMISSION');
+        foreach ($permissions as $permission) {
+            UserToPermission::create([
+                'user_id'       => $userId,
+                'permission_id' => $permission
+            ]);
+        }
+
+        return $permissions;
     }
 
     public function user_credential_rules(array $data) {

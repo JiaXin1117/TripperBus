@@ -181,6 +181,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
             'as' => 'admin.user.get_current_user',
             'uses' => 'UserController@getCurrentUser',
         ]);
+
+        Route::post('/set_permission', [
+            'as' => 'admin.user.set_permission',
+            'uses' => 'UserController@setPermission',
+        ]);
     });
 
 

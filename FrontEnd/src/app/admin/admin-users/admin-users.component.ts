@@ -6,18 +6,25 @@ import { HttpService } from "../../services/http_service/http.service";
 import { NotificationsService } from 'angular2-notifications';
 
 import { User } from '../../model';
+import { UserPermission } from '../../common';
 
 @Component({
   selector: 'app-admin-users',
   templateUrl: './admin-users.component.html',
   styleUrls: ['./admin-users.component.css']
 })
+
 export class AdminUsersComponent implements OnInit {
+
   @ViewChild('userModal') public userModal: ModalDirective;
+  @ViewChild('permissionModal') public permissionModal: ModalDirective;
 
   public users: User[];
+  public permissions: any[][];
   public user: User;
   public confirmPassword: string;
+  public userPermissionEnum = UserPermission;
+  public selectedPermission: any[];
 
   public notifyOptions = {
       timeOut: 3000,
@@ -33,7 +40,9 @@ export class AdminUsersComponent implements OnInit {
         public _notificationsService: NotificationsService,
   ) {
     this.users = null;
+    this.permissions = null;
     this.user = new User;
+    this.selectedPermission = [];
   }
 
   ngOnInit() {
@@ -48,7 +57,7 @@ export class AdminUsersComponent implements OnInit {
         data => {
           if (data.success) {
             this.users = data.users;
-            console.log(data);
+            this.permissions = data.permissions;
           }
         },
         error => {
@@ -68,6 +77,7 @@ export class AdminUsersComponent implements OnInit {
 
   hideUserModal() {
     this.userModal.hide();
+    this.user.init();
   }
 
   showAddUserModal() {
@@ -82,10 +92,61 @@ export class AdminUsersComponent implements OnInit {
     this.showUserModal();
   }
 
+  showPermissionModal(user) {
+    this.user.copy(user);
+    this.selectedPermission = [];
+    
+    if (this.permissions[user['id']]) {
+      this.permissions[user['id']].forEach(permission => {
+        this.selectedPermission[permission] = 1;
+      });
+    }
+
+    this.permissionModal.show();
+  }
+
+  hidePermissionModal() {
+    this.permissionModal.hide();
+    this.user.init();
+  }
+
+  savePermission() {
+    let userId = this.user['id'];
+
+    this.permissions[userId] = [];
+    
+    this.selectedPermission.forEach ((permission, index) => {
+      if (permission == 1) {
+        this.permissions[userId].push(index);
+      }
+    });
+    
+    let url = this._authService.URLS.set_permission;
+
+    this._httpService.sendPostJSON(url, {userId: userId, permission: this.permissions[userId]})
+      .subscribe(
+        data => {
+          if (data.success) {
+            this.successNotification("Permission successfully updated!");
+            
+            if (userId == this._authService.getCurrentUser()['id']) {
+              this._authService.setCurrentUserPermission(this.permissions[userId]);
+            }
+          } else if (data.error) {
+            this.failedNotification(data.error);
+          }
+        },
+        error => {
+          this.failedNotification(error);
+          this.init();
+        },
+        () => {
+          this.hidePermissionModal();
+        }
+      )
+  }
 
   addUser() {
-    console.log(this.user);
-
     let url = this._authService.URLS.add_user;
 
     if(!this.checkUser())
@@ -102,6 +163,8 @@ export class AdminUsersComponent implements OnInit {
           }
 
           this.users.push(createdUser);
+          this.permissions[createdUser['id']] = data.data2;
+
           this.hideUserModal();
 
           let successMessage = "User[" + createdUser['name'] + "] successfully added.";
@@ -140,8 +203,6 @@ export class AdminUsersComponent implements OnInit {
   }
 
   updateUser() {
-    console.log(this.user);
-
     let url = this._authService.URLS.update_user;
 
     if(!this.checkUser())
@@ -179,8 +240,6 @@ export class AdminUsersComponent implements OnInit {
   }
 
   deleteUser() {
-    console.log(this.user);
-
     let url = this._authService.URLS.delete_user;
 
     this._httpService.sendPostJSON(url, { userId: this.user.id })

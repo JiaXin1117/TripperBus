@@ -26,4 +26,7 @@ class Res_Users extends Authenticatable
         $this->attributes['password'] = \Hash::make($value);
     }
 
+    public function permissions() {
+        return $this->hasMany('App\Models\UserToPermission', 'user_id');
+    }
 }

@@ -119,4 +119,8 @@ export class AdminSidebarComponent implements OnInit {
         let link = ['/admin/main/search_mode', this.searchKey, this.searchVal, this.caseSensitive ? 1 : 0];
         this._router.navigate(link);
     }
+
+    public isShowItem(path) {
+        return this._authService.getPermission(path);
+    }
 }

@@ -39,6 +39,7 @@ const routes: Routes = [
         path: 'admin',
         component: AdminComponent,
         canActivate: [AuthService],
+        canActivateChild: [AuthService],
         children: [
             { path: 'main', component: AdminMainComponent },
             { path: 'main/regular_mode/:outbound_date/:leaving_from/:return_date', component: AdminMainRegularModeComponent },

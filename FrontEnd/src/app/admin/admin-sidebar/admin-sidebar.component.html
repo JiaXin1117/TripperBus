@@ -14,7 +14,7 @@
 
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
-            <li class="" style="padding-bottom: 3px; border-top: 1px solid #595959 !important;">
+            <li *ngIf="isShowItem('Search')" class="" style="padding-bottom: 3px; border-top: 1px solid #595959 !important;">
                 <a href="javascript:void(0);" id="treeview-search">
                     <i class="fa fa-search"></i> <span>Search</span>
                     <i class="fa fa-angle-left pull-right" style="display: none;"></i>
@@ -53,12 +53,12 @@
             </li>
 
 
-            <li class="sidebar-menu-li" style="border-top: 1px solid #595959 !important;">
+            <li *ngIf="isShowItem('Main')" class="sidebar-menu-li" style="border-top: 1px solid #595959 !important;">
                 <a routerLink='/admin/main' routerLinkActive="admin-sidebar-router-active">
                     <i class="fa fa-dashboard"></i> <span>Main</span>
                 </a>
             </li>
-            <li class="sidebar-menu-li">
+            <li *ngIf="isShowItem('Schedules')" class="sidebar-menu-li">
                 <a routerLink='/admin/schedules' routerLinkActive="admin-sidebar-router-active">
                     <i class="fa fa-calendar-o"></i> <span>Schedules</span>
                 </a>
@@ -78,12 +78,12 @@
                     <i class="fa fa-crop"></i> <span>Areas</span>
                 </a>
             </li>-->
-            <li class="sidebar-menu-li">
+            <li *ngIf="isShowItem('Users')" class="sidebar-menu-li">
                 <a routerLink="/admin/users" routerLinkActive="admin-sidebar-router-active">
                     <i class="fa fa-user"></i> <span>Users</span>
                 </a>
             </li>
-            <li class="sidebar-menu-li">
+            <li *ngIf="isShowItem('Customers')" class="sidebar-menu-li">
                 <a routerLink="/admin/customers" routerLinkActive="admin-sidebar-router-active">
                     <i class="fa fa-group"></i> <span>Customers</span>
                 </a>
@@ -122,12 +122,12 @@
                     </ul>
                 </div>
             </li>-->
-            <li class="admin-sidebar-settings-li sidebar-menu-li">
+            <li *ngIf="isShowItem('Settings')" class="admin-sidebar-settings-li sidebar-menu-li">
                 <a routerLink="/admin/settings" routerLinkActive="admin-sidebar-router-active">
                     <i class="fa fa-cog"></i> <span>Settings</span>
                 </a>
             </li>
-            <li class="sidebar-menu-li">
+            <li *ngIf="isShowItem('Reports')" class="sidebar-menu-li">
                 <a routerLink="/admin/reports" routerLinkActive="admin-sidebar-router-active">
                     <i class="fa fa-line-chart"></i> <span>Reports</span>
                 </a>
