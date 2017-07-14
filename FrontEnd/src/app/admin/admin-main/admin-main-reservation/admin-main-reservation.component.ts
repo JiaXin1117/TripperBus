@@ -127,13 +127,22 @@ export class AdminMainReservationComponent implements OnInit {
     selectedReservations: Reservation[];
 
     public notifyOptions = {
+//        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+        maxStack: 1,
+    };
+
+    public notifyOptionsForSuccess = {
         timeOut: 3000,
         position: ["bottom", "right"],
         showProgressBar: false,
         pauseOnHover: false,
         clickToClose: true,
+        maxStack: 1,
     };
-
 
     constructor(public _route: ActivatedRoute,
         public _router: Router,
@@ -656,7 +665,7 @@ export class AdminMainReservationComponent implements OnInit {
     }
 
     public successNotification(notifyText: string) {
-        this._notificationsService.success('Success', notifyText);
+        this._notificationsService.success('Success', notifyText, this.notifyOptionsForSuccess);
     }
 
     public failedNotification(notifyText: string) {

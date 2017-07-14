@@ -15,12 +15,22 @@ export class AdminSettingsComponent implements OnInit {
   public settings: any[];
 
   public notifyOptions = {
-    timeOut: 2000,
+//    timeOut: 3000,
     position: ["bottom", "right"],
     showProgressBar: false,
     pauseOnHover: false,
     clickToClose: true,
-  }
+    maxStack: 1,
+  };
+
+  public notifyOptionsForSuccess = {
+    timeOut: 3000,
+    position: ["bottom", "right"],
+    showProgressBar: false,
+    pauseOnHover: false,
+    clickToClose: true,
+    maxStack: 1,
+  };
 
 
   constructor(
@@ -74,7 +84,7 @@ export class AdminSettingsComponent implements OnInit {
   }
 
   successNotification(notifyText: string) {
-    this._notificationsService.success('Success', notifyText);
+    this._notificationsService.success('Success', notifyText, this.notifyOptionsForSuccess);
   }
 
   failedNotification(notifyText: string) {

@@ -94,11 +94,21 @@ export class AdminMainSearchComponent implements OnInit {
     selectedReservations: Reservation[];
 
     public notifyOptions = {
+//        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+        maxStack: 1,
+    };
+
+    public notifyOptionsForSuccess = {
         timeOut: 3000,
         position: ["bottom", "right"],
         showProgressBar: false,
         pauseOnHover: false,
         clickToClose: true,
+        maxStack: 1,
     };
 
 
@@ -438,7 +448,7 @@ export class AdminMainSearchComponent implements OnInit {
     }
 
     public successNotification(notifyText: string) {
-        this._notificationsService.success('Success', notifyText);
+        this._notificationsService.success('Success', notifyText, this.notifyOptionsForSuccess);
     }
 
     public failedNotification(notifyText: string) {

@@ -27,11 +27,21 @@ export class AdminUsersComponent implements OnInit {
   public selectedPermission: any[];
 
   public notifyOptions = {
-      timeOut: 3000,
-      position: ["bottom", "right"],
-      showProgressBar: false,
-      pauseOnHover: false,
-      clickToClose: true,
+//    timeOut: 3000,
+    position: ["bottom", "right"],
+    showProgressBar: false,
+    pauseOnHover: false,
+    clickToClose: true,
+    maxStack: 1,
+  };
+
+  public notifyOptionsForSuccess = {
+    timeOut: 3000,
+    position: ["bottom", "right"],
+    showProgressBar: false,
+    pauseOnHover: false,
+    clickToClose: true,
+    maxStack: 1,
   };
 
   constructor(
@@ -278,7 +288,7 @@ export class AdminUsersComponent implements OnInit {
   }
   
   successNotification(notifyText: string) {
-    this._notificationsService.success('Success', notifyText);
+    this._notificationsService.success('Success', notifyText, this.notifyOptionsForSuccess);
   }
 
   failedNotification(notifyText: string) {

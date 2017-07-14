@@ -52,11 +52,21 @@ export class AdminMainRegularModeComponent implements OnInit {
     public returning_holidayName = '';
 
     public notifyOptions = {
+//        timeOut: 3000,
+        position: ["bottom", "right"],
+        showProgressBar: false,
+        pauseOnHover: false,
+        clickToClose: true,
+        maxStack: 1,
+    };
+
+    public notifyOptionsForSuccess = {
         timeOut: 3000,
         position: ["bottom", "right"],
         showProgressBar: false,
         pauseOnHover: false,
         clickToClose: true,
+        maxStack: 1,
     };
 
 
@@ -200,7 +210,7 @@ export class AdminMainRegularModeComponent implements OnInit {
     }
 
     successNotification(notifyText: string) {
-        this._notificationsService.success('Success', notifyText);
+        this._notificationsService.success('Success', notifyText, this.notifyOptionsForSuccess);
     }
 
     failedNotification(notifyText: string) {
