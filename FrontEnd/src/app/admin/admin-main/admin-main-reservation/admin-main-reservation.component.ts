@@ -101,22 +101,22 @@ export class AdminMainReservationComponent implements OnInit {
 
     // Labels / Parents
     fieldOptions: IMultiSelectOption[] = [
-        { id: 1, name: 'Groupon Code' },
-        { id: 2, name: 'Campaign Name' },
-        { id: 3, name: 'Payment Method' },
-        { id: 4, name: 'Authorize net Link' },
-        { id: 5, name: 'IP Address' },
-        { id: 6, name: 'Date Made' },
-        { id: 7, name: 'Made By' },
-        { id: 8, name: 'Note' },
-        { id: 9, name: 'App Scanned' },
-        { id: 10, name: 'Leg Price' },
-        { id: 11, name: 'Transaction Amount' },
-        { id: 12, name: 'Under Account' },
-        { id: 13, name: 'Points Used' },
-        { id: 14, name: 'Points Earned' },
-        { id: 15, name: 'Action Record' },
-        { id: 16, name: 'Other Leg' }
+        { id: 1, name: 'Action Record' },
+        { id: 2, name: 'App Scanned' },
+        { id: 3, name: 'Authorize net Link' },
+        { id: 4, name: 'Campaign Name' },
+        { id: 5, name: 'Date Made' },
+        { id: 6, name: 'Groupon Code' },
+        { id: 7, name: 'IP Address' },
+        { id: 8, name: 'Leg Price' },
+        { id: 9, name: 'Made By' },
+        { id: 10, name: 'Note' },
+        { id: 11, name: 'Other Leg' },
+        { id: 12, name: 'Payment Method' },
+        { id: 13, name: 'Points Earned' },
+        { id: 14, name: 'Points Used' },
+        { id: 15, name: 'Transaction Amount' },
+        { id: 16, name: 'Under Account' },
     ];
 
     public massAction = "Delete";
