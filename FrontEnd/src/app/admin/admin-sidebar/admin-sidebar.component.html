@@ -15,7 +15,7 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
             <li *ngIf="isShowItem('Search')" class="" style="padding-bottom: 3px; border-top: 1px solid #595959 !important;">
-                <a href="javascript:void(0);" id="treeview-search">
+                <a href="javascript:void(0);" id="treeview-search" (click)="toggleSearchTreeview()">
                     <i class="fa fa-search"></i> <span>Search</span>
                     <i class="fa fa-angle-left pull-right" style="display: none;"></i>
                     <i class="fa fa-angle-down pull-right"></i>
@@ -41,7 +41,8 @@
                             <label for="caseSensitive" style="margin-left: 5px; margin-top: 2px;">Case Sensitive</label>
                         </div>
                         <div class="input-group">
-                            <input type="text" name="searchVal" class="form-control admin-sidebar-search-input" placeholder="Search..." [(ngModel)]="searchVal">
+                            <input *ngIf="searchKey != 'Date Made'" type="text" name="searchVal" class="form-control admin-sidebar-search-input" placeholder="Search..." [(ngModel)]="searchVal">
+                            <material-datepicker *ngIf="searchKey == 'Date Made'" [placeholder]="'Search...'" [(date)]="searchDate" [dateFormat]="'YYYY-MM-DD'"></material-datepicker>
                             <span class="input-group-btn">
                                 <button type="submit" name="seach" id="search-btn" class="btn btn-flat admin-sidebar-search-btn">
                                     <i class="fa fa-search"></i>

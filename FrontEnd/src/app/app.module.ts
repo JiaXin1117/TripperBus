@@ -10,6 +10,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { DatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AlertModule, ButtonsModule } from 'ngx-bootstrap';
 import { SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
+import { DatepickerModule as DatepickerModule1 } from 'angular2-material-datepicker';
 
 import { AppRoutingModule } from './app-routing/app-routing.module';
 
@@ -107,6 +108,7 @@ import { ReportService } from "./services/report_service/report.service";
         DatepickerModule.forRoot(),
         ButtonsModule.forRoot(),
         AlertModule.forRoot(),
+        DatepickerModule1,
     ],
     providers: [
         NotificationsService,

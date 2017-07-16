@@ -14,24 +14,9 @@ declare var jQuery: any;
 export class AdminSidebarComponent implements OnInit {
 
     public username = 'Administrator';
-
-
-    constructor(
-        public _router: Router,
-        public _authService: AuthService,
-    ) { }
-
-    ngOnInit() {
-        this.setTreeView();
-        this.username = this._authService.getCurrentUser().full_name;
-    }
-
-    @HostListener('window:resize', ['$event'])
-    onResize(event) {
-    }
-
     public searchKey = "First Name";
     public searchVal = "";
+    public searchDate = new Date();
     public caseSensitive = false;
 
     public defaultData = [
@@ -69,58 +54,66 @@ export class AdminSidebarComponent implements OnInit {
         }
     ];
 
-    public setTreeView() {
-        let me = this;
-        jQuery("#treeview-coupons").click(function () {
-            if (jQuery("#admin-sidebar-coupons-details").css("display") == 'none') {
-                jQuery("#admin-sidebar-coupons-details").slideDown();
-                jQuery(".fa-angle-left").css('display', 'none');
-                jQuery(".fa-angle-down").css('display', 'inherit');
 
-                // Update Sidebar Height.
-                let plus_height = jQuery("#admin-sidebar-coupons-details-ul").height();
-                jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() + plus_height);
-            }
-            else {
-                jQuery("#admin-sidebar-coupons-details").slideUp();
-                jQuery(".fa-angle-left").css('display', 'inherit');
-                jQuery(".fa-angle-down").css('display', 'none');
+    constructor(
+        public _router: Router,
+        public _authService: AuthService,
+    ) { }
 
-                // Update Sidebar Height.
-                jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() - jQuery("#admin-sidebar-coupons-details-ul").height());
-            }
-        });
-
-        jQuery("#treeview-search").click(function () {
-            if (jQuery("#admin-sidebar-search-details").css("display") == 'none') {
-                jQuery("#admin-sidebar-search-details").slideDown();
-                jQuery(".fa-angle-left").css('display', 'none');
-                jQuery(".fa-angle-down").css('display', 'inherit');
-
-                // Update Sidebar Height.
-                let plus_height = jQuery("#admin-sidebar-search-details-ul").height();
-                jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() + plus_height);
-            }
-            else {
-                jQuery("#admin-sidebar-search-details").slideUp();
-                jQuery(".fa-angle-left").css('display', 'inherit');
-                jQuery(".fa-angle-down").css('display', 'none');
-
-                // Update Sidebar Height.
-                jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() - jQuery("#admin-sidebar-search-details-ul").height());
-            }
-        });
+    ngOnInit() {
+        this.username = this._authService.getCurrentUser().full_name;
+        this.searchDate.setHours(0, 0, 0);
     }
 
-    public search() {
-        if (this.searchVal == '')
-            return;
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+    }
 
-        let link = ['/admin/main/search_mode', this.searchKey, this.searchVal, this.caseSensitive ? 1 : 0];
+    search() {
+        let searchVal = this.searchVal;
+
+        if (this.searchKey == 'Date Made') {
+            searchVal = this.getDateString(this.searchDate);
+        }
+
+        if (searchVal == '')
+            return;
+        
+        let link = ['/admin/main/search_mode', this.searchKey, searchVal, this.caseSensitive ? 1 : 0];
         this._router.navigate(link);
     }
 
-    public isShowItem(path) {
+    getDateString(date: Date) {
+        var mm = date.getMonth() + 1;
+        var dd = date.getDate();
+
+        return [date.getFullYear(),
+                (mm > 9 ? '': '0') + mm,
+                (dd > 9 ? '': '0') + dd
+                ].join('-');
+    }
+
+    isShowItem(path) {
         return this._authService.getPermission(path);
+    }
+
+    toggleSearchTreeview() {
+        if (jQuery("#admin-sidebar-search-details").css("display") == 'none') {
+            jQuery("#admin-sidebar-search-details").slideDown();
+            jQuery(".fa-angle-left").css('display', 'none');
+            jQuery(".fa-angle-down").css('display', 'inherit');
+
+            // Update Sidebar Height.
+            let plus_height = jQuery("#admin-sidebar-search-details-ul").height();
+            jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() + plus_height);
+        }
+        else {
+            jQuery("#admin-sidebar-search-details").slideUp();
+            jQuery(".fa-angle-left").css('display', 'inherit');
+            jQuery(".fa-angle-down").css('display', 'none');
+
+            // Update Sidebar Height.
+            jQuery("#admin_sidebar").height(jQuery("#admin_sidebar").height() - jQuery("#admin-sidebar-search-details-ul").height());
+        }
     }
 }
