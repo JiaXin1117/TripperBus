@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth_service/auth.service';
 
+import { getDateString } from '../../common'
+
 declare var jQuery: any;
 
 @Component({
@@ -73,7 +75,7 @@ export class AdminSidebarComponent implements OnInit {
         let searchVal = this.searchVal;
 
         if (this.searchKey == 'Date Made') {
-            searchVal = this.getDateString(this.searchDate);
+            searchVal = getDateString(this.searchDate);
         }
 
         if (searchVal == '')
@@ -83,23 +85,14 @@ export class AdminSidebarComponent implements OnInit {
         this._router.navigate(link);
     }
 
-    getDateString(date: Date) {
-        var mm = date.getMonth() + 1;
-        var dd = date.getDate();
-
-        return [date.getFullYear(),
-                (mm > 9 ? '': '0') + mm,
-                (dd > 9 ? '': '0') + dd
-                ].join('-');
-    }
-
     isShowItem(path) {
         return this._authService.getPermission(path);
     }
 
     toggleSearchTreeview() {
         if (jQuery("#admin-sidebar-search-details").css("display") == 'none') {
-            jQuery("#admin-sidebar-search-details").slideDown();
+            jQuery("#admin-sidebar-search-details").slideDown(400, function() {
+                jQuery(this).css("overflow", ""); });
             jQuery(".fa-angle-left").css('display', 'none');
             jQuery(".fa-angle-down").css('display', 'inherit');
 

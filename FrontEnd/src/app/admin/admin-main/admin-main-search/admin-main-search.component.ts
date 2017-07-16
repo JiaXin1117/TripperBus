@@ -9,7 +9,8 @@ import { HttpService } from "../../../services/http_service/http.service";
 import { NotificationsService } from 'angular2-notifications';
 
 import { Bus, Reservation, Time } from '../../../model';
-import { PaymentMethod, Autorize_net_url } from '../../../common';
+import { PaymentMethod, Autorize_net_url, 
+        getDateString, changeReservationsTimezone } from '../../../common';
 
 import * as moment from "moment";
 declare var jQuery:any;
@@ -20,24 +21,25 @@ declare var jQuery:any;
     styleUrls: ['./admin-main-search.component.css']
 })
 export class AdminMainSearchComponent implements OnInit {
-    @ViewChild('reservationModal') public reservationModal: ModalDirective;
-    @ViewChild('selectedModal') public selectedModal: ModalDirective;
+    @ViewChild('reservationModal') reservationModal: ModalDirective;
+    @ViewChild('selectedModal') selectedModal: ModalDirective;
 
-    public inputParams: any = {
+    inputParams: any = {
         searchKey: "",
         searchVal: "",
         caseSensitive: false,
     };
 
-    public reservations = null;
+    reservations = null;
 
-    public myReservation = new Reservation;
+    myReservation = new Reservation;
+    myReservationDate = new Date();
 
-    public paymentMethod = PaymentMethod;
-    public authorize_net_url = Autorize_net_url;
+    paymentMethod = PaymentMethod;
+    authorize_net_url = Autorize_net_url;
 
-    public errorMessage: string = "";
-    public successMessage: string = "";
+    errorMessage: string = "";
+    successMessage: string = "";
 
     // Default selection
     showField: number[] = [];
@@ -87,13 +89,13 @@ export class AdminMainSearchComponent implements OnInit {
         { id: 16, name: 'Under Account' },
     ];
 
-    public massAction = "Delete";
-    public massText = "";
+    massAction = "Delete";
+    massText = "";
 
     // array of currently selected entities in the data table
     selectedReservations: Reservation[];
 
-    public notifyOptions = {
+    notifyOptions = {
 //        timeOut: 3000,
         position: ["bottom", "right"],
         showProgressBar: false,
@@ -102,7 +104,7 @@ export class AdminMainSearchComponent implements OnInit {
         maxStack: 1,
     };
 
-    public notifyOptionsForSuccess = {
+    notifyOptionsForSuccess = {
         timeOut: 3000,
         position: ["bottom", "right"],
         showProgressBar: false,
@@ -151,7 +153,7 @@ export class AdminMainSearchComponent implements OnInit {
         this.refreshData();
     }
 
-    public refreshData() {
+    refreshData() {
         let url = this._mainService.URLS.search_reservation 
         + "?searchKey=" + this.inputParams.searchKey 
         + "&searchVal=" + this.inputParams.searchVal 
@@ -161,6 +163,8 @@ export class AdminMainSearchComponent implements OnInit {
             data => {
                 if (data.state == "success") {
                 this.reservations = data.data;
+
+                changeReservationsTimezone(this.reservations);
                 
                 console.log (data);
                 }
@@ -171,25 +175,25 @@ export class AdminMainSearchComponent implements OnInit {
         );
     }
     
-    public receiveInputParams() {
+    receiveInputParams() {
       this.inputParams.searchKey = this._route.snapshot.params['searchKey']; 
       this.inputParams.searchVal = this._route.snapshot.params['searchVal']; 
       this.inputParams.caseSensitive = this._route.snapshot.params['caseSensitive']; 
     }
 
-    public showReservationModal(): void {
+    showReservationModal(): void {
         this.reservationModal.show();
     }
 
-    public hideReservationModal(): void {
+    hideReservationModal(): void {
         this.reservationModal.hide();
     }
 
-    public showSelectedModal() {
+    showSelectedModal() {
         this.selectedModal.show();
     }
 
-    public hideSelectedModal() {
+    hideSelectedModal() {
         this.selectedModal.hide();
     }
 
@@ -209,19 +213,19 @@ export class AdminMainSearchComponent implements OnInit {
         this.autoTransactionAmount();
     }
 
-    public editReservation(reservation: Reservation) {
+    editReservation(reservation: Reservation) {
         this.myReservation.copy(reservation);
 
         this.showReservationModal();
     }
     
-    public copyReservation(dst: Reservation, src: Reservation) {
+    copyReservation(dst: Reservation, src: Reservation) {
         Object.keys(src).forEach(key => {
             dst[key] = src[key];
         });
     }
 
-    public updateReservationFromArray(reservations: Reservation[], reservation: Reservation) {
+    updateReservationFromArray(reservations: Reservation[], reservation: Reservation) {
         if (!reservations) {
             return -1;
         }
@@ -234,7 +238,7 @@ export class AdminMainSearchComponent implements OnInit {
         return index;
     }
     
-    public updateReservation() {
+    updateReservation() {
         let url = this._mainService.URLS.update_reservation;
         let updateId = this.myReservation['id'];
 
@@ -272,7 +276,7 @@ export class AdminMainSearchComponent implements OnInit {
             });
     }
 
-    public removeReservationFromArray(reservations: Reservation[], reservation: Reservation) {
+    removeReservationFromArray(reservations: Reservation[], reservation: Reservation) {
         if (!reservations) {
             return -1;
         }
@@ -284,7 +288,7 @@ export class AdminMainSearchComponent implements OnInit {
         return index;
     }
 
-    public deleteSoftReservation() {
+    deleteSoftReservation() {
         let url = this._mainService.URLS.delete_soft_reservation;
         let deleteId = this.myReservation['id'];
 
@@ -315,7 +319,7 @@ export class AdminMainSearchComponent implements OnInit {
             });
     }
 
-    public deleteReservation() {
+    deleteReservation() {
         let url = this._mainService.URLS.delete_reservation;
         let deleteId = this.myReservation['id'];
 
@@ -342,7 +346,7 @@ export class AdminMainSearchComponent implements OnInit {
             });
     }
 
-    public doMassAction() {
+    doMassAction() {
         if (!this.selectedReservations.length)
             return;
 
@@ -361,7 +365,7 @@ export class AdminMainSearchComponent implements OnInit {
         }
     }
 
-    public doMassDelete() {
+    doMassDelete() {
         console.log (this.selectedReservations);
         this.showWaitingProgress();
 
@@ -386,7 +390,7 @@ export class AdminMainSearchComponent implements OnInit {
             });
     }
 
-    public doMassNote() {
+    doMassNote() {
         if (!this.massText.length)
             return;
 
@@ -414,7 +418,7 @@ export class AdminMainSearchComponent implements OnInit {
             });
     }
 
-    public doMassEmail() {
+    doMassEmail() {
         console.log (this.selectedReservations);
         this.showWaitingProgress();
 
@@ -437,7 +441,7 @@ export class AdminMainSearchComponent implements OnInit {
             });
     }
 
-    public autoTransactionAmount() {
+    autoTransactionAmount() {
         if (this.myReservation['Payment Method'] == PaymentMethod[0] && this.myReservation['Seats'] > 0) {
             this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.settings['reservation_initial_fee'];
         }
@@ -447,11 +451,11 @@ export class AdminMainSearchComponent implements OnInit {
         this.myReservation['Transaction Amount'] = this.myReservation['Transaction Amount'].toFixed(2);
     }
 
-    public successNotification(notifyText: string) {
+    successNotification(notifyText: string) {
         this._notificationsService.success('Success', notifyText, this.notifyOptionsForSuccess);
     }
 
-    public failedNotification(notifyText: string) {
+    failedNotification(notifyText: string) {
         this._notificationsService.error('Failed', notifyText);
     }
 

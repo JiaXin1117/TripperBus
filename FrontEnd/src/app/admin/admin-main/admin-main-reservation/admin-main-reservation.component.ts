@@ -9,7 +9,8 @@ import { HttpService } from "../../../services/http_service/http.service";
 import { NotificationsService } from 'angular2-notifications';
 
 import { Bus, Reservation, Time } from '../../../model';
-import { PaymentMethod, Autorize_net_url } from '../../../common';
+import { PaymentMethod, Autorize_net_url,
+        changeReservationsTimezone } from '../../../common';
 
 import * as moment from "moment";
 
@@ -241,6 +242,9 @@ export class AdminMainReservationComponent implements OnInit {
                                 this.reservations_from_time[this.reservations[i].time_id] = [];
                             this.reservations_from_time[this.reservations[i].time_id].push(this.reservations[i]);
                         }
+
+                        changeReservationsTimezone(this.reservations);
+
                         console.log(this.reservations);
                         console.log(this.reservations_from_time);
                     }

@@ -137,6 +137,14 @@
                         <textarea class="form-control" rows="5" id="reservation_notes" [(ngModel)]="myReservation['Note']">
                         </textarea>
                     </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="reservation_date">Date</label>
+                        <material-datepicker id="reservation_date" [placeholder]="'Select a date'" [(date)]="myReservationDate" [dateFormat]="'YYYY-MM-DD'"></material-datepicker>
+                    </div>
+                </div>
+                <div class="col-xs-12">
                     <div class="form-group pull-right" style="margin-top: 20px; margin-bottom: 20px">
                         <button type="submit" class="btn btn-primary" (click)="updateReservation()">Update</button>
                         <button type="submit" class="btn btn-danger" (click)="deleteSoftReservation()">Delete</button>
