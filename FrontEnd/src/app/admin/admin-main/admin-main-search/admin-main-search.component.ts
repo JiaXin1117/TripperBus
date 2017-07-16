@@ -10,7 +10,8 @@ import { NotificationsService } from 'angular2-notifications';
 
 import { Bus, Reservation, Time } from '../../../model';
 import { PaymentMethod, Autorize_net_url, 
-        getDateString, changeReservationsTimezone } from '../../../common';
+        getDateString, 
+        changeReservationsTimezone } from '../../../common';
 
 import * as moment from "moment";
 declare var jQuery:any;
@@ -154,9 +155,14 @@ export class AdminMainSearchComponent implements OnInit {
     }
 
     refreshData() {
+        let searchVal = this.inputParams.searchVal;
+        if (this.inputParams.searchKey == 'Date Made') {
+            searchVal = new Date(new Date(searchVal).setHours(0, 0, 0)).toISOString();
+        }
+
         let url = this._mainService.URLS.search_reservation 
         + "?searchKey=" + this.inputParams.searchKey 
-        + "&searchVal=" + this.inputParams.searchVal 
+        + "&searchVal=" + searchVal 
         + "&caseSensitive=" + this.inputParams.caseSensitive;
         
         this._httpService.sendGetRequestWithParams(url).subscribe(

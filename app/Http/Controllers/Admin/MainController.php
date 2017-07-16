@@ -312,22 +312,32 @@ class MainController extends Controller
 
         if ($searchKey == 'Date Made') {
             $searchKey = 'created_at';
-        }
 
-        if ($caseSensitive) {
+            $searchDate1 = Carbon::parse($searchVal);
+            $searchDate2 = Carbon::parse($searchVal)->addDay();
+
             $reservations = Res_Reservations::join('res_times', 'time_id', '=', 'res_times.id')
             ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
             ->where('res_reservations.valid', 1)
-            ->where('res_reservations.'.$searchKey, 'like', '%'.$searchVal.'%')
+            ->whereBetween('res_reservations.'.$searchKey, array($searchDate1, $searchDate2))
             ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*', 'res_times.time', 'res_stops.short AS stop'])
             ->toarray();
         } else {
-            $reservations = Res_Reservations::join('res_times', 'time_id', '=', 'res_times.id')
-            ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
-            ->where('res_reservations.valid', 1)
-            ->whereRaw('LOWER(res_reservations.`'.$searchKey.'`) like "%'.strtolower($searchVal).'%"')
-            ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*', 'res_times.time', 'res_stops.short AS stop'])
-            ->toarray();
+            if ($caseSensitive) {
+                $reservations = Res_Reservations::join('res_times', 'time_id', '=', 'res_times.id')
+                ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
+                ->where('res_reservations.valid', 1)
+                ->where('res_reservations.'.$searchKey, 'like', '%'.$searchVal.'%')
+                ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*', 'res_times.time', 'res_stops.short AS stop'])
+                ->toarray();
+            } else {
+                $reservations = Res_Reservations::join('res_times', 'time_id', '=', 'res_times.id')
+                ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
+                ->where('res_reservations.valid', 1)
+                ->whereRaw('LOWER(res_reservations.`'.$searchKey.'`) like "%'.strtolower($searchVal).'%"')
+                ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*', 'res_times.time', 'res_stops.short AS stop'])
+                ->toarray();
+            }
         }
 
         foreach($reservations as $key => $value) {

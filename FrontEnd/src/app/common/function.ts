@@ -11,14 +11,18 @@ export function getDateString(date: Date) {
     ].join('-');
 }
 
+export function changeTimezoneUTCtoLocal(dateStr: string) {
+    return moment
+        .utc(dateStr)
+        .local()
+        .format('YYYY-MM-DD HH:mm:ss');
+}
+
 export function changeReservationsTimezone(reservations: Reservation[]) {
     if (!reservations)
         return;
 
     reservations.forEach(reservation => {
-        reservation['Date Made'] = moment
-            .utc(reservation['Date Made'])
-            .local()
-            .format('YYYY-MM-DD HH:mm:ss');
+        reservation['Date Made'] = changeTimezoneUTCtoLocal(reservation['Date Made']);
     });
 }
