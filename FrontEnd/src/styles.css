@@ -15,7 +15,7 @@ a {
   cursor: pointer;
 }
 
-.datepicker__input {
+#sidebar_searchdate .datepicker__input {
     display: block !important;
     width: 100% !important;
     height: 34px !important;

@@ -111,6 +111,9 @@ class MainController extends Controller
         }
 
         unset($reservation['Date Made']);
+        unset($reservation['time']);
+        unset($reservation['stop']);
+        unset($reservation['id']);
 
         Res_Reservations::unguard();
         $response = Res_Reservations::create($reservation);

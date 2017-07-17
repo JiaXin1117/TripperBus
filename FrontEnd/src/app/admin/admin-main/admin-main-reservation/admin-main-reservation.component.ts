@@ -10,6 +10,7 @@ import { NotificationsService } from 'angular2-notifications';
 
 import { Bus, Reservation, Time } from '../../../model';
 import { PaymentMethod, Autorize_net_url,
+        getDateString,
         changeReservationsTimezone } from '../../../common';
 
 import * as moment from "moment";
@@ -24,20 +25,20 @@ declare var jQuery: any;
 
 export class AdminMainReservationComponent implements OnInit {
 
-    @ViewChild('reservationModal') public reservationModal: ModalDirective;
-    @ViewChild('selectedModal') public selectedModal: ModalDirective;
+    @ViewChild('reservationModal') reservationModal: ModalDirective;
+    @ViewChild('selectedModal') selectedModal: ModalDirective;
 
-    public headerLeave: any = {
+    headerLeave: any = {
         city: "",
         date: "",
     };
 
-    public headerReturn: any = {
+    headerReturn: any = {
         city: "",
         date: "",
     };
 
-    public inputParams: any = {
+    inputParams: any = {
         outbound_date: "",
         leaving_from: "",
         return_date: "",
@@ -49,28 +50,30 @@ export class AdminMainReservationComponent implements OnInit {
         returning_price: 0
     };
 
-    public reservations: Reservation[];
-    public reservations_from_time: Reservation[][];
+    reservations: Reservation[];
+    reservations_from_time: Reservation[][];
 
-    public newReservation = new Reservation;
-    public myReservation = new Reservation;
+    newReservation = new Reservation;
+    myReservation = new Reservation;
+    myReservationDate = new Date();
+    myReservationBuses = new Array();
 
-    public paymentMethod = PaymentMethod;
-    public authorize_net_url = Autorize_net_url;
-    public newReservation_LeavingAreaName;
-    public newReservation_ReturningAreaName;
+    paymentMethod = PaymentMethod;
+    authorize_net_url = Autorize_net_url;
+    newReservation_LeavingAreaName;
+    newReservation_ReturningAreaName;
 
-    public leaving_buses: Bus[];
-    public returning_buses: Bus[];
-    public errorMessage: string = "";
-    public successMessage: string = "";
-    public outbound_bus: Bus = null;
-    public outbound_time: Time = null;
-    public returning_bus: Bus = null;
-    public returning_time: Time = null;
-    public returning_price: number = 0;
-    public leaving_holidayName = '';
-    public returning_holidayName = '';
+    leaving_buses: Bus[];
+    returning_buses: Bus[];
+    errorMessage: string = "";
+    successMessage: string = "";
+    outbound_bus: Bus = null;
+    outbound_time: Time = null;
+    returning_bus: Bus = null;
+    returning_time: Time = null;
+    returning_price: number = 0;
+    leaving_holidayName = '';
+    returning_holidayName = '';
 
     // Default selection
     showField: number[] = [];
@@ -120,14 +123,14 @@ export class AdminMainReservationComponent implements OnInit {
         { id: 16, name: 'Under Account' },
     ];
 
-    public massAction = "Delete";
-    public massText = "";
+    massAction = "Delete";
+    massText = "";
 
     // array of currently selected entities in the data table
     selectedEntities: Reservation[][];
     selectedReservations: Reservation[];
 
-    public notifyOptions = {
+    notifyOptions = {
 //        timeOut: 3000,
         position: ["bottom", "right"],
         showProgressBar: false,
@@ -136,7 +139,7 @@ export class AdminMainReservationComponent implements OnInit {
         maxStack: 1,
     };
 
-    public notifyOptionsForSuccess = {
+    notifyOptionsForSuccess = {
         timeOut: 3000,
         position: ["bottom", "right"],
         showProgressBar: false,
@@ -172,19 +175,19 @@ export class AdminMainReservationComponent implements OnInit {
 
     }
 
-    public initData() {
+    initData() {
         this.reservations = [];
         this.reservations_from_time = [];
 
         this.initNewReservation();
     }
 
-    public initNewReservation() {
+    initNewReservation() {
         this.newReservation.init();
         this.newReservation['Seats'] = 1;
     }
 
-    public refreshData(reload = false) {
+    refreshData(reload = false) {
         if (reload) {
             this.initData();
 
@@ -260,7 +263,7 @@ export class AdminMainReservationComponent implements OnInit {
         }
     }
 
-    public receiveInputParams() {
+    receiveInputParams() {
         let me = this;
 
         me.inputParams.outbound_date = me._route.snapshot.params['outbound_date'];
@@ -274,14 +277,14 @@ export class AdminMainReservationComponent implements OnInit {
         me.inputParams.returning_price = parseFloat(me._route.snapshot.params['returning_price']);
     }
 
-    public structHeaderLeaving() {
+    structHeaderLeaving() {
         let me = this;
 
         me.headerLeave.city = me._scheduleService.getCityName(me.inputParams.leaving_from);
         me.headerLeave.date = me._scheduleService.getDateAsLongFormat(me.inputParams.outbound_date);
     }
 
-    public structHeaderReturn() {
+    structHeaderReturn() {
         let me = this;
 
         // Set return city.
@@ -317,7 +320,7 @@ export class AdminMainReservationComponent implements OnInit {
         });
     }
 
-    public addReservation() {
+    addReservation() {
         let url = this._mainService.URLS.add_reservation;
 
         this.newReservation.copy(this.myReservation);
@@ -368,19 +371,19 @@ export class AdminMainReservationComponent implements OnInit {
             });
     }
 
-    public editReservation(reservation: Reservation) {
+    editReservation(reservation: Reservation) {
         this.myReservation.copy(reservation);
 
         this.showReservationModal();
     }
 
-    public copyReservation(dst: Reservation, src: Reservation) {
+    copyReservation(dst: Reservation, src: Reservation) {
         Object.keys(src).forEach(key => {
             dst[key] = src[key];
         });
     }
 
-    public updateReservationFromArray(reservations: Reservation[], reservation: Reservation) {
+    updateReservationFromArray(reservations: Reservation[], reservation: Reservation) {
         if (!reservations) {
             return -1;
         }
@@ -393,11 +396,17 @@ export class AdminMainReservationComponent implements OnInit {
         return index;
     }
 
-    public updateReservation() {
+    updateReservation() {
         let url = this._mainService.URLS.update_reservation;
         let updateId = this.myReservation['id'];
+        let oldReservation = this.reservations.find(reservation => (reservation['id'] == updateId));
 
         console.log(this.myReservation);
+
+        if (this.myReservation['date'] != oldReservation['date'] ||
+            this.myReservation['time_id'] != oldReservation['time_id']) {
+            return this.updateReservationWithDate();
+        }
 
         this.showWaitingProgress();
         this._httpService.sendPostJSON(url, { reservation: this.myReservation })
@@ -437,7 +446,47 @@ export class AdminMainReservationComponent implements OnInit {
             });
     }
 
-    public removeReservationFromArray(reservations: Reservation[], reservation: Reservation) {
+    updateReservationWithDate() {
+        if (!this.myReservation['time_id']) {
+            return this.failedNotification("Please select time!");
+        }
+
+        let url = this._mainService.URLS.add_reservation;
+        let updateId = this.myReservation['id'];
+        let oldReservation = this.reservations.find(reservation => (reservation['id'] == updateId));
+        let newReservation = new Reservation;
+
+        newReservation.copy(this.myReservation);
+
+        console.log(newReservation);
+
+        this.showWaitingProgress();
+        this._httpService.sendPostJSON(url, { reservation: newReservation })
+            .subscribe(
+            data => {
+                if (data.success) {
+                    let createdReservation = data.data as Reservation;
+                    if (!createdReservation)
+                        return this.hideWaitingProgress();
+
+                    this.myReservation.copy(oldReservation);
+                    this.deleteSoftReservationWithDate();
+                } else {
+                    if (data.error) {
+                        this.failedNotification(data.error);
+                        this.hideWaitingProgress();
+                    }
+                }
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.addReservationErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            });
+    }
+
+    removeReservationFromArray(reservations: Reservation[], reservation: Reservation) {
         if (!reservations) {
             return -1;
         }
@@ -449,7 +498,7 @@ export class AdminMainReservationComponent implements OnInit {
         return index;
     }
 
-    public deleteSoftReservation() {
+    deleteSoftReservation() {
         let url = this._mainService.URLS.delete_soft_reservation;
         let deleteId = this.myReservation['id'];
 
@@ -485,7 +534,36 @@ export class AdminMainReservationComponent implements OnInit {
             });
     }
 
-    public deleteReservation() {
+    deleteSoftReservationWithDate() {
+        let url = this._mainService.URLS.delete_soft_reservation;
+
+        this._httpService.sendPostJSON(url, {reservation: this.myReservation})
+        .subscribe(
+            data => {
+                let updatedReservation = data as Reservation;
+                if (!updatedReservation)
+                    return this.hideWaitingProgress();
+
+                this.refreshData(true);
+
+                this.hideReservationModal();
+
+                this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
+    }
+
+    deleteReservation() {
         let url = this._mainService.URLS.delete_reservation;
         let deleteId = this.myReservation['id'];
 
@@ -520,29 +598,32 @@ export class AdminMainReservationComponent implements OnInit {
     }
 
 
-    public showReservationModal() {
+    showReservationModal() {
+        this.myReservationDate = new Date(this.myReservation['date']);
         this.reservationModal.show();
+
+        this.getReservationBusTimes();
     }
 
-    public hideReservationModal() {
+    hideReservationModal() {
         this.reservationModal.hide();
     }
 
-    public showAddReservationModal() {
+    showAddReservationModal() {
         this.myReservation.copy(this.newReservation);
         this.refreshData();
         this.showReservationModal();
     }
 
-    public showSelectedModal() {
+    showSelectedModal() {
         this.selectedModal.show();
     }
 
-    public hideSelectedModal() {
+    hideSelectedModal() {
         this.selectedModal.hide();
     }
 
-    public doMassAction() {
+    doMassAction() {
         if (!this.selectedReservations.length)
             return;
 
@@ -561,7 +642,7 @@ export class AdminMainReservationComponent implements OnInit {
         }
     }
 
-    public doMassDelete() {
+    doMassDelete() {
         console.log(this.selectedReservations);
 
         this.showWaitingProgress();
@@ -588,7 +669,7 @@ export class AdminMainReservationComponent implements OnInit {
             });
     }
 
-    public doMassNote() {
+    doMassNote() {
         if (!this.massText.length)
             return;
 
@@ -616,7 +697,7 @@ export class AdminMainReservationComponent implements OnInit {
             });
     }
 
-    public doMassEmail() {
+    doMassEmail() {
         console.log(this.selectedReservations);
 
         this.showWaitingProgress();
@@ -640,7 +721,7 @@ export class AdminMainReservationComponent implements OnInit {
             });
     }
 
-    public autoTransactionAmount() {
+    autoTransactionAmount() {
         if (this.myReservation['Payment Method'] == PaymentMethod[0] && this.myReservation['Seats'] > 0) {
             this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.settings['reservation_initial_fee'];
 
@@ -654,11 +735,11 @@ export class AdminMainReservationComponent implements OnInit {
         this.myReservation['Transaction Amount'] = this.myReservation['Transaction Amount'].toFixed(2);
     }
 
-    public updateBusTimesReservationTotal() {
+    updateBusTimesReservationTotal() {
         this.outbound_bus.times.forEach(time => this.updateTimesReservationTotal(time));
     }
 
-    public updateTimesReservationTotal(time: Time) {
+    updateTimesReservationTotal(time: Time) {
         let reservation_cnt = 0;
 
         if (this.reservations_from_time[time['id']]) {
@@ -668,11 +749,59 @@ export class AdminMainReservationComponent implements OnInit {
         time['reservation_cnt'] = reservation_cnt;
     }
 
-    public successNotification(notifyText: string) {
+    isAfterToday(dateStr) {
+        let date = new Date(dateStr).setHours(0, 0, 0, 0);
+        let today = new Date().setHours(0, 0, 0, 0);
+
+        return (date >= today);
+    }
+
+    onSelectReservationDate() {
+        if (!this.isAfterToday(this.myReservationDate)) {
+            this.failedNotification ("Please select date from today!");
+            this.myReservationDate = new Date(this.myReservation['date']);
+
+            return;
+        }
+
+        this.myReservation['date'] = getDateString(this.myReservationDate);
+        this.myReservation['time_id'] = 0;
+        this.myReservationBuses = Array();
+        this.getReservationBusTimes();
+    }
+
+    onSelectReservationTime(timeId) {
+        this.myReservation['time_id'] = timeId;
+    }
+
+    getReservationBusTimes() {
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.get_buses_for_edit + "?outbound_date=" + this.myReservation['date'] + "&leaving_from=" + this.myReservation['outbound_area_id'];
+        console.log(this.myReservationDate);
+
+        this._httpService.sendGetRequestWithParams(url)
+            .subscribe(
+            data => {
+                if (data.state == "success") {
+                    this.myReservationBuses = data.data_1;
+                    console.log(this.myReservationBuses);
+                }
+            },
+            error => {
+                this.failedNotification(error);
+            },
+            () => {
+                this.hideWaitingProgress();
+            }
+            );
+    }
+
+    successNotification(notifyText: string) {
         this._notificationsService.success('Success', notifyText, this.notifyOptionsForSuccess);
     }
 
-    public failedNotification(notifyText: string) {
+    failedNotification(notifyText: string) {
         this._notificationsService.error('Failed', notifyText);
     }
 
