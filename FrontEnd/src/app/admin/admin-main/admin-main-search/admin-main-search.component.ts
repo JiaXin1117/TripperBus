@@ -255,12 +255,18 @@ export class AdminMainSearchComponent implements OnInit {
         let url = this._mainService.URLS.update_reservation;
         let updateId = this.myReservation['id'];
         let oldReservation = this.reservations.find(reservation => (reservation['id'] == updateId));
+        let isUpdateWithDate = false;
 
         console.log (this.myReservation);
 
         if (this.myReservation['date'] != oldReservation['date'] ||
             this.myReservation['time_id'] != oldReservation['time_id']) {
-            return this.updateReservationWithDate();
+
+            if (!this.myReservation['time_id']) {
+                return this.failedNotification("Please select time!");
+            }
+
+            isUpdateWithDate = true;
         }
 
         this.showWaitingProgress();
@@ -272,7 +278,11 @@ export class AdminMainSearchComponent implements OnInit {
                     if (!updatedReservation)
                         return this.hideWaitingProgress();
 
-                    this.updateReservationFromArray(this.reservations, updatedReservation);
+                    if (isUpdateWithDate) {
+                        this.refreshData();
+                    } else {
+                        this.updateReservationFromArray(this.reservations, updatedReservation);
+                    }
 
                     this.hideReservationModal();
 
@@ -290,46 +300,6 @@ export class AdminMainSearchComponent implements OnInit {
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
-                this.failedNotification(error);
-                this.hideWaitingProgress();
-            });
-    }
-
-    updateReservationWithDate() {
-        if (!this.myReservation['time_id']) {
-            return this.failedNotification("Please select time!");
-        }
-
-        let url = this._mainService.URLS.add_reservation;
-        let updateId = this.myReservation['id'];
-        let oldReservation = this.reservations.find(reservation => (reservation['id'] == updateId));
-        let newReservation = new Reservation;
-
-        newReservation.copy(this.myReservation);
-
-        console.log(newReservation);
-
-        this.showWaitingProgress();
-        this._httpService.sendPostJSON(url, { reservation: newReservation })
-            .subscribe(
-            data => {
-                if (data.success) {
-                    let createdReservation = data.data as Reservation;
-                    if (!createdReservation)
-                        return this.hideWaitingProgress();
-
-                    this.myReservation.copy(oldReservation);
-                    this.deleteSoftReservationWithDate();
-                } else {
-                    if (data.error) {
-                        this.failedNotification(data.error);
-                        this.hideWaitingProgress();
-                    }
-                }
-            },
-            error => {
-                this.successMessage = "";
-                this.errorMessage = this._mainService.addReservationErrorMessage;
                 this.failedNotification(error);
                 this.hideWaitingProgress();
             });
@@ -374,35 +344,6 @@ export class AdminMainSearchComponent implements OnInit {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
                 this.failedNotification(error);
-                this.hideWaitingProgress();
-            });
-    }
-
-    deleteSoftReservationWithDate() {
-        let url = this._mainService.URLS.delete_soft_reservation;
-
-        this._httpService.sendPostJSON(url, {reservation: this.myReservation})
-        .subscribe(
-            data => {
-                let updatedReservation = data as Reservation;
-                if (!updatedReservation)
-                    return this.hideWaitingProgress();
-
-                this.refreshData();
-
-                this.hideReservationModal();
-
-                this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
-                this.errorMessage = "";
-                this.successNotification(this.successMessage);
-            },
-            error => {
-                this.successMessage = "";
-                this.errorMessage = this._mainService.updateReservationErrorMessage;
-                this.failedNotification(error);
-                this.hideWaitingProgress();
-            },
-            () => {
                 this.hideWaitingProgress();
             });
     }
@@ -568,7 +509,6 @@ export class AdminMainSearchComponent implements OnInit {
         this.showWaitingProgress();
 
         let url = this._mainService.URLS.get_buses_for_edit + "?outbound_date=" + this.myReservation['date'] + "&leaving_from=" + this.myReservation['outbound_area_id'];
-        console.log(this.myReservationDate);
 
         this._httpService.sendGetRequestWithParams(url)
             .subscribe(

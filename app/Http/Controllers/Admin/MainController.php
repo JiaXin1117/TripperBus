@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Input;
 use DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 use App\Mail\Mail_Reservation;
 use App\Mail\Mail_Bus;
 
@@ -152,6 +153,27 @@ class MainController extends Controller
             ]);
         }
 
+        $time = Res_Times::find($reservation['time_id']);
+        $max_cap = $time->group->max_cap;
+        $reservationsTotal = BusEditController::getGroup_ReservationsTotal($time->group->id, $reservation['date']);
+        $remain_seats = $max_cap - $reservationsTotal;
+        if ($remain_seats <= 0) {
+            $errorMsg = 'Bus is full.';
+            return response()->json([
+                'success' => false,
+                'error' => $errorMsg
+            ]);
+        } else if ($reservation['Seats'] > $remain_seats) {
+            $errorMsg = 'You are overbooking the bus. Now ' 
+            . $remain_seats . ' seat' 
+            . ($remain_seats == 1 ? ' is' : 's are') 
+            . ' remaining';
+            return response()->json([
+                'success' => false,
+                'error' => $errorMsg
+            ]);
+        }
+
         $oldReservation = Res_Reservations::where('id', $reservation['id'])->get()->toarray()[0];
 
         if ($oldReservation['Seats'] < $reservation['Seats']) {
@@ -161,11 +183,21 @@ class MainController extends Controller
                 'error' => $errorMsg
             ]);
         }
-        
+
         if ($reservation['Payment Method'] == 'Credit Card') {
 /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
                 $reservation['Authorize net Link'] = $trans_id;
             }*/
+        }
+
+        if ($oldReservation['date'] != $reservation['date'] ||
+            $oldReservation['time_id'] != $reservation['time_id']) {
+            $username = Auth::user()->full_name;
+            $now = date('Y/m/d g:i A');
+            $Note1 = "\nReservation deleted by " . $username . ' on ' . $now 
+                    . '. Old reservation number was : ' . $oldReservation['id'] 
+                    . '. New reservation number is : ' . $oldReservation['id']; // Temp newReservation number
+            $reservation['Note'] .= $Note1;
         }
 
         unset($reservation['Date Made']);

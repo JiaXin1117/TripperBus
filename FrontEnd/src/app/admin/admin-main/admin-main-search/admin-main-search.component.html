@@ -138,7 +138,7 @@
                         </textarea>
                     </div>
                 </div>
-                <div *ngIf="isAfterToday(myReservation['date'])" class="col-xs-12">
+                <div class="col-xs-12">
                     <div class="form-group">
                         <label for="reservation_date">Date</label>
                         <material-datepicker id="reservation_date" [placeholder]="'Select a date'" [(date)]="myReservationDate" [dateFormat]="'YYYY-MM-DD'" (onSelect)="onSelectReservationDate()"></material-datepicker>
