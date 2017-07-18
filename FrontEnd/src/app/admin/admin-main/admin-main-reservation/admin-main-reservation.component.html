@@ -238,7 +238,7 @@
                             </textarea>
                         </div>
                     </div>
-                    <div class="col-xs-12">
+                    <div *ngIf="myReservation['id']" class="col-xs-12">
                         <div class="form-group">
                             <label for="reservation_date">Date</label>
                             <material-datepicker id="reservation_date" [placeholder]="'Select a date'" [(date)]="myReservationDate" [dateFormat]="'YYYY-MM-DD'" (onSelect)="onSelectReservationDate()"></material-datepicker>

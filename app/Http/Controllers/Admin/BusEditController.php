@@ -650,7 +650,7 @@ class BusEditController extends Controller
     public function moveReservations(Request $request){
         $buses = $request->only(['buses']);
         $buses = $buses['buses'];
-        $user = 'Administrator'; // Temp
+        $user = Auth::user()->full_name;
         foreach($buses as $bus) {
             foreach($bus['times'] as $time) {
                 if($time['move'] != 0) {

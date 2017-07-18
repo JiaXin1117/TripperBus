@@ -373,6 +373,9 @@ export class AdminMainReservationComponent implements OnInit {
 
     editReservation(reservation: Reservation) {
         this.myReservation.copy(reservation);
+        this.myReservationDate = new Date(this.myReservation['date']);
+
+        this.getReservationBusTimes();
 
         this.showReservationModal();
     }
@@ -541,10 +544,7 @@ export class AdminMainReservationComponent implements OnInit {
 
 
     showReservationModal() {
-        this.myReservationDate = new Date(this.myReservation['date']);
         this.reservationModal.show();
-
-        this.getReservationBusTimes();
     }
 
     hideReservationModal() {

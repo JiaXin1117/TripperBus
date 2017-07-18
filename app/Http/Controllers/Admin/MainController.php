@@ -263,7 +263,7 @@ class MainController extends Controller
 
         $reservation['Seats'] = 0;
         $reservation['Transaction Amount'] = 0;
-        $username = 'Administrator'; // Temp
+        $username = Auth::user()->full_name;
         $reservation['Note'] .= "\n" . $username . ' deleted this reservation on ' . Carbon::now() . '.';
 
         if ($reservation['Payment Method'] == 'Credit Card') {
@@ -301,7 +301,7 @@ class MainController extends Controller
         foreach ($reservations as $reservation) {
             $reservation['Seats'] = 0;
             $reservation['Transaction Amount'] = 0;
-            $username = 'Administrator'; // Temp
+            $username = Auth::user()->full_name;
             $reservation['Note'] .= "\n" . $username . ' deleted this reservation on ' . Carbon::now() . '.';
 
             if ($reservation['Payment Method'] == 'Credit Card') {
@@ -393,7 +393,6 @@ class MainController extends Controller
         $res_reservations = array();
 
         foreach ($reservations as $reservation) {
-            $username = 'Administrator'; // Temp
             $res_reservation = array();
             $res_reservation = Res_Reservations::find($reservation['id']);
 
