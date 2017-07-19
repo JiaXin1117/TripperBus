@@ -667,12 +667,12 @@ class BusEditController extends Controller
                     $moveReservations = Res_Reservations::join('res_areas', 'res_reservations.outbound_area_id', '=', 'res_areas.id')
                                     ->where('time_id', $time['id'])
                                     ->where('date',  $bus['date'])
-                                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                                    ->where('valid',  config('config.TYPE_RESERVATION_VALID'))
                                     ->get()->toarray();
 
                     Res_Reservations::where('time_id', $time['id'])
                                     ->where('date',  $bus['date'])
-                                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                                    ->where('valid',  config('config.TYPE_RESERVATION_VALID'))
                                     ->where('Note', '<>', '')
                                     ->update([
                                         'time_id' => $time['move'],
@@ -681,7 +681,7 @@ class BusEditController extends Controller
 
                     Res_Reservations::where('time_id', $time['id'])
                                     ->where('date',  $bus['date'])
-                                    ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+                                    ->where('valid',  config('config.TYPE_RESERVATION_VALID'))
                                     ->where(function($query) use($time, $notesAdd) {
                                         $query->whereNull('Note')
                                         ->orWhere('Note', '=', '');
@@ -728,7 +728,7 @@ class BusEditController extends Controller
     public static function getTime_ReservationsTotal($time_id, $date) {
         $total = intval(Res_Reservations::where('time_id', $time_id)
         ->where('date',  $date)
-        ->where('valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
+        ->where('valid',  config('config.TYPE_RESERVATION_VALID'))
         ->select(DB::raw('sum(Seats) as reservation_cnt'))
         ->first()->reservation_cnt);
 

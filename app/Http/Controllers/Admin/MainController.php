@@ -36,6 +36,7 @@ class MainController extends Controller
             $join->on('res_times.id', '=', 'res_reservations.time_id')
             ->where('res_times.valid', config('config.TYPE_SCHEDULE_UNREMOVED'));
         })
+        ->where('res_reservations.valid', config('config.TYPE_RESERVATION_VALID'))
         ->where('outbound_area_id',  $param_outbound_area_id)
 //        ->select(DB::raw('res_reservations.*'))
         ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*']); 
@@ -353,7 +354,7 @@ class MainController extends Controller
 
             $reservations = Res_Reservations::join('res_times', 'time_id', '=', 'res_times.id')
             ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
-            ->where('res_reservations.valid', 1)
+            ->where('res_reservations.valid', config('config.TYPE_RESERVATION_VALID'))
             ->whereBetween('res_reservations.'.$searchKey, array($searchDate1, $searchDate2))
             ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*', 'res_times.time', 'res_stops.short AS stop'])
             ->toarray();
@@ -361,14 +362,14 @@ class MainController extends Controller
             if ($caseSensitive) {
                 $reservations = Res_Reservations::join('res_times', 'time_id', '=', 'res_times.id')
                 ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
-                ->where('res_reservations.valid', 1)
+                ->where('res_reservations.valid', config('config.TYPE_RESERVATION_VALID'))
                 ->where('res_reservations.'.$searchKey, 'like', '%'.$searchVal.'%')
                 ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*', 'res_times.time', 'res_stops.short AS stop'])
                 ->toarray();
             } else {
                 $reservations = Res_Reservations::join('res_times', 'time_id', '=', 'res_times.id')
                 ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
-                ->where('res_reservations.valid', 1)
+                ->where('res_reservations.valid', config('config.TYPE_RESERVATION_VALID'))
                 ->whereRaw('LOWER(res_reservations.`'.$searchKey.'`) like "%'.strtolower($searchVal).'%"')
                 ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*', 'res_times.time', 'res_stops.short AS stop'])
                 ->toarray();
@@ -552,7 +553,7 @@ class MainController extends Controller
         $reservations[0] = \App\Models\Res_Reservations::
         join('res_times', 'res_reservations.time_id', '=', 'res_times.id')
         ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
-        ->where('res_reservations.valid', 1)
+        ->where('res_reservations.valid', config('config.TYPE_RESERVATION_VALID'))
         ->where('res_reservations.'.$dateFieldStr, '>=', $date1)
         ->where('res_reservations.'.$dateFieldStr, '<=', $date2)
         ->select('res_reservations.*', 'res_stops.short')
@@ -562,7 +563,7 @@ class MainController extends Controller
         $reservations[1] = \App\Models\Res_Reservations::
         join('res_times', 'res_reservations.time_id', '=', 'res_times.id')
         ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
-        ->where('res_reservations.valid', 1)
+        ->where('res_reservations.valid', config('config.TYPE_RESERVATION_VALID'))
         ->where('res_reservations.'.$dateFieldStr, '>=', $date1)
         ->where('res_reservations.'.$dateFieldStr, '<=', $date2)
         ->select('res_reservations.*', 'res_stops.short')
@@ -576,7 +577,7 @@ class MainController extends Controller
         $totalAmount[0] = \App\Models\Res_Reservations::
         join('res_times', 'res_reservations.time_id', '=', 'res_times.id')
         ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
-        ->where('res_reservations.valid', 1)
+        ->where('res_reservations.valid', config('config.TYPE_RESERVATION_VALID'))
         ->where('res_reservations.'.$dateFieldStr, '>=', $date1)
         ->where('res_reservations.'.$dateFieldStr, '<=', $date2)
         ->where('res_reservations.outbound_area_id', 1)
@@ -585,7 +586,7 @@ class MainController extends Controller
         $totalAmount[1] = \App\Models\Res_Reservations::
         join('res_times', 'res_reservations.time_id', '=', 'res_times.id')
         ->join('res_stops', 'res_times.stop_id', '=', 'res_stops.id')
-        ->where('res_reservations.valid', 1)
+        ->where('res_reservations.valid', config('config.TYPE_RESERVATION_VALID'))
         ->where('res_reservations.'.$dateFieldStr, '>=', $date1)
         ->where('res_reservations.'.$dateFieldStr, '<=', $date2)
         ->where('res_reservations.outbound_area_id', 2)
