@@ -11,7 +11,8 @@ import { NotificationsService } from 'angular2-notifications';
 import { Bus, Reservation, Time } from '../../../model';
 import { PaymentMethod, Autorize_net_url,
         getDateString,
-        changeReservationsTimezone } from '../../../common';
+        changeReservationsTimezone,
+        calcBusesTotalSeats } from '../../../common';
 
 import * as moment from "moment";
 
@@ -196,7 +197,7 @@ export class AdminMainReservationComponent implements OnInit {
             this._httpService.sendGetRequestWithParams(url)
                 .subscribe(
                 data => {
-                    if (data.state == "success") {
+                    if (data.success) {
                         this.leaving_buses = data.data_1;
                         this.returning_buses = data.data_2;
                         this.leaving_holidayName = data.holidayName1;
@@ -231,14 +232,14 @@ export class AdminMainReservationComponent implements OnInit {
                 error => {
                     this.failedNotification(error);
                 }
-                );
+            );
 
             url = this._mainService.URLS.retrieve_reservations_by_date_url + "?outbound_date=" + this.inputParams.outbound_date + "&leaving_from=" + this.inputParams.leaving_from + "&return_date=" + this.inputParams.return_date;
 
             this._httpService.sendGetRequestWithParams(url)
                 .subscribe(
                 data => {
-                    if (data.state == "success") {
+                    if (data.success) {
                         this.reservations = data.data;
                         for (let i = 0; i < this.reservations.length; i++) {
                             if (!this.reservations_from_time[this.reservations[i].time_id])
@@ -255,7 +256,7 @@ export class AdminMainReservationComponent implements OnInit {
                 error => {
                     this.failedNotification(error);
                 }
-                );
+            );
         } else {
             this.initNewReservation();
 
@@ -386,6 +387,45 @@ export class AdminMainReservationComponent implements OnInit {
         });
     }
 
+    addReservationSeats() {
+        let url = this._mainService.URLS.add_reservation_seats;
+        let updateId = this.myReservation['id'];
+        let oldReservation = this.reservations.find(reservation => (reservation['id'] == updateId));
+
+        console.log(this.myReservation);
+
+        this.showWaitingProgress();
+        this._httpService.sendPostJSON(url, { reservation: this.myReservation })
+            .subscribe(
+            data => {
+                if (data.success) {
+                    let updatedReservation = data.data as Reservation;
+                    if (!updatedReservation)
+                        return this.hideWaitingProgress();
+
+                    this.refreshData(true);
+                    this.hideReservationModal();
+
+                    this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
+                    this.errorMessage = "";
+                    this.successNotification(this.successMessage);
+                } else {
+                    if (data.error) {
+                        this.failedNotification(data.error);
+                    }
+                }
+
+                this.hideWaitingProgress();
+            },
+            error => {
+                this.hideWaitingProgress();
+
+                this.successMessage = "";
+                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.failedNotification(error);
+            });
+    }
+
     updateReservationFromArray(reservations: Reservation[], reservation: Reservation) {
         if (!reservations) {
             return -1;
@@ -407,14 +447,10 @@ export class AdminMainReservationComponent implements OnInit {
 
         console.log(this.myReservation);
 
-        if (this.myReservation['date'] != oldReservation['date'] ||
-            this.myReservation['time_id'] != oldReservation['time_id']) {
-
-            if (!this.myReservation['time_id']) {
-                return this.failedNotification("Please select time!");
-            }
-
-            isUpdateWithDate = true;
+        if ((this.myReservation['date'] != oldReservation['date'] ||
+                this.myReservation['time_id'] != oldReservation['time_id']) && 
+            !this.myReservation['time_id']) {
+            return this.failedNotification("Please select time!");
         }
 
         this.showWaitingProgress();
@@ -426,18 +462,7 @@ export class AdminMainReservationComponent implements OnInit {
                     if (!updatedReservation)
                         return this.hideWaitingProgress();
 
-                    if (isUpdateWithDate) {
-                        this.refreshData(true);
-                    } else {
-                        let oldReservation = this.reservations.find(item => (item['id'] == updateId));
-                        let update_Time = Bus.getTimeIndexFromTimeId(this.outbound_bus, this.myReservation['time_id']);
-                        update_Time['reservation_cnt'] += updatedReservation['Seats'] - oldReservation['Seats'];
-
-                        this.updateReservationFromArray(this.reservations, updatedReservation);
-
-                        this.refreshData();
-                    }
-
+                    this.refreshData(true);
                     this.hideReservationModal();
 
                     this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
@@ -457,6 +482,50 @@ export class AdminMainReservationComponent implements OnInit {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
                 this.failedNotification(error);
+            });
+    }
+
+    holdReservation() {
+        let url = this._mainService.URLS.hold_reservation;
+        let updateId = this.myReservation['id'];
+
+        console.log(this.myReservation);
+
+        this.showWaitingProgress();
+        this._httpService.sendPostJSON(url, { reservation: this.myReservation })
+            .subscribe(
+            data => {
+                console.log(data);
+                if (!data.success) {
+                    return this.failedNotification(data.error);
+                }
+
+                let updatedReservation = data.data as Reservation;
+                if (!updatedReservation)
+                    return this.hideWaitingProgress();
+
+                let oldReservation = this.reservations.find(item => (item['id'] == updateId));
+                let update_Time = Bus.getTimeIndexFromTimeId(this.outbound_bus, oldReservation['time_id']);
+                update_Time['reservation_cnt'] += updatedReservation['Seats'] - oldReservation['Seats'];
+
+                this.updateReservationFromArray(this.reservations, updatedReservation);
+
+                this.hideReservationModal();
+                this.refreshData();
+
+                this.successMessage = "Reservation#" + this.myReservation['id'] + " is held on place.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.hideWaitingProgress();
+
+                this.successMessage = "";
+                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.failedNotification(error);
+            },
+            () => {
+                this.hideWaitingProgress();
             });
     }
 
@@ -482,7 +551,12 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, { reservation: this.myReservation })
             .subscribe(
             data => {
-                let updatedReservation = data as Reservation;
+                console.log(data);
+                if (!data.success) {
+                    return this.failedNotification(data.error);
+                }
+
+                let updatedReservation = data.data as Reservation;
                 if (!updatedReservation)
                     return this.hideWaitingProgress();
 
@@ -498,12 +572,14 @@ export class AdminMainReservationComponent implements OnInit {
                 this.successMessage = "Reservation#" + this.myReservation['id'] + " is deleted.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
-                this.hideWaitingProgress();
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
                 this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
                 this.hideWaitingProgress();
             });
     }
@@ -724,9 +800,11 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendGetRequestWithParams(url)
             .subscribe(
             data => {
-                if (data.state == "success") {
+                if (data.success) {
                     this.myReservationBuses = data.data_1;
                     console.log(this.myReservationBuses);
+
+                    calcBusesTotalSeats(this.myReservationBuses);
                 }
             },
             error => {
@@ -735,7 +813,7 @@ export class AdminMainReservationComponent implements OnInit {
             () => {
                 this.hideWaitingProgress();
             }
-            );
+        );
     }
 
     successNotification(notifyText: string) {

@@ -16,4 +16,8 @@ class Res_Times extends Model
     public function reservations() {
         return $this->hasMany('App\Models\Res_Reservations', 'time_id');
     }
+
+    public function stop() {
+        return $this->belongsTo('App\Models\Res_Stops');
+    }
 }

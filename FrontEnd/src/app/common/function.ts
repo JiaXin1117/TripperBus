@@ -1,4 +1,4 @@
-import { Reservation } from '../model';
+import { Reservation, Bus, Time } from '../model';
 import * as moment from 'moment';
 
 export function getDateString(date: Date) {
@@ -25,4 +25,14 @@ export function changeReservationsTimezone(reservations: Reservation[]) {
     reservations.forEach(reservation => {
         reservation['Date Made'] = changeTimezoneUTCtoLocal(reservation['Date Made']);
     });
+}
+
+export function calcBusesTotalSeats(buses: Bus[]) {
+    buses.forEach (bus => calcBusTotalSeats(bus));
+}
+
+export function calcBusTotalSeats(bus: Bus) {
+    let count = 0;
+    bus.times.forEach (time => count += time['reservation_cnt']);
+    bus['totalSeats'] = count;
 }

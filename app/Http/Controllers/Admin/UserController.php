@@ -20,9 +20,7 @@ class UserController extends Controller
     public function getUsers() {
         $users = Res_Users::get()->toarray();
         if (!count($users)) {
-            return response()->json([
-                'success'   => false
-            ]);
+            return failedError('No user!');
         }
 
         $permissions = array();
@@ -64,10 +62,7 @@ class UserController extends Controller
             ]);
         }
 
-        return  response()->json([
-            'success'   => false,
-            'error'     => 'Not logged in!',
-        ]);
+        return failedError('Not logged in!');
     }
 
     public function addUser(Request $request) {
@@ -75,20 +70,14 @@ class UserController extends Controller
 
         $validator = $this->user_credential_rules($user);
         if ($validator->fails()) {
-            return response()->json([
-                'success'    => false,
-                'error'     => $validator->getMessageBag()->first(),
-            ]);
+            return failedError($validator->getMessageBag()->first());
         }
 
         //check exist
         if (Res_Users::where('name', $user['name'])
                     ->orWhere('email', $user['email'])
                     ->exists()) {
-            return response()->json([
-                'success'   => false,
-                'error'     => 'User already exists!',
-            ]);
+            return failedError('User already exists!');
         }
 
         unset($user['created_at']);
@@ -117,10 +106,7 @@ class UserController extends Controller
 
         $validator = $this->user_credential_rules($user);
         if ($validator->fails()) {
-            return response()->json([
-                'status'    => false,
-                'error'     => $validator->getMessageBag()->first(),
-            ]);
+            return failedError($validator->getMessageBag()->first());
         }
 
         //check exist
@@ -130,10 +116,7 @@ class UserController extends Controller
                               ->orWhere('email', $user['email']);
                     })
                     ->exists()) {
-            return response()->json([
-                'success'   => false,
-                'error'     => "User already exists!",
-            ]);
+            return failedError('User already exists!');
         }
 
         unset($user['created_at']);
@@ -157,10 +140,7 @@ class UserController extends Controller
         //check exist
         $user = Res_Users::find($userId);
         if (!$user) {
-            return response()->json([
-                'success'   => false,
-                'error'     => "User doesn't exist!",
-            ]);
+            return failedError("User doesn't exist!");
         }
 
         Res_Users::unguard();

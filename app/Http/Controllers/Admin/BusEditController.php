@@ -128,7 +128,8 @@ class BusEditController extends Controller
                     $max_cap = Res_Groups::find($groupId)->max_cap;
                 }
                 else
-                    $max_cap = $price->max_cap;
+                    $max_cap = Res_Groups::find($groupId)->max_cap;
+                    // $max_cap = $price->max_cap;
                 $temp['max_cap'] = $max_cap;
                 $temp['group_id'] = $groupId;
                 $temp['travel_zoo_booked'] = 0;
@@ -246,7 +247,8 @@ class BusEditController extends Controller
                         $max_cap = Res_Groups::find($groupId)->max_cap;
                     }
                     else
-                        $max_cap = $price->max_cap;
+                        $max_cap = Res_Groups::find($groupId)->max_cap;
+                        // $max_cap = $price->max_cap;
                     $temp['max_cap'] = $max_cap;
                     $temp['group_id'] = $groupId;
                     $temp['travel_zoo_booked'] = 0;
@@ -279,7 +281,7 @@ class BusEditController extends Controller
             }
         }
         return response()->json([
-            'state'         => 'success',
+            'success'       => true,
             'data_1'        => $res,
             'data_2'        => $res1,
             'holidayName1'  => $holidayName1,
@@ -307,8 +309,10 @@ class BusEditController extends Controller
             $price->last_price = $bus['price']['last_price'];
             $price->bus_opened = $bus['price']['bus_opened'];
             $price->bus_note = $bus['price']['bus_note'];
-            $price->max_cap = $bus['max_cap'];
+            // $price->max_cap = $bus['max_cap'];
             $price->save();
+
+            Res_Groups::where('id', $bus['group_id'])->update(['max_cap' => $bus['max_cap']]);
         }
         
         return response()->json([
@@ -399,31 +403,6 @@ class BusEditController extends Controller
                     ->get()->toarray();
         }
 
-        /*$result1 = DB::table('res_times')
-                    ->join('res_stops', function($join){
-                            $join->on('res_times.stop_id', '=', 'res_stops.id');
-                      })
-                    ->join('res_areas', function($join){
-                            $join->on('res_times.area_id', '=', 'res_areas.id');
-                      })
-                    ->where('res_times.area_id', $reqData['leaving_from'])
-                    ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                    ->where(function($query) use($reqData)
-                        {
-                            $query->where(function($squery) use($reqData){
-                                $squery->where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
-                                ->where('date',  $reqData['outbound_date']);
-                            })
-                            ->orWhere(function($squery) use($reqData){
-                                $squery->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
-                                ->where('date', '<=',  $reqData['outbound_date'])
-                                ->where('day_of_week',  date('w', strtotime($reqData['outbound_date'])));
-                            });
-                        })
-                    ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
-                    ->orderBy('res_times.time', 'asc')
-                    ->get()->toarray();*/
-
         $res = array();
         foreach ($result1 as $bus_time) {
             $bus_time->time = date("g:i A", strtotime($bus_time->time));
@@ -448,7 +427,8 @@ class BusEditController extends Controller
                     $max_cap = Res_Groups::find($groupId)->max_cap;
                 }
                 else
-                    $max_cap = $price->max_cap;
+                    $max_cap = Res_Groups::find($groupId)->max_cap;
+                    // $max_cap = $price->max_cap;
                 $temp['max_cap'] = $max_cap;
                 $temp['group_id'] = $groupId;
                 $temp['travel_zoo_booked'] = 0;
@@ -555,30 +535,6 @@ class BusEditController extends Controller
                     ->get()->toarray();
             }
 
-/*            $result2 = DB::table('res_times')
-                    ->join('res_stops', function($join){
-                            $join->on('res_times.stop_id', '=', 'res_stops.id');
-                      })
-                    ->join('res_areas', function($join){
-                            $join->on('res_times.area_id', '=', 'res_areas.id');
-                      })
-                    ->where('res_times.area_id', '<>', $reqData['leaving_from'])
-                    ->where('res_times.valid',  config('config.TYPE_SCHEDULE_UNREMOVED'))
-                    ->where(function($query) use($reqData)
-                        {
-                            $query->where(function($squery) use($reqData){
-                                $squery->where('w_h', config('config.TYPE_SCHEDULE_HOLIDAY'))
-                                ->where('date',  $reqData['return_date']);
-                            })
-                            ->orWhere(function($squery) use($reqData){
-                                $squery->where('w_h', config('config.TYPE_SCHEDULE_WEEKLY'))
-                                ->where('date', '<=',  $reqData['return_date'])
-                                ->where('day_of_week',  date('w', strtotime($reqData['return_date'])));
-                            });
-                        })
-                    ->select('res_times.id', 'res_times.group_id', 'res_times.time', 'res_times.area_id', 'res_times.w_h', 'res_times.day_of_week', 'res_times.date', 'res_stops.short', 'res_areas.area_name')
-                    ->orderBy('res_times.time', 'asc')
-                    ->get()->toarray();*/
             foreach ($result2 as $bus_time) {
                 $bus_time->time = date("g:i A", strtotime($bus_time->time));
                 $groupId = $bus_time->group_id;
@@ -602,7 +558,8 @@ class BusEditController extends Controller
                         $max_cap = Res_Groups::find($groupId)->max_cap;
                     }
                     else
-                        $max_cap = $price->max_cap;
+                        $max_cap = Res_Groups::find($groupId)->max_cap;
+                        // $max_cap = $price->max_cap;
                     $temp['max_cap'] = $max_cap;
                     $temp['group_id'] = $groupId;
                     $temp['travel_zoo_booked'] = 0;
@@ -637,7 +594,7 @@ class BusEditController extends Controller
             }
         }
         return response()->json([
-            'state'         => 'success',
+            'success'       => true,
             'data_1'        => $res,
             'data_2'        => $res1,
             'time_1'        => $result1,

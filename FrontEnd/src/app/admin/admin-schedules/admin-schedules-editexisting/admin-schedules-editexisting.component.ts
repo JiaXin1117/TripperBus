@@ -48,11 +48,11 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
 
     public urls: any = {
         retrieve_group_times_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_group_times",
-        retrieve_all_stops_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops",
+        // retrieve_stops_for_area: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops",
         save_all_url: BACKEND_SERVER_URL + "api/admin/schedule/saveall_existing_schedule",
         add_schedule_url: BACKEND_SERVER_URL + "api/admin/schedule/add_existing_schedule",
         save_groups_additional_info_url: BACKEND_SERVER_URL + "api/admin/schedule/save_groups_additional_infos",
-        //        get_all_stop_for_area_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops_for_area",    
+        // get_all_stop_for_area_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops_for_area",    
     };
 
     public group_times: any[] = [];
@@ -135,7 +135,7 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
         me._httpService.sendGetRequestWithParams(url)
             .subscribe(
             data => {
-                if (data['state'] == 'success') {
+                if (data.success) {
                     let response = data['data'];
 
                     me.group_times = response['group_times'];
@@ -186,7 +186,7 @@ export class AdminSchedulesEditexistingComponent implements OnInit {
             error => {
                 this.failedNotification(error);
             }
-            );
+        );
     }
 
     public initiateGroupAdditionalInfosArray(param_cnt) {

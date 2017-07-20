@@ -31,7 +31,7 @@ class Mail_Reservation extends Mailable
 //    public $transportMC = "453103";
     // --------------------
 
-    public $time, $stop;
+    public $time, $stop, $oldTime, $oldStop;
 
 //    public $reservation_number = "6832C4551800808N1";
 //    public $date = "Tuesday, August 8th 2017";
@@ -59,11 +59,19 @@ class Mail_Reservation extends Mailable
         $this->tollFree = getSettingsValue('toll_free');
         $this->companySite = getSettingsValue('company_website');
         $this->reservationFooter = nl2br(getSettingsValue('reservation_footer'));
-        $this->emailFooter = nl2br(getSettingsValue('eamil_footers'));
+        $this->emailFooter = nl2br(getSettingsValue('email_footers'));
 
         $this->time = Res_Times::find($reservation['time_id'])->toarray();
         if ($this->time) {
             $this->stop = Res_Stops::find($this->time['stop_id'])->toarray();
+        }
+
+        $this->oldTime = null;
+        if (isset($reservation['old'])) {
+            $this->oldTime = Res_Times::find($reservation['old']['time_id'])->toarray();
+            if ($this->oldTime) {
+                $this->oldStop = Res_Stops::find($this->oldTime['stop_id'])->toarray();
+            }
         }
     }
 
@@ -96,6 +104,11 @@ class Mail_Reservation extends Mailable
             case config('config.TYPE_MAIL_RESERVATION_UPDATE'):
                 $subject = 'Your Reservation Information';
                 $view = 'emails.Reservation_Update';
+                break;
+
+            case config('config.TYPE_MAIL_RESERVATION_HOLD'):
+                $subject = 'Reservation Placed On Hold';
+                $view = 'emails.Reservation_Hold';
                 break;
 
             case config('config.TYPE_MAIL_RESERVATION_REEMAIL'):

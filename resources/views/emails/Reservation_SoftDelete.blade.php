@@ -47,7 +47,7 @@
                         <br>
                         <b><u>Y O U R&nbsp;&nbsp; I T I N E R A R Y:</u></b><br>
                         <b>Name:</b> {{$reservation['First Name']}} {{$reservation['Last Name']}}<br>
-                        <b>Seats Reserved:</b> {{$reservation['Seats']}}<br>
+                        <b>Seats Deleted:</b> {{$reservation['deleteSeats']}} (<b>Remain:</b> {{$reservation['Seats']}}) <br>
                         <b>Reservation Number:</b> {{$reservation['id']}}<br>
                         <b>Date:</b>  <span tabindex="0" role="button" class="contextualExtensionHighlight ms-font-color-themePrimary ms-border-color-themePrimary ident_1624_1684">{{$reservation['date']}}</span><br>
                         <b><span tabindex="0" role="button" class="contextualExtensionHighlight ms-font-color-themePrimary ms-border-color-themePrimary ident_1624_1684">Time &amp; Place:</span></b><span tabindex="0" role="button" class="contextualExtensionHighlight ms-font-color-themePrimary ms-border-color-themePrimary ident_1624_1684"> {{$time['time']}} from {{$stop['address']}}</span>., {{$stop['city']}} - ({{$stop['details']}})<br>

@@ -63,13 +63,6 @@ class ScheduleController extends Controller
                     //$isHoliday = 1;
                 }
             } 
-            
-            /*if ($isHoliday === 1) {
-                return response()->json([
-                    'state' => 'success',
-                    'data' => $response
-                ]);
-            }*/
         } else { 
         
             // Get weekly schedule
@@ -107,16 +100,10 @@ class ScheduleController extends Controller
         }
         
         if (count($response) > 0) {
-            return response()->json([
-                'state' => 'success',
-                'data' => $response
-            ]);
+            return successData($response);
         }
         
-        return response()->json([
-            'state' => 'fail',
-            'data' => 'Cannot find reservation for this date.'
-        ]);
+        return failedError('Cannot find reservation for this date.');
     }
     
     public function getRetrieveSchedulesByMonth() {
@@ -143,10 +130,7 @@ class ScheduleController extends Controller
             return response()->json($res_schedules);
         }
 
-        return response()->json([
-            'success' => false,
-            'error' => 'Cannot find reservation for this date.'
-        ]);
+        return failedError('Cannot find reservation for this date.');
     }
 
     public function getRetrieveSchedulesByMonthFromArea($year, $month, $area_id) {
@@ -361,15 +345,7 @@ class ScheduleController extends Controller
             $response['holiday'] = $holiday;
         }
 
-        return response()->json([
-            'state' => 'success',
-            'data' => $response
-        ]);
-/*        
-        return response()->json([
-            'state' => 'fail',
-            'data' => 'Cannot find reservation for this date.'
-        ]);*/
+        return successData($response);
     }
 
     public function getRetrieveStops() {
@@ -382,10 +358,7 @@ class ScheduleController extends Controller
             $response[] = $stop;
         }*/
         
-        return response()->json([
-            'state' => 'success',
-            'data' => $response
-        ]);
+        return successData($response);
     }
     
     public function postUpdateForEditExistingSchedule(Request $request) {
@@ -624,15 +597,10 @@ class ScheduleController extends Controller
             if ($cnt > 0) {
                 $stops = Res_Stops::where('area_id', $param_areaId)->get();
                 
-                return response()->json([
-                    'state' => 'success',
-                    'data' => $stops
-                ]);
+                return successData($stops);
             }
             
-            return response()->json([
-                'state' => 'fail'
-            ]);
+            return failedError('Failed!');
     }
     
     public function getStopInfo() {
@@ -640,15 +608,10 @@ class ScheduleController extends Controller
             
             $stop = Res_Stops::find($param_stopId);
             if (isset($stop)) {
-                return response()->json([
-                    'state' => 'success',
-                    'data' => $stop
-                ]);
+                return successData($stop);
             }
             
-            return response()->json([
-                'state' => 'fail'
-            ]);
+            return failedError('Failed!');
     }
     
     public function getGroupInfo() {
@@ -657,15 +620,10 @@ class ScheduleController extends Controller
             $group = Res_Groups::find($param_groupId);
             $group['dest_stops'] = Res_Groups_DestStops::where('group_id', $param_groupId)->get();
             if (isset($group)) {
-                return response()->json([
-                    'state' => 'success',
-                    'data' => $group
-                ]);
+                return successData($group);
             }
             
-            return response()->json([
-                'state' => 'fail'
-            ]);
+            return failedError('Failed!');
     }
 
     public function getDestStopsForGroup() {
@@ -675,15 +633,10 @@ class ScheduleController extends Controller
             if ($cnt > 0) {
                 $items = Res_Groups_DestStops::where('group_id', $param_groupId)->get();
                 
-                return response()->json([
-                    'state' => 'success',
-                    'data' => $items
-                ]);
+                return successData($items);
             }
             
-            return response()->json([
-                'state' => 'fail'
-            ]);
+            return failedError('Failed!');
     }
     
     public function setHoliday($holiday) {

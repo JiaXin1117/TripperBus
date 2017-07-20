@@ -38,62 +38,53 @@ class MainController extends Controller
         })
         ->where('res_reservations.valid', config('config.TYPE_RESERVATION_VALID'))
         ->where('outbound_area_id',  $param_outbound_area_id)
-//        ->select(DB::raw('res_reservations.*'))
         ->get(['res_reservations.created_at AS Date Made', 'res_reservations.*']); 
 
-        return response()->json([
-            'state' => 'success',
-            'data' => $result
-        ]);
+        return successData($result);
     }
 
-    public function addReservation(Request $request){
-        $input = $request->only(['reservation']);
-        $reservation = $input['reservation'];
-
+    public function checkFields($reservation) {
         if ($reservation['First Name'] == '' 
         || $reservation['Last Name'] == ''
         || $reservation['Phone'] == ''
         || $reservation['Email'] == ''
         ) {
-            $errorMsg = 'All the following are necessary for a new reservation: First Name, Last Name, Phone Number & Email.';
-            return response()->json([
-                'success' => false,
-                'error' => $errorMsg
-            ]);
+            return 'All the following are necessary for a new reservation: First Name, Last Name, Phone Number & Email.';
         }
 
-        $time = Res_Times::find($reservation['time_id']);
+        return null;
+    }
+
+    public function checkBusFull($reservation, $time_id = null) {
+        if (!$time_id) {
+            $time_id = $reservation['time_id'];
+        }
+
+        $time = Res_Times::find($time_id);
         $max_cap = $time->group->max_cap;
         $reservationsTotal = BusEditController::getGroup_ReservationsTotal($time->group->id, $reservation['date']);
         $remain_seats = $max_cap - $reservationsTotal;
         if ($remain_seats <= 0) {
-            $errorMsg = 'Bus is full.';
-            return response()->json([
-                'success' => false,
-                'error' => $errorMsg
-            ]);
+            return 'Bus is full.';
         } else if ($reservation['Seats'] > $remain_seats) {
             $errorMsg = 'You are overbooking the bus. Now ' 
             . $remain_seats . ' seat' 
             . ($remain_seats == 1 ? ' is' : 's are') 
             . ' remaining';
-            return response()->json([
-                'success' => false,
-                'error' => $errorMsg
-            ]);
+            return $errorMsg;
         }
 
+        return null;
+    }
+
+    public function checkPaymentMethod($reservation) {
         if ($reservation['Payment Method'] == 'Credit Card') {
             if ($reservation['Transaction Amount'] == ''
              || $reservation['CC Number'] == ''
              || $reservation['CC Code'] == ''
              || $reservation['CC Year'] == ''
              || $reservation['CC Month'] == '') {
-                 return response()->json([
-                     'success'  => false,
-                     'error'    => 'If paying by credit card, all the following are necessary: Card Number, Card Code, Month/Year Exp.',
-                 ]);
+                 return 'If paying by credit card, all the following are necessary: Card Number, Card Code, Month/Year Exp.';
             }
 
             $AuthorizeNetError = '';
@@ -101,89 +92,94 @@ class MainController extends Controller
                 $reservation['Authorize net Link'] = $trans_id;
             } else {
                 $errorMsg = 'There was the following error with the card: ' . $AuthorizeNetError;
-                return response()->json([
-                    'success'   => false,
-                    'error'     => $errorMsg,
-                ]);
+                return $errorMsg;
             }
         }
 
-        if (!isset($reservation['Note'])) {
-            $reservation['Note'] = '';
-        }
+        return null;
+    }
 
+    public function procFields(&$reservation) {
+        unset($reservation['created_at']);
+        unset($reservation['updated_at']);
         unset($reservation['Date Made']);
         unset($reservation['time']);
         unset($reservation['stop']);
         unset($reservation['id']);
 
+        if (!isset($reservation['Note'])) {
+            $reservation['Note'] = '';
+        }
+    }
+
+    public function sendBusMail($reservation) {
+        $time = Res_Times::find($reservation['time_id']);
+        $max_cap = $time->group->max_cap;
+        $reservationsTotal = BusEditController::getGroup_ReservationsTotal($time->group->id, $reservation['date']);
+        $remain_seats = $max_cap - $reservationsTotal;
+
+        if (0 == $remain_seats) {
+            $this->sendMail_Bus_Full($time->group_id);
+        } else if (5 == $remain_seats) {
+            $this->sendMail_Bus_5_Remain($time->group_id);
+        }
+    }
+
+    public function addReservation(Request $request){
+        $input = $request->only(['reservation']);
+        $reservation = $input['reservation'];
+
+        if ($error = $this->checkFields($reservation)) {
+            return failedError($error);
+        }
+
+        if ($error = $this->checkBusFull($reservation)) {
+            return failedError($error);
+        }
+
+        if ($error = $this->checkPaymentMethod($reservation)) {
+            return failedError($error);
+        }
+
+        $this->procFields($reservation);
+        
         Res_Reservations::unguard();
         $response = Res_Reservations::create($reservation);
         Res_Reservations::reguard();
 
         $response['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
         
-        $reservation = Res_Reservations::where('id', $response['id'])->get()->toarray()[0];
+        $reservation = $response->toarray();
+
         $this->sendMail_Reservation_Add($reservation);
+        $this->sendBusMail($reservation);
 
-        if ($reservation['Seats'] == $remain_seats) {
-            $this->sendMail_Bus_Full($time->group_id);
-        } else if ($reservation['Seats'] == $remain_seats - 5) {
-            $this->sendMail_Bus_5_Remain($time->group_id);
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $response
-        ]);
+        return successData($response);
     }
 
-    public function updateReservation(Request $request){
+    public function addReservationSeats(Request $request){
         $input = $request->only(['reservation']);
         $reservation = $input['reservation'];
 
-        if ($reservation['First Name'] == '' 
-        || $reservation['Last Name'] == ''
-        || $reservation['Phone'] == ''
-        || $reservation['Email'] == ''
-        ) {
-            $errorMsg = 'All the following are necessary for a new reservation: First Name, Last Name, Phone Number & Email.';
-            return response()->json([
-                'success' => false,
-                'error' => $errorMsg
-            ]);
+        $oldReservation = Res_Reservations::find($reservation['id']);
+        if (!$oldReservation) {
+            return failedError('Reservation does not existing!');
         }
 
-        $time = Res_Times::find($reservation['time_id']);
-        $max_cap = $time->group->max_cap;
-        $reservationsTotal = BusEditController::getGroup_ReservationsTotal($time->group->id, $reservation['date']);
-        $remain_seats = $max_cap - $reservationsTotal;
-        if ($remain_seats <= 0) {
-            $errorMsg = 'Bus is full.';
-            return response()->json([
-                'success' => false,
-                'error' => $errorMsg
-            ]);
-        } else if ($reservation['Seats'] > $remain_seats) {
-            $errorMsg = 'You are overbooking the bus. Now ' 
-            . $remain_seats . ' seat' 
-            . ($remain_seats == 1 ? ' is' : 's are') 
-            . ' remaining';
-            return response()->json([
-                'success' => false,
-                'error' => $errorMsg
-            ]);
+        if (!$reservation['Seats']) {
+            return failedError('Nothing updated!');
         }
 
-        $oldReservation = Res_Reservations::where('id', $reservation['id'])->get()->toarray()[0];
-
-        if ($oldReservation['Seats'] < $reservation['Seats']) {
-            $errorMsg = "Seats can't be changed higher.";
-            return response()->json([
-                'success' => false,
-                'error' => $errorMsg
-            ]);
+        if ($error = $this->checkBusFull($reservation, $oldReservation['time_id'])) {
+            return failedError($error);
         }
+
+        $username = Auth::user()->full_name;
+        $now = date('Y/m/d g:i A');
+        $Note1 = "\nReservation added " . $reservation['Seats'] 
+                . ' seat' . ($reservation['Seats'] > 1 ? 's' : '') 
+                . ' by ' . $username . ' on ' . $now . '.';
+        $oldReservation['Note'] .= $Note1;
 
         if ($reservation['Payment Method'] == 'Credit Card') {
 /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
@@ -191,8 +187,47 @@ class MainController extends Controller
             }*/
         }
 
-        if ($oldReservation['date'] != $reservation['date'] ||
-            $oldReservation['time_id'] != $reservation['time_id']) {
+        $oldReservation['Seats'] += $reservation['Seats'];
+
+        Res_Reservations::unguard();
+        $oldReservation->save();
+        Res_Reservations::reguard();
+
+        $oldReservation['Date Made'] = $oldReservation['created_at']->format('Y-m-d H:i:s');
+        $resReservation = $oldReservation->toarray();
+
+        $this->sendMail_Reservation_Update($resReservation, $oldReservation);
+        $this->sendBusMail($oldReservation);
+
+        return successData($resReservation);
+    }
+
+    public function updateReservation(Request $request){
+        $input = $request->only(['reservation']);
+        $reservation = $input['reservation'];
+
+        if ($error = $this->checkFields($reservation)) {
+            return failedError($error);
+        }
+
+        $oldReservation = Res_Reservations::find($reservation['id']);
+        if (!$oldReservation) {
+            return failedError('Reservation does not existing!');
+        }
+
+        if ($oldReservation['Seats'] < $reservation['Seats']) {
+            return failedError("Seats can't be changed higher.");
+        }
+
+        if ($reservation['date'] != $oldReservation['date'] || $reservation['time_id'] != $oldReservation['time_id']) {
+            if (isBeforeToday($reservation['date'])) {
+                return failedError('Please select date from today!');
+            }
+
+            if ($error = $this->checkBusFull($reservation)) {
+                return failedError($error);
+            }
+
             $username = Auth::user()->full_name;
             $now = date('Y/m/d g:i A');
             $Note1 = "\nReservation deleted by " . $username . ' on ' . $now 
@@ -201,27 +236,42 @@ class MainController extends Controller
             $reservation['Note'] .= $Note1;
         }
 
-        unset($reservation['Date Made']);
-        unset($reservation['time']);
-        unset($reservation['stop']);
-
-        Res_Reservations::unguard();
-        $res = Res_Reservations::find($reservation['id'])->update($reservation);
-        Res_Reservations::reguard();
-
-        $response = array();
-        if ($res) {
-            $response = Res_Reservations::find($reservation['id']);
-            $response['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
-
-            $reservation = Res_Reservations::where('id', $reservation['id'])->get()->toarray()[0];
-            $this->sendMail_Reservation_Update($reservation, $oldReservation);
+        if ($reservation['Payment Method'] == 'Credit Card') {
+/*            if ($trans_id = addAuthorizeNetLink($reservation)) {
+                $reservation['Authorize net Link'] = $trans_id;
+            }*/
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $response
-        ]);
+        $this->procFields($reservation);
+
+        $newReservation = null;
+
+        Res_Reservations::unguard();
+        if ($oldReservation['Seats'] == $reservation['Seats']) {
+            $newReservation = $oldReservation;
+            $oldReservation = $oldReservation->toarray();
+            if (!$newReservation->update($reservation)) {
+                return failedError('Failed!');
+            }
+        } else {
+            if ($newReservation = Res_Reservations::create($reservation)) {
+                $oldReservation['Seats'] -= $reservation['Seats'];
+                $oldReservation->save();
+                $oldReservation = $oldReservation->toarray();
+            }
+        }
+        Res_Reservations::reguard();
+
+        if (!$newReservation) {
+            return failedError('Failed!');
+        }
+
+        $newReservation['Date Made'] = $newReservation['created_at']->format('Y-m-d H:i:s');
+
+        $this->sendMail_Reservation_Update($oldReservation, $newReservation->toarray());
+        $this->sendBusMail($newReservation->toarray());
+
+        return successData($newReservation->toarray());
     }
 
     public function updateReservations(Request $request){
@@ -231,7 +281,7 @@ class MainController extends Controller
         $res_reservations = array();
 
         foreach ($reservations as $reservation) {
-            $oldReservation = Res_Reservations::where('id', $reservation['id'])->get()->toarray()[0];
+            $oldReservation = Res_Reservations::find($reservation['id'])->toarray();
 
             if ($reservation['Payment Method'] == 'Credit Card') {
     /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
@@ -240,6 +290,7 @@ class MainController extends Controller
             }
 
             unset($reservation['Date Made']);
+
             Res_Reservations::unguard();
             $res = Res_Reservations::find($reservation['id'])->update($reservation);
             Res_Reservations::reguard();
@@ -258,14 +309,33 @@ class MainController extends Controller
         return response()->json($res_reservations);
     }
 
-    public function deleteSoftReservation(Request $request){
+    public function holdReservation(Request $request){
         $input = $request->only(['reservation']);
         $reservation = $input['reservation'];
 
-        $reservation['Seats'] = 0;
-        $reservation['Transaction Amount'] = 0;
+        if ($error = $this->checkFields($reservation)) {
+            return failedError($error);
+        }
+
+        if (!$reservation['Seats']) {
+            return failedError('Nothing holded!');
+        }
+
+        $oldReservation = Res_Reservations::find($reservation['id']);
+        if (!$oldReservation) {
+            return failedError('Reservation does not existing!');
+        }
+
+        if ($reservation['Seats'] > $oldReservation['Seats']) {
+            return failedError('Seats are overholding!');
+        }
+
+        $this->procFields($reservation);
+        $reservation['valid'] = config('config.TYPE_RESERVATION_HOLD');
+        $reservation['date'] = '';
+
         $username = Auth::user()->full_name;
-        $reservation['Note'] .= "\n" . $username . ' deleted this reservation on ' . Carbon::now() . '.';
+        $oldReservation['Note'] .= "\n" . $username . ' held '. $reservation['Seats'] . ' reservation' . (($reservation['Seats'] > 1) ? 's' : '') . ' on ' . Carbon::now() . '.';
 
         if ($reservation['Payment Method'] == 'Credit Card') {
 /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
@@ -273,24 +343,59 @@ class MainController extends Controller
             }*/
         }
 
-        unset($reservation['Date Made']);
-        unset($reservation['time']);
-        unset($reservation['stop']);
-
         Res_Reservations::unguard();
-        $res = Res_Reservations::find($reservation['id'])->update($reservation);
+        if (!$resReservation = Res_Reservations::create($reservation)) {
+            return failedError('Failed!');
+        }
         Res_Reservations::reguard();
 
-        $response = array();
-        if ($res) {
-            $response = Res_Reservations::find($reservation['id']);
-            $response['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
+        $oldReservation['Seats'] -= $reservation['Seats'];
+        $oldReservation->save();
+        
+        $this->sendMail_Reservation_Hold($resReservation->toarray(), $oldReservation['id']);
+        $this->sendBusMail($oldReservation->toarray());
 
-            $reservation = Res_Reservations::where('id', $reservation['id'])->get()->toarray()[0];
-            $this->sendMail_Reservation_SoftDelete($reservation);
+        return successData($oldReservation->toarray());
+    }
+
+    public function deleteSoftReservation(Request $request){
+        $input = $request->only(['reservation']);
+        $reservation = $input['reservation'];
+
+        if (!$reservation['Seats']) {
+            return failedError('Nothing deleted!');
         }
 
-        return response()->json($response);
+        $oldReservation = Res_Reservations::find($reservation['id']);
+        if (!$oldReservation) {
+            return failedError('Reservation does not existing!');
+        }
+
+        if ($reservation['Seats'] > $oldReservation['Seats']) {
+            return failedError('Seats are overdeleting!');
+        }
+        $oldReservation['Seats'] -= $reservation['Seats'];
+
+        $username = Auth::user()->full_name;
+        $oldReservation['Note'] .= "\n" . $username . ' deleted '. $reservation['Seats'] . ' reservation' . ($reservation['Seats'] > 1) ? 's' : '' . ' on ' . Carbon::now() . '.';
+
+        if ($reservation['Payment Method'] == 'Credit Card') {
+/*            if ($trans_id = addAuthorizeNetLink($reservation)) {
+                $reservation['Authorize net Link'] = $trans_id;
+            }*/
+        }
+
+        Res_Reservations::unguard();
+        $oldReservation->save();
+        Res_Reservations::reguard();
+
+        $oldReservation['Date Made'] = $oldReservation['created_at']->format('Y-m-d H:i:s');
+        $resReservation = $oldReservation->toarray();
+
+        $this->sendMail_Reservation_SoftDelete($resReservation, $reservation['Seats']);
+        $this->sendBusMail($resReservation);
+
+        return successData($resReservation);
     }
 
     public function deleteSoftReservations(Request $request){
@@ -380,10 +485,7 @@ class MainController extends Controller
             $reservations[$key]['time'] = date("g:i A", strtotime($reservations[$key]['time']));
         }
 
-        return response()->json([
-            'state' => 'success',
-            'data' => $reservations,
-        ]);
+        return successData($reservations);
     }
 
     public function emailReservations(Request $request){
@@ -411,10 +513,7 @@ class MainController extends Controller
     public function getSettings() {
         $settings = Res_Setting::first();
 
-        return response()->json([
-            'state' => 'success',
-            'settings' => $settings
-        ]);
+        return successData($settings);
     }
 
     public function setSettings(Request $request){
@@ -444,15 +543,10 @@ class MainController extends Controller
             $result = \App\Models\Res_Schedule_Prices::where('group_id', $param_group_id)
                 ->first(); 
 
-            return response()->json([
-                'state' => 'success',
-                'data' => $result
-            ]);
+            return successData($result);
         }
 
-        return response()->json([
-            'state' => 'fail'
-        ]);
+        return failedError('Failed!');
     }
 
     public function postRetrieveGroupInformations(Request $request) {
@@ -485,17 +579,16 @@ class MainController extends Controller
             $response[] = $temp;
         }
 
-        return response()->json([
-            'state' => 'success',
-            'data' => $response
-        ]);
+        return successData($response);
     }
 
     public function sendMail_Reservation_Add($reservation) {
         Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_ADD')));
     }
 
-    public function sendMail_Reservation_SoftDelete($reservation) {
+    public function sendMail_Reservation_SoftDelete($reservation, $deleteSeats) {
+        $reservation['deleteSeats'] = $deleteSeats;
+
         Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_SOFTDELETE')));
     }
 
@@ -508,6 +601,12 @@ class MainController extends Controller
         }
     }
 
+    public function sendMail_Reservation_Hold($reservation, $oldId) {
+        $reservation['oldId'] = $oldId;
+
+        Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_HOLD')));
+    }
+
     public function sendMail_Reservation_ReEmail($reservation, $mailContents) {
         $reservation['mailContents'] = $mailContents;
 
@@ -515,15 +614,15 @@ class MainController extends Controller
     }
 
     public function sendMail_Bus_Full($busId) {
-//        $company_email = 'jiaxin_wp1117@outlook.com';
         $company_email = getSettingsValue('company_email');
+        // $company_email = 'jiaxin_wp1117@outlook.com';
 
         Mail::to($company_email)->queue(new Mail_Bus(config('config.TYPE_MAIL_BUS_FULL'), $busId));
     }
 
     public function sendMail_Bus_5_Remain($busId) {
-//        $company_email = 'jiaxin_wp1117@outlook.com';
         $company_email = getSettingsValue('company_email');
+        // $company_email = 'jiaxin_wp1117@outlook.com';
 
         Mail::to($company_email)->queue(new Mail_Bus(config('config.TYPE_MAIL_BUS_5_REMAIN'), $busId));
     }
@@ -540,15 +639,11 @@ class MainController extends Controller
         } else if ($dateType == 'Travel') {
             $dateFieldStr = 'date';
         } else {
-            return response()->json([
-                'success' => false,
-                'error' => 'Date is invalid.',
-            ]);
+            return failedError('Date is invalid.');
         }
 
         $date1 = date('Y-m-d', strtotime($dateStr1));
         $date2 = date('Y-m-d', strtotime($dateStr2));
-        // print_r($dateType . ":" . $date1 . ":" . $date2 . "\n");
 
         $reservations[0] = \App\Models\Res_Reservations::
         join('res_times', 'res_reservations.time_id', '=', 'res_times.id')

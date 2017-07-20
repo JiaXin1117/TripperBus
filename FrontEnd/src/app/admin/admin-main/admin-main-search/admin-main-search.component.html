@@ -107,7 +107,7 @@
                         <input type="email" class="form-control" id="reservation_email" [(ngModel)]="myReservation['Email']">
                     </div>
                 </div>
-<!--                <div>
+                <div>
                     <div class="form-group col-xs-4" display="inline-block">
                         <label for="reservation_seats">Seats</label>
                         <input type="number" min="0" class="form-control" id="reservation_seats" [(ngModel)]="myReservation['Seats']" (ngModelChange)="onSeatsChange($event)">
@@ -130,7 +130,7 @@
                             <input type="text" class="form-control" id="reservation_transaction_amount" [(ngModel)]="myReservation['Transaction Amount']" disabled>
                         </div>
                     </div>
-                </div>-->
+                </div>
                 <div class="col-xs-12">
                     <div class="form-group">
                         <label for="reservation_notes">Note</label>
@@ -167,7 +167,7 @@
                                 </div>
                                 <div class="group-additional-info">
                                     <h5 class="total-h5">
-                                        Total: {{ total_reservation }}. Max Capacity: {{bus.max_cap}}
+                                        Total: {{ bus['totalSeats'] }}. Max Capacity: {{bus.max_cap}}
                                     </h5>
 <!--                                    <table class="group-additional-info-table">
                                         <tr>
@@ -214,7 +214,9 @@
                 </div>
                 <div class="col-xs-12">
                     <div class="form-group pull-right" style="margin-top: 20px; margin-bottom: 20px">
+                        <button type="submit" class="btn btn-success" (click)="addReservationSeats()">Add</button>
                         <button type="submit" class="btn btn-primary" (click)="updateReservation()">Update</button>
+                        <button type="submit" class="btn btn-warning" (click)="holdReservation()">Place on Hold</button>
                         <button type="submit" class="btn btn-danger" (click)="deleteSoftReservation()">Delete</button>
                     </div>
                 </div>

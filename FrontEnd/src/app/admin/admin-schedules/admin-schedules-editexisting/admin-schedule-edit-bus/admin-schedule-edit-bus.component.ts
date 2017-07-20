@@ -41,9 +41,9 @@ export class AdminScheduleEditBusComponent implements OnInit {
         update_url: BACKEND_SERVER_URL + "api/admin/schedule/update_existing_schedule",
         remove_url: BACKEND_SERVER_URL + "api/admin/schedule/remove_existing_schedule",
         disable_url: BACKEND_SERVER_URL + "api/admin/schedule/disable_existing_schedule",
-        get_group_info_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_group_info",
-        get_stop_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stop_from_id",
-//        get_all_stop_for_area_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops_for_area",
+        // get_group_info_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_group_info",
+        // get_stop_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stop_from_id",
+        // get_all_stop_for_area_url: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_stops_for_area",
         get_dest_stops_for_group: BACKEND_SERVER_URL + "api/admin/schedule/retrieve_dest_stops_for_group",
     };
 
@@ -219,7 +219,7 @@ export class AdminScheduleEditBusComponent implements OnInit {
             me._httpService.sendGetRequestWithParams(url)
                 .subscribe(
                 data => {
-                    if (data['state'] == 'success') {
+                    if (data.success) {
                         let destStops = data['data'];
 
                         for (let i = 0; i < Object.keys(destStops).length; i++) {
@@ -288,7 +288,7 @@ export class AdminScheduleEditBusComponent implements OnInit {
                     this.failedNotification(error);
                 },
                 () => { }
-                );
+            );
         }
     }
 

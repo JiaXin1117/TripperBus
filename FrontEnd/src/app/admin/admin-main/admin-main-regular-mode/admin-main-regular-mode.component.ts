@@ -91,7 +91,7 @@ export class AdminMainRegularModeComponent implements OnInit {
         this._httpService.sendGetRequestWithParams(url)
             .subscribe(
             data => {
-                if (data.state == "success") {
+                if (data.success) {
                     this.leaving_buses = data.data_1;
                     this.returning_buses = data.data_2;
                     this.leaving_holidayName = data.holidayName1;
@@ -108,7 +108,7 @@ export class AdminMainRegularModeComponent implements OnInit {
             error => {
                 this.failedNotification(error);
             }
-            );
+        );
     }
 
     public receiveInputParams() {

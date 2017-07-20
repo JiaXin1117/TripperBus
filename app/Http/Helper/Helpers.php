@@ -1,9 +1,31 @@
 <?php
 
 use App\Models\Res_Setting;
+use Carbon\Carbon;
 
 function getSettingsValue($key) {
     return Res_Setting::get()->first()[$key];
+}
+
+function successData($data) {
+    return response()->json([
+        'success'   => true,
+        'data'     => $data,
+    ]);
+}
+
+function failedError($error) {
+    return response()->json([
+        'success'   => false,
+        'error'     => $error,
+    ]);
+}
+
+function isBeforeToday($dateStr) {
+    $today = Carbon::today();
+    $date = new Carbon($dateStr);
+
+    return ($date < $today);
 }
 
 function addAuthorizeNetLink($reservation, &$AuthorizeNetError) {

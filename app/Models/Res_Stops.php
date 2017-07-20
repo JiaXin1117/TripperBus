@@ -10,6 +10,6 @@ class Res_Stops extends Model
     protected $fillable = ['id', 'short', 'address', 'city', 'valid', 'details'];
     
     public function times() {
-        return $this->hasMany('App\Models\Res_Times');
+        return $this->hasMany('App\Models\Res_Times', 'stop_id');
     }
 }

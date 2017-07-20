@@ -64,9 +64,8 @@ export class AdminMainComponent implements OnInit {
         this._httpService.sendGetRequestWithParams(url)
             .subscribe(
             data => {
-                if (data.state == "success") {
-                    console.log(data);
-                    this._mainService.settings = data.settings;
+                if (data.success) {
+                    this._mainService.settings = data.data;
 
                     this._mainService.settings['reservation_initial_fee'] = parseFloat(this._mainService.settings['reservation_initial_fee']);
                 }
@@ -74,7 +73,7 @@ export class AdminMainComponent implements OnInit {
             error => {
                 this.failedNotification(error);
             }
-            );
+        );
     }
 
     initiateVars() {

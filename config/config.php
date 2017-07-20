@@ -19,9 +19,10 @@ return [
     'TYPE_MAIL_RESERVATION_MOVE'        => 1,
     'TYPE_MAIL_RESERVATION_SOFTDELETE'  => 2,
     'TYPE_MAIL_RESERVATION_UPDATE'      => 3,
-    'TYPE_MAIL_RESERVATION_REEMAIL'     => 4,
-    'TYPE_MAIL_BUS_FULL'                => 5,
-    'TYPE_MAIL_BUS_5_REMAIN'            => 6,
+    'TYPE_MAIL_RESERVATION_HOLD'        => 4,
+    'TYPE_MAIL_RESERVATION_REEMAIL'     => 5,
+    'TYPE_MAIL_BUS_FULL'                => 6,
+    'TYPE_MAIL_BUS_5_REMAIN'            => 7,
 
     'DEFAULT_USER_PERMISSION'           => [1],
 ];

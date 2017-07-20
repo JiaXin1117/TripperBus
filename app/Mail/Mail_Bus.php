@@ -59,7 +59,7 @@ class Mail_Bus extends Mailable
         $this->tollFree = getSettingsValue('toll_free');
         $this->companySite = getSettingsValue('company_website');
         $this->reservationFooter = nl2br(getSettingsValue('reservation_footer'));
-        $this->emailFooter = nl2br(getSettingsValue('eamil_footers'));
+        $this->emailFooter = nl2br(getSettingsValue('email_footers'));
     }
 
     /**

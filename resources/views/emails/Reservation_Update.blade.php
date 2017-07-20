@@ -79,8 +79,14 @@
                         <br>
                         @endif
                         <b>Reservation Number:</b> {{$reservation['id']}}<br>
-                        <b>Date:</b>  <span tabindex="0" role="button" class="contextualExtensionHighlight ms-font-color-themePrimary ms-border-color-themePrimary ident_1624_1684">{{$reservation['date']}}</span><br>
-                        <b><span tabindex="0" role="button" class="contextualExtensionHighlight ms-font-color-themePrimary ms-border-color-themePrimary ident_1624_1684">Time &amp; Place:</span></b><span tabindex="0" role="button" class="contextualExtensionHighlight ms-font-color-themePrimary ms-border-color-themePrimary ident_1624_1684"> {{$time['time']}} from {{$stop['address']}}</span>., {{$stop['city']}} - ({{$stop['details']}})<br>
+                        <b>Date &amp; Time:</b> 
+                        {{$reservation['date']}} {{$time['time']}}
+                        @if ($reservation['old']['date'] != $reservation['date'] || $oldTime['time'] != $time['time'])
+                            (<b>Changed from:</b> {{$reservation['old']['date']}} {{$oldTime['time']}})
+                        @endif
+                        <br>
+                        <b><span tabindex="0" role="button" class="contextualExtensionHighlight ms-font-color-themePrimary ms-border-color-themePrimary ident_1624_1684">Place:</span></b><span tabindex="0" role="button" class="contextualExtensionHighlight ms-font-color-themePrimary ms-border-color-themePrimary ident_1624_1684"> 
+                         from {{$stop['address']}}</span>., {{$stop['city']}} - ({{$stop['details']}})<br>
                         <b>Destination &amp; approximate arrival time:</b><br>
                         {{$destination}}<br>
                     </div>

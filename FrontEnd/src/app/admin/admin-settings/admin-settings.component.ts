@@ -51,10 +51,9 @@ export class AdminSettingsComponent implements OnInit {
     this._httpService.sendGetRequestWithParams(url)
       .subscribe(
       data => {
-        if (data.state == "success") {
-          console.log(data);
-          this._mainService.settings = data.settings;
-          this.settings = data.settings;
+        if (data.success) {
+          this._mainService.settings = data.data;
+          this.settings = data.data;
         }
       },
       error => {

@@ -124,7 +124,7 @@ export class AdminSchedulesComponent implements OnInit {
         this._httpService.sendGetRequestWithParams(url)
             .subscribe(
             data => {
-                if (!data['success']) {
+                if (!data.success) {
                     this.failedNotification(data.error);
                     return;
                 }
@@ -270,7 +270,7 @@ export class AdminSchedulesComponent implements OnInit {
             .subscribe(
             data => {
                 let response = data;
-                if (response['state'] == 'success') {
+                if (response.success) {
 
                     let group_ids = [];
                     for (let i = 0; i < Object.keys(response['data']).length; i++) {
@@ -348,7 +348,7 @@ export class AdminSchedulesComponent implements OnInit {
             error => {
                 this.failedNotification(error);
             }
-            );
+        );
     }
 
     public showModalForDate(areaType) {

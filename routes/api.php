@@ -86,6 +86,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
             'as' => 'admin.main.add_reservation',
             'uses' => 'MainController@addReservation',
         ]);
+        Route::post('/add_reservation_seats', [
+            'as' => 'admin.main.add_reservation_seats',
+            'uses' => 'MainController@addReservationSeats',
+        ]);
         Route::post('/update_reservation', [
             'as' => 'admin.main.update_reservation',
             'uses' => 'MainController@updateReservation',
@@ -93,6 +97,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::post('/update_reservations', [
             'as' => 'admin.main.update_reservations',
             'uses' => 'MainController@updateReservations',
+        ]);
+        Route::post('/hold_reservation', [
+            'as' => 'admin.main.hold_reservation',
+            'uses' => 'MainController@holdReservation',
         ]);
         Route::post('/delete_soft_reservation', [
             'as' => 'admin.main.delete_soft_reservation',
