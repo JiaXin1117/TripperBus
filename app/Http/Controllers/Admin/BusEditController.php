@@ -18,6 +18,7 @@ use DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 use App\Mail\Mail_Reservation;
 
 class BusEditController extends Controller
@@ -604,9 +605,115 @@ class BusEditController extends Controller
         ]);
     }
 
+
+    public function calcBusTimeTotalSeats($bus, &$busSeat) {
+        foreach ($bus['times'] as $time) {
+            $timeSeat = array();
+            $timeSeat['id'] = $time['id'];
+            $timeSeat['totalSeats'] = Res_Reservations::where('valid', config('config.TYPE_RESERVATION_VALID'))
+                ->where('date', $bus['date'])
+                ->where('time_id', $time['id'])
+                ->sum('Seats') ?: 0;
+
+            $busSeat['times'][] = $timeSeat;
+        }
+    }
+
+    public function calcBusTotalSeats(&$busSeat) {
+        $busSeat['totalSeats'] = 0;
+        foreach ($busSeat['times'] as $timeSeat) {
+            $busSeat['totalSeats'] += $timeSeat['totalSeats'];
+        }
+    }
+
+    public function moveTime(&$busSeats, $oldId, $newId) {
+        $oldTimeSeat = null;
+        $newTimeSeat = null;
+        foreach ($busSeats as $key1 => $busSeat) {
+            foreach ($busSeats[$key1]['times'] as $key2 => $timeSeat) {
+                if ($busSeats[$key1]['times'][$key2]['id'] == $oldId) {
+                    $oldTimeSeat = &$busSeats[$key1]['times'][$key2];
+                    break;
+                }
+            }
+
+            if ($oldTimeSeat) {
+                break;
+            }
+        }
+
+        foreach ($busSeats as $key1 => $busSeat) {
+            foreach ($busSeats[$key1]['times'] as $key2 => $timeSeat) {
+                if ($busSeats[$key1]['times'][$key2]['id'] == $newId) {
+                    $newTimeSeat = &$busSeats[$key1]['times'][$key2];
+                    break;
+                }
+            }
+
+            if ($newTimeSeat) {
+                break;
+            }
+        }
+
+        if ($oldTimeSeat && $newTimeSeat) {
+            $newTimeSeat['totalSeats'] += $oldTimeSeat['totalSeats'];
+            $oldTimeSeat['totalSeats'] = 0;
+
+            return null;
+        }
+
+        return 'Move failed!';
+    }
+
+    public function checkMoveBusFull($busSeat) {
+        if ($busSeat['totalSeats'] > $busSeat['max_cap']) {
+            return 'Bus #' . $busSeat['group_id'] . ' max capacity is ' . $busSeat['max_cap'] . " and it's overmoving to " . $busSeat['totalSeats'] . '!';
+        }
+
+        return null;
+    }
+
+    public function checkMoveBusesFull($buses) {
+        $busSeats = array();
+        foreach ($buses as $bus) {
+            $busSeat = array();
+            $busSeat['group_id'] = $bus['group_id'];
+            $busSeat['max_cap'] = $bus['max_cap'];
+            $busSeat['times'] = array();
+
+            $this->calcBusTimeTotalSeats($bus, $busSeat);
+
+            $busSeats[] = $busSeat;
+        }
+
+        foreach ($buses as $bus) {
+            foreach ($bus['times'] as $time) {
+                if ($time['move'] != 0) {
+                    if ($error = $this->moveTime($busSeats, $time['id'], $time['move'])) {
+                        return failedError ($error);
+                    }
+                }
+            }
+        }
+
+        foreach ($busSeats as $busSeat) {
+            $this->calcBusTotalSeats($busSeat);
+            if ($error = $this->checkMoveBusFull($busSeat)) {
+                return $error;
+            }
+        }
+
+        return null;
+    }
+
     public function moveReservations(Request $request){
         $buses = $request->only(['buses']);
         $buses = $buses['buses'];
+
+        if ($error = $this->checkMoveBusesFull($buses)) {
+            return failedError ($error);
+        }
+
         $user = Auth::user()->full_name;
         foreach($buses as $bus) {
             foreach($bus['times'] as $time) {

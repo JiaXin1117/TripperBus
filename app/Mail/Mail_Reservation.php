@@ -112,8 +112,13 @@ class Mail_Reservation extends Mailable
                 break;
 
             case config('config.TYPE_MAIL_RESERVATION_REEMAIL'):
-                $subject = 'Re-Emailing Reservation Information';
-                $view = 'emails.Reservation_Add';
+                $subject = $this->reservation['mailSubject'];
+                $view = 'emails.Reservation_ReEmail';
+                break;
+
+            case config('config.TYPE_MAIL_RESERVATION_CUSTOMEMAIL'):
+                $subject = $this->reservation['mailSubject'];
+                $view = 'emails.Reservation_EmailCustom';
                 break;
 
             default:

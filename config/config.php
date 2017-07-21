@@ -7,8 +7,9 @@ return [
     'TYPE_SCHEDULE_REMOVED' => 0,
     'TYPE_SCHEDULE_UNREMOVED' => 1,
 
-    'TYPE_RESERVATION_HOLD' => 0,
-    'TYPE_RESERVATION_VALID' => 1,
+    'TYPE_RESERVATION_INVALID'  => 0,
+    'TYPE_RESERVATION_VALID'    => 1,
+    'TYPE_RESERVATION_HOLD'     => 2,
     
     'TYPE_SCHEDULE_DISABLED' => 0,
     'TYPE_SCHEDULE_ENABLED' => 1,
@@ -21,8 +22,9 @@ return [
     'TYPE_MAIL_RESERVATION_UPDATE'      => 3,
     'TYPE_MAIL_RESERVATION_HOLD'        => 4,
     'TYPE_MAIL_RESERVATION_REEMAIL'     => 5,
-    'TYPE_MAIL_BUS_FULL'                => 6,
-    'TYPE_MAIL_BUS_5_REMAIN'            => 7,
+    'TYPE_MAIL_RESERVATION_CUSTOMEMAIL' => 6,
+    'TYPE_MAIL_BUS_FULL'                => 7,
+    'TYPE_MAIL_BUS_5_REMAIN'            => 8,
 
     'DEFAULT_USER_PERMISSION'           => [1],
 ];

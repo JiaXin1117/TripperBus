@@ -187,17 +187,19 @@ class MainController extends Controller
             }*/
         }
 
-        $oldReservation['Seats'] += $reservation['Seats'];
+        $newReservation = $oldReservation;
+        $oldReservation = $oldReservation->toarray();
+        $newReservation['Seats'] += $reservation['Seats'];
 
         Res_Reservations::unguard();
-        $oldReservation->save();
+        $newReservation->save();
         Res_Reservations::reguard();
 
-        $oldReservation['Date Made'] = $oldReservation['created_at']->format('Y-m-d H:i:s');
-        $resReservation = $oldReservation->toarray();
+        $resReservation = $newReservation->toarray();
+        $resReservation['Date Made'] = $newReservation['created_at']->format('Y-m-d H:i:s');
 
         $this->sendMail_Reservation_Update($resReservation, $oldReservation);
-        $this->sendBusMail($oldReservation);
+        $this->sendBusMail($resReservation);
 
         return successData($resReservation);
     }
@@ -306,7 +308,7 @@ class MainController extends Controller
             }
         }
 
-        return response()->json($res_reservations);
+        return successData($res_reservations);
     }
 
     public function holdReservation(Request $request){
@@ -347,15 +349,57 @@ class MainController extends Controller
         if (!$resReservation = Res_Reservations::create($reservation)) {
             return failedError('Failed!');
         }
-        Res_Reservations::reguard();
 
         $oldReservation['Seats'] -= $reservation['Seats'];
         $oldReservation->save();
-        
+        Res_Reservations::reguard();
+
         $this->sendMail_Reservation_Hold($resReservation->toarray(), $oldReservation['id']);
         $this->sendBusMail($oldReservation->toarray());
 
         return successData($oldReservation->toarray());
+    }
+
+    public function holdReservations(Request $request){
+        $input = $request->only(['reservations']);
+        $reservations = $input['reservations'];
+
+        $res_reservations = array();
+
+        foreach ($reservations as $reservation) {
+            if (!$oldReservation = Res_Reservations::find($reservation['id'])) {
+                return failedError('Reservation #'. $reservation['id'] . ' hold failed!');
+            }
+
+            $this->procFields($reservation);
+            $reservation['valid'] = config('config.TYPE_RESERVATION_HOLD');
+            $reservation['date'] = '';
+
+            $username = Auth::user()->full_name;
+            $oldReservation['Note'] .= "\n" . $username . ' held this reservation on ' . Carbon::now() . '.';
+
+            if ($reservation['Payment Method'] == 'Credit Card') {
+    /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
+                    $reservation['Authorize net Link'] = $trans_id;
+                }*/
+            }
+
+            Res_Reservations::unguard();
+            if (!$resReservation = Res_Reservations::create($reservation)) {
+                return failedError('Hold failed!');
+            }
+
+            $oldReservation['Seats'] -= $reservation['Seats'];
+            $oldReservation->save();
+            Res_Reservations::reguard();
+
+            $this->sendMail_Reservation_Hold($resReservation->toarray(), $oldReservation['id']);
+            $this->sendBusMail($oldReservation->toarray());
+
+            $res_reservations[] = $oldReservation->toarray();
+        }
+
+        return successData($res_reservations);
     }
 
     public function deleteSoftReservation(Request $request){
@@ -377,7 +421,7 @@ class MainController extends Controller
         $oldReservation['Seats'] -= $reservation['Seats'];
 
         $username = Auth::user()->full_name;
-        $oldReservation['Note'] .= "\n" . $username . ' deleted '. $reservation['Seats'] . ' reservation' . ($reservation['Seats'] > 1) ? 's' : '' . ' on ' . Carbon::now() . '.';
+        $oldReservation['Note'] .= "\n" . $username . ' deleted '. $reservation['Seats'] . ' reservation' . (($reservation['Seats'] > 1) ? 's' : '') . ' on ' . Carbon::now() . '.';
 
         if ($reservation['Payment Method'] == 'Credit Card') {
 /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
@@ -405,10 +449,14 @@ class MainController extends Controller
         $res_reservations = array();
 
         foreach ($reservations as $reservation) {
-            $reservation['Seats'] = 0;
-            $reservation['Transaction Amount'] = 0;
+            if (!$oldReservation = Res_Reservations::find($reservation['id'])) {
+                return failedError('Reservation #'. $reservation['id'] . ' delete failed!');
+            }
+
+            $oldReservation['Seats'] -= $reservation['Seats'];
+
             $username = Auth::user()->full_name;
-            $reservation['Note'] .= "\n" . $username . ' deleted this reservation on ' . Carbon::now() . '.';
+            $oldReservation['Note'] .= "\n" . $username . ' deleted this reservation on ' . Carbon::now() . '.';
 
             if ($reservation['Payment Method'] == 'Credit Card') {
     /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
@@ -416,23 +464,15 @@ class MainController extends Controller
                 }*/
             }
 
-            unset($reservation['Date Made']);
-
             Res_Reservations::unguard();
-            $res = Res_Reservations::find($reservation['id'])->update($reservation);
+            $oldReservation->save();
             Res_Reservations::reguard();
 
-            $res_reservation = array();
-            if ($res) {
-                $res_reservation = Res_Reservations::find($reservation['id']);
-                $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
-
-                $res_reservations[] = $res_reservation;
-                $this->sendMail_Reservation_SoftDelete($reservation);
-            }
+            $res_reservations[] = $oldReservation->toarray();
+            $this->sendMail_Reservation_SoftDelete($oldReservation->toarray(), $reservation['Seats']);
         }
 
-        return response()->json($res_reservations);
+        return successData($res_reservations);
     }
 
     public function deleteReservation(Request $request){
@@ -443,7 +483,7 @@ class MainController extends Controller
         $response = Res_Reservations::find($id)->forceDelete();
         Res_Reservations::reguard();
 
-        return response()->json($response);
+        return successData($response);
     }
 
     public function searchReservation(Request $request){
@@ -488,26 +528,77 @@ class MainController extends Controller
         return successData($reservations);
     }
 
-    public function emailReservations(Request $request){
-        $input = $request->only(['reservations', 'mail']);
-        $reservations = $input['reservations'];
-        $mailContents = $input['mail'];
+    public function noteReservations(Request $request){
+        $input = $request->only(['reservations', 'note']);
+        $inputReservations = $input['reservations'];
+        $inputNote = $input['note'];
+
+        $res_reservations = array();
+        $username = Auth::user()->full_name;
+        $now = date('Y/m/d g:i A');
+        $addNote = "\nNotes by Admin (" . $username . ') on ' . $now . ":\n" . $inputNote;
+
+        foreach ($inputReservations as $reservation) {
+            if (!$res_reservation = Res_Reservations::find($reservation['id'])) {
+                return failedError('Note failed!');
+            }
+
+            $res_reservation['Note'] .= $addNote;
+            Res_Reservations::unguard();
+            $res_reservation->save();
+            Res_Reservations::reguard();
+
+            $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
+
+            $res_reservations[] = $res_reservation->toarray();
+        }
+
+        return successData($res_reservations);
+    }
+
+    public function reEmailReservations(Request $request){
+        $input = $request->only(['reservations', 'email']);
+        $inputReservations = $input['reservations'];
+        $inputMail = $input['email'];
 
         $res_reservations = array();
 
-        foreach ($reservations as $reservation) {
-            $res_reservation = array();
-            $res_reservation = Res_Reservations::find($reservation['id']);
-
-            if ($res_reservation) {
-                $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
-
-                $res_reservations[] = $res_reservation;
-                $this->sendMail_Reservation_ReEmail($reservation, $mailContents);
+        foreach ($inputReservations as $reservation) {
+            if (!$res_reservation = Res_Reservations::find($reservation['id'])) {
+                return failedError ('Re-Email failed!');
             }
+
+            $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
+            $res_reservation = $res_reservation->toarray();
+
+            $res_reservations[] = $res_reservation;
+            $this->sendMail_Reservation_ReEmail($res_reservation, $inputMail);
         }
 
-        return response()->json($res_reservations);
+        return successData($res_reservations);
+    }
+
+    public function emailCustomReservations(Request $request){
+        $input = $request->only(['reservations', 'subject', 'text']);
+        $inputReservations = $input['reservations'];
+        $inputSubject = $input['subject'];
+        $inputText = $input['text'];
+
+        $res_reservations = array();
+
+        foreach ($inputReservations as $reservation) {
+            if (!$res_reservation = Res_Reservations::find($reservation['id'])) {
+                return failedError ('Re-Email failed!');
+            }
+
+            $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
+            $res_reservation = $res_reservation->toarray();
+
+            $res_reservations[] = $res_reservation;
+            $this->sendMail_Reservation_EmailCustom($res_reservation, $inputSubject, $inputText);
+        }
+
+        return successData($res_reservations);
     }
 
     public function getSettings() {
@@ -607,10 +698,17 @@ class MainController extends Controller
         Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_HOLD')));
     }
 
-    public function sendMail_Reservation_ReEmail($reservation, $mailContents) {
-        $reservation['mailContents'] = $mailContents;
+    public function sendMail_Reservation_ReEmail($reservation, $subject) {
+        $reservation['mailSubject'] = $subject;
 
         Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_REEMAIL')));
+    }
+
+    public function sendMail_Reservation_EmailCustom($reservation, $subject, $text) {
+        $reservation['mailSubject'] = $subject;
+        $reservation['mailText'] = $text;
+
+        Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_CUSTOMEMAIL')));
     }
 
     public function sendMail_Bus_Full($busId) {

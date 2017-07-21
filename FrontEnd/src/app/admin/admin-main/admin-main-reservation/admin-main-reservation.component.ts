@@ -126,6 +126,7 @@ export class AdminMainReservationComponent implements OnInit {
 
     massAction = "Delete";
     massText = "";
+    massText1 = "";
 
     // array of currently selected entities in the data table
     selectedEntities: Reservation[][];
@@ -650,12 +651,36 @@ export class AdminMainReservationComponent implements OnInit {
                 this.doMassDelete();
                 break;
 
+            case 'Place on Hold':
+                this.doMassHold();
+                break;
+
             case 'Note':
                 this.doMassNote();
                 break;
 
             case 'Re-Email':
-                this.doMassEmail();
+                this.doMassReEmail();
+                break;
+
+            case 'Custom Email Only':
+                this.doMassCustomEmail();
+                break;
+
+            case 'Text Only':
+                this.doMassText();
+                break;
+
+            case 'Custom Email & Text':
+                this.doMassCustomEmail_Text();
+                break;
+
+            case 'Complimentary Seats as Reserved':
+                this.doMassComplimentarySeats();
+                break;
+
+            case 'Complimentary One Seat':
+                this.doMassComplimentaryOneSeat();
                 break;
         }
     }
@@ -669,6 +694,10 @@ export class AdminMainReservationComponent implements OnInit {
         this._httpService.sendPostJSON(url, { reservations: this.selectedReservations })
             .subscribe(
             data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
                 this.selectedReservations.forEach(reservation => reservation['Seats'] = 0);
 
                 this.updateBusTimesReservationTotal();
@@ -677,12 +706,47 @@ export class AdminMainReservationComponent implements OnInit {
                 this.successMessage = "Reservations are successfully deleted.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
-                this.hideWaitingProgress();
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.deleteReservationErrorMessage;
                 this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
+    }
+
+    doMassHold() {
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.hold_reservations;
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.selectedReservations.forEach(reservation => reservation['Seats'] = 0);
+
+                this.updateBusTimesReservationTotal();
+                this.hideSelectedModal();
+
+                this.successMessage = "Reservations are successfully deleted.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.deleteReservationErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
                 this.hideWaitingProgress();
             });
     }
@@ -694,49 +758,114 @@ export class AdminMainReservationComponent implements OnInit {
         console.log(this.selectedReservations);
         this.showWaitingProgress();
 
-        this.selectedReservations.forEach(reservation => reservation['Note'] += "\n" + this.massText);
+        // this.selectedReservations.forEach(reservation => reservation['Note'] += "\n" + this.massText);
 
-        let url = this._mainService.URLS.update_reservations;
-        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations })
+        let url = this._mainService.URLS.note_reservations;
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, note: this.massText })
             .subscribe(
             data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                let noteReservations = data.data as Reservation[];
+                noteReservations.forEach (noteReservation => {
+                    let originalReservation = this.reservations.find (reservation => reservation['id'] == noteReservation['id']);
+                    originalReservation['Note'] = noteReservation['Note'];
+                });
+
                 this.hideSelectedModal();
 
                 this.successMessage = "Notes are successfully added.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
-                this.hideWaitingProgress();
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
                 this.failedNotification(error);
                 this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
             });
     }
 
-    doMassEmail() {
+    doMassReEmail() {
         console.log(this.selectedReservations);
 
         this.showWaitingProgress();
 
-        let url = this._mainService.URLS.email_reservations;
-        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, mail: this.massText })
+        let url = this._mainService.URLS.re_email_reservations;
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, email: this.massText })
             .subscribe(
             data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
                 this.hideSelectedModal();
 
                 this.successMessage = "Reservations are successfully re-emailed.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
-                this.hideWaitingProgress();
             },
             error => {
                 this.successMessage = "";
                 this.errorMessage = this._mainService.updateReservationErrorMessage;
                 this.failedNotification(error);
                 this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
             });
+    }
+
+    doMassCustomEmail() {
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.email_custom_reservations;
+        this._httpService.sendPostJSON(url, { 
+            reservations: this.selectedReservations, subject: this.massText, text: this.massText1 })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.hideSelectedModal();
+
+                this.successMessage = "Reservations are successfully re-emailed.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
+    }
+
+    doMassText() {
+        alert ("Text");
+    }
+
+    doMassCustomEmail_Text() {
+        alert ("Custom Email & Text");
+    }
+
+    doMassComplimentarySeats() {
+        alert ("Complimentary Seats");
+    }
+
+    doMassComplimentaryOneSeat() {
+        alert ("Complimentary One Seat");
     }
 
     autoTransactionAmount() {
