@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use App\Mail\Mail_Reservation;
 use App\Mail\Mail_Bus;
 use Twilio;
+use Aloha;
 
 class MainController extends Controller
 {
@@ -773,7 +774,9 @@ class MainController extends Controller
 
         $fromPhone = $fromPhones[rand() % $count];
 
-        Twilio::from($fromPhone)->message($reservation['Phone'], $text);
+        $twilio = new Aloha\Twilio\Twilio(getenv('TWILIO_SID'), getenv('TWILIO_TOKEN'), $fromPhone);
+
+        $twilio->message($reservation['Phone'], $text);
     }
 
 
