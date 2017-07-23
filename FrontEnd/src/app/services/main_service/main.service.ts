@@ -29,6 +29,7 @@ export class MainService {
         note_reservations: BACKEND_SERVER_URL + "api/admin/main/note_reservations",
         re_email_reservations: BACKEND_SERVER_URL + "api/admin/main/re_email_reservations",
         email_custom_reservations: BACKEND_SERVER_URL + "api/admin/main/email_custom_reservations",
+        sendtext_reservations: BACKEND_SERVER_URL + "api/admin/main/sendtext_reservations",
 
         get_Settings: BACKEND_SERVER_URL + "api/admin/main/get_Settings",
         set_Settings: BACKEND_SERVER_URL + "api/admin/main/set_Settings",
@@ -46,6 +47,13 @@ export class MainService {
     addReservationErrorMessage = "Adding Failed.";
     updateReservationErrorMessage = "Updating Failed.";
     deleteReservationErrorMessage = "Deleting failed.";
+    holdReservationErrorMessage = "Holding failed.";
+    noteReservationErrorMessage = "Noting failed.";
+    emailReservationErrorMessage = "Emailing failed.";
+    customEmailErrorMessage = "Custom Emailing failed.";
+    textSentErrorMessage = "Text sending failed.";
+    complimentaryErrorMessage = "Complimentary setting failed.";
+    defaultErrorMessage = "Failed.";
 
     constructor() { }
 

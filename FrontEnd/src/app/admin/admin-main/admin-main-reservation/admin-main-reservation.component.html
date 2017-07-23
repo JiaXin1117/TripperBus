@@ -366,8 +366,8 @@
                 </div>
                 <div class="form-group col-xs-12" [ngSwitch]="massAction">
                     <ng-container *ngSwitchCase="'Note'">
-                        <label for="reservation_mass_text">Note</label>
-                        <textarea class="form-control" rows="5" id="reservation_mass_text" [(ngModel)]="massText"></textarea>
+                        <label for="reservation_mass_text1">Note</label>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'Re-Email'">
@@ -379,6 +379,11 @@
                         <label for="reservation_mass_text">Email Subject</label>
                         <input class="form-control" id="reservation_mass_text" [(ngModel)]="massText">
                         <label for="reservation_mass_text1">Email Text</label>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'Text Only'">
+                        <label for="reservation_mass_text1">Text</label>
                         <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
                     </ng-container>
                 </div>

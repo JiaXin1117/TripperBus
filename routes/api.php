@@ -134,6 +134,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
             'as' => 'admin.main.email_custom_reservations',
             'uses' => 'MainController@emailCustomReservations',
         ]);
+        Route::post('/sendtext_reservations', [
+            'as' => 'admin.main.sendtext_reservations',
+            'uses' => 'MainController@sendTextReservations',
+        ]);
 
         Route::get('/get_Settings', [
             'as' => 'admin.main.get_Settings',

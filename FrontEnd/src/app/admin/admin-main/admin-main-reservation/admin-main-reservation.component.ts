@@ -522,7 +522,7 @@ export class AdminMainReservationComponent implements OnInit {
                 this.hideWaitingProgress();
 
                 this.successMessage = "";
-                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.errorMessage = this._mainService.holdReservationErrorMessage;
                 this.failedNotification(error);
             },
             () => {
@@ -742,7 +742,7 @@ export class AdminMainReservationComponent implements OnInit {
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.deleteReservationErrorMessage;
+                this.errorMessage = this._mainService.holdReservationErrorMessage;
                 this.failedNotification(error);
                 this.hideWaitingProgress();
             },
@@ -752,16 +752,14 @@ export class AdminMainReservationComponent implements OnInit {
     }
 
     doMassNote() {
-        if (!this.massText.length)
+        if (!this.massText1.length)
             return;
 
         console.log(this.selectedReservations);
         this.showWaitingProgress();
 
-        // this.selectedReservations.forEach(reservation => reservation['Note'] += "\n" + this.massText);
-
         let url = this._mainService.URLS.note_reservations;
-        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, note: this.massText })
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, note: this.massText1 })
             .subscribe(
             data => {
                 if (!data.success) {
@@ -782,7 +780,7 @@ export class AdminMainReservationComponent implements OnInit {
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.errorMessage = this._mainService.noteReservationErrorMessage;
                 this.failedNotification(error);
                 this.hideWaitingProgress();
             },
@@ -812,7 +810,7 @@ export class AdminMainReservationComponent implements OnInit {
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.errorMessage = this._mainService.emailReservationErrorMessage;
                 this.failedNotification(error);
                 this.hideWaitingProgress();
             },
@@ -843,7 +841,7 @@ export class AdminMainReservationComponent implements OnInit {
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.errorMessage = this._mainService.customEmailErrorMessage;
                 this.failedNotification(error);
                 this.hideWaitingProgress();
             },
@@ -853,7 +851,34 @@ export class AdminMainReservationComponent implements OnInit {
     }
 
     doMassText() {
-        alert ("Text");
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.sendtext_reservations;
+        this._httpService.sendPostJSON(url, { 
+            reservations: this.selectedReservations, text: this.massText1 })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.hideSelectedModal();
+
+                this.successMessage = "Text successfully sent.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.textSentErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
     }
 
     doMassCustomEmail_Text() {

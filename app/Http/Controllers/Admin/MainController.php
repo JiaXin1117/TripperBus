@@ -12,11 +12,12 @@ use App\Models\Res_Reservations;
 use App\Models\Res_Setting;
 use Illuminate\Support\Facades\Input;
 use DB;
+use Mail;
+use Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Auth;
 use App\Mail\Mail_Reservation;
 use App\Mail\Mail_Bus;
+use Twilio;
 
 class MainController extends Controller
 {
@@ -584,6 +585,14 @@ class MainController extends Controller
         $inputSubject = $input['subject'];
         $inputText = $input['text'];
 
+        if ($inputSubject == '') {
+            return failedError('Invalid subject!');
+        }
+
+        if ($inputText == '') {
+            return failedError('Invalid text!');
+        }
+
         $res_reservations = array();
 
         foreach ($inputReservations as $reservation) {
@@ -596,6 +605,32 @@ class MainController extends Controller
 
             $res_reservations[] = $res_reservation;
             $this->sendMail_Reservation_EmailCustom($res_reservation, $inputSubject, $inputText);
+        }
+
+        return successData($res_reservations);
+    }
+
+    public function sendTextReservations(Request $request){
+        $input = $request->only(['reservations', 'text']);
+        $inputReservations = $input['reservations'];
+        $inputText = $input['text'];
+
+        if ($inputText == '') {
+            return failedError ('Invalid text!');
+        }
+
+        $res_reservations = array();
+
+        foreach ($inputReservations as $reservation) {
+            if (!$res_reservation = Res_Reservations::find($reservation['id'])) {
+                return failedError ('Text sending failed!');
+            }
+
+            $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
+            $res_reservation = $res_reservation->toarray();
+
+            $res_reservations[] = $res_reservation;
+            $this->sendText_Reservation($res_reservation, $inputText);
         }
 
         return successData($res_reservations);
@@ -723,6 +758,14 @@ class MainController extends Controller
         // $company_email = 'jiaxin_wp1117@outlook.com';
 
         Mail::to($company_email)->queue(new Mail_Bus(config('config.TYPE_MAIL_BUS_5_REMAIN'), $busId));
+    }
+
+    public function sendText_Reservation($reservation, $text) {
+        if ($reservation['Phone'] == '') {
+            return failedError('Invalid phone number!');
+        }
+
+        Twilio::message($reservation['Phone'], $text);
     }
 
 
