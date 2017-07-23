@@ -27,4 +27,6 @@ return [
     'TYPE_MAIL_BUS_5_REMAIN'            => 8,
 
     'DEFAULT_USER_PERMISSION'           => [1],
+
+    'FROM_PHONE_NUMBER'                 => [2027604405, 2027604435, 2027604799]
 ];
