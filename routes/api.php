@@ -142,6 +142,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
             'as' => 'admin.main.email_custom_text_reservations',
             'uses' => 'MainController@emailCustomTextReservations',
         ]);
+        Route::post('/complimentary_all_reservations', [
+            'as' => 'admin.main.complimentary_all_reservations',
+            'uses' => 'MainController@complimentaryAllReservations',
+        ]);
 
         Route::get('/get_Settings', [
             'as' => 'admin.main.get_Settings',

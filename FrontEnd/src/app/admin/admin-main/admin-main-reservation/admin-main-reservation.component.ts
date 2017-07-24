@@ -910,10 +910,47 @@ export class AdminMainReservationComponent implements OnInit {
             },
             () => {
                 this.hideWaitingProgress();
-            });    }
+            });
+    }
+
+    updateReservationsNotes(reservations: Reservation[]) {
+        reservations.forEach (reservation => {
+            let oldReservation = this.reservations.find (item => item['id'] == reservation['id']);
+            if (oldReservation) {
+                oldReservation['Note'] = reservation['Note'];
+            }
+        });
+    }
 
     doMassComplimentarySeats() {
-        alert ("Complimentary Seats");
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.complimentary_all_reservations;
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, subject: this.massText, body: this.massText1 })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.updateReservationsNotes(data.data);
+                this.hideSelectedModal();
+
+                this.successMessage = "Reservations are successfully set complimentary.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.complimentaryErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
     }
 
     doMassComplimentaryOneSeat() {

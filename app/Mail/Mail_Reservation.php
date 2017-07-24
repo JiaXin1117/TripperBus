@@ -121,6 +121,11 @@ class Mail_Reservation extends Mailable
                 $view = 'emails.Reservation_EmailCustom';
                 break;
 
+            case config('config.TYPE_MAIL_RESERVATION_COMPLIMENTARY'):
+                $subject = $this->reservation['mailSubject'];
+                $view = 'emails.Reservation_Complimentary';
+                break;
+
             default:
                 break;
         }
