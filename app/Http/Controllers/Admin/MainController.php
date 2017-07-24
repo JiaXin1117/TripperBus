@@ -605,6 +605,7 @@ class MainController extends Controller
             $res_reservation = $res_reservation->toarray();
 
             $res_reservations[] = $res_reservation;
+            
             $this->sendMail_Reservation_EmailCustom($res_reservation, $inputSubject, $inputText);
         }
 
@@ -631,11 +632,51 @@ class MainController extends Controller
             $res_reservation = $res_reservation->toarray();
 
             $res_reservations[] = $res_reservation;
+
             $this->sendText_Reservation($res_reservation, $inputText);
         }
 
         return successData($res_reservations);
     }
+
+    public function emailCustomTextReservations(Request $request){
+        $input = $request->only(['reservations', 'subject', 'body', 'text']);
+        $inputReservations = $input['reservations'];
+        $inputSubject = $input['subject'];
+        $inputBody = $input['body'];
+        $inputText = $input['text'];
+
+        if ($inputSubject == '') {
+            return failedError('Invalid subject!');
+        }
+
+        if ($inputBody == '') {
+            return failedError('Invalid body!');
+        }
+
+        if ($inputText == '') {
+            return failedError('Invalid text!');
+        }
+
+        $res_reservations = array();
+
+        foreach ($inputReservations as $reservation) {
+            if (!$res_reservation = Res_Reservations::find($reservation['id'])) {
+                return failedError ('Re-Email & text sending failed!');
+            }
+
+            $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
+            $res_reservation = $res_reservation->toarray();
+
+            $res_reservations[] = $res_reservation;
+
+            $this->sendMail_Reservation_EmailCustom($res_reservation, $inputSubject, $inputBody);
+            $this->sendText_Reservation($res_reservation, $inputText);
+        }
+
+        return successData($res_reservations);
+    }
+
 
     public function getSettings() {
         $settings = Res_Setting::first();

@@ -30,6 +30,7 @@ export class MainService {
         re_email_reservations: BACKEND_SERVER_URL + "api/admin/main/re_email_reservations",
         email_custom_reservations: BACKEND_SERVER_URL + "api/admin/main/email_custom_reservations",
         sendtext_reservations: BACKEND_SERVER_URL + "api/admin/main/sendtext_reservations",
+        email_custom_text_reservations: BACKEND_SERVER_URL + "api/admin/main/email_custom_text_reservations",
 
         get_Settings: BACKEND_SERVER_URL + "api/admin/main/get_Settings",
         set_Settings: BACKEND_SERVER_URL + "api/admin/main/set_Settings",
@@ -50,8 +51,9 @@ export class MainService {
     holdReservationErrorMessage = "Holding failed.";
     noteReservationErrorMessage = "Noting failed.";
     emailReservationErrorMessage = "Emailing failed.";
-    customEmailErrorMessage = "Custom Emailing failed.";
+    customEmailErrorMessage = "Custom emailing failed.";
     textSentErrorMessage = "Text sending failed.";
+    customEmailTextErrorMessage = "Custom emailing & text sending failed.";
     complimentaryErrorMessage = "Complimentary setting failed.";
     defaultErrorMessage = "Failed.";
 

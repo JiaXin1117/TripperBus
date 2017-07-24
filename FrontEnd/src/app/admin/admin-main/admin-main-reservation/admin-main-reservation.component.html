@@ -378,13 +378,25 @@
                     <ng-container *ngSwitchCase="'Custom Email Only'">
                         <label for="reservation_mass_text">Email Subject</label>
                         <input class="form-control" id="reservation_mass_text" [(ngModel)]="massText">
-                        <label for="reservation_mass_text1">Email Text</label>
+                        <br/>
+                        <label for="reservation_mass_text1">Email Body</label>
                         <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'Text Only'">
                         <label for="reservation_mass_text1">Text</label>
                         <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'Custom Email & Text'">
+                        <label for="reservation_mass_text">Email Subject</label>
+                        <input class="form-control" id="reservation_mass_text" [(ngModel)]="massText">
+                        <br/>
+                        <label for="reservation_mass_text1">Email Body</label>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
+                        <br/><br/>
+                        <label for="reservation_mass_text2">Text</label>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text2" [(ngModel)]="massText2"></textarea>
                     </ng-container>
                 </div>
             </div>

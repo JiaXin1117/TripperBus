@@ -127,6 +127,7 @@ export class AdminMainReservationComponent implements OnInit {
     massAction = "Delete";
     massText = "";
     massText1 = "";
+    massText2 = "";
 
     // array of currently selected entities in the data table
     selectedEntities: Reservation[][];
@@ -882,8 +883,34 @@ export class AdminMainReservationComponent implements OnInit {
     }
 
     doMassCustomEmail_Text() {
-        alert ("Custom Email & Text");
-    }
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.email_custom_text_reservations;
+        this._httpService.sendPostJSON(url, { 
+            reservations: this.selectedReservations, subject: this.massText, body: this.massText1, text: this.massText2 })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.hideSelectedModal();
+
+                this.successMessage = "Reservations are successfully re-emailed & text sent.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.customEmailTextErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });    }
 
     doMassComplimentarySeats() {
         alert ("Complimentary Seats");
