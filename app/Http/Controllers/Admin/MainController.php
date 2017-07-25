@@ -336,6 +336,7 @@ class MainController extends Controller
         $this->procFields($reservation);
         $reservation['valid'] = config('config.TYPE_RESERVATION_HOLD');
         $reservation['date'] = '';
+        $reservation['Note'] = '';
 
         if ($reservation['Payment Method'] == 'Credit Card') {
 /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
@@ -393,6 +394,7 @@ class MainController extends Controller
             $this->procFields($reservation);
             $reservation['valid'] = config('config.TYPE_RESERVATION_HOLD');
             $reservation['date'] = '';
+            $reservation['Note'] = '';
 
             $username = Auth::user()->full_name;
             $oldReservation['Note'] .= "\n" . $username . ' held this reservation on ' . Carbon::now() . '.';
@@ -727,6 +729,7 @@ class MainController extends Controller
             $reservation['valid'] = config('config.TYPE_RESERVATION_COMPLIMENTARY');
             $reservation['date'] = '';
             $reservation['Seats'] = $oldReservation['Seats'];
+            $reservation['Note'] = '';
 
             if ($reservation['Payment Method'] == 'Credit Card') {
     /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
@@ -786,6 +789,7 @@ class MainController extends Controller
             $reservation['valid'] = config('config.TYPE_RESERVATION_COMPLIMENTARY');
             $reservation['date'] = '';
             $reservation['Seats'] = 1;
+            $reservation['Note'] = '';
 
             if ($reservation['Payment Method'] == 'Credit Card') {
     /*            if ($trans_id = addAuthorizeNetLink($reservation)) {

@@ -97,6 +97,8 @@ export class AdminMainSearchComponent implements OnInit {
 
     massAction = "Delete";
     massText = "";
+    massText1 = "";
+    massText2 = "";
 
     // array of currently selected entities in the data table
     selectedReservations: Reservation[];
@@ -463,27 +465,56 @@ export class AdminMainSearchComponent implements OnInit {
 
         switch (this.massAction) {
             case 'Delete':
-            this.doMassDelete();
-            break;
+                this.doMassDelete();
+                break;
+
+            case 'Place on Hold':
+                this.doMassHold();
+                break;
 
             case 'Note':
-            this.doMassNote();
-            break;
+                this.doMassNote();
+                break;
 
             case 'Re-Email':
-            this.doMassEmail();
-            break;
+                this.doMassReEmail();
+                break;
+
+            case 'Custom Email Only':
+                this.doMassCustomEmail();
+                break;
+
+            case 'Text Only':
+                this.doMassText();
+                break;
+
+            case 'Custom Email & Text':
+                this.doMassCustomEmail_Text();
+                break;
+
+            case 'Complimentary Seats as Reserved':
+                this.doMassComplimentarySeats();
+                break;
+
+            case 'Complimentary One Seat':
+                this.doMassComplimentaryOneSeat();
+                break;
         }
     }
 
     doMassDelete() {
         console.log (this.selectedReservations);
+
         this.showWaitingProgress();
 
         let url = this._mainService.URLS.delete_soft_reservations;
         this._httpService.sendPostJSON(url, {reservations: this.selectedReservations})
         .subscribe(
             data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
                 this.selectedReservations.forEach (reservation => reservation['Seats'] = 0);
 
                 this.hideSelectedModal();
@@ -501,56 +532,271 @@ export class AdminMainSearchComponent implements OnInit {
             });
     }
 
-    doMassNote() {
-        if (!this.massText.length)
-            return;
+    doMassHold() {
+        console.log(this.selectedReservations);
 
-        console.log (this.selectedReservations);
         this.showWaitingProgress();
 
-        this.selectedReservations.forEach(reservation => reservation['Note'] += "\n" + this.massText);
-
-        let url = this._mainService.URLS.update_reservations;
-        this._httpService.sendPostJSON(url, {reservations: this.selectedReservations})
-        .subscribe(
+        let url = this._mainService.URLS.hold_reservations;
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, subject: this.massText, body: this.massText1 })
+            .subscribe(
             data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.selectedReservations.forEach(reservation => reservation['Seats'] = 0);
+
                 this.hideSelectedModal();
 
-                this.successMessage = "Reservation Notes are successfully updated.";
+                this.successMessage = "Reservations are successfully held.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
-                this.hideWaitingProgress();
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.errorMessage = this._mainService.holdReservationErrorMessage;
                 this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
                 this.hideWaitingProgress();
             });
     }
 
-    doMassEmail() {
-        console.log (this.selectedReservations);
+    doMassNote() {
+        if (!this.massText1.length) {
+            return this.failedNotification('Invalid note!');
+        }
+
+        console.log(this.selectedReservations);
         this.showWaitingProgress();
 
-        let url = this._mainService.URLS.email_reservations;
-        this._httpService.sendPostJSON(url, {reservations: this.selectedReservations, mail: this.massText})
-        .subscribe(
+        let url = this._mainService.URLS.note_reservations;
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, note: this.massText1 })
+            .subscribe(
             data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                let noteReservations = data.data as Reservation[];
+                noteReservations.forEach (noteReservation => {
+                    let originalReservation = this.reservations.find (reservation => reservation['id'] == noteReservation['id']);
+                    originalReservation['Note'] = noteReservation['Note'];
+                });
+
+                this.hideSelectedModal();
+
+                this.successMessage = "Notes are successfully added.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.noteReservationErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
+    }
+
+    doMassReEmail() {
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.re_email_reservations;
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, subject: this.massText })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
                 this.hideSelectedModal();
 
                 this.successMessage = "Reservations are successfully re-emailed.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
-                this.hideWaitingProgress();
             },
             error => {
                 this.successMessage = "";
-                this.errorMessage = this._mainService.updateReservationErrorMessage;
+                this.errorMessage = this._mainService.emailReservationErrorMessage;
                 this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
                 this.hideWaitingProgress();
             });
     }
+
+    doMassCustomEmail() {
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.email_custom_reservations;
+        this._httpService.sendPostJSON(url, { 
+            reservations: this.selectedReservations, subject: this.massText, text: this.massText1 })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.hideSelectedModal();
+
+                this.successMessage = "Reservations are successfully re-emailed.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.customEmailErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
+    }
+
+    doMassText() {
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.sendtext_reservations;
+        this._httpService.sendPostJSON(url, { 
+            reservations: this.selectedReservations, text: this.massText1 })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.hideSelectedModal();
+
+                this.successMessage = "Text successfully sent.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.textSentErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
+    }
+
+    doMassCustomEmail_Text() {
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.email_custom_text_reservations;
+        this._httpService.sendPostJSON(url, { 
+            reservations: this.selectedReservations, subject: this.massText, body: this.massText1, text: this.massText2 })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.hideSelectedModal();
+
+                this.successMessage = "Reservations are successfully re-emailed & text sent.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.customEmailTextErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
+    }
+
+    updateReservationsNotes(reservations: Reservation[]) {
+        reservations.forEach (reservation => {
+            let oldReservation = this.reservations.find (item => item['id'] == reservation['id']);
+            if (oldReservation) {
+                oldReservation['Note'] = reservation['Note'];
+            }
+        });
+    }
+
+    doMassComplimentarySeats() {
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.complimentary_all_reservations;
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, subject: this.massText, body: this.massText1 })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.updateReservationsNotes(data.data);
+                this.hideSelectedModal();
+
+                this.successMessage = "Reservations are successfully set complimentary.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.complimentaryErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
+    }
+
+    doMassComplimentaryOneSeat() {
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.complimentary_one_reservations;
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, subject: this.massText, body: this.massText1 })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.updateReservationsNotes(data.data);
+                this.hideSelectedModal();
+
+                this.successMessage = "Reservations are successfully set complimentary.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.complimentaryErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
+    }
+
 
     autoTransactionAmount() {
         if (this.myReservation['Payment Method'] == PaymentMethod[0] && this.myReservation['Seats'] > 0) {

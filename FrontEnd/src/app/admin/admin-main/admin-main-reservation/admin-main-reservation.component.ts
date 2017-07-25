@@ -737,7 +737,7 @@ export class AdminMainReservationComponent implements OnInit {
                 this.updateBusTimesReservationTotal();
                 this.hideSelectedModal();
 
-                this.successMessage = "Reservations are successfully deleted.";
+                this.successMessage = "Reservations are successfully held.";
                 this.errorMessage = "";
                 this.successNotification(this.successMessage);
             },
@@ -985,6 +985,7 @@ export class AdminMainReservationComponent implements OnInit {
             });
     }
 
+    
     autoTransactionAmount() {
         if (this.myReservation['Payment Method'] == PaymentMethod[0] && this.myReservation['Seats'] > 0) {
             this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.settings['reservation_initial_fee'];
