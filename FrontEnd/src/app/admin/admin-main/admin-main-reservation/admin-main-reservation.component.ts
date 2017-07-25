@@ -954,7 +954,34 @@ export class AdminMainReservationComponent implements OnInit {
     }
 
     doMassComplimentaryOneSeat() {
-        alert ("Complimentary One Seat");
+        console.log(this.selectedReservations);
+
+        this.showWaitingProgress();
+
+        let url = this._mainService.URLS.complimentary_one_reservations;
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, subject: this.massText, body: this.massText1 })
+            .subscribe(
+            data => {
+                if (!data.success) {
+                    return this.failedNotification (data.error);
+                }
+
+                this.updateReservationsNotes(data.data);
+                this.hideSelectedModal();
+
+                this.successMessage = "Reservations are successfully set complimentary.";
+                this.errorMessage = "";
+                this.successNotification(this.successMessage);
+            },
+            error => {
+                this.successMessage = "";
+                this.errorMessage = this._mainService.complimentaryErrorMessage;
+                this.failedNotification(error);
+                this.hideWaitingProgress();
+            },
+            () => {
+                this.hideWaitingProgress();
+            });
     }
 
     autoTransactionAmount() {

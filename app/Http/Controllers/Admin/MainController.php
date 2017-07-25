@@ -719,6 +719,65 @@ class MainController extends Controller
             $fromDate = Carbon::parse($oldReservation->date)->format('l, F j Y');
             $username = Auth::user()->full_name;
             $now = date('Y/m/d g:i A');
+            $note1 = 'Had ' . $resReservation['Seats'] . ' seat' . ($resReservation['Seats'] > 1 ? 's' : '') . ' (leaving from ' . $fromStop . '. at ' . $fromTime . ' on ' . $fromDate . '), Admin (' . $username . ') gave them additional ' . $resReservation['Seats'] . ' seat' . ($resReservation['Seats'] > 1 ? 's' : '') . ' as a complimentary ' . $now . '. (Reason for this action: ' . $inputBody . '.). That Complimentary # is ' . $resReservation['id'] . '.';
+            if ($oldReservation['Note'] != '') {
+                $note1 = "\n" . $note1;
+            }
+            $oldReservation['Note'] .= $note1;
+
+            $oldReservation->save();
+            Res_Reservations::reguard();
+
+            $this->sendMail_Reservation_Complimentary($resReservation->toarray(), $oldReservation->toarray(), $inputSubject, $inputBody);
+
+            $res_reservations[] = $oldReservation->toarray();
+        }
+
+        return successData($res_reservations);
+    }
+
+    public function complimentaryOneReservations(Request $request){
+        $input = $request->only(['reservations', 'subject', 'body']);
+        $inputReservations = $input['reservations'];
+        $inputSubject = $input['subject'];
+        $inputBody = $input['body'];
+
+        if ($inputSubject == '') {
+            $inputSubject = 'Complimentary Ticket Toward Future Travel';
+        }
+
+        if ($inputBody == '') {
+            return failedError('Invalid body!');
+        }
+
+        $res_reservations = array();
+
+        foreach ($inputReservations as $reservation) {
+            if (!$oldReservation = Res_Reservations::find($reservation['id'])) {
+                return failedError('Reservation #'. $reservation['id'] . ' complimentary set failed!');
+            }
+
+            $this->procFields($reservation);
+            $reservation['valid'] = config('config.TYPE_RESERVATION_COMPLIMENTARY');
+            $reservation['date'] = '';
+            $reservation['Seats'] = 1;
+
+            if ($reservation['Payment Method'] == 'Credit Card') {
+    /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
+                    $reservation['Authorize net Link'] = $trans_id;
+                }*/
+            }
+
+            Res_Reservations::unguard();
+            if (!$resReservation = Res_Reservations::create($reservation)) {
+                return failedError('Hold failed!');
+            }
+
+            $fromStop = $oldReservation->time->stop->address;
+            $fromTime = $oldReservation->time->time;
+            $fromDate = Carbon::parse($oldReservation->date)->format('l, F j Y');
+            $username = Auth::user()->full_name;
+            $now = date('Y/m/d g:i A');
             $note1 = "\nHad " . $resReservation['Seats'] . ' seat' . ($resReservation['Seats'] > 1 ? 's' : '') . ' (leaving from ' . $fromStop . '. at ' . $fromTime . ' on ' . $fromDate . '), Admin (' . $username . ') gave them additional ' . $resReservation['Seats'] . ' seat' . ($resReservation['Seats'] > 1 ? 's' : '') . ' as a complimentary ' . $now . '. (Reason for this action: ' . $inputBody . '.). That Complimentary # is ' . $resReservation['id'] . '.';
 
             $oldReservation['Note'] .= $note1;
@@ -726,7 +785,7 @@ class MainController extends Controller
             $oldReservation->save();
             Res_Reservations::reguard();
 
-            $this->sendMail_Reservation_Complimentary($oldReservation->toarray(), $resReservation['id'], $inputSubject, $inputBody);
+            $this->sendMail_Reservation_Complimentary($resReservation->toarray(), $oldReservation->toarray(), $inputSubject, $inputBody);
 
             $res_reservations[] = $oldReservation->toarray();
         }
@@ -845,8 +904,8 @@ class MainController extends Controller
         Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_CUSTOMEMAIL')));
     }
 
-    public function sendMail_Reservation_Complimentary($reservation, $newId, $subject, $body) {
-        $reservation['newId'] = $newId;
+    public function sendMail_Reservation_Complimentary($reservation, $oldReservation, $subject, $body) {
+        $reservation['old'] = $oldReservation;
         $reservation['mailSubject'] = $subject;
         $reservation['mailBody'] = $body;
 

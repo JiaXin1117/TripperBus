@@ -146,6 +146,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
             'as' => 'admin.main.complimentary_all_reservations',
             'uses' => 'MainController@complimentaryAllReservations',
         ]);
+        Route::post('/complimentary_one_reservations', [
+            'as' => 'admin.main.complimentary_one_reservations',
+            'uses' => 'MainController@complimentaryOneReservations',
+        ]);
 
         Route::get('/get_Settings', [
             'as' => 'admin.main.get_Settings',

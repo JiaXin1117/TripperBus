@@ -32,6 +32,7 @@ export class MainService {
         sendtext_reservations: BACKEND_SERVER_URL + "api/admin/main/sendtext_reservations",
         email_custom_text_reservations: BACKEND_SERVER_URL + "api/admin/main/email_custom_text_reservations",
         complimentary_all_reservations: BACKEND_SERVER_URL + "api/admin/main/complimentary_all_reservations",
+        complimentary_one_reservations: BACKEND_SERVER_URL + "api/admin/main/complimentary_one_reservations",
 
         get_Settings: BACKEND_SERVER_URL + "api/admin/main/get_Settings",
         set_Settings: BACKEND_SERVER_URL + "api/admin/main/set_Settings",
