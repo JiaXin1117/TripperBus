@@ -30,5 +30,10 @@ return [
 
     'DEFAULT_USER_PERMISSION'               => [1],
 
-    'FROM_PHONE_NUMBER'                     => [2027604405, 2027604435, 2027604799]
+    'FROM_PHONE_NUMBER'                     => [2027604405, 2027604435, 2027604799],
+
+    'DEFAULT_MAIL_SUBJECT_CUSTOM_EMAIL'     => 'Re: Reservation # ',
+    'DEFAULT_MAIL_SUBJECT_REEMAIL'          => 'Re-Emailing Reservation Information',
+    'DEFAULT_MAIL_SUBJECT_HOLD'             => 'Reservation Placed On Hold',
+    'DEFAULT_MAIL_SUBJECT_COMPLIMENTARY'    => 'Complimentary Ticket(s) Toward Future Travel',
 ];

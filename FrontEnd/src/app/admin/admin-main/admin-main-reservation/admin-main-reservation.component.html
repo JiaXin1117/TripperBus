@@ -365,55 +365,111 @@
                     </div>
                 </div>
                 <div class="form-group col-xs-12" [ngSwitch]="massAction">
+                    <ng-container *ngSwitchCase="'Place on Hold'">
+                        <label for="reservation_mass_text">Email Subject</label>
+                        <input class="form-control" id="reservation_mass_text" 
+                        [(ngModel)]="massText" 
+                        [maxlength]="_mainService.reservation_emailsubject_maxlength" 
+                        [placeholder]="_mainService.reservation_emailsubject_placeholder_hold" 
+                        [title]="_mainService.reservation_emailsubject_desc">
+                        <br/>
+                        <label for="reservation_mass_text1">Email Body</label>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text1" 
+                        [(ngModel)]="massText1" 
+                        [maxlength]="_mainService.reservation_text_maxlength"
+                        [title]="_mainService.reservation_emailbody_desc_hold"></textarea>
+                    </ng-container>
+
                     <ng-container *ngSwitchCase="'Note'">
                         <label for="reservation_mass_text1">Note</label>
-                        <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text1" 
+                        [(ngModel)]="massText1" 
+                        [maxlength]="_mainService.reservation_text_maxlength"
+                        [title]="_mainService.reservation_emailbody_desc_note"></textarea>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'Re-Email'">
                         <label for="reservation_mass_text">Email Subject</label>
-                        <input class="form-control" id="reservation_mass_text" [(ngModel)]="massText">
+                        <input class="form-control" id="reservation_mass_text" 
+                        [(ngModel)]="massText" 
+                        [maxlength]="_mainService.reservation_emailsubject_maxlength" 
+                        [placeholder]="_mainService.reservation_emailsubject_placeholder_reemail"
+                        [title]="_mainService.reservation_emailsubject_desc">
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'Custom Email Only'">
                         <label for="reservation_mass_text">Email Subject</label>
-                        <input class="form-control" id="reservation_mass_text" [(ngModel)]="massText">
+                        <input class="form-control" id="reservation_mass_text" 
+                        [(ngModel)]="massText" 
+                        [maxlength]="_mainService.reservation_emailsubject_maxlength" 
+                        [placeholder]="_mainService.reservation_emailsubject_placeholder_customemail"
+                        [title]="_mainService.reservation_emailsubject_desc">
                         <br/>
                         <label for="reservation_mass_text1">Email Body</label>
-                        <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text1" 
+                        [(ngModel)]="massText1" 
+                        [maxlength]="_mainService.reservation_text_maxlength"
+                        [title]="_mainService.reservation_emailbody_desc_customemail"></textarea>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'Text Only'">
                         <label for="reservation_mass_text1">Text</label>
-                        <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text1" 
+                        [(ngModel)]="massText1" 
+                        [maxlength]="_mainService.reservation_text_maxlength"
+                        [title]="_mainService.reservation_text_desc"></textarea>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'Custom Email & Text'">
                         <label for="reservation_mass_text">Email Subject</label>
-                        <input class="form-control" id="reservation_mass_text" [(ngModel)]="massText">
+                        <input class="form-control" id="reservation_mass_text" 
+                        [(ngModel)]="massText" 
+                        [maxlength]="_mainService.reservation_emailsubject_maxlength" 
+                        [placeholder]="_mainService.reservation_emailsubject_placeholder_customemail"
+                        [title]="_mainService.reservation_emailsubject_desc">
                         <br/>
                         <label for="reservation_mass_text1">Email Body</label>
-                        <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text1" 
+                        [(ngModel)]="massText1" 
+                        [maxlength]="_mainService.reservation_text_maxlength"
+                        [title]="_mainService.reservation_emailbody_desc_customemail"></textarea>
                         <br/><br/>
                         <label for="reservation_mass_text2">Text</label>
-                        <textarea class="form-control" rows="5" id="reservation_mass_text2" [(ngModel)]="massText2"></textarea>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text2" 
+                        [(ngModel)]="massText2"
+                        [title]="_mainService.reservation_text_desc"></textarea>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'Complimentary Seats as Reserved'">
                         <label for="reservation_mass_text">Email Subject</label>
-                        <input class="form-control" id="reservation_mass_text" [(ngModel)]="massText">
+                        <input class="form-control" id="reservation_mass_text" 
+                        [(ngModel)]="massText" 
+                        [maxlength]="_mainService.reservation_emailsubject_maxlength" 
+                        [placeholder]="_mainService.reservation_emailsubject_placeholder_complimentary"
+                        [title]="_mainService.reservation_emailsubject_desc">
                         <br/>
                         <label for="reservation_mass_text1">Email Body</label>
-                        <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text1" 
+                        [(ngModel)]="massText1" 
+                        [maxlength]="_mainService.reservation_text_maxlength"
+                        [title]="_mainService.reservation_emailbody_desc_complimentary"></textarea>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'Complimentary One Seat'">
                         <label for="reservation_mass_text">Email Subject</label>
-                        <input class="form-control" id="reservation_mass_text" [(ngModel)]="massText">
+                        <input class="form-control" id="reservation_mass_text" 
+                        [(ngModel)]="massText" 
+                        [maxlength]="_mainService.reservation_emailsubject_maxlength" 
+                        [placeholder]="_mainService.reservation_emailsubject_placeholder_complimentary"
+                        [title]="_mainService.reservation_emailsubject_desc">
                         <br/>
                         <label for="reservation_mass_text1">Email Body</label>
-                        <textarea class="form-control" rows="5" id="reservation_mass_text1" [(ngModel)]="massText1"></textarea>
-                    </ng-container>                </div>
+                        <textarea class="form-control" rows="5" id="reservation_mass_text1" 
+                        [(ngModel)]="massText1" 
+                        [maxlength]="_mainService.reservation_text_maxlength"
+                        [title]="_mainService.reservation_emailbody_desc_complimentary"></textarea>
+                    </ng-container>
+                </div>
             </div>
         </div>
     </div>

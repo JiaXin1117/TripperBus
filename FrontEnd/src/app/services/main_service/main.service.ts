@@ -47,6 +47,21 @@ export class MainService {
 
     settings: any[] = Array();
 
+    reservation_emailsubject_maxlength = 60;
+    reservation_text_maxlength = 160;
+    reservation_emailsubject_placeholder_hold = 'Reservation Placed On Hold';
+    reservation_emailsubject_placeholder_reemail = 'Re-Emailing Reservation Information';
+    reservation_emailsubject_placeholder_customemail = 'Re: Reservation # XYZ123456';
+    reservation_emailsubject_placeholder_complimentary = 'Complimentary Ticket(s) Toward Future Travel';
+    reservation_emailsubject_desc = 'By default you do not need to enter any subject and the default subject will be automatically filled out as shown: \nHowever, if you do want a custom subject line instead of the default one, type it in the subject box provided.\n(Note: 60 chars. max)';
+
+    reservation_emailbody_desc = `Emails are always automatically preceded with "Dear First Last Name", and after the email body they are always automatically signed with your default email footers, so there's no need to finish off with Sincerely etc.`;
+    reservation_emailbody_desc_hold = 'You may enter (optional) the reason you are doing the hold (if any) into that box. Bear in mind that the customer sees it all in their email and that the words "Reason for this action:" is also in there prefilled, followed by the reason you entered.\n' + this.reservation_emailbody_desc;
+    reservation_emailbody_desc_note = 'You have to enter the body of the text you want to email in that box.';
+    reservation_emailbody_desc_customemail = 'You have to enter the body of the text you want to note in that box.\n' + this.reservation_emailbody_desc;
+    reservation_emailbody_desc_complimentary = 'You have to enter the reason you are issuing the complimentary tickets into the following box, and in the email they will see "Reason for this action: whatever reason."\n' + this.reservation_emailbody_desc;
+    reservation_text_desc = 'The maximum characters for a text message is 160.';
+
     addReservationErrorMessage = "Adding Failed.";
     updateReservationErrorMessage = "Updating Failed.";
     deleteReservationErrorMessage = "Deleting failed.";

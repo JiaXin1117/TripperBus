@@ -725,7 +725,7 @@ export class AdminMainReservationComponent implements OnInit {
         this.showWaitingProgress();
 
         let url = this._mainService.URLS.hold_reservations;
-        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations })
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, subject: this.massText, body: this.massText1 })
             .subscribe(
             data => {
                 if (!data.success) {
@@ -753,8 +753,9 @@ export class AdminMainReservationComponent implements OnInit {
     }
 
     doMassNote() {
-        if (!this.massText1.length)
-            return;
+        if (!this.massText1.length) {
+            return this.failedNotification('Invalid note!');
+        }
 
         console.log(this.selectedReservations);
         this.showWaitingProgress();
@@ -796,7 +797,7 @@ export class AdminMainReservationComponent implements OnInit {
         this.showWaitingProgress();
 
         let url = this._mainService.URLS.re_email_reservations;
-        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, email: this.massText })
+        this._httpService.sendPostJSON(url, { reservations: this.selectedReservations, subject: this.massText })
             .subscribe(
             data => {
                 if (!data.success) {

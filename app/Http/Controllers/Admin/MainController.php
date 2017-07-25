@@ -325,8 +325,7 @@ class MainController extends Controller
             return failedError('Nothing holded!');
         }
 
-        $oldReservation = Res_Reservations::find($reservation['id']);
-        if (!$oldReservation) {
+        if (!$oldReservation = Res_Reservations::find($reservation['id'])) {
             return failedError('Reservation does not existing!');
         }
 
@@ -337,9 +336,6 @@ class MainController extends Controller
         $this->procFields($reservation);
         $reservation['valid'] = config('config.TYPE_RESERVATION_HOLD');
         $reservation['date'] = '';
-
-        $username = Auth::user()->full_name;
-        $oldReservation['Note'] .= "\n" . $username . ' held '. $reservation['Seats'] . ' reservation' . (($reservation['Seats'] > 1) ? 's' : '') . ' on ' . Carbon::now() . '.';
 
         if ($reservation['Payment Method'] == 'Credit Card') {
 /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
@@ -352,7 +348,18 @@ class MainController extends Controller
             return failedError('Failed!');
         }
 
-        $oldReservation['Seats'] -= $reservation['Seats'];
+        $fromStop = $oldReservation->time->stop->address;
+        $fromTime = $oldReservation->time->time;
+        $fromDate = Carbon::parse($oldReservation->date)->format('l, F j Y');
+        $username = Auth::user()->full_name;
+        $now = date('Y/m/d g:i A');
+        $note1 = 'Originally had ' . $oldReservation['Seats'] . ' seat' . ($oldReservation['Seats'] > 1 ? 's' : '') . ' (leaving from ' . $fromStop . '. at ' . $fromTime . ' on ' . $fromDate . '), then Admin (' . $username . ') placed ' . $resReservation['Seats'] . ' seat' . ($resReservation['Seats'] > 1 ? 's' : '') . ' on hold on ' . $now . '. That Hold # is ' . $resReservation['id'];
+        if ($oldReservation['Note'] != '') {
+            $note1 = "\n" . $note1;
+        }
+        $oldReservation['Note'] .= $note1;
+
+        $oldReservation['Seats'] -= $resReservation['Seats'];
         $oldReservation->save();
         Res_Reservations::reguard();
 
@@ -363,12 +370,22 @@ class MainController extends Controller
     }
 
     public function holdReservations(Request $request){
-        $input = $request->only(['reservations']);
-        $reservations = $input['reservations'];
+        $input = $request->only(['reservations', 'subject', 'body']);
+        $inputReservations = $input['reservations'];
+        $inputSubject = $input['subject'];
+        $inputBody = $input['body'];
+
+        if ($inputSubject == '') {
+            $inputSubject = config('config.DEFAULT_MAIL_SUBJECT_HOLD');
+        }
 
         $res_reservations = array();
 
-        foreach ($reservations as $reservation) {
+        foreach ($inputReservations as $reservation) {
+            if (!$reservation['Seats']) {
+                continue;
+            }
+
             if (!$oldReservation = Res_Reservations::find($reservation['id'])) {
                 return failedError('Reservation #'. $reservation['id'] . ' hold failed!');
             }
@@ -395,7 +412,7 @@ class MainController extends Controller
             $oldReservation->save();
             Res_Reservations::reguard();
 
-            $this->sendMail_Reservation_Hold($resReservation->toarray(), $oldReservation['id']);
+            $this->sendMail_Reservation_Hold($resReservation->toarray(), $oldReservation['id'], $inputSubject, $inputBody);
             $this->sendBusMail($oldReservation->toarray());
 
             $res_reservations[] = $oldReservation->toarray();
@@ -535,6 +552,10 @@ class MainController extends Controller
         $inputReservations = $input['reservations'];
         $inputNote = $input['note'];
 
+        if ($inputNote == '') {
+            return failedError ('Invalid note!');
+        }
+
         $res_reservations = array();
         $username = Auth::user()->full_name;
         $now = date('Y/m/d g:i A');
@@ -559,9 +580,13 @@ class MainController extends Controller
     }
 
     public function reEmailReservations(Request $request){
-        $input = $request->only(['reservations', 'email']);
+        $input = $request->only(['reservations', 'subject']);
         $inputReservations = $input['reservations'];
-        $inputMail = $input['email'];
+        $inputSubject = $input['subject'];
+
+        if ($inputSubject == '') {
+            $inputSubject = config('config.DEFAULT_MAIL_SUBJECT_REEMAIL');
+        }
 
         $res_reservations = array();
 
@@ -574,7 +599,7 @@ class MainController extends Controller
             $res_reservation = $res_reservation->toarray();
 
             $res_reservations[] = $res_reservation;
-            $this->sendMail_Reservation_ReEmail($res_reservation, $inputMail);
+            $this->sendMail_Reservation_ReEmail($res_reservation, $inputSubject);
         }
 
         return successData($res_reservations);
@@ -586,10 +611,6 @@ class MainController extends Controller
         $inputSubject = $input['subject'];
         $inputText = $input['text'];
 
-        if ($inputSubject == '') {
-            return failedError('Invalid subject!');
-        }
-
         if ($inputText == '') {
             return failedError('Invalid text!');
         }
@@ -599,6 +620,10 @@ class MainController extends Controller
         foreach ($inputReservations as $reservation) {
             if (!$res_reservation = Res_Reservations::find($reservation['id'])) {
                 return failedError ('Re-Email failed!');
+            }
+
+            if ($inputSubject == '') {
+                $inputSubject = config('config.DEFAULT_MAIL_SUBJECT_CUSTOM_EMAIL') . $res_reservation['id'];
             }
 
             $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
@@ -646,10 +671,6 @@ class MainController extends Controller
         $inputBody = $input['body'];
         $inputText = $input['text'];
 
-        if ($inputSubject == '') {
-            return failedError('Invalid subject!');
-        }
-
         if ($inputBody == '') {
             return failedError('Invalid body!');
         }
@@ -663,6 +684,10 @@ class MainController extends Controller
         foreach ($inputReservations as $reservation) {
             if (!$res_reservation = Res_Reservations::find($reservation['id'])) {
                 return failedError ('Re-Email & text sending failed!');
+            }
+
+            if ($inputSubject == '') {
+                $inputSubject = config('config.DEFAULT_MAIL_SUBJECT_CUSTOM_EMAIL') . $res_reservation['id'];
             }
 
             $res_reservation['Date Made'] = $res_reservation['created_at']->format('Y-m-d H:i:s');
@@ -684,7 +709,7 @@ class MainController extends Controller
         $inputBody = $input['body'];
 
         if ($inputSubject == '') {
-            $inputSubject = 'Complimentary Ticket Toward Future Travel';
+            $inputSubject = config('config.DEFAULT_MAIL_SUBJECT_COMPLIMENTARY');
         }
 
         if ($inputBody == '') {
@@ -743,7 +768,7 @@ class MainController extends Controller
         $inputBody = $input['body'];
 
         if ($inputSubject == '') {
-            $inputSubject = 'Complimentary Ticket Toward Future Travel';
+            $inputSubject = config('config.DEFAULT_MAIL_SUBJECT_COMPLIMENTARY');
         }
 
         if ($inputBody == '') {
@@ -885,8 +910,10 @@ class MainController extends Controller
         }
     }
 
-    public function sendMail_Reservation_Hold($reservation, $oldId) {
+    public function sendMail_Reservation_Hold($reservation, $oldId, $subject = null, $body = null) {
         $reservation['oldId'] = $oldId;
+        $reservation['mailSubject'] = ($subject && $subject != '') ? $subject : 'Reservation Placed On Hold';
+        $reservation['mailBody'] = $body ? $body : '';
 
         Mail::to($reservation['Email'])->queue(new Mail_Reservation($reservation, config('config.TYPE_MAIL_RESERVATION_HOLD')));
     }

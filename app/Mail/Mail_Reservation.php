@@ -107,7 +107,7 @@ class Mail_Reservation extends Mailable
                 break;
 
             case config('config.TYPE_MAIL_RESERVATION_HOLD'):
-                $subject = 'Reservation Placed On Hold';
+                $subject = $this->reservation['mailSubject'];
                 $view = 'emails.Reservation_Hold';
                 break;
 

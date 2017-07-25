@@ -4,8 +4,19 @@
 <div class="td likep" width="674"><br>
     Dear {{$reservation['First Name']}} {{$reservation['Last Name']}},<br>
     <br>
-    This email is regarding the reservation you have with us from {{$stop['address']}} at {{$time['time']}} on {{$reservation['date']}}. We have hereby placed {{$reservation['Seats']}} seat on hold for future travel.<br>
+    This email is regarding the reservation you have with us from {{$stop['address']}} at {{$time['time']}} on {{$reservation['date']}}. We have hereby placed 
+    {{$reservation['Seats']}} 
+    @if ($reservation['Seats'] > 1)
+    seats
+    @else
+    seat
+    @endif
+     on hold for future travel.<br>
     <br>
+    @if ($reservation['mailBody'] != '')
+    Reason for this action: {{$reservation['mailBody']}}<br>
+    <br>
+    @endif
     The following is your new "Hold Number":<br>
     <b>
     <div class="edittrip3" style="font-family: verdana, arial, serif, EmojiFont;">{{$reservation['id']}}</div>
