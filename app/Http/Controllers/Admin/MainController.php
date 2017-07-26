@@ -149,14 +149,13 @@ class MainController extends Controller
         $response = Res_Reservations::create($reservation);
         Res_Reservations::reguard();
 
-        $response['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
-        
-        $reservation = $response->toarray();
+        $resReservation = Res_Reservations::find($response['id'])->toarray();
+        $resReservation['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
 
-        $this->sendMail_Reservation_Add($reservation);
-        $this->sendBusMail($reservation);
+        $this->sendMail_Reservation_Add($resReservation);
+        $this->sendBusMail($resReservation);
 
-        return successData($response);
+        return successData($resReservation);
     }
 
     public function addReservationSeats(Request $request){
@@ -192,6 +191,7 @@ class MainController extends Controller
         $newReservation = $oldReservation;
         $oldReservation = $oldReservation->toarray();
         $newReservation['Seats'] += $reservation['Seats'];
+        $newReservation['Transaction Amount'] += $reservation['Transaction Amount'];
 
         Res_Reservations::unguard();
         $newReservation->save();
@@ -260,6 +260,7 @@ class MainController extends Controller
         } else {
             if ($newReservation = Res_Reservations::create($reservation)) {
                 $oldReservation['Seats'] -= $reservation['Seats'];
+                $oldReservation['Transaction Amount'] -= $reservation['Transaction Amount'];
                 $oldReservation->save();
                 $oldReservation = $oldReservation->toarray();
             }
@@ -361,13 +362,16 @@ class MainController extends Controller
         $oldReservation['Note'] .= $note1;
 
         $oldReservation['Seats'] -= $resReservation['Seats'];
+        $oldReservation['Transaction Amount'] -= $resReservation['Transaction Amount'];
         $oldReservation->save();
         Res_Reservations::reguard();
 
-        $this->sendMail_Reservation_Hold($resReservation->toarray(), $oldReservation['id']);
-        $this->sendBusMail($oldReservation->toarray());
+        $oldReservation = Res_Reservations::find($oldReservation['id'])->toarray();
 
-        return successData($oldReservation->toarray());
+        $this->sendMail_Reservation_Hold($resReservation->toarray(), $oldReservation['id']);
+        $this->sendBusMail($oldReservation);
+
+        return successData($oldReservation);
     }
 
     public function holdReservations(Request $request){
@@ -411,6 +415,7 @@ class MainController extends Controller
             }
 
             $oldReservation['Seats'] -= $reservation['Seats'];
+            $oldReservation['Transaction Amount'] -= $reservation['Transaction Amount'];
             $oldReservation->save();
             Res_Reservations::reguard();
 
@@ -440,6 +445,7 @@ class MainController extends Controller
             return failedError('Seats are overdeleting!');
         }
         $oldReservation['Seats'] -= $reservation['Seats'];
+        $oldReservation['Transaction Amount'] -= $reservation['Transaction Amount'];
 
         $username = Auth::user()->full_name;
         $oldReservation['Note'] .= "\n" . $username . ' deleted '. $reservation['Seats'] . ' reservation' . (($reservation['Seats'] > 1) ? 's' : '') . ' on ' . Carbon::now() . '.';
@@ -454,8 +460,8 @@ class MainController extends Controller
         $oldReservation->save();
         Res_Reservations::reguard();
 
-        $oldReservation['Date Made'] = $oldReservation['created_at']->format('Y-m-d H:i:s');
-        $resReservation = $oldReservation->toarray();
+        $resReservation = Res_Reservations::find($oldReservation['id'])->toarray();
+        $resReservation['Date Made'] = $oldReservation['created_at']->format('Y-m-d H:i:s');
 
         $this->sendMail_Reservation_SoftDelete($resReservation, $reservation['Seats']);
         $this->sendBusMail($resReservation);
@@ -475,6 +481,7 @@ class MainController extends Controller
             }
 
             $oldReservation['Seats'] -= $reservation['Seats'];
+            $oldReservation['Transaction Amount'] -= $reservation['Transaction Amount'];
 
             $username = Auth::user()->full_name;
             $oldReservation['Note'] .= "\n" . $username . ' deleted this reservation on ' . Carbon::now() . '.';
@@ -489,8 +496,10 @@ class MainController extends Controller
             $oldReservation->save();
             Res_Reservations::reguard();
 
-            $res_reservations[] = $oldReservation->toarray();
-            $this->sendMail_Reservation_SoftDelete($oldReservation->toarray(), $reservation['Seats']);
+            $resReservation = Res_Reservations::find($oldReservation['id'])->toarray();
+            $resReservation['Date Made'] = $oldReservation['created_at']->format('Y-m-d H:i:s');
+            $res_reservations[] = $resReservation;
+            $this->sendMail_Reservation_SoftDelete($resReservation, $reservation['Seats']);
         }
 
         return successData($res_reservations);
@@ -730,6 +739,7 @@ class MainController extends Controller
             $reservation['date'] = '';
             $reservation['Seats'] = $oldReservation['Seats'];
             $reservation['Note'] = '';
+            $reservation['Transaction Amount'] = 0;
 
             if ($reservation['Payment Method'] == 'Credit Card') {
     /*            if ($trans_id = addAuthorizeNetLink($reservation)) {
@@ -790,6 +800,7 @@ class MainController extends Controller
             $reservation['date'] = '';
             $reservation['Seats'] = 1;
             $reservation['Note'] = '';
+            $reservation['Transaction Amount'] = 0;
 
             if ($reservation['Payment Method'] == 'Credit Card') {
     /*            if ($trans_id = addAuthorizeNetLink($reservation)) {

@@ -799,8 +799,8 @@ export class AdminMainSearchComponent implements OnInit {
 
 
     autoTransactionAmount() {
-        if (this.myReservation['Payment Method'] == PaymentMethod[0] && this.myReservation['Seats'] > 0) {
-            this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.settings['reservation_initial_fee'];
+        if (this.myReservation['Seats'] > 0) {
+            this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.myReservation['Leg Price'];
         }
         else {
             this.myReservation['Transaction Amount'] = 0;

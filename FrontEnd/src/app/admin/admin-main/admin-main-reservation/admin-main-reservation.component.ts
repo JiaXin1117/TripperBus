@@ -304,10 +304,6 @@ export class AdminMainReservationComponent implements OnInit {
         this.showField.sort((a, b) => (a - b));
     }
 
-    onPaymentMethodChange(evt) {
-        this.autoTransactionAmount();
-    }
-
     onSeatsChange(evt) {
         this.autoTransactionAmount();
     }
@@ -332,6 +328,7 @@ export class AdminMainReservationComponent implements OnInit {
         this.newReservation['outbound_area_id'] = this.inputParams.leaving_from;
         this.newReservation['Made By'] = 'web';
         this.newReservation['App Scanned'] = 'Was not scanned';
+        this.newReservation['Leg Price'] = this.inputParams.outbound_price;
 
         console.log(this.newReservation);
 
@@ -699,7 +696,10 @@ export class AdminMainReservationComponent implements OnInit {
                     return this.failedNotification (data.error);
                 }
 
-                this.selectedReservations.forEach(reservation => reservation['Seats'] = 0);
+                this.selectedReservations.forEach(reservation => {
+                    reservation['Seats'] = 0;
+                    reservation['Transaction Amount'] = 0;
+                });
 
                 this.updateBusTimesReservationTotal();
                 this.hideSelectedModal();
@@ -732,7 +732,10 @@ export class AdminMainReservationComponent implements OnInit {
                     return this.failedNotification (data.error);
                 }
 
-                this.selectedReservations.forEach(reservation => reservation['Seats'] = 0);
+                this.selectedReservations.forEach(reservation => {
+                    reservation['Seats'] = 0;
+                    reservation['Transaction Amount'] = 0;
+                });
 
                 this.updateBusTimesReservationTotal();
                 this.hideSelectedModal();
@@ -985,13 +988,17 @@ export class AdminMainReservationComponent implements OnInit {
             });
     }
 
-    
-    autoTransactionAmount() {
-        if (this.myReservation['Payment Method'] == PaymentMethod[0] && this.myReservation['Seats'] > 0) {
-            this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.settings['reservation_initial_fee'];
 
-            if (this.headerReturn.date != '') {
-                this.myReservation['Transaction Amount'] += this.myReservation['Seats'] * this.inputParams['returning_price']
+    autoTransactionAmount() {
+        if (this.myReservation['Seats'] > 0) {
+            if (!this.myReservation['id']) {
+                this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.inputParams['outbound_price'] + this._mainService.settings['reservation_initial_fee'];
+
+                if (this.headerReturn.date != '') {
+                    this.myReservation['Transaction Amount'] += this.myReservation['Seats'] * this.inputParams['returning_price']
+                }
+            } else {
+                this.myReservation['Transaction Amount'] = this.myReservation['Seats'] * this.myReservation['Leg Price'];
             }
         }
         else {
