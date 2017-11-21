@@ -168,7 +168,6 @@ return [
          */
         Laravel\Tinker\TinkerServiceProvider::class,
         Aloha\Twilio\Support\Laravel\ServiceProvider::class,
-        Barryvdh\Cors\ServiceProvider::class,
 
         /*
          * Application Service Providers...
