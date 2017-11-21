@@ -162,16 +162,20 @@ class MainController extends Controller
         $input = $request->only(['reservation']);
         $reservation = $input['reservation'];
 
+        if (!$reservation['Seats']) {
+            return failedError('Nothing added!');
+        }
+        
         $oldReservation = Res_Reservations::find($reservation['id']);
         if (!$oldReservation) {
             return failedError('Reservation does not existing!');
         }
 
-        if (!$reservation['Seats']) {
-            return failedError('Nothing updated!');
-        }
+        $newReservation = $oldReservation->toarray();
+        $newReservation['Seats'] = $reservation['Seats'];
+        $newReservation['Transaction Amount'] = $reservation['Transaction Amount'];
 
-        if ($error = $this->checkBusFull($reservation, $oldReservation['time_id'])) {
+        if ($error = $this->checkBusFull($reservation, $newReservation['time_id'])) {
             return failedError($error);
         }
 
@@ -180,15 +184,13 @@ class MainController extends Controller
         $Note1 = "\nReservation added " . $reservation['Seats'] 
                 . ' seat' . ($reservation['Seats'] > 1 ? 's' : '') 
                 . ' by ' . $username . ' on ' . $now . '.';
-        $oldReservation['Note'] .= $Note1;
-
-        if ($reservation['Payment Method'] == 'Credit Card') {
-/*            if ($trans_id = addAuthorizeNetLink($reservation)) {
-                $reservation['Authorize net Link'] = $trans_id;
-            }*/
+        $newReservation['Note'] .= $Note1;
+        
+        if ($error = $this->checkPaymentMethod($newReservation)) {
+            return failedError($error);
         }
 
-        $newReservation = $oldReservation;
+/*         $newReservation = $oldReservation;
         $oldReservation = $oldReservation->toarray();
         $newReservation['Seats'] += $reservation['Seats'];
         $newReservation['Transaction Amount'] += $reservation['Transaction Amount'];
@@ -201,6 +203,18 @@ class MainController extends Controller
         $resReservation['Date Made'] = $newReservation['created_at']->format('Y-m-d H:i:s');
 
         $this->sendMail_Reservation_Update($resReservation, $oldReservation);
+        $this->sendBusMail($resReservation); */
+
+        $this->procFields($newReservation);
+        
+        Res_Reservations::unguard();
+        $response = Res_Reservations::create($newReservation);
+        Res_Reservations::reguard();
+
+        $resReservation = Res_Reservations::find($response['id'])->toarray();
+        $resReservation['Date Made'] = $response['created_at']->format('Y-m-d H:i:s');
+
+        $this->sendMail_Reservation_Add($resReservation);
         $this->sendBusMail($resReservation);
 
         return successData($resReservation);
@@ -222,6 +236,9 @@ class MainController extends Controller
         if ($oldReservation['Seats'] < $reservation['Seats']) {
             return failedError("Seats can't be changed higher.");
         }
+
+        // For secure
+        $reservation['Transaction Amount'] = $oldReservation['Transaction Amount'];
 
         if ($reservation['date'] != $oldReservation['date'] || $reservation['time_id'] != $oldReservation['time_id']) {
             if (isBeforeToday($reservation['date'])) {
