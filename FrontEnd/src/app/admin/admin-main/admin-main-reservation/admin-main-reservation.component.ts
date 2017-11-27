@@ -405,7 +405,7 @@ export class AdminMainReservationComponent implements OnInit {
                     this.refreshData(true);
                     this.hideReservationModal();
 
-                    this.successMessage = "Reservation#" + this.myReservation['id'] + " is successfully updated.";
+                    this.successMessage = "Reservation#" + updatedReservation['id'] + " is successfully added.";
                     this.errorMessage = "";
                     this.successNotification(this.successMessage);
                 } else {
@@ -1030,7 +1030,7 @@ export class AdminMainReservationComponent implements OnInit {
 
     onSelectReservationDate() {
         if (!this.isAfterToday(this.myReservationDate)) {
-            this.failedNotification ("Please select date from today!");
+            this.failedNotification ("Please select a date that is not in the past!");
             this.myReservationDate = new Date(this.myReservation['date']);
 
             return;

@@ -148,7 +148,7 @@ export class AdminMainSearchComponent implements OnInit {
                 return;
 
             this.inputParams.searchKey = searchKey;
-            this.inputParams.searchVal = searchVal;
+            this.inputParams.searchVal = decodeURIComponent(searchVal);
             this.inputParams.caseSensitive = caseSensitive;
             this.init();
         });
@@ -817,7 +817,7 @@ export class AdminMainSearchComponent implements OnInit {
 
     onSelectReservationDate() {
         if (!this.isAfterToday(this.myReservationDate)) {
-            this.failedNotification ("Please select date from today!");
+            this.failedNotification ("Please select a date that is not in the past!");
             this.myReservationDate = new Date(this.myReservation['date']);
 
             return;

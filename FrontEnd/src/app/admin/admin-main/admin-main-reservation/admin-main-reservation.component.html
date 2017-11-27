@@ -33,6 +33,7 @@
             <thead>
                 <tr>
                     <th><mfRowSelectorHead></mfRowSelectorHead></th>
+                    <th><mfDefaultSorter by="id">Reservation #</mfDefaultSorter></th>
                     <th><mfDefaultSorter by="First Name">First Name</mfDefaultSorter></th>
                     <th><mfDefaultSorter by="Last Name">Last Name</mfDefaultSorter></th>
                     <th><mfDefaultSorter by="Phone">Phone</mfDefaultSorter></th>
@@ -46,8 +47,9 @@
             <tbody>
                 <tr *ngFor="let item of mf.data; let ndx = index">
                     <td><mfRowSelector [entity]="item" [checkboxId]="ndx"></mfRowSelector></td>
-                    <td><a (click)="editReservation(item);">{{item['First Name']}}</a></td>
-                    <td><a (click)="editReservation(item);">{{item['Last Name']}}</a></td>
+                    <td><a (click)="editReservation(item);">{{item['id']}}</a></td>
+                    <td>{{item['First Name']}}</td>
+                    <td>{{item['Last Name']}}</td>
                     <td>{{item['Phone']}}</td>
                     <td>{{item['Email']}}</td>
                     <td>{{item['Seats']}}</td>
@@ -80,6 +82,7 @@
                     <thead>
                         <tr>
                             <th><mfRowSelectorHead></mfRowSelectorHead></th>
+                            <th><mfDefaultSorter by="id">Reservation #</mfDefaultSorter></th>
                             <th><mfDefaultSorter by="First Name">First Name</mfDefaultSorter></th>
                             <th><mfDefaultSorter by="Last Name">Last Name</mfDefaultSorter></th>
                             <th><mfDefaultSorter by="Phone">Phone</mfDefaultSorter></th>
@@ -93,8 +96,9 @@
                     <tbody>
                         <tr *ngFor="let item of mf.data; let ndx = index">
                             <td><mfRowSelector [entity]="item" [checkboxId]="ndx"></mfRowSelector></td>
-                            <td><a (click)="editReservation(item);">{{item['First Name']}}</a></td>
-                            <td><a (click)="editReservation(item);">{{item['Last Name']}}</a></td>
+                            <td><a (click)="editReservation(item);">{{item['id']}}</a></td>
+                            <td>{{item['First Name']}}</td>
+                            <td>{{item['Last Name']}}</td>
                             <td>{{item['Phone']}}</td>
                             <td>{{item['Email']}}</td>
                             <td>{{item['Seats']}}</td>

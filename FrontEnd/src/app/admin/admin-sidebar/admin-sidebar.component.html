@@ -32,8 +32,7 @@
                                 <option value="IP Address">IP Address</option>
                                 <option value="Date Made">Date Made</option>
                                 <option value="Note">Note</option>
-                                <option value="id">Reservation ID</option>
-                                <option value="time_id">Reservation Number</option>
+                                <option value="id">Reservation Number</option>
                             </select>
                         </div>
                         <div *ngIf="searchKey != 'Date Made'" class="input-group col-xs-12" style="margin: 10px 0px; display:inline-flex">
@@ -86,7 +85,7 @@
             </li>
             <li *ngIf="isShowItem('Customers')" class="sidebar-menu-li">
                 <a routerLink="/admin/customers" routerLinkActive="admin-sidebar-router-active">
-                    <i class="fa fa-group"></i> <span>Customers</span>
+                    <i class="fa fa-group"></i> <span>Accounts</span>
                 </a>
             </li>
             <!--            <li class="sidebar-menu-li">

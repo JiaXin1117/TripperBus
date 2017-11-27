@@ -251,10 +251,9 @@ class MainController extends Controller
 
             $username = Auth::user()->full_name;
             $now = date('Y/m/d g:i A');
-            $Note1 = "\nReservation deleted by " . $username . ' on ' . $now 
-                    . '. Old reservation number was : ' . $oldReservation['id'] 
-                    . '. New reservation number is : ' . $oldReservation['id']; // Temp newReservation number
-            $reservation['Note'] .= $Note1;
+            $Note1 = "\nReservation #" . $oldReservation['id'] . " updated by " . $username . ' on ' . $now 
+                    . '.'; // Temp newReservation number
+            $Note2 = 'newly created from Reservation #' . $oldReservation['id'] . ' by ' . $username . ' on ' . $now . '.';
         }
 
         if ($reservation['Payment Method'] == 'Credit Card') {
@@ -271,6 +270,10 @@ class MainController extends Controller
         if ($oldReservation['Seats'] == $reservation['Seats']) {
             $newReservation = $oldReservation;
             $oldReservation = $oldReservation->toarray();
+            if (isset($Note1)) {
+                $reservation['Note'] .= $Note1;
+            }
+            
             if (!$newReservation->update($reservation)) {
                 return failedError('Failed!');
             }
@@ -278,7 +281,17 @@ class MainController extends Controller
             if ($newReservation = Res_Reservations::create($reservation)) {
                 $oldReservation['Seats'] -= $reservation['Seats'];
                 $oldReservation['Transaction Amount'] -= $reservation['Transaction Amount'];
+                if (isset($Note1)) {
+                    $oldReservation['Note'] .= $Note1;
+                }
                 $oldReservation->save();
+
+                if (isset($Note2)) {
+                    $Note2 = "\nReservation #" . $newReservation['id'] . ' is ' . $Note2;
+                    $newReservation['Note'] .= $Note2;
+                    $newReservation->save();
+                }
+
                 $oldReservation = $oldReservation->toarray();
             }
         }
