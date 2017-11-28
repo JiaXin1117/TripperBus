@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Res_Setting;
+use App\Models\Res_Times;
 use Carbon\Carbon;
 
 function getSettingsValue($key) {
@@ -28,6 +29,18 @@ function isBeforeToday($dateStr) {
     return ($date < $today);
 }
 
+function makeReservationNumber($reservation) {
+    $time_id = $reservation['time_id'];
+    $time = Res_Times::find($time_id)->time;
+    $timeStr = Carbon::parse($time)->format('hi');
+    $stopStr = Res_Times::find($time_id)->stop->city;
+    $idStr = str_pad(substr(strval($reservation['id']), 0, 4), 4, 0, STR_PAD_LEFT);
+    $dateStr1 = Carbon::parse($reservation['date'])->format('my');
+    $dateStr2 = Carbon::parse($reservation['date'])->format('d');
+
+    $reservation['Res_num'] = $dateStr1 . $timeStr . $stopStr[0] . $idStr . $dateStr2;
+}
+
 function addAuthorizeNetLink($reservation, &$AuthorizeNetError) {
 
     $auth_net_url    = "https://certification.authorize.net/gateway/transact.dll";
@@ -39,6 +52,10 @@ function addAuthorizeNetLink($reservation, &$AuthorizeNetError) {
 
     $x_l="839K8uarKj3r";
     $x_t="95Ukcc6RZ287Pc7B";
+
+    // Test login ID & trans key
+    // $x_l="57Ddes9P3";
+    // $x_t="4yT8238a9UpbJb72";
 
     $hold_authnet_values = array
     (
