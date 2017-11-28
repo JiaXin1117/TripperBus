@@ -29,6 +29,7 @@ export class Reservation {
     public 'CC Code': string;
     public 'CC Month': number;
     public 'CC Year': number;
+    public 'Res_num': string;
     constructor() {
         this.init();
     }
@@ -64,6 +65,7 @@ export class Reservation {
         this['CC Code'] = '';
         this['CC Month'] = (new Date()).getMonth() + 1;
         this['CC Year'] = (new Date()).getFullYear();
+        this['Res_num'] = '';
     }
 
     public copy(src: Reservation) {

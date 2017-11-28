@@ -146,7 +146,7 @@ class MainController extends Controller
         $this->procFields($reservation);
         
         Res_Reservations::unguard();
-        $response = Res_Reservations::create($reservation);
+        $response = Res_Reservations::createReservation($reservation);
         Res_Reservations::reguard();
 
         $resReservation = Res_Reservations::find($response['id'])->toarray();
@@ -208,7 +208,7 @@ class MainController extends Controller
         $this->procFields($newReservation);
         
         Res_Reservations::unguard();
-        $response = Res_Reservations::create($newReservation);
+        $response = Res_Reservations::createReservation($newReservation);
         Res_Reservations::reguard();
 
         $resReservation = Res_Reservations::find($response['id'])->toarray();
@@ -278,7 +278,7 @@ class MainController extends Controller
                 return failedError('Failed!');
             }
         } else {
-            if ($newReservation = Res_Reservations::create($reservation)) {
+            if ($newReservation = Res_Reservations::createReservation($reservation)) {
                 $oldReservation['Seats'] -= $reservation['Seats'];
                 $oldReservation['Transaction Amount'] -= $reservation['Transaction Amount'];
                 if (isset($Note1)) {
@@ -376,7 +376,7 @@ class MainController extends Controller
         }
 
         Res_Reservations::unguard();
-        if (!$resReservation = Res_Reservations::create($reservation)) {
+        if (!$resReservation = Res_Reservations::createReservation($reservation)) {
             return failedError('Failed!');
         }
 
@@ -440,7 +440,7 @@ class MainController extends Controller
             }
 
             Res_Reservations::unguard();
-            if (!$resReservation = Res_Reservations::create($reservation)) {
+            if (!$resReservation = Res_Reservations::createReservation($reservation)) {
                 return failedError('Hold failed!');
             }
 
@@ -778,7 +778,7 @@ class MainController extends Controller
             }
 
             Res_Reservations::unguard();
-            if (!$resReservation = Res_Reservations::create($reservation)) {
+            if (!$resReservation = Res_Reservations::createReservation($reservation)) {
                 return failedError('Hold failed!');
             }
 
@@ -839,7 +839,7 @@ class MainController extends Controller
             }
 
             Res_Reservations::unguard();
-            if (!$resReservation = Res_Reservations::create($reservation)) {
+            if (!$resReservation = Res_Reservations::createReservation($reservation)) {
                 return failedError('Hold failed!');
             }
 

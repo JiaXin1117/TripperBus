@@ -12,4 +12,14 @@ class Res_Reservations extends Model
     public function time() {
         return $this->belongsTo('App\Models\Res_Times');
     }
+
+    public static function createReservation($inputReservation) {
+        $reservation = self::create($inputReservation);
+
+        makeReservationNumber($reservation);
+
+        $reservation->save();
+
+        return $reservation;
+    }
 }

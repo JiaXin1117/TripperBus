@@ -372,6 +372,8 @@ export class AdminMainReservationComponent implements OnInit {
     }
 
     editReservation(reservation: Reservation) {
+        console.log(reservation);
+
         this.myReservation.copy(reservation);
         this.myReservationDate = new Date(this.myReservation['date']);
 
