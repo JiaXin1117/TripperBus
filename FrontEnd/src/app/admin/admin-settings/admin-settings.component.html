@@ -151,6 +151,16 @@
             <div class="col-xs-12">
                 <div class="row">
                     <div class="form-group">
+                        <label>Default Price:</label>
+                        <div class="text-info">This is the default price</div>
+                        <input type="text" name="default_price" class="form-control" size="8" maxlength="5" [(ngModel)]="settings['default_price']">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12">
+                <div class="row">
+                    <div class="form-group">
                         <label>Reservation Fee - (Rescheduling):</label>
                         <div class="text-info">This is the reservation fee per whole group when modifying existing reservations both through the
                             website or admin</div>

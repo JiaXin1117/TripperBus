@@ -1,18 +1,21 @@
 
 <section class="content-header admin-customers-content-header-custom">
     <h1>
-        <i class="fa fa-group"></i> Customers
+        <i class="fa fa-group"></i> Accounts
     </h1>
     <ol class="breadcrumb admin-customers-breadcrumb-custom">
         <li><a routerLink="/admin/main"><i class="fa fa-dashboard"></i> Main</a></li>
-        <li class="active">Customers</li>
+        <li class="active">Accounts</li>
     </ol>
 </section>
 
 <section class="panel admin-main-panel admin-customers-main-panel-custom">
     <header class="panel-heading">
         <h3 class="box-title">
-            <span class="fa fa-list-alt"></span> Customers
+            <span class="fa fa-list-alt"></span> Accounts
+            <a class="btn btn-xs btn-primary pull-right" (click)="showAddCustomerModal()">
+                <span class="fa fa-plus"></span> Add Customer
+            </a>
         </h3>
     </header>
     <div class="panel-body">
@@ -22,28 +25,107 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>IP Address</th>
+                    <th>Joined</th>
+                    <th>Mailing</th>
+                    <th>Point</th>
+                    <th>Money</th>
                     <th>Created</th>
-                    <th width="200">&nbsp;</th>
                 </tr>
             </thead>
-            <tbody class="table">
-                <tr class="rows 6">
-                    <td><span class="userName">6</span></td>
-                    <td><span class="userName">juanperez</span></td>
-                    <td><span class="userName">juan@perez.com</span></td>
-                    <td>
-                        <span class="label label-success">
-                            2016-09-27 20:07:01
-                        </span>
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            <a href="http://tripperbus.infinixsoft.com/admin/users/6/edit?role=2" class="btn btn-xs btn-success"><span class="fa fa-pencil"></span> Edit</a>  
-                            <a href="#delete" class="btn btn-xs btn-danger btn-select" data-toggle="modal" data-target="#delete-modal" data-id="6"><span class="fa fa-trash"></span> Delete</a>
-                        </div>
-                    </td>
+            <tbody class="table" *ngIf="customers && customers.length">
+                <tr *ngFor="let customer of customers;">
+                    <td>{{customer['id']}}</td>
+                    <td><a (click)="showEditCustomerModal(customer)">{{customer['fname']}} {{customer['lname']}}</a></td>
+                    <td>{{customer['email']}}</td>
+                    <td>{{customer['phone']}}</td>
+                    <td>{{customer['address']}}, {{customer['city']}}, {{customer['state']}}, {{customer['zip']}}</td>
+                    <td>{{customer['ipaddress']}}</td>
+                    <td>{{customer['date_joined']}}</td>
+                    <td>{{(customer['mailing'] == 0) ? 'No' : 'Yes'}}</td>
+                    <td>{{customer['point']}}</td>
+                    <td>{{customer['money']}}</td>
+                    <td><span class="label label-success">{{customer['created_at']}}</span></td>
                 </tr>
             </tbody>
         </table>
     </div>
 </section>
+
+<!-- Customer Modal -->
+<div bsModal #customerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content col-xs-12">
+            <div class="modal-header" style="border-bottom: none">
+                <button type="button" class="close pull-right" aria-label="Close" (click)="hideCustomerModal()">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="form-group col-xs-6" display="inline-block">
+                        <label for="customer_fname">First Name</label>
+                        <input type="name" class="form-control" id="customer_fname" [(ngModel)]="customer['fname']" required>
+                    </div>
+                    <div class="form-group col-xs-6" display="inline-block">
+                        <label for="customer_lname">Last Name</label>
+                        <input type="name" class="form-control" id="customer_lname" [(ngModel)]="customer['lname']" required>
+                    </div>
+                    <div class="form-group col-xs-6" display="inline-block">
+                        <label for="customer_email">Email</label>
+                        <input type="email" class="form-control" id="customer_email" [(ngModel)]="customer['email']" required>
+                    </div>
+                    <div class="form-group col-xs-6" display="inline-block">
+                        <label for="customer_phone">Phone</label>
+                        <input type="phone" class="form-control" id="customer_phone" [(ngModel)]="customer['phone']" required>
+                    </div>
+                    <div class="form-group col-xs-6" display="inline-block">
+                        <label for="customer_password">Password</label>
+                        <input type="password" class="form-control" id="customer_password" [(ngModel)]="customer['password']" required>
+                    </div>
+                    <div class="form-group col-xs-6" display="inline-block">
+                        <label for="customer_password_confirmation">Password Confirmation</label>
+                        <input type="password" class="form-control" id="customer_password_confirmation" [(ngModel)]="confirmPassword" required>
+                    </div>
+                    <div class="form-group col-xs-12" display="inline-block">
+                        <label for="customer_address">Address</label>
+                        <input type="address" class="form-control" id="customer_address" [(ngModel)]="customer['address']">
+                    </div>
+                    <div class="form-group col-xs-6" display="inline-block">
+                        <label for="customer_city">City</label>
+                        <input type="address" class="form-control" id="customer_city" [(ngModel)]="customer['city']">
+                    </div>
+                    <div class="form-group col-xs-3" display="inline-block">
+                        <label for="customer_state">State</label>
+                        <input type="address" class="form-control" id="customer_state" [(ngModel)]="customer['state']">
+                    </div>
+                    <div class="form-group col-xs-3" display="inline-block">
+                        <label for="customer_zip">Zip</label>
+                        <input type="address" class="form-control" id="customer_zip" [(ngModel)]="customer['zip']">
+                    </div>
+                    <div class="form-group col-xs-6" display="inline-block">
+                        <label for="customer_ipaddress">IP Address</label>
+                        <input type="text" class="form-control" id="customer_ipaddress" [(ngModel)]="customer['ipaddress']">
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group pull-right" style="margin-top: 20px; margin-bottom: 20px">
+                        <div *ngIf="customer['id']; then EditCustomer else NewCustomer">
+                        </div>
+                        <ng-template #NewCustomer>
+                        <button type="submit" class="btn btn-success" (click)="addCustomer()">Add Customer</button>
+                        </ng-template>
+                        <ng-template #EditCustomer>
+                        <button type="submit" class="btn btn-primary" (click)="updateCustomer()">Update</button>
+                        <button type="submit" class="btn btn-danger" (click)="deleteCustomer()">Delete</button>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<simple-notifications [options]="notifyOptions"></simple-notifications>

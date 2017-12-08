@@ -55,6 +55,7 @@ import { AuthService } from "./services/auth_service/auth.service";
 import { ScheduleService } from "./services/schedule_service/schedule.service";
 import { MainService } from "./services/main_service/main.service";
 import { ReportService } from "./services/report_service/report.service";
+import { CustomerService } from "./services/customer_service/customer.service";
 
 
 @NgModule({
@@ -117,6 +118,7 @@ import { ReportService } from "./services/report_service/report.service";
         ScheduleService,
         MainService,
         ReportService,
+        CustomerService,
     ],
     exports: [
         AdminHeaderComponent,

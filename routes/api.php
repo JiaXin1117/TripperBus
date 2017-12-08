@@ -234,6 +234,28 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
             'uses' => 'MainController@getReports',
         ]);
     });
+
+    Route::group(['prefix' => 'customer', 'middleware' => ['permission:Customers']], function() {
+        Route::get('/get_customers', [
+            'as' => 'admin.customer.get_customers',
+            'uses' => 'CustomerController@getCustomers',
+        ]);
+
+        Route::post('/add_customer', [
+            'as' => 'admin.customer.add_customer',
+            'uses' => 'CustomerController@addCustomer',
+        ]);
+
+        Route::post('/update_customer', [
+            'as' => 'admin.customer.update_customer',
+            'uses' => 'CustomerController@updateCustomer',
+        ]);
+
+        Route::post('/delete_customer', [
+            'as' => 'admin.customer.delete_customer',
+            'uses' => 'CustomerController@deleteCustomer',
+        ]);
+    });
 });
 
 Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function() {

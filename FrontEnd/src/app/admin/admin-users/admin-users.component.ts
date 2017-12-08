@@ -283,10 +283,6 @@ export class AdminUsersComponent implements OnInit {
     });
   }
 
-  editPermission(user) {
-    alert(user['name']);
-  }
-  
   successNotification(notifyText: string) {
     this._notificationsService.success('Success', notifyText, this.notifyOptionsForSuccess);
   }

@@ -68,7 +68,7 @@ export class AdminSettingsComponent implements OnInit {
     this._httpService.sendPostJSON(url, { settings: this.settings })
       .subscribe(
       data => {
-        this.settings = data['settings'];
+        this.settings = data.data;
         this._mainService.settings = this.settings;
 
         this.successNotification('Successfully updated.');
