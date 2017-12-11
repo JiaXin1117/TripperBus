@@ -21,8 +21,4 @@ class Res_Customers extends Model
     {
         $this->attributes['password'] = \Hash::make($value);
     }
-
-    public function permissions() {
-        return $this->hasMany('App\Models\CustomerToPermission', 'customer_id');
-    }
 }

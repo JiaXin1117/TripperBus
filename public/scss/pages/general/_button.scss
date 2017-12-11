@@ -1,0 +1,61 @@
+/* Button Styles */
+.btn {
+	&-row {
+		.btn {
+			margin-right:2em;
+			&:last-child {
+				margin-right: 0;
+			}
+		}
+	}
+	height: 50px;
+	line-height: 46px;
+	padding: 0 20px;
+	font-size: 15px;
+	color: #fff;
+	cursor: pointer;
+	// text-shadow: 0 1px 0px rgba(0, 0, 0, 0.7);
+	box-shadow: 0 3px 4px rgba(47, 157, 228, 0.3);
+	// text-transform: uppercase;
+	border-radius: 4px;
+	outline: none;
+	text-align: center;
+	font-weight: 800;
+	display: inline-block;
+	text-decoration: none;
+	@include transition(.3s all);
+	@include tablet-portrait-and-below {
+		width: 100%;
+	}
+	&.blue {
+		border: 0;
+		background-color: #3f9ee0;
+		border: 2px solid #3f9ee0;
+		border-bottom: 2px solid darken(#3f9ee0, 10%) !important;
+		&:hover {
+			background-color: #1a83c6 !important;
+			border: 2px solid darken(#3f9ee0, 10%) !important;
+		}
+	}
+
+	&.green {
+		border: 0;
+		background-color: $btn-green;
+		border: 2px solid $btn-green;
+		border-bottom: 2px solid darken($btn-green, 10%) !important;
+		&:hover {
+			background-color: darken($btn-green, 10%) !important;
+			border: 2px solid darken($btn-green, 10%) !important;
+		}
+	}
+	&.teal {
+		border: 0;
+		background-color: $teal;
+		border: 2px solid $teal;
+		border-bottom: 2px solid darken($teal, 10%) !important;
+		&:hover {
+			background-color: darken($teal, 10%) !important;
+			border: 2px solid darken($teal, 10%) !important;
+		}
+	}
+}

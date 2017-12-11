@@ -1,0 +1,359 @@
+/* tickets */
+
+.home .tickets .top [type="radio"]:checked + span {
+	background: #f1f6f7;
+	&:after {
+		    border-top: 10px solid #f1f6f7
+	}
+}
+.tickets {
+	.top {
+		line-height: 60px;
+		height: 60px;
+		color: #2e3032;
+		padding: 0 $gutter;
+		right: 0;
+		left: 0;
+		span {
+			position: relative;
+			text-transform: uppercase;
+			font-size: .8em;
+			cursor: pointer;
+			color:$base-text-color;
+			// @include transition(all 300ms ease-in-out);
+			.icon {
+				position: relative;
+				top: 5px;
+				width: 20px;
+				height: 19px;
+				padding-right: 3px;
+				fill: #2e3032;
+				border: 0;
+				outline: none;
+			}
+			&.oneway {
+				.icon {
+					height: 12px;
+					top: 2px;
+					padding-right: 0px;
+				}
+			}
+		}
+		[type="radio"] {
+			display: none;
+			// padding: 5px 10px;
+		}
+		[type="radio"] + span {
+			// display: none;
+			padding: 5px 10px;
+			&:after {
+				content: '';
+				opacity: 0;
+				position: absolute;
+				display: block;
+				width: 0;
+				height: 0;
+				border: 0 solid transparent;
+				border-left-width: 10px;
+				border-right-width: 10px;
+				border-top: 10px solid #f1f6f7;
+				bottom: -10px;
+				left: 30%;
+				-moz-transition: all 300ms ease-in-out;
+				-o-transition: all 300ms ease-in-out;
+				-webkit-transition: all 300ms ease-in-out;
+				transition: all 300ms ease-in-out;
+				// margin-left: 0px;
+			}
+		}
+		[type="radio"]:checked + span {
+			opacity: 1;
+			background: #e0e0e0;
+			-moz-transition: all 300ms ease-in-out;
+			-o-transition: all 300ms ease-in-out;
+			-webkit-transition: all 300ms ease-in-out;
+			transition: all 300ms ease-in-out;
+			border-radius:3px;
+
+			&:after {
+				content: '';
+				position: absolute;
+				display: block;
+				opacity: 1;
+				width: 0;
+				height: 0;
+				border: 0 solid transparent;
+				border-left-width: 10px;
+				border-right-width: 10px;
+				border-top: 10px solid #e0e0e0;
+				bottom: -10px;
+				left: 30%;
+				-moz-transition: all 300ms ease-in-out;
+				-o-transition: all 300ms ease-in-out;
+				-webkit-transition: all 300ms ease-in-out;
+				transition: all 300ms ease-in-out;
+				// margin-left: 0px;
+			}
+		}
+		.reschedule {
+			// padding: 15px 10px;
+			opacity: .5;
+			text-transform: uppercase; 
+			font-size: .8em;  
+			cursor: pointer;
+
+			@include transition(all 300ms ease-in-out);
+			.icon {
+				position: relative;
+				top: 6px;
+				width: 20px;
+				height: 20px; 
+				padding-right: 3px;
+				fill: #fff; 
+				stroke: #fff;
+				border: 0; 
+				outline: none;
+			}
+			&:hover, &.current {
+				opacity: 1;
+			}
+		}
+	}
+	.ticket-info {
+		margin: 0 24px;
+		padding: 0 0 4em;
+
+		&.hp {
+			padding: 1em 0 4em;
+			margin: 0;
+			span:last-child{
+				padding: {
+					right:0;
+				}
+			}
+		}
+		// border-bottom: 1px solid #c0cdce;
+		@include tablet-portrait-and-below {
+			padding: 3em 0 2em;
+			margin: 0;
+			overflow: hidden;
+		}
+		span.input {
+			@include transition(all 300ms ease-in-out);
+			@include tablet-portrait-and-below {
+				margin: 1.3em 0;
+			}
+			@include tablet-portrait-and-up {
+				padding: 0 15px 0 0;
+			}
+			&:last-child {
+				padding:{
+					right:0;
+				}
+			}
+			
+			&.disabled {
+				opacity: .3;
+				@include transition(all 300ms ease-in-out);
+			}
+		}
+		.icon {
+			position: absolute;
+			width: 16px;
+			left: 12px;
+			top: 15px;
+			fill: $blue;
+			z-index: 201;
+			@include tablet-portrait-and-below {
+				
+			}
+		}
+	}
+	.form-bottom {
+		margin: 0 30px;
+		padding: 1.8em 0 0;
+		@include tablet-portrait-and-below {
+			padding: 1.5em 0 0em;
+		}
+	}
+	.coupon {
+		label {
+			height: 100%;
+			display: inline-block;
+			padding: 1.9em 1.5em 1em .5em;
+			text-transform: uppercase;
+			font-size: .7em;
+			width: 51%;
+			text-align: right;
+			@include tablet-portrait-and-below {
+				width: 60%;	
+				padding-bottom: 4em;
+			}
+		}
+		input {
+			width: 38%;
+			margin-right: 11%;
+			@include tablet-portrait-and-below {
+				margin-right: 0%;	
+			}
+		}
+	}
+}
+
+.forms-hldr {
+	padding-top: 60px;
+}
+
+#reschedule-form, #ticket-form {
+	opacity: 0;
+	display: none;
+	&.active {
+		opacity: 1;
+		display: block;
+	} 
+}
+
+// Active inputs 
+.tickets .ticket-info .valued {
+	@include transition(all 300ms ease-in);
+	.input__field--ruri, div.cs-skin-slide {
+		@include transition(all 700ms ease-in-out);
+		border: 1px solid $teal;
+	}
+	.icon {
+		@include transition(all 700ms ease-in-out);
+		fill: $teal;
+		stroke: $teal;
+	}
+}
+
+//Inner Page Styles (Reserve Steps)
+.hero.inner #tickets {
+	background: transparent;
+	padding-top: 33px;
+	height: auto;
+	box-shadow: none;
+	@include mobile-only {
+		padding-top: 10px;
+	}
+	.top-header {
+		// background: rgba(63, 177, 181, .95);
+		height: 100px;
+		border-radius: 5px 5px 0 0;
+		@include mobile-only {
+			height: 171px;
+		}
+		h3 {
+			font-size: 1.8em;
+			color: $white;
+			font-weight: 600;
+			left: 24px;
+			position: relative;
+			top: 50%;
+			transform: translateY(-50%);
+			@include mobile-only {
+				text-align: center;
+				padding-top: 1em;
+				top: 0;
+				transform: translateY(0);
+				width: 100%;
+				float: none;
+				left: 0;
+			}
+		}
+		.steps {
+			position: relative;
+			top: 50%;
+			transform: translateY(-50%);
+			@include mobile-only {
+				top: 0;
+				text-align: center;
+				transform: translateY(0);
+				float: none;
+				margin: auto;
+				top: -3px;
+			}
+			.step {
+				display: inline-block;
+				width: 105px;
+				text-align: center;
+				position: relative;
+				&:after {
+					height: 5px;
+					width: 72px;
+					position: absolute;
+					background: rgba(241, 243, 241, 0.3);;
+					content: '';
+					top: 16px;
+					left: 71px;
+				}
+				&.last {
+					&:after {
+						height: 0px;
+						width: 0px;
+					}
+				}
+				&.active {
+					.num {
+						background: $teal;
+						color: $white;
+					}
+				}
+				.num {
+					border-radius: 500px;
+					border: 4px solid rgba(241, 243, 241, 0.3);
+					background: #e7ebec;
+					width: 35px;
+					height: 35px;
+					line-height: 30px;
+					color: $teal;
+					text-align: center;
+					margin: auto;
+				}
+				span.label {
+					font-size: .7em;
+					color: $white;
+					text-transform: uppercase;
+					text-align: center;
+					// padding-top: .5em;
+					display: inline-block;
+					// padding-top: 1em;
+				}
+			}
+		}
+	}	
+	.top {
+		position: relative;
+		background: $white;
+		line-height: 60px;
+		@include mobile-only {
+			display: none;
+		}
+		.trip-type-hldr {
+			@include mobile-only {
+				text-align: center;
+				float: none;
+			}
+		}
+	}
+	.forms-hldr {
+		padding-top: 1em;
+		padding-bottom: 2em;
+		@include mobile-only {
+			display: none;
+		}
+	}
+	.button-pre-text label {
+		line-height: 50px;
+		text-align: right;
+		width: 90%;
+		display: block;
+		color: #999;
+		font-size: .9em;
+		font-style: italic;
+		@include mobile-only {
+			text-align: center;
+			width: 100%;
+		}
+	}
+}

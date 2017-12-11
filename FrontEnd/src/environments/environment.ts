@@ -5,5 +5,5 @@
 
 export const environment = {
     production: false,
-    baseHref: '/TripperBus/frontend/'
+    baseHref: '/TripperBus/admin/'
 };

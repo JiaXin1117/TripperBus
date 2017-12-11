@@ -1,0 +1,135 @@
+#footer, .full-menu-top, {
+	border-top: 4px solid #e8512f;
+	// margin-top: 4em;
+	background: #282d31;
+	@include mobile-only {
+		font-size: 1.2em;
+		margin-top: 0;
+	}
+	.fl, .fr {
+		@include mobile-only {
+			float: none;
+		}
+	}
+	.footer-info {
+		padding: 3em 0; 
+		@include mobile-only {
+			padding: 3em 2em;
+		}
+	}
+	.column {
+		@include mobile-only {
+			padding: 1em 0;
+		}
+	}
+	h4 {
+		color: #797c7e;
+		// padding-bottom: 5px;
+		margin-bottom: 0;
+	}
+	li, .contact-info {
+		// padding: 5px 0;
+		a {
+			color: $white;
+			// font-size: .8em;
+			cursor: pointer;
+			font-weight: 600;
+			text-decoration: none;
+			display: inline-block;  
+			transition: 0.5s ease;
+			white-space: nowrap;
+
+			&:after {
+				content: '';
+				display: block;
+				height: 1px;
+				width: 0;
+				bottom: -2px;
+				background: transparent;
+				transition: width .5s ease, background-color .5s ease;
+			}
+			&:hover:after {
+				width: 100%;
+				background: $teal;
+			}
+			&:hover {
+				@include transition(all 500ms ease-in-out);
+				opacity: 1;
+				color: $teal;
+			}
+		}	
+	}
+	p.contact-info {
+		color: $white;
+		opacity: .8;
+		font-size: 16px;
+		margin: 0 0 14px;
+		line-height: inherit;
+		// span {
+		// 	color: $white;
+		// 	text-decoration: none;
+		// }
+	}
+	.social-links {
+		@include mobile-only {
+			padding-top: 1em;
+		}
+		.icon {
+			width: 15px;
+			fill: #797c7e;
+			stroke: #797c7e;
+			margin-right: 8px;
+			cursor: pointer;
+			@include mobile-only {
+				width: 30px;
+				margin-right: 16px;
+			}
+			&:hover {
+				transition: all 300ms ease;
+				fill: $teal;
+				stroke: $teal;
+			}
+		}
+	}
+	.footer-logo {
+		img {
+			width: 125px
+		}
+	}
+	.footer-bottom {
+		padding: 2em 0em 0;
+		border-top: 1px solid #7c858b;
+		color: darken(#fff, 40%);
+		font-size: .8em;
+		margin-top: 4em;
+		@include mobile-only {
+			text-align: center;
+		}
+		.footer-logo {
+			width: 85px;
+			float: left;
+			position: relative;
+			top: -5px;
+			margin-right: 10px;
+			@include mobile-only {
+				display: block;
+				float: none;
+				margin: auto;
+			}
+		}
+	}
+}
+
+.full-menu-top {
+	height: 0;
+	overflow: hidden;
+	background: #282d31;
+	margin-top: 0;
+	border-top: 0px solid transparent;
+	@include transition(all 500ms ease-in-out);
+	&.active {
+		@include transition(all 500ms ease-in-out);
+		border-top: 4px solid #e8512f;
+		height: 270px
+	}
+}

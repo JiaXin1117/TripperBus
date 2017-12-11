@@ -1,0 +1,146 @@
+.article-content {
+	.main-img {
+		width:100%;
+	}
+	.meta {
+		h5 {
+			text-transform: uppercase;
+			color:$orange;
+			font-weight: 800;
+			margin: 0;
+			padding: 0;
+			line-height: 1.2;
+			font-size: 24px;
+			@include tablet-portrait-and-below {
+				font-size: 18px;
+			}
+			 .dc & {
+			 	color:$light-blue;
+			 }
+		}
+		margin:2em 0;
+		h2 {
+			font-size: 38px;
+			font-weight: 300;
+			@include tablet-portrait-and-below {
+				font-size: 22px;
+			}
+			span {
+				color:$orange;
+				font-weight: 800;
+
+				.dc & {
+					color:$light-blue;
+				}
+			}
+		}
+	}
+	.meta,.article-contain {
+		margin: {
+			left:auto;
+			right:auto;
+		}
+		width:90%;
+	}
+}
+
+.articles {
+	.article-card {
+		a {
+			text-decoration: none;
+			
+		}
+		&:hover {
+				box-shadow:0 0 7px rgba(black,.2);
+				i {
+					margin-left:5px;
+				}
+
+				&.dc {
+					h4 {
+						span {
+							color:lighten($light-blue,10);;
+						}
+					}
+					h5 {
+						color:lighten($light-blue,10);;
+					}
+				}
+				h4 {
+					span {
+						color:lighten($orange,10);
+					}
+				}
+				h5 {
+					color:lighten($orange,10);
+				}
+
+			}
+		&,* {
+			@include transition(.3s all);
+		}
+		
+		
+		padding:2em;
+		background-size: cover;
+		background-position: center;
+		&.dc {
+			h4 {
+				span {
+					color:$light-blue;
+				}
+			}
+			h5 {
+				color:$light-blue;
+			}
+		}
+		h4 {
+			color:white;
+			font-size: 32px;
+			line-height: 1.2;
+			width:60%;
+			@include tablet-portrait-and-below {
+				width:100%;
+			}
+			span {
+				color:$orange;
+			}
+		}
+	}
+
+	.article-meta{
+		border-top: solid 1px rgba(white,.4);
+		margin-top: 2em;
+		padding-top: 2em;
+	
+		span {
+			color:white;
+			text-transform: uppercase;
+			font-weight: 800;
+			font-size: 14px;
+			text-decoration: none;
+			
+		}
+		h5 {
+			margin-bottom: 0;
+			font-size: 15px;
+			text-transform: uppercase;
+			color:$orange;
+		}
+		h5,p {
+			line-height: 1.2;
+			margin: 0;
+		}
+		p {
+			color:white;
+			font-size: 11px;
+
+		}
+	}
+	.pure-g{
+		> [class*="pure-"]{
+			padding-bottom:15px;
+			padding-right: 15px !important;
+		}
+	}
+}

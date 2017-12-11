@@ -1,0 +1,83 @@
+/*
+ * Forms
+*/
+
+.account {
+  input[type=text], input[type=password]{
+    width:100%;
+  }
+}
+
+input[type=text], input[type=password] {
+  padding: 15px;
+  @include span(8 of 12);
+  margin-bottom: 12px;
+  border: 1px solid #c0cdce;
+  @include border-radius(1px);
+  color: #222222;
+  font-size: 18px;
+  font-weight: 600;
+  &.small {
+    @include span(4 of 12);
+  }
+}//input
+
+input[type=submit] {
+  padding:15px 30px;
+  @include border-radius(5px);
+  font-weight: bold;
+  display: block;
+  float: right;
+  background-color: #3f9ee0;
+  font-size: 14px;
+  color: #ffffff;
+  @extend %submit;
+  @include background-image(
+    linear-gradient(to bottom, #3f9ee0 90%, #3d83b2)
+  );
+  @include box-shadow(0px 3px 2px #d8ebf9);
+  &:hover {
+    @include opacity(.9);
+  }
+}
+
+fieldset {
+  @include clearfix;
+  margin-bottom: 60px;
+  span {
+    font-size: 12px;
+    color: #222222;
+    display: block;
+    clear: both;
+    text-transform: uppercase;
+  }//span
+  label {
+    margin-bottom: 30px;
+    cursor: pointer;
+    @include clearfix;
+    display: block;
+    &.half {
+      @include span(4.7 of 10);
+      input[type=text] {
+        @include full;
+      }//input inside halfs
+      &:last-child {
+        @include last;
+      }//last child label
+    }//50% wide
+    &.col5 {
+      @include gallery(3 of 15);
+      input[type=text] {
+        @include full;
+        display: inline-block;
+      }//input inside halfs
+    }
+  }//label
+  .row {
+    margin-bottom: 30px;
+    @include clearfix;
+    label {
+      margin-bottom: 0;
+    }//labels inside rows
+  }//rows
+}//fieldset

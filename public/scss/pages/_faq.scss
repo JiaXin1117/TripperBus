@@ -1,0 +1,42 @@
+div.collapse {
+	li {
+		padding: 10px;
+		@include transition(.3s all);
+		&:nth-child(even){
+			background: #f9f9f9;
+		}
+		.hide {
+			color:$orange;
+			text-transform: uppercase;
+			font-weight: 800;
+		}
+		&.active {
+			background:#e2f1fa;
+			h5 {
+				&:before {
+					transform:rotate(45deg);
+				}
+			}
+		}
+	}
+	h5 {
+		cursor:pointer;
+		&:before {
+		    display: inline-block;
+		    font: normal normal normal 14px/1 FontAwesome;
+		    font-size: inherit;
+		    text-rendering: auto;
+		    -webkit-font-smoothing: antialiased;
+		    content: "\f067";
+		    color:$light-blue;
+		    margin-right: 1em;
+		    @include transition(.3s all);
+		}
+	}
+	ul li .collapse_cnt {
+    padding: 20px 0 21px 57px;
+    max-width: 670px;
+    display: none;
+	}
+}
+

@@ -1,0 +1,38 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+@import "compass/reset";
+@import "compass";
+
+/* -- Variables -- */ 
+@import "vendor/include-media";
+@import "vendor/custom-form";
+
+@import "base/variables";
+@import "base/functions";
+@import "base/mixins";
+@import "base/helpers";
+
+/* -- General -- */ 
+@import "vendor/media"; 
+@import "input";
+@import "fonts"; 
+ 
+/* -- Vendor -- */
+@import "vendor/slick-theme";
+@import "vendor/slick";
+@import "vendor/custom-select";
+@import "vendor/mobiscroll.custom-2.16.1.min";
+
+/* -- Pages -- */
+@import "pages/base";
+@import "pages/general/general";
+@import "pages/general/button";
+@import "pages/general/footer";
+@import "pages/hero";
+@import "pages/ticket-styles";
+@import "pages/homepage";
+@import "pages/articles";
+@import "pages/faq";

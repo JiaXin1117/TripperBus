@@ -1,0 +1,61 @@
+// Typography
+
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6,
+.h {
+	font-family: $headings-font-family;
+	font-weight: bold;
+	margin: 0 0 0.5em;
+	color: $headings-color;
+}
+
+h1, .h1 {
+	font-size: $h1-font-size;
+	font-weight: 600;
+	color: $blue;
+	text-transform: uppercase;
+	@include media ('<phone') { 
+		font-size: 20px;
+	}
+}
+
+h2, .h2 {
+	font-size: $h2-font-size;
+	color: $white;
+	margin: 0;
+	@include media ('<phone') {
+		font-size: 13px;
+	}
+}
+
+h3, .h3 {
+	font-size: $h3-font-size;
+}
+
+h4, .h4 {
+	font-size: $h4-font-size;
+}
+
+h5, .h5 {
+	font-size: $h5-font-size;
+}
+
+h6, .h6 {
+	font-size: $h6-font-size;
+}
+
+p {
+	margin: 0 0 14px;
+}
+
+a {
+	color: $base-link-color;
+	&:hover,
+	&:focus {
+		text-decoration: none;
+	}
+}

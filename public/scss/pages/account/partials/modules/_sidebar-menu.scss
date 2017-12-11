@@ -1,0 +1,46 @@
+/*
+ * Sidebar menu
+*/
+
+
+
+.account-heading {
+  padding:2em 0 2em 0px;
+}
+#sidebar-menu {
+  @include span(2.4 of 12);
+
+  // background-color: #f7f7f7;
+  li {
+    // border-bottom:1px solid #e1e1e1;
+    &.heading {
+      color: $blue;
+      padding: 2px 0 5px;
+    }
+    a {
+      padding: 2px 0 2px;
+      color: #4d4d4d;
+      font-size: 15px;
+      display: block;
+    }
+    &.selected {
+      // border-left:1px solid #e1e1e1;
+      a {
+        // background-color: #fff;
+        color: $blue;
+        &:after {
+          content:"\203A";
+          position: relative;
+          right:-10px;
+          font-size: 15px;
+        }//after
+      }//a
+    }//selected
+    &:last-child:not(.selected) {
+      border-bottom: 0;
+    }//last child
+    &.selected:first-child {
+      // border-top: 1px solid #e1e1e1;
+    }//first child selected
+  }//li
+}//sidebar menu

@@ -1,0 +1,113 @@
+// forms
+
+form,
+fieldset {
+	margin: 0;
+	padding: 0;
+	border-style: none;
+}
+
+input[type='text'],
+input[type='tel'],
+input[type='email'],
+input[type='search'],
+input[type='password'],
+//input[type='url'],
+// input[type='date'],
+textarea {
+	@include media ('<desktop') {
+		width: 100%;
+	}
+	// @include media ('<phone') {
+	// 	height: 40px;
+	// 	font-size: 13px;
+	// 	padding: 25px 10px 25px 36px;
+	// }
+	// &:hover {
+		
+	// }
+
+	&:focus {
+		border-color: $form-element-focus-border-color;
+		box-shadow: 0 0  8px rgba($btn-blue,0.2);
+		outline: none;
+	}
+
+	@include placeholder {
+		color: $placeholder-color;
+		font-weight: 600;
+	}
+}
+
+select {
+	-webkit-border-radius: 0;
+}
+
+textarea {
+	resize: vertical;
+	vertical-align: top;
+}
+
+/*button,
+input[type='button'],
+input[type='reset'],
+input[type='file'],
+input[type='submit'] {
+	-webkit-appearance: none;
+	-webkit-border-radius: 0;
+	cursor: pointer;
+	border: none;
+	height: 50px; 
+	font-weight: bold;
+	border-radius: 4px;
+	font-size: 13px;
+	padding: 5px;
+	border-bottom: 2px solid $btn-border;
+	color: $white;
+	background: $btn-blue;
+	text-transform: uppercase;
+	text-align: center;
+	box-shadow: 0 3px  4px rgba($btn-blue,0.3);
+	@include media ('<phone') {
+		font-size: 12px;
+		height: 40px;
+	}
+		&:hover{
+			 background: darken($btn-blue,10%);
+		}
+}*/
+
+label.reserve {
+	text-transform: uppercase;
+	font-size: 12px;
+	display: block;
+	padding: 9px 0 3px;
+	color: $light-grey;
+	@include media ('<desktop') {
+		padding: 7px 0 5px;
+	}
+	@include media ('<tablet') {
+		font-size: 11px;
+	}
+}
+
+button[type="button"]{
+	// min-width: 104px;
+	&[disabled]{
+		opacity: 0.5;
+		background: #cfd5d9 !important;
+		border: 2px solid #cfd5d9 !important;
+		border-bottom: 2px solid #aeb5b9 !important;
+		text-shadow: none !important;
+		box-shadow: 0 3px 4px rgba(174, 181, 185, 0.3) !important;
+		&:hover {
+			opacity: 0.5;
+			background: #cfd5d9 !important;
+			border: 2px solid #cfd5d9 !important;
+			border-bottom: 2px solid #aeb5b9 !important;
+			text-shadow: none !important;
+			box-shadow: 0 3px 4px rgba(174, 181, 185, 0.3) !important;
+		}
+	}
+}
+
