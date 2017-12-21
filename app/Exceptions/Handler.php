@@ -61,5 +61,15 @@ class Handler extends ExceptionHandler
         }
 
         return redirect()->guest('login');
+/*         $guard = array_get($exception->guards(), 0);
+        switch ($guard) {
+          case 'customer':
+            $login = 'customer.login';
+            break;
+          default:
+            $login = 'auth.login';
+            break;
+        }
+        return redirect()->guest(route($login)); */
     }
 }

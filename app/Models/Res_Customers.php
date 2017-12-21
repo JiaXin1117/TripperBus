@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Res_Customers extends Model
+class Res_Customers extends Authenticatable
 {
+    use Notifiable;
+
+    protected $guard = 'customer';
     protected $table = 'res_customers';
 
     protected $hidden = [
