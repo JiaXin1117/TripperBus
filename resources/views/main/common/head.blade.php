@@ -21,6 +21,5 @@
     <!--<![endif]-->
 
     <link rel="stylesheet" href="css/web.css">
-    <link rel="stylesheet" href="css/reserve.css">
 
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>

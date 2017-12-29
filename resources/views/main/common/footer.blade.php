@@ -1,3 +1,4 @@
+        <!-- Footer -->
 		<div id="footer">
 			<div class="container-fluid footer-info">
 				<div class="pure-g">
@@ -6,6 +7,8 @@
 						<ul>
 							<li><a>Travel Information</a></li>
 							<li><a>Parking Locations</a></li>
+							<li><a>Pickup Locations</a></li>
+							<li><a>Travel Maps</a></li>
 							<li><a>Promotional Offers</a></li>
 						</ul>
 					</div>

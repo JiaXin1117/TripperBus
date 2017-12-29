@@ -4,9 +4,11 @@
 				<div class="pure-u-md-1-4 pure-u-1 column">
 					<h4>Travel Information</h4>
 					<ul>
-						<li><a>Travel Information</a></li>
-						<li><a>Parking Locations</a></li>
-						<li><a>Promotional Offers</a></li>
+                        <li><a>Travel Information</a></li>
+                        <li><a>Parking Locations</a></li>
+                        <li><a>Pickup Locations</a></li>
+                        <li><a>Travel Maps</a></li>
+                        <li><a>Promotional Offers</a></li>
 					</ul>
 				</div>
 				<div class="pure-u-md-1-4 pure-u-1 column">
@@ -20,7 +22,7 @@
 					<h4>Customer Service</h4>
 					<ul>
 						<li><a>Contact Us</a></li>
-
+                        <li><a>Travel Maps</a></li>
 						<li><a>FAQs</a></li>
 						<li><a href="mailto:info@TripperBus.com">Gift Cards</a></li>
 

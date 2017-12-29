@@ -1,4 +1,8 @@
-@extends('main.common.base')
+@extends ('main.common.base')
+
+@section ('head')
+	<link rel="stylesheet" href="css/reserve.css">
+@endsection
 
 @section('body_class') home @endsection
 

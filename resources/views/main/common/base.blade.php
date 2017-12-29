@@ -13,10 +13,10 @@
 
 			@yield ('content')
 
-			<!-- Footer -->
 			@include ('main.common.footer')
-
 		</div>
+
+		@yield ('after_container')
 
 		<div id="mobileCheck"></div>
 

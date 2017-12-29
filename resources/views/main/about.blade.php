@@ -1,6 +1,11 @@
-@extends('main.common.base')
+@extends ('main.common.base')
 
-@section('body_class') interior @endsection
+@section ('head')
+    <link rel="stylesheet" href="css/reserve.css">
+    <link rel="stylesheet" href="css/account.css">
+@endsection
+
+@section ('body_class') interior @endsection
 
 @section ('content')
         <div class="hero inner">
